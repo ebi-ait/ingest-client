@@ -7,11 +7,8 @@ import uuid
 
 from optparse import OptionParser
 
-from ingest.api.dssapi import DssApi
 from ingest.api.ingestapi import IngestApi
 from ingest.api.stagingapi import StagingApi
-from ingest.exporter.ingestexportservice import IngestExporter
-from ingest.exporter.staging import StagingService, StagingInfoRepository
 from ingest.utils.s2s_token_client import S2STokenClient
 from ingest.utils.token_manager import TokenManager
 
@@ -57,17 +54,10 @@ if __name__ == '__main__':
     if options.bundle_version:
         bundle_version = options.bundle_version
 
-    dss_api = DssApi(url=options.dss)
     s2s_token_client = S2STokenClient()
     gcp_credentials_file = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
     s2s_token_client.setup_from_file(gcp_credentials_file)
     token_manager = TokenManager(token_client=s2s_token_client)
     ingest_api = IngestApi(token_manager=token_manager)
     staging_api = StagingApi(url=options.staging)
-    staging_info_repo = StagingInfoRepository(ingest_client=ingest_api)
-    staging_service = StagingService(staging_client=staging_api, staging_info_repository=staging_info_repo)
-    exporter = IngestExporter(staging_service=staging_service, ingest_api=ingest_api, dss_api=dss_api)
-    exporter.export_bundle(bundle_uuid=bundle_uuid,
-                           bundle_version=bundle_version,
-                           submission_uuid=options.submission_uuid,
-                           process_uuid=options.process_uuid)
+    # TODO: Now What?
