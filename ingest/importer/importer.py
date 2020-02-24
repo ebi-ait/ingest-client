@@ -28,7 +28,7 @@ class XlsImporter:
         self.ingest_api = ingest_api
         self.logger = logging.getLogger(__name__)
 
-    def generate_json(self, file_path, project_uuid=None):
+    def generate_json(self, file_path):
         ingest_workbook = IngestWorkbook.from_file(file_path)
 
         sheet_names = ingest_workbook.get_sheets_exceeding_row_limit(MAX_ROW_LIMIT)
@@ -42,12 +42,12 @@ class XlsImporter:
                 f'There was an error retrieving the schema information to process the spreadsheet. {str(e)}')
 
         workbook_importer = WorkbookImporter(template_mgr)
-        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook, project_uuid)
+        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook)
 
         return spreadsheet_json, template_mgr, errors
 
-    def dry_run_import_file(self, file_path, project_uuid=None):
-        spreadsheet_json, template_mgr, errors = self.generate_json(file_path, project_uuid)
+    def dry_run_import_file(self, file_path):
+        spreadsheet_json, template_mgr, errors = self.generate_json(file_path)
 
         if errors:
             return None, errors
@@ -59,13 +59,13 @@ class XlsImporter:
     def import_file(self, file_path, submission_url, project_uuid=None):
         submission = None
         try:
-            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, project_uuid)
+            spreadsheet_json, template_mgr, errors = self.generate_json(file_path)
             if not errors:
                 entity_map = self._process_links_from_spreadsheet(template_mgr, spreadsheet_json)
 
                 # TODO the submission_url should be passed to the IngestSubmitter instead
                 submitter = IngestSubmitter(self.ingest_api)
-                submission = submitter.submit(entity_map, submission_url)
+                submission = submitter.submit(entity_map, submission_url, project_uuid)
                 self.logger.info(f'Submission in {submission_url} is done!')
             else:
                 self.report_errors(submission_url, errors)
@@ -180,20 +180,10 @@ class WorkbookImporter:
         self.template_mgr = template_mgr
         self.logger = logging.getLogger(__name__)
 
-    def do_import(self, workbook: IngestWorkbook, project_uuid=None):
+    def do_import(self, workbook: IngestWorkbook):
         registry = _ImportRegistry(self.template_mgr)
         importable_worksheets = workbook.importable_worksheets()
 
-        if project_uuid:
-            project_metadata = MetadataEntity(domain_type=_PROJECT_TYPE,
-                                              concrete_type=_PROJECT_TYPE,
-                                              object_id=project_uuid,
-                                              is_reference=True,
-                                              content={})
-            registry.add_submittable(project_metadata)
-
-            importable_worksheets = [ws for ws in importable_worksheets
-                                     if _PROJECT_TYPE not in ws.title.lower()]
         workbook_errors = []
         for worksheet in importable_worksheets:
             try:
