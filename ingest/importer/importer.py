@@ -55,7 +55,8 @@ class XlsImporter:
         if errors:
             return None, errors
 
-        entity_map = self._process_links_from_spreadsheet(template_mgr, spreadsheet_json)
+        entity_map = EntityMap.load(spreadsheet_json)
+        entity_map = self._process_links_from_spreadsheet(template_mgr, entity_map)
 
         return entity_map, []
 
@@ -63,23 +64,37 @@ class XlsImporter:
         submission = None
         try:
             spreadsheet_json, template_mgr, errors = self.generate_json(file_path, project_uuid)
+
             if not errors:
-                entity_map = self._process_links_from_spreadsheet(template_mgr, spreadsheet_json)
+                submission = Submission(self.ingest_api, submission_url)
+                entity_map = EntityMap.load(spreadsheet_json)
+
+                if project_uuid and not submission.is_update() and entity_map.get_project():
+                    entity_map.remove_project()
+                    self.logger.warning('Ignoring the project in the spreadsheet as a project uuid is supplied in a '
+                                        'new submission!')
+
+                entity_map = self._process_links_from_spreadsheet(template_mgr, entity_map)
 
                 # TODO the submission_url should be passed to the IngestSubmitter instead
                 submitter = IngestSubmitter(self.ingest_api)
-                submission = submitter.submit(entity_map, submission_url, project_uuid)
+
+                submission = submitter.submit(entity_map, submission, project_uuid)
                 self.logger.info(f'Submission in {submission_url} is done!')
+
             else:
                 self.report_errors(submission_url, errors)
+
         except HTTPError as httpError:
             status = httpError.response.status_code
             text = httpError.response.text
             importer_error = ImporterError(f'Received an HTTP {status} from  {httpError.request.url}: {text}')
             self.ingest_api.create_submission_error(submission_url, importer_error.getJSON())
+
         except Exception as e:
             self.ingest_api.create_submission_error(submission_url, ImporterError(str(e)).getJSON())
             self.logger.error(str(e), exc_info=True)
+
         else:
             return submission, template_mgr
 
@@ -92,8 +107,7 @@ class XlsImporter:
             )
 
     @staticmethod
-    def _process_links_from_spreadsheet(template_mgr, spreadsheet_json):
-        entity_map = EntityMap.load(spreadsheet_json)
+    def _process_links_from_spreadsheet(template_mgr, entity_map: EntityMap):
         entity_linker = EntityLinker(template_mgr)
         entity_map = entity_linker.process_links_from_spreadsheet(entity_map)
         return entity_map

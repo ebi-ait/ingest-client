@@ -69,6 +69,7 @@ class SubmissionTest(TestCase):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.create_submission_manifest = MagicMock()
+        ingest_api.get_submission = MagicMock()
         url = 'http://core.sample.com/submission/8fd733'
         submission = Submission(ingest_api, url)
 
@@ -172,7 +173,7 @@ class IngestSubmitterTest(TestCase):
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.get_submission = MagicMock()
         ingest_api.link_entity = MagicMock()
-        submission = self._mock_submission(submission_constructor)
+        submission = self._mock_submission()
 
         # and:
         product = Entity('product', 'product_1', {})
@@ -182,20 +183,18 @@ class IngestSubmitterTest(TestCase):
 
         # when:
         submitter = IngestSubmitter(ingest_api)
-        submitter.submit(entity_map, submission_url='url')
+        submitter.submit(entity_map, submission)
 
         # then:
-        submission_constructor.assert_called_with(ingest_api, 'url')
         submission.define_manifest.assert_called_with(entity_map)
         submission.add_entity.assert_has_calls([call(product), call(user)], any_order=True)
 
-    @patch('ingest.importer.submission.Submission')
-    def test_submit_update_entities(self, submission_constructor):
+    def test_submit_update_entities(self):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.get_submission = MagicMock()
         ingest_api.link_entity = MagicMock()
-        submission = self._mock_submission(submission_constructor)
+        submission = self._mock_submission()
         submission.is_update()
         # and:
         product = Entity('product', 'product_1', {'k': 'v'})
@@ -207,23 +206,21 @@ class IngestSubmitterTest(TestCase):
 
         # when:
         submitter = IngestSubmitter(ingest_api)
-        submitter.submit(entity_map, submission_url='url')
+        submitter.submit(entity_map, submission)
 
         # then:
-        submission_constructor.assert_called_with(ingest_api, 'url')
         submission.define_manifest.assert_called_with(entity_map)
         submission.add_entity.assert_has_calls([call(product), call(user1)], any_order=True)
         submission.update_entity.assert_has_calls([call(user2), call(user3)], any_order=True)
 
-    @patch('ingest.importer.submission.Submission')
-    def test_submit_linked_entity(self, submission_constructor):
+    def test_submit_linked_entity(self):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.get_submission = MagicMock()
         ingest_api.patch = MagicMock()
         ingest_api.get_link_from_resource = MagicMock()
         ingest_api.link_entity = MagicMock()
-        submission = self._mock_submission(submission_constructor)
+        submission = self._mock_submission()
 
         # and:
         user = Entity('user', 'user_1', {})
@@ -243,17 +240,16 @@ class IngestSubmitterTest(TestCase):
         # when:
         submitter = IngestSubmitter(ingest_api)
         submitter.PROGRESS_CTR = 1
-        submitter.submit(entity_map, submission_url='url')
+        submitter.submit(entity_map, submission)
 
         # then:
-        submission_constructor.assert_called_with(ingest_api, 'url')
         submission.define_manifest.assert_called_with(entity_map)
         submission.add_entity.assert_has_calls([call(user), call(linked_product)], any_order=True)
         submission.link_entity.assert_called_with(linked_product, user, relationship='wish_list')
         ingest_api.patch.assert_called_once()
 
     @staticmethod
-    def _mock_submission(submission_constructor):
+    def _mock_submission():
         submission = MagicMock('submission')
         submission.define_manifest = MagicMock()
         submission.add_entity = MagicMock()
@@ -261,7 +257,7 @@ class IngestSubmitterTest(TestCase):
         submission.link_entity = MagicMock()
         submission.manifest = {}
         submission.is_update = lambda: False
-        submission_constructor.return_value = submission
+        submission.submission_envelope = {}
         return submission
 
 

@@ -63,11 +63,11 @@ class Submission(object):
         self.submission_url = submission_url
         self.metadata_dict = {}
         self.manifest = None
+        self.submission_envelope =  self.ingest_api.get_submission(self.submission_url)
         self.logger = logging.getLogger(__name__)
 
     def is_update(self):
-        submission = self.ingest_api.get_submission(self.submission_url)
-        return submission.get('isUpdate', False)
+        return self.submission_envelope.get('isUpdate', False)
 
     def get_submission_url(self):
         return self.submission_url
@@ -258,7 +258,7 @@ class EntityMap(object):
             return None
 
     def remove_project(self):
-        return self.entities_dict_by_type.my_dict.pop('project', None)
+        return self.entities_dict_by_type.pop('project', None)
 
     def count_total(self):
         return len(self.get_entities())
@@ -453,14 +453,11 @@ class IngestSubmitter(object):
         self.PROGRESS_CTR = 50
         self.logger = logging.getLogger(__name__)
 
-    def submit(self, entity_map: EntityMap, submission_url: str, project_uuid: str = None):
-        submission = Submission(self.ingest_api, submission_url)
+    def submit(self, entity_map: EntityMap, submission: Submission, project_uuid: str = None):
         submission.define_manifest(entity_map)
         entities = entity_map.get_entities()
 
         self._add_or_update_entities(entities, submission)
-
-        submission_envelope = self.ingest_api.get_submission(submission_url)
 
         project_entity = entity_map.get_project()
 
@@ -475,7 +472,7 @@ class IngestSubmitter(object):
         if not related_project:
             raise NoProjectFound()
 
-        self.ingest_api.link_entity(related_project, submission_envelope, 'submissionEnvelopes')
+        self.ingest_api.link_entity(related_project, submission.submission_envelope, 'submissionEnvelopes')
 
         if not submission.is_update():
             self._link_entities(entities, entity_map, submission)
