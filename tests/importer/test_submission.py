@@ -171,11 +171,12 @@ class IngestSubmitterTest(TestCase):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.get_submission = MagicMock()
+        ingest_api.link_entity = MagicMock()
         submission = self._mock_submission(submission_constructor)
 
         # and:
         product = Entity('product', 'product_1', {})
-        project = Entity('project', 'id', {})
+        project = Entity('project', 'id', {}, ingest_json={'k': 'v'})
         user = Entity('user', 'user_1', {})
         entity_map = EntityMap(product, user, project)
 
@@ -193,11 +194,12 @@ class IngestSubmitterTest(TestCase):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.get_submission = MagicMock()
+        ingest_api.link_entity = MagicMock()
         submission = self._mock_submission(submission_constructor)
-
+        submission.is_update()
         # and:
         product = Entity('product', 'product_1', {'k': 'v'})
-        project = Entity('project', 'id', {'k': 'v'})
+        project = Entity('project', 'id', {'k': 'v'}, ingest_json={'k': 'v'})
         user1 = Entity('user', 'user_1', {'k': 'v'})
         user2 = Entity('user', 'user_2', {'k': 'v'}, is_reference=True)
         user3 = Entity('user', 'user_3', {'k': 'v'}, is_reference=True)
@@ -220,6 +222,7 @@ class IngestSubmitterTest(TestCase):
         ingest_api.get_submission = MagicMock()
         ingest_api.patch = MagicMock()
         ingest_api.get_link_from_resource = MagicMock()
+        ingest_api.link_entity = MagicMock()
         submission = self._mock_submission(submission_constructor)
 
         # and:
@@ -233,7 +236,7 @@ class IngestSubmitterTest(TestCase):
             'relationship': 'wish_list'
         }
         linked_product = Entity('product', 'product_1', {}, direct_links=[link_to_user])
-        project = Entity('project', 'id', {})
+        project = Entity('project', 'id', {}, ingest_json={'k': 'v'})
         entity_map.add_entity(linked_product)
         entity_map.add_entity(project)
 

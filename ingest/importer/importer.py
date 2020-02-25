@@ -5,6 +5,9 @@ from requests import HTTPError
 from ingest.importer.conversion import template_manager
 from ingest.importer.conversion.metadata_entity import MetadataEntity
 from ingest.importer.conversion.template_manager import TemplateManager
+from ingest.importer.exceptions import MultipleProjectsFound, SheetNotFoundInSchemas, DataRemoval, \
+    SchemaRetrievalError, \
+    MaxRowExceededError
 from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
 from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
 from ingest.importer.submission import IngestSubmitter, EntityMap, EntityLinker, Submission
@@ -28,7 +31,7 @@ class XlsImporter:
         self.ingest_api = ingest_api
         self.logger = logging.getLogger(__name__)
 
-    def generate_json(self, file_path):
+    def generate_json(self, file_path, project_uuid=None):
         ingest_workbook = IngestWorkbook.from_file(file_path)
 
         sheet_names = ingest_workbook.get_sheets_exceeding_row_limit(MAX_ROW_LIMIT)
@@ -46,8 +49,8 @@ class XlsImporter:
 
         return spreadsheet_json, template_mgr, errors
 
-    def dry_run_import_file(self, file_path):
-        spreadsheet_json, template_mgr, errors = self.generate_json(file_path)
+    def dry_run_import_file(self, file_path, project_uuid=None):
+        spreadsheet_json, template_mgr, errors = self.generate_json(file_path, project_uuid)
 
         if errors:
             return None, errors
@@ -59,7 +62,7 @@ class XlsImporter:
     def import_file(self, file_path, submission_url, project_uuid=None):
         submission = None
         try:
-            spreadsheet_json, template_mgr, errors = self.generate_json(file_path)
+            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, project_uuid)
             if not errors:
                 entity_map = self._process_links_from_spreadsheet(template_mgr, spreadsheet_json)
 
@@ -200,12 +203,7 @@ class WorkbookImporter:
             except Exception as e:
                 workbook_errors.append(
                     {"location": f'sheet={worksheet.title}', "type": e.__class__.__name__, "detail": str(e)})
-
-        if registry.has_project():
-            registry.import_modules()
-        else:
-            e = NoProjectFound()
-            workbook_errors.append({"location": "File", "type": e.__class__.__name__, "detail": str(e)})
+        registry.import_modules()
         return registry.flatten(), workbook_errors
 
     def sheet_in_schemas(self, worksheet):
@@ -276,36 +274,3 @@ class WorksheetImporter:
         return f'{self.UNKNOWN_ID_PREFIX}{self.unknown_id_ctr}'
 
 
-class MultipleProjectsFound(Exception):
-    def __init__(self):
-        message = f'The spreadsheet should only be associated to a single project.'
-        super(MultipleProjectsFound, self).__init__(message)
-
-
-class NoProjectFound(Exception):
-    def __init__(self):
-        message = f'The spreadsheet should be associated to a project.'
-        super(NoProjectFound, self).__init__(message)
-
-
-class SheetNotFoundInSchemas(Exception):
-    def __init__(self, sheet):
-        message = f'The sheet named {sheet} was not found in the schema list.'
-        super(SheetNotFoundInSchemas, self).__init__(message)
-        self.sheet = sheet
-
-
-class DataRemoval(Exception):
-    def __init__(self, key, value):
-        message = f'The column header [{key}] was not recognised, the following data has been removed: {value}.'
-        super(DataRemoval, self).__init__(message)
-        self.key = key
-        self.value = value
-
-
-class SchemaRetrievalError(Exception):
-    pass
-
-
-class MaxRowExceededError(Exception):
-    pass

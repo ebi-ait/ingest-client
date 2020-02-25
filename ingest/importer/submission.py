@@ -3,6 +3,7 @@ import logging
 import requests
 
 from ingest.api.ingestapi import IngestApi
+from ingest.importer.exceptions import NoProjectFound
 
 format = '[%(filename)s:%(lineno)s - %(funcName)20s() ] %(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=format)
@@ -250,8 +251,14 @@ class EntityMap(object):
         return all_entities
 
     def get_project(self) -> Entity:
-        project_id = list(self.entities_dict_by_type.get('project').keys())[0]
-        return self.get_entity('project', project_id)
+        if self.entities_dict_by_type.get('project'):
+            project_id = list(self.entities_dict_by_type.get('project').keys())[0]
+            return self.get_entity('project', project_id)
+        else:
+            return None
+
+    def remove_project(self):
+        return self.entities_dict_by_type.my_dict.pop('project', None)
 
     def count_total(self):
         return len(self.get_entities())
@@ -455,12 +462,20 @@ class IngestSubmitter(object):
 
         submission_envelope = self.ingest_api.get_submission(submission_url)
 
-        if project_uuid:
-            project = self.ingest_api.get_project_by_uuid(project_uuid)
-        else:
-            project = entity_map.get_project().ingest_json
+        project_entity = entity_map.get_project()
 
-        self.ingest_api.link_entity(project, submission_envelope, 'submissionEnvelopes')
+        related_project = None
+
+        if project_uuid:
+            related_project = self.ingest_api.get_project_by_uuid(project_uuid)
+
+        if not submission.is_update() and project_entity:
+            related_project = project_entity.ingest_json
+
+        if not related_project:
+            raise NoProjectFound()
+
+        self.ingest_api.link_entity(related_project, submission_envelope, 'submissionEnvelopes')
 
         if not submission.is_update():
             self._link_entities(entities, entity_map, submission)

@@ -6,8 +6,8 @@ from openpyxl import Workbook
 
 from ingest.api.ingestapi import IngestApi
 from ingest.importer.conversion.metadata_entity import MetadataEntity
-from ingest.importer.importer import WorksheetImporter, WorkbookImporter, MultipleProjectsFound, \
-    NoProjectFound, SchemaRetrievalError
+from ingest.importer.importer import WorksheetImporter, WorkbookImporter
+from ingest.importer.exceptions import MultipleProjectsFound, NoProjectFound, SchemaRetrievalError
 from ingest.importer.importer import XlsImporter
 from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook, IngestWorksheet
 from ingest.utils.IngestError import ImporterError
@@ -296,7 +296,7 @@ class WorkbookImporterTest(TestCase):
         spreadsheet_json, errors = workbook_importer.do_import(IngestWorkbook(workbook))
 
         # then:
-        self.assertIn(expected_error, errors, f'Errors expected to contain {NoProjectFound.__name__}.')
+        self.assertNotIn(expected_error, errors, f'Errors expected to contain {NoProjectFound.__name__}.')
 
 
 class WorksheetImporterTest(TestCase):
