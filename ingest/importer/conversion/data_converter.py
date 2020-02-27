@@ -54,7 +54,10 @@ class StringConverter(Converter):
 class IntegerConverter(Converter):
 
     def convert(self, data):
-        return int(data)
+        try:
+            return int(data)
+        except ValueError:
+            return int(float(data))
 
     def type(self):
         return DataType.INTEGER
