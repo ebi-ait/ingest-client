@@ -28,11 +28,18 @@ class Converter:
     def convert(self, data):
         raise NotImplementedError()
 
+    @abstractmethod
+    def type(self):
+        raise NotImplementedError()
+
 
 class DefaultConverter(Converter):
 
     def convert(self, data):
         return data
+
+    def type(self):
+        return DataType.UNDEFINED
 
 
 class StringConverter(Converter):
@@ -40,17 +47,25 @@ class StringConverter(Converter):
     def convert(self, data):
         return str(data).strip()
 
+    def type(self):
+        return DataType.STRING
+
 
 class IntegerConverter(Converter):
 
     def convert(self, data):
         return int(data)
 
+    def type(self):
+        return DataType.INTEGER
 
 class NumberConverter(Converter):
 
     def convert(self, data):
         return float(data)
+
+    def type(self):
+        return DataType.NUMBER
 
 
 BOOLEAN_TABLE = {
@@ -69,6 +84,9 @@ class BooleanConverter(Converter):
             raise InvalidBooleanValue(data)
         return value
 
+    def type(self):
+        return DataType.BOOLEAN
+
 
 CONVERTER_MAP = {
     DataType.STRING: StringConverter(),
@@ -84,7 +102,7 @@ class ListConverter(Converter):
     def __init__(self, data_type: DataType = DataType.STRING, base_converter: Converter = None):
         self.base_type = data_type
         if base_converter is not None:
-            self.base_type = DataType.UNDEFINED
+            self.base_type = base_converter.type()
             self.base_converter = base_converter
         else:
             self.base_converter = CONVERTER_MAP.get(data_type, CONVERTER_MAP[DataType.STRING])
@@ -94,6 +112,9 @@ class ListConverter(Converter):
         value = data.split('||')
         value = [self.base_converter.convert(elem) for elem in value]
         return value
+
+    def type(self):
+        return self.base_type
 
 
 DEFAULT = DefaultConverter()

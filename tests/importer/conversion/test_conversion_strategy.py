@@ -8,7 +8,7 @@ from ingest.importer.conversion.conversion_strategy import DirectCellConversion,
     CellConversion, IdentityCellConversion, LinkedIdentityCellConversion, DoNothing, \
     LinkedExternalReferenceCellConversion, LinkingDetailCellConversion, FieldOfSingleElementListCellConversion, \
     ExternalReferenceCellConversion
-from ingest.importer.conversion.data_converter import StringConverter, ListConverter
+from ingest.importer.conversion.data_converter import StringConverter, ListConverter, DataType
 from ingest.importer.conversion.exceptions import UnknownMainCategory
 from ingest.importer.conversion.metadata_entity import MetadataEntity
 
@@ -67,6 +67,7 @@ class ModuleTest(TestCase):
                                  and_also=None):
         # given:
         converter = MagicMock('converter')
+        converter.type = MagicMock(return_value=DataType.UNDEFINED)
         column_spec = _mock_column_spec(field_name='product.product_id',
                                         main_category='product_type',
                                         converter=converter,
@@ -143,6 +144,7 @@ class DirectCellConversionTest(TestCase):
 def _create_mock_string_converter():
     converter = MagicMock('converter')
     converter.convert = lambda data: f'{data} - converted'
+    converter.type = MagicMock(return_value=DataType.STRING)
     return converter
 
 
