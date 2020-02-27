@@ -6,6 +6,7 @@ MODULE_TITLE_PATTERN = re.compile(r'^(?P<main_label>\w+( \w+)*)( - (?P<field_nam
 
 HEADER_ROW_IDX = 4
 START_DATA_ROW = 6
+MAX_ROW_LIMIT = 500
 
 
 class IngestWorksheet(object):
@@ -41,6 +42,8 @@ class IngestWorksheet(object):
         max_row = end_row or self.compute_max_row()
         rows = self._worksheet.iter_rows(min_row=start_row, max_row=max_row)
         rows = [row[:len(headers)] for row in rows if not self.is_empty(row)]
+        if len(rows) > MAX_ROW_LIMIT:
+            raise MaxRowExceededError(f'Maximum row limit ({MAX_ROW_LIMIT}) exceeded in sheet: {self.title}')
         rows = [IngestRow(self._worksheet.title, START_DATA_ROW + index, row) for index, row in enumerate(rows)]
         return rows
 
@@ -77,3 +80,7 @@ class IngestRow(object):
         self.values = values or []
         self.index = index or None  # starts at 1
         self.worksheet_title = worksheet_title or None
+
+
+class MaxRowExceededError(Exception):
+    pass
