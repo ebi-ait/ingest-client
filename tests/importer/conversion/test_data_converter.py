@@ -53,6 +53,14 @@ class IntegerConverterTest(TestCase):
         self.assertEqual(899, converter.convert(899.003))
         self.assertEqual(200934, converter.convert(200934.118))
 
+    def test_convert_from_string_float(self):
+        # given:
+        converter = IntegerConverter()
+
+        # expect:
+        self.assertEqual(899, converter.convert('899.003'))
+        self.assertEqual(200934, converter.convert('200934.118'))
+
     def test_convert_from_integer(self):
         # given:
         converter = IntegerConverter()
@@ -123,3 +131,9 @@ class ListConverterTest(TestCase):
     def test_convert_to_int_list_single(self):
         converter = ListConverter(data_type=DataType.INTEGER)
         self.assertEqual([9606], converter.convert(9606))
+
+    def test_convert_to_int_list_single_float(self):
+        converter = ListConverter(data_type=DataType.INTEGER)
+        float_input = 9606.0
+        list_int_output = [9606]
+        self.assertEqual(list_int_output, converter.convert(float_input))

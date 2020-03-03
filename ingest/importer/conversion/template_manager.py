@@ -165,13 +165,25 @@ class RowTemplate:
         for index, cell in enumerate(row.values):
             if cell.value is None:
                 continue
+            conversion: CellConversion = self.cell_conversions[index]
             try:
-                conversion: CellConversion = self.cell_conversions[index]
                 conversion.apply(metadata, cell.value)
+            except ValueError as e:
+                error_detail = f'Could not convert to {conversion.converter.type().value} ' \
+                               f'from: {type(cell.value).__name__} {cell.value}'
+                if type(cell.value) == float:
+                    error_detail += " This may be because the default excel number format is float."
+
+                row_errors.append({
+                    "location": f'column={index}, value={cell.value}',
+                    "type": "Conversion Error",
+                    "detail": error_detail
+                })
             except Exception as e:
                 row_errors.append({
                     "location": f'column={index}, value={cell.value}',
-                    "type": e.__class__.__name__, "detail": str(e)
+                    "type": e.__class__.__name__,
+                    "detail": str(e)
                 })
         return metadata, row_errors
 
