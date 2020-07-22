@@ -4,6 +4,7 @@ Given a tabs template and list of schema URLs, will output a spreadsheet in Exce
 """
 
 from .spreadsheet_builder import SpreadsheetBuilder
+from .schema_template import SchemaTemplate
 
 # TODO(maniarathi): Consolidate default values into a shared configuration file.
 DEFAULT_INGEST_URL = "http://api.ingest.data.humancellatlas.org"
@@ -14,7 +15,7 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
     def __init__(self, output_file, hide_row=False):
         super(VanillaSpreadsheetBuilder, self).create_initial_spreadsheet(output_file, hide_row)
 
-    def build(self, spreadsheet_tabs_template):
+    def build(self, spreadsheet_tabs_template: SchemaTemplate):
         tabs = spreadsheet_tabs_template.tabs
 
         for tab in tabs:
@@ -75,4 +76,4 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
                         worksheet.write(4, column_index, '', self.header_format)
 
         if self.include_schemas_tab:
-            self.generate_and_add_schema_worksheet_to_spreadsheet(spreadsheet_tabs_template.get_schema_urls())
+            self.generate_and_add_schema_worksheet_to_spreadsheet(spreadsheet_tabs_template.metadata_schema_urls)
