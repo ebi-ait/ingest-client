@@ -16,7 +16,7 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
         super(VanillaSpreadsheetBuilder, self).create_initial_spreadsheet(output_file, hide_row)
 
     def build(self, spreadsheet_tabs_template: SchemaTemplate):
-        tabs = spreadsheet_tabs_template.tabs
+        tabs = spreadsheet_tabs_template.spreadsheet_configuration.lookup("tabs")
 
         for tab in tabs:
             for tab_name, detail in tab.items():
