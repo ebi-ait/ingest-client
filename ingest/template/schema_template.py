@@ -88,7 +88,7 @@ class SchemaTemplate():
         if not self.json_schemas:
             self.json_schemas = self._get_json_objs_from_metadata_schema_urls()
         else:
-            self.metadata_schema_urls = [schema["$id"] for schema in self.json_schemas]
+            self.metadata_schema_urls = [schema.get("$id") or schema.get("id") for schema in self.json_schemas]
 
         self.template_version = "1.0.0"
         self.created_date = str(datetime.now())
