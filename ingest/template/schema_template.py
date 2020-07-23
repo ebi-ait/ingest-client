@@ -17,6 +17,7 @@ class SchemaTemplate():
     """ A SchemaTemplate is used to encapsulate information about all the metadata schema files and
     property migration files that are directly passed in in order to generate a spreadsheet. """
 
+    # TODO: simplify construction, move existing opinionated constructor to a static method or builder
     def __init__(self, ingest_api_url="http://api.ingest.dev.data.humancellatlas.org",
                  migrations_url="https://schema.dev.data.humancellatlas.org/property_migrations",
                  metadata_schema_urls=None, json_schema_docs=None, tab_config=None, property_migrations=None,
@@ -86,6 +87,8 @@ class SchemaTemplate():
         self.json_schemas = json_schema_docs
         if not self.json_schemas:
             self.json_schemas = self._get_json_objs_from_metadata_schema_urls()
+        else:
+            self.metadata_schema_urls = [schema["$id"] for schema in self.json_schemas]
 
         self.template_version = "1.0.0"
         self.created_date = str(datetime.now())
