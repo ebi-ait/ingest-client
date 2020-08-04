@@ -1,11 +1,14 @@
 import json
 
 import jsonref
+from jsonref import JsonLoader
 
 from .descriptor import ComplexPropertyDescriptor
 
 
-class SchemaParser():
+class SchemaParser:
+    json_loader = JsonLoader()
+
     def __init__(self, json_schema,
                  ignored_properties=["required_properties", "describedBy", "schema_version", "schema_type",
                                      "provenance"]):
@@ -27,8 +30,8 @@ class SchemaParser():
         """
 
         # Use jsonref to resolve all $refs in JSON
-        metadata_schema_data = jsonref.loads(json.dumps(json_schema))
 
+        metadata_schema_data = jsonref.loads(json.dumps(json_schema), loader=SchemaParser.json_loader)
         self._schema_descriptor = ComplexPropertyDescriptor(metadata_schema_data)
 
     @property
