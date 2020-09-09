@@ -86,39 +86,44 @@ class SpreadsheetBuilder():
         # TODO(maniarathi): Make this description better.
         """ Given a column name derived originally from a metadata schema file that will be inputted as a column name
         into the generated spreadsheet, turn it into a user friendly name. """
-        if '.text' in column_name:
-            key = column_name.replace('.text', '') + ".user_friendly"
-        elif '.ontology_label' in column_name:
-            key = column_name.replace('.ontology_label', '') + ".user_friendly"
-        elif '.ontology' in column_name:
-            key = column_name.replace('.ontology', '') + ".user_friendly"
-        else:
-            key = column_name + ".user_friendly"
-
+        key = column_name + ".user_friendly"
+        add_ontology_label = None
+        prefix = None
+        if '.text' in column_name or '.ontology_label' in column_name or '.ontology' in column_name:
+            if 'protocol' in column_name:
+                try:
+                    uf = str(template.lookup_property_attributes_in_metadata(key))
+                    if 'Process type' in uf and 'method' in key:
+                        protocol_type = column_name.split("_")[0]
+                        key = protocol_type + "_process." + protocol_type + "_method.user_friendly"
+                        if '.ontology' in column_name:
+                            if 'label' in column_name:
+                                add_ontology_label = "ontology label"
+                            else:
+                                add_ontology_label = "ontology id"
+                    elif 'Process type' in uf and 'method' not in key:
+                        key = key
+                        count = key.count('.')
+                        prefix = key.split('.')[count-2].replace('_',' ')
+                        if '.ontology' in column_name:
+                            if 'label' in column_name:
+                                add_ontology_label = "ontology label"
+                            else:
+                                add_ontology_label = "ontology id"
+                    else:
+                        key = key
+                except:
+                    key = column_name
         try:
+
             uf = str(template.lookup_property_attributes_in_metadata(
                 key)) if template.lookup_property_attributes_in_metadata(key) else column_name
+            if add_ontology_label:
+                if prefix:
+                    uf = prefix + " " + add_ontology_label
+                else:
+                    uf = uf + " " + add_ontology_label
 
-            # **TO DO:** If customisable user friendly names are ever implemented in the metadata schemas,
-            # remove the customisation code below
-            # For any purchased_reagents or barcode module imports that aren't arrays, prepend each user friendly
-            # name with the name of the wrapper property
-            wrapper = ".".join(column_name.split(".")[:-1])
-            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] \
-                    and (
-                    template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'purchased_reagents'
-                    or template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'barcode') \
-                    and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
-                uf = template.lookup_property_attributes_in_metadata(wrapper)['user_friendly'] + " - " + uf
-            if '.ontology_label' in column_name:
-                uf = uf + " ontology label"
-            if '.ontology' in column_name:
-                uf = uf + " ontology ID"
-
-            # For core fields such as Biomaterial ID or Protocol name, update the user-friendly name to the more
-            # specific type, eg
-            # Donor organism ID or Library preparation protocol name
-            # For linking biomaterial fields, also prepend the field with "Input"
             if "Biomaterial " in uf:
                 schema_name = column_name.split(".")[0]
 
