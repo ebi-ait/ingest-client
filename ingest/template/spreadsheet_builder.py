@@ -112,8 +112,17 @@ class SpreadsheetBuilder():
                                 add_ontology_label = "ontology id"
                     else:
                         key = key
-                except:
+                except Exception:
                     key = column_name
+            else:
+                if '.text' in column_name:
+                    key = column_name.replace('.text', '') + ".user_friendly"
+                elif '.ontology_label' in column_name:
+                    key = column_name.replace('.ontology_label', '') + ".user_friendly"
+                elif '.ontology' in column_name:
+                    key = column_name.replace('.ontology', '') + ".user_friendly"
+                else:
+                    key = column_name + ".user_friendly"
         try:
 
             uf = str(template.lookup_property_attributes_in_metadata(
