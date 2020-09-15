@@ -78,6 +78,7 @@ class SpreadsheetBuilder():
             try:
                 value = template.lookup_property_attributes_in_metadata(
                     column_name.replace('.text', '') + "." + property)
+                return (value)
             except Exception:
                 print("No property " + property + " for " + column_name)
                 return ""
@@ -86,32 +87,51 @@ class SpreadsheetBuilder():
         # TODO(maniarathi): Make this description better.
         """ Given a column name derived originally from a metadata schema file that will be inputted as a column name
         into the generated spreadsheet, turn it into a user friendly name. """
-        if '.text' in column_name:
-            key = column_name.replace('.text', '') + ".user_friendly"
-        elif '.ontology_label' in column_name:
-            key = column_name.replace('.ontology_label', '') + ".user_friendly"
-        elif '.ontology' in column_name:
-            key = column_name.replace('.ontology', '') + ".user_friendly"
-        else:
-            key = column_name + ".user_friendly"
+
+        key = column_name + ".user_friendly"
 
         try:
-            uf = str(template.lookup_property_attributes_in_metadata(
-                key)) if template.lookup_property_attributes_in_metadata(key) else column_name
+            uf = template.lookup_property_attributes_in_metadata(key) if template.lookup_property_attributes_in_metadata(key) else column_name
 
             wrapper = ".".join(column_name.split(".")[:-1])
-            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] \
-                    and (template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'purchased_reagents'
-                         or template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'barcode') \
+            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'purchased_reagents' \
                     and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
-                uf = template.lookup_property_attributes_in_metadata(wrapper)['user_friendly'] + " - " + uf
+                uf = "Purchased specimen - " + uf
+            elif template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'barcode' \
+                    and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
+                if wrapper.split(".")[-1] == "cell_barcode":
+                    uf = "Cell barcode - " + uf
+                elif wrapper.split(".")[-1] == "umi_barcode":
+                    uf = "Umi barcode - " + uf
+
+            schema_name = column_name.split(".")[0]
+            ontology_name = column_name.split(".")[1]
             if '.ontology_label' in column_name:
-                uf = uf + " ontology label"
+                for schema in template.json_schemas:
+                    try:
+                        if schema["name"] == schema_name:
+                            uf = schema["properties"][ontology_name]["user_friendly"] + " ontology label"
+                            return uf
+                    except KeyError:
+                        continue
             elif '.ontology' in column_name:
-                uf = uf + " ontology ID"
+                for schema in template.json_schemas:
+                    try:
+                        if schema["name"] == schema_name:
+                            uf = schema["properties"][ontology_name]["user_friendly"] + " ontology ID"
+                            return uf
+                    except KeyError:
+                        continue
+            elif '.text' in column_name:
+                for schema in template.json_schemas:
+                    try:
+                        if schema["name"] == schema_name:
+                            uf = schema["properties"][ontology_name]["user_friendly"]
+                            return uf
+                    except KeyError:
+                        continue
 
             if "Biomaterial " in uf:
-                schema_name = column_name.split(".")[0]
 
                 for schema in template.tabs:
                     if schema_name == list(schema.keys())[0]:
@@ -122,7 +142,6 @@ class SpreadsheetBuilder():
                     uf = "Input " + uf
 
             if "Protocol " in uf:
-                schema_name = column_name.split(".")[0]
 
                 for schema in template.tabs:
                     if schema_name == list(schema.keys())[0]:
@@ -131,7 +150,6 @@ class SpreadsheetBuilder():
             return uf
         except Exception as e:
             print(e)
-            print(key)
             return key
 
     def generate_and_add_schema_worksheet_to_spreadsheet(self, schema_urls):
