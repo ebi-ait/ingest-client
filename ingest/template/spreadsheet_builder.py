@@ -85,14 +85,17 @@ class SpreadsheetBuilder():
 
     def get_user_friendly_column_name(self, template, column_name, primary_schema=None):
         # TODO(maniarathi): Make this description better.
-        """ Given a column name derived originally from a metadata schema file that will be inputted as a column name
-        into the generated spreadsheet, turn it into a user friendly name. """
+        """ Given a programmatic column name derived originally from a metadata schema file that will be inputted as a
+        programmatic column name into the generated spreadsheet, turn it into a user friendly name. """
 
         key = column_name + ".user_friendly"
 
         try:
             uf = template.lookup_property_attributes_in_metadata(key) if template.lookup_property_attributes_in_metadata(key) else column_name
 
+            """This part of the code checks if it is a module that gets added more than once within a single tab, in
+            such instances the user friendly name needs to be preceded by the name of the module and a - 
+            e.g. for specimen_from_organism.purchased_specimen.manufacturer Purchased specimen - Manufacturer"""
             wrapper = ".".join(column_name.split(".")[:-1])
             if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'purchased_reagents' \
                     and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
@@ -104,8 +107,12 @@ class SpreadsheetBuilder():
                 elif wrapper.split(".")[-1] == "umi_barcode":
                     uf = "Umi barcode - " + uf
 
+            """This part of the code deals with ontology modules.
+            Currently the property attributes don't return the correct user friendly name, this was my attempt to 
+            work around it by using the json schema objects directly, doesn't appear to work properly.
+            """
             schema_name = column_name.split(".")[0]
-            ontology_name = column_name.split(".")[1]
+            ontology_name = column_name.split(".")[-1]
             if '.ontology_label' in column_name:
                 for schema in template.json_schemas:
                     try:
