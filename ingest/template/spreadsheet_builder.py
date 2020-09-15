@@ -86,52 +86,29 @@ class SpreadsheetBuilder():
         # TODO(maniarathi): Make this description better.
         """ Given a column name derived originally from a metadata schema file that will be inputted as a column name
         into the generated spreadsheet, turn it into a user friendly name. """
-        key = column_name + ".user_friendly"
-        add_ontology_label = None
-        prefix = None
-        if '.text' in column_name or '.ontology_label' in column_name or '.ontology' in column_name:
-            if 'protocol' in column_name:
-                try:
-                    uf = str(template.lookup_property_attributes_in_metadata(key))
-                    if 'Process type' in uf and 'method' in key:
-                        protocol_type = column_name.split("_")[0]
-                        key = protocol_type + "_process." + protocol_type + "_method.user_friendly"
-                        if '.ontology' in column_name:
-                            if 'label' in column_name:
-                                add_ontology_label = "ontology label"
-                            else:
-                                add_ontology_label = "ontology id"
-                    elif 'Process type' in uf and 'method' not in key:
-                        key = key
-                        count = key.count('.')
-                        prefix = key.split('.')[count-2].replace('_',' ')
-                        if '.ontology' in column_name:
-                            if 'label' in column_name:
-                                add_ontology_label = "ontology label"
-                            else:
-                                add_ontology_label = "ontology id"
-                    else:
-                        key = key
-                except Exception:
-                    key = column_name
-            else:
-                if '.text' in column_name:
-                    key = column_name.replace('.text', '') + ".user_friendly"
-                elif '.ontology_label' in column_name:
-                    key = column_name.replace('.ontology_label', '') + ".user_friendly"
-                elif '.ontology' in column_name:
-                    key = column_name.replace('.ontology', '') + ".user_friendly"
-                else:
-                    key = column_name + ".user_friendly"
-        try:
+        if '.text' in column_name:
+            key = column_name.replace('.text', '') + ".user_friendly"
+        elif '.ontology_label' in column_name:
+            key = column_name.replace('.ontology_label', '') + ".user_friendly"
+        elif '.ontology' in column_name:
+            key = column_name.replace('.ontology', '') + ".user_friendly"
+        else:
+            key = column_name + ".user_friendly"
 
+        try:
             uf = str(template.lookup_property_attributes_in_metadata(
                 key)) if template.lookup_property_attributes_in_metadata(key) else column_name
-            if add_ontology_label:
-                if prefix:
-                    uf = prefix + " " + add_ontology_label
-                else:
-                    uf = uf + " " + add_ontology_label
+
+            wrapper = ".".join(column_name.split(".")[:-1])
+            if template.lookup(wrapper)['schema']['module'] \
+                    and (template.lookup(wrapper)['schema']['module'] == 'purchased_reagents'
+                         or template.lookup(wrapper)['schema']['module'] == 'barcode') \
+                    and not template.lookup(wrapper)['multivalue']:
+                uf = template.lookup(wrapper)['user_friendly'] + " - " + uf
+            if '.ontology_label' in column_name:
+                uf = uf + " ontology label"
+            elif '.ontology' in column_name:
+                uf = uf + " ontology ID"
 
             if "Biomaterial " in uf:
                 schema_name = column_name.split(".")[0]
@@ -154,7 +131,7 @@ class SpreadsheetBuilder():
 
             return uf
         except Exception:
-            return key
+            return uf
 
     def generate_and_add_schema_worksheet_to_spreadsheet(self, schema_urls):
         worksheet = self.spreadsheet.add_worksheet("Schemas")
