@@ -100,11 +100,11 @@ class SpreadsheetBuilder():
                 key)) if template.lookup_property_attributes_in_metadata(key) else column_name
 
             wrapper = ".".join(column_name.split(".")[:-1])
-            if template.lookup(wrapper)['schema']['module'] \
-                    and (template.lookup(wrapper)['schema']['module'] == 'purchased_reagents'
-                         or template.lookup(wrapper)['schema']['module'] == 'barcode') \
-                    and not template.lookup(wrapper)['multivalue']:
-                uf = template.lookup(wrapper)['user_friendly'] + " - " + uf
+            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] \
+                    and (template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'purchased_reagents'
+                         or template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'barcode') \
+                    and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
+                uf = template.lookup_property_attributes_in_metadata(wrapper)['user_friendly'] + " - " + uf
             if '.ontology_label' in column_name:
                 uf = uf + " ontology label"
             elif '.ontology' in column_name:
@@ -128,9 +128,9 @@ class SpreadsheetBuilder():
                     if schema_name == list(schema.keys())[0]:
                         schema_uf = schema[schema_name]['display_name']
                 uf = uf.replace("Protocol", schema_uf)
-
             return uf
-        except Exception:
+        except Exception as e:
+            print(e)
             return uf
 
     def generate_and_add_schema_worksheet_to_spreadsheet(self, schema_urls):
