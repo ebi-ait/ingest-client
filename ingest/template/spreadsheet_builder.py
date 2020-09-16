@@ -145,7 +145,8 @@ class SpreadsheetBuilder():
             if uf:
                 return uf
             else:
-                return key
+                print(column_name)
+                return column_name
 
     def generate_and_add_schema_worksheet_to_spreadsheet(self, schema_urls):
         worksheet = self.spreadsheet.add_worksheet("Schemas")
