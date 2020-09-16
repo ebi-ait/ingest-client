@@ -47,6 +47,23 @@ class TestSchemaTemplate(TestCase):
         # clean up
         os.remove(file)
 
+    def test_user_friendly(self):
+        user_friendly_dict = {"donor_organism.human_specific.body_mass_index": "Body mass index",
+                              "specimen_from_organism.purchased_specimen.manufacturer": "Purchased specimen - Manufacturer",
+                              "donor_organism.organism_age_unit": "Age unit",
+                              "library_preparation_protocol.cell_barcode.barcode_length": "Cell barcode - Barcode length",
+                              "project.contributors.project_role.ontology_label": "Contributor role ontology label",
+                              "donor_organism.human_specific.ethnicity.text": "Ethnicity"}
+
+        file = "uf_test.xlsx"
+        template = SchemaTemplate()
+        builder = VanillaSpreadsheetBuilder(file)
+        for key in user_friendly_dict.keys():
+            uf = builder.get_user_friendly_column_name(template, key)
+            print("from method: " + uf)
+            print("expected: " + user_friendly_dict[key])
+            self.assertEqual(user_friendly_dict[key], uf)
+
     # TODO fixme
     @unittest.skip
     def test_with_tabs_template(self):
