@@ -136,7 +136,8 @@ class SpreadsheetBuilder():
             return uf
         except Exception as e:
             print(e)
-            print("Could not find user_friendly name.")
+            print("Could not find user friendly name.")
+            return key
 
     def generate_and_add_schema_worksheet_to_spreadsheet(self, schema_urls):
         worksheet = self.spreadsheet.add_worksheet("Schemas")

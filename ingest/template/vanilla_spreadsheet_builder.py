@@ -44,23 +44,29 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
                     if required:
                         formatted_column_name += " (Required)"
 
-                    # set the user friendly name
-                    worksheet.write(0, column_index, formatted_column_name, self.header_format)
+                    try:
 
-                    column_width = len(formatted_column_name) if len(formatted_column_name) > 25 else 25
+                        # set the user friendly name
+                        worksheet.write(0, column_index, formatted_column_name, self.header_format)
 
-                    worksheet.set_column(column_index, column_index, column_width)
+                        column_width = len(formatted_column_name) if len(formatted_column_name) > 25 else 25
 
-                    # set the description
-                    worksheet.write(1, column_index, desc, self.desc_format)
+                        worksheet.set_column(column_index, column_index, column_width)
 
-                    # write example
-                    worksheet.write(2, column_index,
-                                    guidelines + ' For example: ' + example_text if example_text else guidelines,
-                                    self.desc_format)
+                        # set the description
+                        worksheet.write(1, column_index, desc, self.desc_format)
 
-                    # set the key
-                    worksheet.write(3, column_index, column_name, self.locked_format)
+                        # write example
+                        worksheet.write(2, column_index,
+                                        guidelines + ' For example: ' + example_text if example_text else guidelines,
+                                        self.desc_format)
+
+                        # set the key
+                        worksheet.write(3, column_index, column_name, self.locked_format)
+                    except:
+                        print("something not found")
+                        print(column_name)
+                        continue
 
                     if column_name.split(".")[-1] == "ontology" or column_name.split(".")[-1] == "ontology_label":
                         worksheet.set_column(column_index, column_index, None, None, {'hidden': True})

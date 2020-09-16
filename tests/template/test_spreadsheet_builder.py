@@ -64,6 +64,13 @@ class TestSchemaTemplate(TestCase):
             print("expected: " + user_friendly_dict[key])
             self.assertEqual(user_friendly_dict[key], uf)
 
+    def test_vanilla_spreadsheet(self):
+        file = "uf_test.xlsx"
+        template = SchemaTemplate()
+        builder = VanillaSpreadsheetBuilder(file)
+        builder.generate_spreadsheet(schema_template=template)
+        builder.save_spreadsheet()
+
     # TODO fixme
     @unittest.skip
     def test_with_tabs_template(self):
