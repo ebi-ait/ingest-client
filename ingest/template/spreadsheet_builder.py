@@ -70,7 +70,11 @@ class SpreadsheetBuilder():
     def get_value_for_column(self, template, column_name, property):
         """ Lookup the value of a column name and property in a SchemaTemplate. `lookup` throws an exception if no
         property exists so capture the exception and return an empty string if no property exists for the given column
-        and template."""
+        and template.
+        :param template: a schema template object
+        :param column_name: the full programmatic name of the column
+        :param property: the property you want to retrieve eg. example, description
+        """
         try:
             value = template.lookup_property_attributes_in_metadata(column_name + "." + property)
             return str(value) if value else ""
@@ -78,6 +82,7 @@ class SpreadsheetBuilder():
             try:
                 value = template.lookup_property_attributes_in_metadata(
                     column_name.replace('.text', '') + "." + property)
+                return str(value) if value else ""
             except Exception:
                 print("No property " + property + " for " + column_name)
                 return ""
@@ -100,13 +105,15 @@ class SpreadsheetBuilder():
             try:
                 uf = template.lookup_property_attributes_in_metadata(key)
             except Exception:
-                return template.lookup_property_attributes_in_metadata(column_name + ".user_friendly")
+                uf = template.lookup_property_attributes_in_metadata(column_name + ".user_friendly")
 
             wrapper = ".".join(column_name.split(".")[:-1])
-            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'purchased_reagents':
+            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'purchased_reagents' \
+                    and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
                 uf = template.lookup_property_attributes_in_metadata(wrapper)['user_friendly'] + " - " + uf
 
-            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'barcode':
+            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'barcode'\
+                    and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
                 uf = template.lookup_property_attributes_in_metadata(wrapper)['user_friendly'] + " - " + uf
 
             if '.ontology_label' in column_name and 'ontology label' not in uf:
@@ -134,10 +141,11 @@ class SpreadsheetBuilder():
                 uf = uf.replace("Protocol", schema_uf)
 
             return uf
-        except Exception as e:
-            print(e)
-            print("Could not find user friendly name.")
-            return key
+        except Exception:
+            if uf:
+                return uf
+            else:
+                return key
 
     def generate_and_add_schema_worksheet_to_spreadsheet(self, schema_urls):
         worksheet = self.spreadsheet.add_worksheet("Schemas")

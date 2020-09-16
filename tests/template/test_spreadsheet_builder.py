@@ -53,7 +53,10 @@ class TestSchemaTemplate(TestCase):
                               "donor_organism.organism_age_unit": "Age unit",
                               "library_preparation_protocol.cell_barcode.barcode_length": "Cell barcode - Barcode length",
                               "project.contributors.project_role.ontology_label": "Contributor role ontology label",
-                              "donor_organism.human_specific.ethnicity.text": "Ethnicity"}
+                              "donor_organism.human_specific.ethnicity.text": "Ethnicity",
+                              "collection_protocol.reagents.retail_name": "Retail name",
+                              "imaging_protocol.probe.probe_reagents.catalog_number": "Catalog number",
+                              "donor_organism.genus_species.text": "Species"}
 
         file = "uf_test.xlsx"
         template = SchemaTemplate()
@@ -70,6 +73,22 @@ class TestSchemaTemplate(TestCase):
         builder = VanillaSpreadsheetBuilder(file)
         builder.generate_spreadsheet(schema_template=template)
         builder.save_spreadsheet()
+
+    def test_correct_description_used(self):
+        file = "uf_test.xlsx"
+        template = SchemaTemplate()
+        builder = VanillaSpreadsheetBuilder(file)
+        test_field = "enrichment_protocol.method.text"
+        returned_description = builder.get_value_for_column(template=template, column_name=test_field,
+                                                            property="description")
+        print("returned description: " + returned_description)
+        expected_description = "The method by which enrichment was achieved."
+        returned_example_text = builder.get_value_for_column(template=template, column_name=test_field,
+                                                            property="example")
+        print("returned_example_text: " + returned_example_text)
+        expected_example_text = "enzymatic dissociation; blood draw"
+        self.assertEqual(expected_description, returned_description)
+        self.assertEqual(expected_example_text, returned_example_text)
 
     # TODO fixme
     @unittest.skip
