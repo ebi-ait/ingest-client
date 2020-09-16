@@ -9,3 +9,4 @@ requests[security]
 urllib3
 xlsxwriter
 sortedcontainers
+mergedeep
