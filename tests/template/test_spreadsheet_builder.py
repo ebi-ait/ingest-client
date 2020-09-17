@@ -9,7 +9,9 @@ __date__ = "25/05/2018"
 from unittest import TestCase
 from ingest.template.vanilla_spreadsheet_builder import VanillaSpreadsheetBuilder
 import unittest
+from openpyxl import Workbook
 from openpyxl import load_workbook as Reader
+
 
 
 class TestSchemaTemplate(TestCase):
@@ -75,12 +77,17 @@ class TestSchemaTemplate(TestCase):
             print("expected: " + user_friendly_dict[key])
             self.assertEqual(user_friendly_dict[key], uf)
 
+    # TODO improve this test, at the moment just tests that the spreadsheet can be built, nothing about the
+    #  contents.
     def test_vanilla_spreadsheet(self):
         file = "uf_test.xlsx"
         template = SchemaTemplate()
         builder = VanillaSpreadsheetBuilder(file)
         builder.generate_spreadsheet(schema_template=template)
         builder.save_spreadsheet()
+        reader = Reader("uf_test.xlsx")
+        print(type(reader))
+        self.assertIsInstance(reader, Workbook)
 
     def test_correct_description_used(self):
         file = "uf_test.xlsx"

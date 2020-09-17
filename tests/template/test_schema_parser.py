@@ -2,7 +2,6 @@ import unittest
 
 from ingest.template.descriptor import ComplexPropertyDescriptor
 from ingest.template.schema_parser import SchemaParser
-from ingest.template.schema_template import SchemaTemplate
 
 
 class TestSchemaParser(unittest.TestCase):

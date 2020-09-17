@@ -8,7 +8,6 @@ from ingest.template.descriptor import SimplePropertyDescriptor
 from ingest.template.exceptions import UnknownKeySchemaException
 from ingest.template.schema_parser import SchemaParser
 from ingest.template.schema_template import SchemaTemplate
-import pprint
 
 
 class TestSchemaTemplate(unittest.TestCase):
