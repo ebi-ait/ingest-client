@@ -2,6 +2,7 @@ import unittest
 
 from ingest.template.descriptor import ComplexPropertyDescriptor
 from ingest.template.schema_parser import SchemaParser
+from ingest.template.schema_template import SchemaTemplate
 
 
 class TestSchemaParser(unittest.TestCase):
@@ -365,3 +366,4 @@ class TestSchemaParser(unittest.TestCase):
                                                                   "timecourse.unit.ontology",
                                                                   "timecourse.unit.ontology_label"]}}
         self.assertEqual(expected_tab_representation, actual_tab_representation)
+
