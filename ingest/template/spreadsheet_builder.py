@@ -76,7 +76,12 @@ class SpreadsheetBuilder():
         :param property: the property you want to retrieve eg. example, description
         """
         try:
-            value = template.lookup_property_attributes_in_metadata(column_name + "." + property)
+            if ".text" in column_name:
+                value = template.lookup_property_attributes_in_metadata(column_name.replace('.text', '') +
+                                                                        "." + property)
+                return str(value) if value else ""
+            else:
+                value = template.lookup_property_attributes_in_metadata(column_name + "." + property)
             return str(value) if value else ""
         except Exception:
             try:
