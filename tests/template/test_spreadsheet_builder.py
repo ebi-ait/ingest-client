@@ -50,13 +50,17 @@ class TestSchemaTemplate(TestCase):
     def test_user_friendly(self):
         user_friendly_dict = {"donor_organism.human_specific.body_mass_index": "Body mass index",
                               "specimen_from_organism.purchased_specimen.manufacturer": "Purchased specimen - Manufacturer",
-                              "donor_organism.organism_age_unit": "Age unit",
+                              "donor_organism.organism_age_unit.text": "Age unit",
+                              "donor_organism.organism_age_unit.ontology": "Age unit ontology ID",
                               "library_preparation_protocol.cell_barcode.barcode_length": "Cell barcode - Barcode length",
                               "project.contributors.project_role.ontology_label": "Contributor role ontology label",
                               "donor_organism.human_specific.ethnicity.text": "Ethnicity",
                               "collection_protocol.reagents.retail_name": "Retail name",
                               "imaging_protocol.probe.probe_reagents.catalog_number": "Catalog number",
-                              "donor_organism.genus_species.text": "Species"}
+                              "donor_organism.genus_species.text": "Species",
+                              "cell_suspension.timecourse.unit.text": "Timecourse unit",
+                              "specimen_from_organism.preservation_storage.storage_time_unit.text": "Storage time unit",
+                              "cell_suspension.cell_morphology.cell_size_unit.text": "Cell size unit"}
 
         file = "uf_test.xlsx"
         template = SchemaTemplate()
