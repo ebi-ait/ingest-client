@@ -90,7 +90,7 @@ class SchemaParser:
         path itself.
 
         :param dictionary_descriptor: A dictionary where each key is a module name and the value is a dictionary
-        representation of its respective Descriptor onject.
+        representation of its respective Descriptor object.
         """
 
         label_map = {}

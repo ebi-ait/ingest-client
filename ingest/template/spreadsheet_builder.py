@@ -147,10 +147,9 @@ class SpreadsheetBuilder():
 
             return uf
         except Exception:
-            if uf:
+            try:
                 return uf
-            else:
-                print(column_name)
+            except:
                 return column_name
 
     def generate_and_add_schema_worksheet_to_spreadsheet(self, schema_urls):

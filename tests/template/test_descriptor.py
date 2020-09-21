@@ -1,6 +1,8 @@
 import unittest
 
 from ingest.template.descriptor import ComplexPropertyDescriptor, SchemaTypeDescriptor, SimplePropertyDescriptor
+from ingest.template.schema_template import SchemaTemplate
+from ingest.template.vanilla_spreadsheet_builder import VanillaSpreadsheetBuilder
 
 
 class TestDescriptor(unittest.TestCase):
