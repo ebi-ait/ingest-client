@@ -121,6 +121,14 @@ class SpreadsheetBuilder():
                     and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
                 uf = template.lookup_property_attributes_in_metadata(wrapper)['user_friendly'] + " - " + uf
 
+            # Add exception for modules that add modules e.g. "cell_suspension.cell_morphology.cell_size_unit.text"
+            if len(column_name.split(".")) > 3:
+                split_column_name = column_name.split(".")
+                module_path = ".".join(split_column_name[0:2])
+                module_schema_url = template.lookup_property_attributes_in_metadata(module_path)['schema']['url']
+                module_template = SchemaTemplate(metadata_schema_urls=[module_schema_url])
+                uf = module_template.meta_data_properties[split_column_name[1]][split_column_name[2]]['user_friendly']
+
             if '.ontology_label' in column_name and 'ontology label' not in uf:
                 uf = uf + " ontology label"
             elif '.ontology' in column_name and 'ontology' not in uf:
@@ -146,7 +154,8 @@ class SpreadsheetBuilder():
                 uf = uf.replace("Protocol", schema_uf)
 
             return uf
-        except Exception:
+        except Exception as e:
+            print(e)
             try:
                 return uf
             except:
