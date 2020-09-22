@@ -347,5 +347,3 @@ class TestSchemaTemplate(unittest.TestCase):
 
         self.assertEqual(SortedDict(yaml.load(yaml_representation, Loader=yaml.FullLoader)),
                          SortedDict(schema_template.get_dictionary_representation()))
-
-
