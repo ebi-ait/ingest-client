@@ -1,3 +1,4 @@
+import string
 from unittest import TestCase
 
 from mock import Mock
@@ -6,6 +7,8 @@ from openpyxl import Workbook
 from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
 from ingest.importer.submission import Entity
 from tests.importer.utils.test_utils import create_test_workbook
+
+from tests.importer.utils.test_utils import create_ingest_workbook, create_workbook_importer
 
 
 class IngestWorkbookTest(TestCase):
@@ -139,3 +142,29 @@ class IngestWorkbookTest(TestCase):
         self.assertEqual(wb.workbook['Schemas'].cell(2, 1).value, 'x')
         self.assertEqual(wb.workbook['Schemas'].cell(3, 1).value, 'y')
         self.assertEqual(wb.workbook['Schemas'].cell(4, 1).value, 'z')
+
+    def test_when_any_entities_has_uuids_then_assert_true(self):
+        # given:
+        person = 'person'
+        workbook_importer = create_workbook_importer(person)
+
+        # and:
+        ingest_workbook = create_ingest_workbook(person, ['uuid', 'name'])
+
+        # then:
+        self.assertTrue(
+            True in workbook_importer.entities_by_uuid_existence(ingest_workbook.importable_worksheets()).values()
+        )
+
+    def test_when_at_least_one_entities_has_no_uuids_then_assert_false(self):
+        # given:
+        person = 'person'
+        workbook_importer = create_workbook_importer(person)
+
+        # and:
+        ingest_workbook = create_ingest_workbook(person, ['name', 'address'])
+
+        # then:
+        self.assertTrue(
+            False in workbook_importer.entities_by_uuid_existence(ingest_workbook.importable_worksheets()).values()
+        )
