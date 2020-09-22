@@ -365,5 +365,3 @@ class TestSchemaParser(unittest.TestCase):
                                                                   "timecourse.unit.ontology",
                                                                   "timecourse.unit.ontology_label"]}}
         self.assertEqual(expected_tab_representation, actual_tab_representation)
-
-

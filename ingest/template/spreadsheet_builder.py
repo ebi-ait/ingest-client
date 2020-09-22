@@ -122,7 +122,7 @@ class SpreadsheetBuilder():
                 uf = template.lookup_property_attributes_in_metadata(wrapper)['user_friendly'] + " - " + uf
 
             # Add exception for modules that add modules e.g. "cell_suspension.cell_morphology.cell_size_unit.text"
-            if len(column_name.split(".")) > 3:
+            if len(column_name.split(".")) == 4:
                 split_column_name = column_name.split(".")
                 module_path = ".".join(split_column_name[0:2])
                 module_schema_url = template.lookup_property_attributes_in_metadata(module_path)['schema']['url']
