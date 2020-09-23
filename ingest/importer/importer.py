@@ -179,13 +179,15 @@ class WorkbookImporter:
         importable_worksheets = workbook.importable_worksheets()
         workbook_errors = []
 
-        if True in self.entities_by_uuid_existence(importable_worksheets).values():
+        uuid_existence_by_entities = self.entities_by_uuid_existence(importable_worksheets)
+        if True in uuid_existence_by_entities.values():
             if not is_update:
-                e = UnexpectedEntityUUIDFound()
-                workbook_errors.append(
-                    {"location": f'workbook={workbook.workbook.path}', "type": e.__class__.__name__, "detail": str(e)})
+                for sheet_name in uuid_existence_by_entities:
+                    e = UnexpectedEntityUUIDFound(sheet_name)
+                    workbook_errors.append(
+                        {"location": f'sheet={sheet_name}', "type": e.__class__.__name__, "detail": str(e)})
 
-        if False in self.entities_by_uuid_existence(importable_worksheets).values():
+        if False in uuid_existence_by_entities.values():
             if is_update:
                 e = MissingEntityUUIDFound()
                 workbook_errors.append(
@@ -336,8 +338,8 @@ class SchemaRetrievalError(Exception):
 
 
 class UnexpectedEntityUUIDFound(Exception):
-    def __init__(self):
-        message = f'The entities in the spreadsheet shouldn’t have UUIDs.'
+    def __init__(self, sheet_name):
+        message = f'The {sheet_name} entities in the spreadsheet shouldn’t have UUIDs.'
         super(UnexpectedEntityUUIDFound, self).__init__(message)
 
 

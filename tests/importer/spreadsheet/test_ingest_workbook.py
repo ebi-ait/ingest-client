@@ -145,7 +145,7 @@ class IngestWorkbookTest(TestCase):
 
     def test_when_any_entities_has_uuids_then_assert_true(self):
         # given:
-        person = 'person'
+        person = ['person']
         workbook_importer = create_workbook_importer(person)
 
         # and:

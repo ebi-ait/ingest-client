@@ -9,26 +9,36 @@ def create_test_workbook(*worksheet_titles, include_default_sheet=False):
     for title in worksheet_titles:
         workbook.create_sheet(title)
 
-    if not include_default_sheet:
-        default_sheet = workbook['Sheet']
-        workbook.remove(default_sheet)
+    check_default_sheet_inclusion(include_default_sheet, workbook)
 
     return workbook
 
 
-def create_workbook_importer(person):
+def create_workbook_importer(entity_names):
     template_manager = MagicMock()
-    template_manager.get_concrete_type = Mock(return_value=person)
+    concrete_type_map = {}
+    for entity_name in entity_names:
+        concrete_type_map[entity_name] = entity_name
+    template_manager.get_concrete_type = lambda key: concrete_type_map.get(key)
 
     return WorkbookImporter(template_manager)
 
 
-def create_ingest_workbook(person, column_names):
+def create_ingest_workbook(sheet_names, column_names, include_default_sheet=False):
     header_row_idx = 4
 
     workbook = Workbook()
-    worksheet = workbook.create_sheet(person)
-    worksheet[f'A{header_row_idx}'] = f'{person}.{column_names[0]}'
-    worksheet[f'B{header_row_idx}'] = f'{person}.{column_names[1]}'
+    for sheet_name in sheet_names:
+        worksheet = workbook.create_sheet(sheet_name)
+        worksheet[f'A{header_row_idx}'] = f'{sheet_name}.{column_names[0]}'
+        worksheet[f'B{header_row_idx}'] = f'{sheet_name}.{column_names[1]}'
+
+    check_default_sheet_inclusion(include_default_sheet, workbook)
 
     return IngestWorkbook(workbook)
+
+
+def check_default_sheet_inclusion(include_default_sheet, workbook):
+    if not include_default_sheet:
+        default_sheet = workbook['Sheet']
+        workbook.remove(default_sheet)
