@@ -1,7 +1,9 @@
 import json
+from typing import Dict
 
 import jsonref
 from jsonref import JsonLoader
+from mergedeep import merge
 
 from .descriptor import ComplexPropertyDescriptor
 
@@ -29,9 +31,11 @@ class SchemaParser:
         :param json_schema: A raw metadata schema JSON object.
         """
 
-        # Use jsonref to resolve all $refs in JSON
+        derefed_json_schema = self._deref_json_schema(json_schema)
+        # merging the derefed json schema into the actual json schema. This preserves fields in the schema which
+        # were specified alongside the $ref
+        metadata_schema_data = merge(json_schema, derefed_json_schema)
 
-        metadata_schema_data = jsonref.loads(json.dumps(json_schema), loader=SchemaParser.json_loader)
         self._schema_descriptor = ComplexPropertyDescriptor(metadata_schema_data)
 
     @property
@@ -49,6 +53,9 @@ class SchemaParser:
         """
         self._schema_dictionary = self._get_schema_dictionary_with_ignored_fields_removed(
             descriptor.get_dictionary_representation_of_descriptor())
+
+    def _deref_json_schema(self, json_schema: Dict) -> Dict:
+        return jsonref.loads(json.dumps(json_schema), loader=SchemaParser.json_loader)
 
     def _get_schema_dictionary_with_ignored_fields_removed(self, dictionary_descriptor):
         """ Recursively removes all ignored properties in the given dictionary representation of a Descriptor which
@@ -82,7 +89,7 @@ class SchemaParser:
         path itself.
 
         :param dictionary_descriptor: A dictionary where each key is a module name and the value is a dictionary
-        representation of its respective Descriptor onject.
+        representation of its respective Descriptor object.
         """
 
         label_map = {}

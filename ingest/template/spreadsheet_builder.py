@@ -70,14 +70,24 @@ class SpreadsheetBuilder():
     def get_value_for_column(self, template, column_name, property):
         """ Lookup the value of a column name and property in a SchemaTemplate. `lookup` throws an exception if no
         property exists so capture the exception and return an empty string if no property exists for the given column
-        and template."""
+        and template.
+        :param template: a schema template object
+        :param column_name: the full programmatic name of the column
+        :param property: the property you want to retrieve eg. example, description
+        """
         try:
-            value = template.lookup_property_attributes_in_metadata(column_name + "." + property)
+            if ".text" in column_name:
+                value = template.lookup_property_attributes_in_metadata(column_name.replace('.text', '') +
+                                                                        "." + property)
+                return str(value) if value else ""
+            else:
+                value = template.lookup_property_attributes_in_metadata(column_name + "." + property)
             return str(value) if value else ""
         except Exception:
             try:
                 value = template.lookup_property_attributes_in_metadata(
                     column_name.replace('.text', '') + "." + property)
+                return str(value) if value else ""
             except Exception:
                 print("No property " + property + " for " + column_name)
                 return ""
@@ -86,43 +96,43 @@ class SpreadsheetBuilder():
         # TODO(maniarathi): Make this description better.
         """ Given a column name derived originally from a metadata schema file that will be inputted as a column name
         into the generated spreadsheet, turn it into a user friendly name. """
-        key = column_name + ".user_friendly"
-        add_ontology_label = None
-        prefix = None
-        if '.text' in column_name or '.ontology_label' in column_name or '.ontology' in column_name:
-            if 'protocol' in column_name:
-                try:
-                    uf = str(template.lookup_property_attributes_in_metadata(key))
-                    if 'Process type' in uf and 'method' in key:
-                        protocol_type = column_name.split("_")[0]
-                        key = protocol_type + "_process." + protocol_type + "_method.user_friendly"
-                        if '.ontology' in column_name:
-                            if 'label' in column_name:
-                                add_ontology_label = "ontology label"
-                            else:
-                                add_ontology_label = "ontology id"
-                    elif 'Process type' in uf and 'method' not in key:
-                        key = key
-                        count = key.count('.')
-                        prefix = key.split('.')[count-2].replace('_',' ')
-                        if '.ontology' in column_name:
-                            if 'label' in column_name:
-                                add_ontology_label = "ontology label"
-                            else:
-                                add_ontology_label = "ontology id"
-                    else:
-                        key = key
-                except:
-                    key = column_name
-        try:
 
-            uf = str(template.lookup_property_attributes_in_metadata(
-                key)) if template.lookup_property_attributes_in_metadata(key) else column_name
-            if add_ontology_label:
-                if prefix:
-                    uf = prefix + " " + add_ontology_label
-                else:
-                    uf = uf + " " + add_ontology_label
+        if '.text' in column_name:
+            key = column_name.replace('.text', '') + ".user_friendly"
+        elif '.ontology_label' in column_name:
+            key = column_name.replace('.ontology_label', '') + ".user_friendly"
+        elif '.ontology' in column_name:
+            key = column_name.replace('.ontology', '') + ".user_friendly"
+        else:
+            key = column_name + ".user_friendly"
+
+        try:
+            try:
+                uf = template.lookup_property_attributes_in_metadata(key)
+            except Exception:
+                uf = template.lookup_property_attributes_in_metadata(column_name + ".user_friendly")
+
+            wrapper = ".".join(column_name.split(".")[:-1])
+            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'purchased_reagents' \
+                    and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
+                uf = template.lookup_property_attributes_in_metadata(wrapper)['user_friendly'] + " - " + uf
+
+            if template.lookup_property_attributes_in_metadata(wrapper)['schema']['module'] == 'barcode'\
+                    and not template.lookup_property_attributes_in_metadata(wrapper)['multivalue']:
+                uf = template.lookup_property_attributes_in_metadata(wrapper)['user_friendly'] + " - " + uf
+
+            # Add exception for modules that add modules e.g. "cell_suspension.cell_morphology.cell_size_unit.text"
+            if len(column_name.split(".")) == 4:
+                split_column_name = column_name.split(".")
+                module_path = ".".join(split_column_name[0:2])
+                module_schema_url = template.lookup_property_attributes_in_metadata(module_path)['schema']['url']
+                module_template = SchemaTemplate(metadata_schema_urls=[module_schema_url])
+                uf = module_template.meta_data_properties[split_column_name[1]][split_column_name[2]]['user_friendly']
+
+            if '.ontology_label' in column_name and 'ontology label' not in uf:
+                uf = uf + " ontology label"
+            elif '.ontology' in column_name and 'ontology' not in uf:
+                uf = uf + " ontology ID"
 
             if "Biomaterial " in uf:
                 schema_name = column_name.split(".")[0]
@@ -144,8 +154,12 @@ class SpreadsheetBuilder():
                 uf = uf.replace("Protocol", schema_uf)
 
             return uf
-        except Exception:
-            return key
+        except Exception as e:
+            print(e)
+            try:
+                return uf
+            except:
+                return column_name
 
     def generate_and_add_schema_worksheet_to_spreadsheet(self, schema_urls):
         worksheet = self.spreadsheet.add_worksheet("Schemas")

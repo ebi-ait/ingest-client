@@ -2,7 +2,6 @@ import unittest
 
 from ingest.template.descriptor import ComplexPropertyDescriptor, SchemaTypeDescriptor, SimplePropertyDescriptor
 
-
 class TestDescriptor(unittest.TestCase):
     """ Testing class for the Descriptor class. """
 
