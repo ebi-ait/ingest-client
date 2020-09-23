@@ -7,7 +7,7 @@ from openpyxl import Workbook
 from ingest.api.ingestapi import IngestApi
 from ingest.importer.conversion.metadata_entity import MetadataEntity
 from ingest.importer.importer import WorksheetImporter, WorkbookImporter, MultipleProjectsFound, \
-    NoProjectFound, SchemaRetrievalError, UnexpectedEntityUUIDFound
+    NoProjectFound, SchemaRetrievalError, UnexpectedEntityUUIDFound, MissingEntityUUIDFound
 from ingest.importer.importer import XlsImporter
 from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook, IngestWorksheet
 from ingest.utils.IngestError import ImporterError
@@ -309,18 +309,24 @@ class WorkbookImporterTest(TestCase):
     def test_do_import_with_create_spreadsheet(self, worksheet_importer_constructor):
         # given:
         template_mgr = MagicMock(name='template_manager')
-        workbook = create_test_workbook('Item')
+        template_mgr.template.json_schemas = self.mock_json_schemas
+        concrete_type_map = {'project': 'project', 'users': 'users'}
+        template_mgr.get_concrete_type = lambda key: concrete_type_map.get(key)
+        sheet_names = ['project', 'users']
+        workbook = create_ingest_workbook(sheet_names, ['name', 'address'])
         workbook_importer = WorkbookImporter(template_mgr)
 
         # and
         worksheet_importer = WorksheetImporter(template_mgr)
         worksheet_importer_constructor.return_value = worksheet_importer
         no_errors = []
-        expected_error = {
-            'location': f'workbook={workbook.path}',
-            'type': 'MissingEntityUUIDFound',
-            'detail': 'The entities in the spreadsheet should have UUIDs.'
-        }
+        expected_errors = []
+        for sheet_name in sheet_names:
+            expected_errors.append({
+                'location': f'sheet={sheet_name}',
+                'type': 'MissingEntityUUIDFound',
+                'detail': f'The {sheet_name} entities in the spreadsheet should have UUIDs.'
+            })
 
         # and:
         item = MetadataEntity(concrete_type='product', domain_type='product', object_id=910)
@@ -328,13 +334,12 @@ class WorkbookImporterTest(TestCase):
 
         # when:
         is_update = True
-        spreadsheet_json, errors = workbook_importer.do_import(IngestWorkbook(workbook), is_update)
+        spreadsheet_json, errors = workbook_importer.do_import(workbook, is_update)
 
         # then:
-        self.assertIn(
-            expected_error,
-            errors,
-            f'Errors expected to contain {UnexpectedEntityUUIDFound.__name__}.')
+        self.assertTrue(
+            all(elem in errors for elem in expected_errors),
+            f'Errors expected to contain {MissingEntityUUIDFound.__name__}.')
 
     @patch('ingest.importer.importer.WorksheetImporter')
     def test_do_import_with_update_spreadsheet(self, worksheet_importer_constructor):

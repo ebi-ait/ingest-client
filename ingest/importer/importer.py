@@ -189,9 +189,10 @@ class WorkbookImporter:
 
         if False in uuid_existence_by_entities.values():
             if is_update:
-                e = MissingEntityUUIDFound()
-                workbook_errors.append(
-                    {"location": f'workbook={workbook.workbook.path}', "type": e.__class__.__name__, "detail": str(e)})
+                for sheet_name in uuid_existence_by_entities:
+                    e = MissingEntityUUIDFound(sheet_name)
+                    workbook_errors.append(
+                        {"location": f'sheet={sheet_name}', "type": e.__class__.__name__, "detail": str(e)})
 
         if project_uuid:
             project_metadata = MetadataEntity(domain_type=_PROJECT_TYPE,
@@ -344,6 +345,6 @@ class UnexpectedEntityUUIDFound(Exception):
 
 
 class MissingEntityUUIDFound(Exception):
-    def __init__(self):
-        message = f'The entities in the spreadsheet should have UUIDs.'
+    def __init__(self, sheet_name):
+        message = f'The {sheet_name} entities in the spreadsheet should have UUIDs.'
         super(MissingEntityUUIDFound, self).__init__(message)
