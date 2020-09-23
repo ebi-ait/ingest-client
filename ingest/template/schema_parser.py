@@ -1,10 +1,9 @@
 import json
+from typing import Dict
 
 import jsonref
 from jsonref import JsonLoader
 from mergedeep import merge
-from copy import deepcopy
-from typing import Dict
 
 from .descriptor import ComplexPropertyDescriptor
 
