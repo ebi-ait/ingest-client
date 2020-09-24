@@ -78,7 +78,6 @@ class TestSchemaTemplate(TestCase):
             self.assertEqual(user_friendly_dict[key], uf)
 
 
-
     # TODO improve this test, at the moment just tests that the spreadsheet can be built, nothing about the
     #  contents.
     def test_vanilla_spreadsheet(self):
