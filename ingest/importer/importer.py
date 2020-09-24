@@ -14,6 +14,7 @@ from ingest.utils.IngestError import ImporterError, ParserError
 format = '[%(filename)s:%(lineno)s - %(funcName)20s() ] %(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=format)
 
+
 class XlsImporter:
     """
     XlsImporter is used to convert a contributor's spreadsheet into metadata json entities and to submit those to
@@ -25,7 +26,7 @@ class XlsImporter:
         self.ingest_api = ingest_api
         self.logger = logging.getLogger(__name__)
 
-    def generate_json(self, file_path, project_uuid=None):
+    def generate_json(self, file_path, is_update, project_uuid=None):
         ingest_workbook = IngestWorkbook.from_file(file_path)
 
         try:
@@ -35,7 +36,7 @@ class XlsImporter:
                 f'There was an error retrieving the schema information to process the spreadsheet. {str(e)}')
 
         workbook_importer = WorkbookImporter(template_mgr)
-        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook, project_uuid)
+        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook, is_update, project_uuid)
 
         return spreadsheet_json, template_mgr, errors
 
@@ -49,10 +50,10 @@ class XlsImporter:
 
         return entity_map, []
 
-    def import_file(self, file_path, submission_url, project_uuid=None):
+    def import_file(self, file_path, submission_url, is_update, project_uuid=None):
         submission = None
         try:
-            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, project_uuid)
+            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid)
             if not errors:
                 entity_map = self._process_links_from_spreadsheet(template_mgr, spreadsheet_json)
 
@@ -173,9 +174,11 @@ class WorkbookImporter:
         self.template_mgr = template_mgr
         self.logger = logging.getLogger(__name__)
 
-    def do_import(self, workbook: IngestWorkbook, project_uuid=None):
+    def do_import(self, workbook: IngestWorkbook, is_update, project_uuid=None):
         registry = _ImportRegistry(self.template_mgr)
         importable_worksheets = workbook.importable_worksheets()
+
+        workbook_errors = self.validate_worksheets(is_update, importable_worksheets)
 
         if project_uuid:
             project_metadata = MetadataEntity(domain_type=_PROJECT_TYPE,
@@ -187,7 +190,6 @@ class WorkbookImporter:
 
             importable_worksheets = [ws for ws in importable_worksheets
                                      if _PROJECT_TYPE not in ws.title.lower()]
-        workbook_errors = []
         for worksheet in importable_worksheets:
             try:
                 self.sheet_in_schemas(worksheet)
@@ -210,6 +212,28 @@ class WorkbookImporter:
             e = NoProjectFound()
             workbook_errors.append({"location": "File", "type": e.__class__.__name__, "detail": str(e)})
         return registry.flatten(), workbook_errors
+
+    def validate_worksheets(self, is_update, importable_worksheets):
+        worksheets_with_uuid = []
+        worksheets_without_uuid = []
+
+        for worksheet in importable_worksheets:
+            if worksheet.is_module_tab():
+                continue
+            concrete_type = self.template_mgr.get_concrete_type(worksheet.title)
+            uuid_column = f'{concrete_type}.uuid'
+            if worksheet.has_column(uuid_column):
+                worksheets_with_uuid.append(worksheet.title)
+            else:
+                worksheets_without_uuid.append(worksheet.title)
+
+        if is_update:
+            errors = [MissingEntityUUIDFound(sheet_name) for sheet_name in worksheets_without_uuid]
+        else:
+            errors = [UnexpectedEntityUUIDFound(sheet_name) for sheet_name in worksheets_with_uuid]
+
+        return [{"location": f'sheet={error.sheet_name}', "type": error.__class__.__name__, "detail": str(error)}
+                for error in errors]
 
     def sheet_in_schemas(self, worksheet):
         schemas = self.template_mgr.template.json_schemas
@@ -309,3 +333,16 @@ class DataRemoval(Exception):
 class SchemaRetrievalError(Exception):
     pass
 
+
+class UnexpectedEntityUUIDFound(Exception):
+    def __init__(self, sheet_name):
+        message = f'The {sheet_name} entities in the spreadsheet shouldn’t have UUIDs.'
+        super(UnexpectedEntityUUIDFound, self).__init__(message)
+        self.sheet_name = sheet_name
+
+
+class MissingEntityUUIDFound(Exception):
+    def __init__(self, sheet_name):
+        message = f'The {sheet_name} entities in the spreadsheet should have UUIDs.'
+        super(MissingEntityUUIDFound, self).__init__(message)
+        self.sheet_name = sheet_name

@@ -1,3 +1,4 @@
+import string
 from unittest import TestCase
 
 from mock import Mock
@@ -5,7 +6,8 @@ from openpyxl import Workbook
 
 from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
 from ingest.importer.submission import Entity
-from tests.importer.utils.test_utils import create_test_workbook
+from tests.importer.utils.test_utils import create_ingest_workbook, create_test_workbook,\
+    create_mocked_workbook_importer
 
 
 class IngestWorkbookTest(TestCase):
@@ -139,3 +141,68 @@ class IngestWorkbookTest(TestCase):
         self.assertEqual(wb.workbook['Schemas'].cell(2, 1).value, 'x')
         self.assertEqual(wb.workbook['Schemas'].cell(3, 1).value, 'y')
         self.assertEqual(wb.workbook['Schemas'].cell(4, 1).value, 'z')
+
+    def test_when_proceeding_update_and_all_entities_has_uuids_then_return_no_errors(self):
+        # given:
+        is_update = True
+        person = 'person'
+        workbook_importer = create_mocked_workbook_importer([person])
+
+        # and:
+        ingest_workbook = create_ingest_workbook([person], ['uuid', 'name'])
+
+        # then:
+        self.assertTrue(
+            len(workbook_importer.validate_worksheets(is_update, ingest_workbook.importable_worksheets())) == 0
+        )
+
+    def test_when_proceeding_update_and_some_entities_has_no_uuids_then_return_errors(self):
+        # given:
+        is_update = True
+        person = 'person'
+        workbook_importer = create_mocked_workbook_importer([person])
+
+        # and:
+        ingest_workbook = create_ingest_workbook([person], ['name', 'address'])
+
+        # and:
+        expected_error = {
+            'location': f'sheet={person}',
+            'type': 'MissingEntityUUIDFound',
+            'detail': f'The {person} entities in the spreadsheet should have UUIDs.'}
+        # then:
+        worksheet_errors = workbook_importer.validate_worksheets(is_update, ingest_workbook.importable_worksheets())
+        self.assertTrue(len(worksheet_errors) > 0)
+        self.assertIn(expected_error, worksheet_errors)
+
+    def test_when_proceeding_create_and_some_entities_has_got_uuids_then_return_errors(self):
+        # given:
+        is_update = False
+        person = 'person'
+        workbook_importer = create_mocked_workbook_importer([person])
+
+        # and:
+        ingest_workbook = create_ingest_workbook([person], ['uuid', 'address'])
+
+        # and:
+        expected_error = {
+            'location': f'sheet={person}',
+            'type': 'UnexpectedEntityUUIDFound',
+            'detail': f'The {person} entities in the spreadsheet shouldn’t have UUIDs.'}
+        # then:
+        worksheet_errors = workbook_importer.validate_worksheets(is_update, ingest_workbook.importable_worksheets())
+        self.assertTrue(len(worksheet_errors) > 0)
+        self.assertIn(expected_error, worksheet_errors)
+
+    def test_when_proceeding_create_and_no_entities_has_uuids_then_return_no_errors(self):
+        # given:
+        is_update = False
+        person = 'person'
+        workbook_importer = create_mocked_workbook_importer([person])
+
+        # and:
+        ingest_workbook = create_ingest_workbook([person], ['name', 'address'])
+
+        # then:
+        worksheet_errors = workbook_importer.validate_worksheets(is_update, ingest_workbook.importable_worksheets())
+        self.assertTrue(len(worksheet_errors) == 0)
