@@ -5,7 +5,6 @@ Given a tabs template and list of schema URLs, will output a spreadsheet in Exce
 
 from .spreadsheet_builder import SpreadsheetBuilder
 from .schema_template import SchemaTemplate
-from openpyxl.styles import Alignment
 
 # TODO(maniarathi): Consolidate default values into a shared configuration file.
 DEFAULT_INGEST_URL = "http://api.ingest.data.humancellatlas.org"
