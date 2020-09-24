@@ -14,7 +14,7 @@ def create_test_workbook(*worksheet_titles, include_default_sheet=False):
     return workbook
 
 
-def create_workbook_importer(entity_names):
+def create_mocked_workbook_importer(entity_names):
     template_manager = MagicMock()
     concrete_type_map = {}
     for entity_name in entity_names:

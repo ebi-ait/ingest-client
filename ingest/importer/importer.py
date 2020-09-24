@@ -177,22 +177,8 @@ class WorkbookImporter:
     def do_import(self, workbook: IngestWorkbook, is_update, project_uuid=None):
         registry = _ImportRegistry(self.template_mgr)
         importable_worksheets = workbook.importable_worksheets()
-        workbook_errors = []
 
-        uuid_existence_by_entities = self.entities_by_uuid_existence(importable_worksheets)
-        if True in uuid_existence_by_entities.values():
-            if not is_update:
-                for sheet_name in uuid_existence_by_entities:
-                    e = UnexpectedEntityUUIDFound(sheet_name)
-                    workbook_errors.append(
-                        {"location": f'sheet={sheet_name}', "type": e.__class__.__name__, "detail": str(e)})
-
-        if False in uuid_existence_by_entities.values():
-            if is_update:
-                for sheet_name in uuid_existence_by_entities:
-                    e = MissingEntityUUIDFound(sheet_name)
-                    workbook_errors.append(
-                        {"location": f'sheet={sheet_name}', "type": e.__class__.__name__, "detail": str(e)})
+        workbook_errors = self.validate_worksheets(is_update, importable_worksheets)
 
         if project_uuid:
             project_metadata = MetadataEntity(domain_type=_PROJECT_TYPE,
@@ -227,17 +213,27 @@ class WorkbookImporter:
             workbook_errors.append({"location": "File", "type": e.__class__.__name__, "detail": str(e)})
         return registry.flatten(), workbook_errors
 
-    def entities_by_uuid_existence(self, importable_worksheets):
-        entities_by_uuids = {}
+    def validate_worksheets(self, is_update, importable_worksheets):
+        worksheets_with_uuid = []
+        worksheets_without_uuid = []
+
         for worksheet in importable_worksheets:
+            if worksheet.is_module_tab():
+                continue
             concrete_type = self.template_mgr.get_concrete_type(worksheet.title)
             uuid_column = f'{concrete_type}.uuid'
-            if uuid_column in worksheet.get_column_headers():
-                entities_by_uuids[concrete_type] = True
+            if worksheet.has_column(uuid_column):
+                worksheets_with_uuid.append(worksheet.title)
             else:
-                entities_by_uuids[concrete_type] = False
+                worksheets_without_uuid.append(worksheet.title)
 
-        return entities_by_uuids
+        if is_update:
+            errors = [MissingEntityUUIDFound(sheet_name) for sheet_name in worksheets_without_uuid]
+        else:
+            errors = [UnexpectedEntityUUIDFound(sheet_name) for sheet_name in worksheets_with_uuid]
+
+        return [{"location": f'sheet={error.sheet_name}', "type": error.__class__.__name__, "detail": str(error)}
+                for error in errors]
 
     def sheet_in_schemas(self, worksheet):
         schemas = self.template_mgr.template.json_schemas
@@ -342,9 +338,11 @@ class UnexpectedEntityUUIDFound(Exception):
     def __init__(self, sheet_name):
         message = f'The {sheet_name} entities in the spreadsheet shouldn’t have UUIDs.'
         super(UnexpectedEntityUUIDFound, self).__init__(message)
+        self.sheet_name = sheet_name
 
 
 class MissingEntityUUIDFound(Exception):
     def __init__(self, sheet_name):
         message = f'The {sheet_name} entities in the spreadsheet should have UUIDs.'
         super(MissingEntityUUIDFound, self).__init__(message)
+        self.sheet_name = sheet_name

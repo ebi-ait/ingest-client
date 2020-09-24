@@ -23,6 +23,11 @@ class IngestWorksheet(object):
     def title(self):
         return self._worksheet.title
 
+    def has_column(self, column_name):
+        if column_name in self.get_column_headers():
+            return True
+        return False
+
     def get_column_headers(self):
         rows = self._worksheet.iter_rows(min_row=self._header_row_idx, max_row=self._header_row_idx)
         header_row = next(rows)
