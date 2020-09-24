@@ -5,6 +5,7 @@ Given a tabs template and list of schema URLs, will output a spreadsheet in Exce
 
 from .spreadsheet_builder import SpreadsheetBuilder
 from .schema_template import SchemaTemplate
+from openpyxl.styles import Alignment
 
 # TODO(maniarathi): Consolidate default values into a shared configuration file.
 DEFAULT_INGEST_URL = "http://api.ingest.data.humancellatlas.org"
@@ -12,7 +13,7 @@ DEFAULT_SCHEMAS_ENDPOINT = "/schemas/search/latestSchemas"
 
 
 class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
-    def __init__(self, output_file, hide_row=False):
+    def __init__(self, output_file, hide_row=True):
         super(VanillaSpreadsheetBuilder, self).create_initial_spreadsheet(output_file, hide_row)
 
     def build(self, spreadsheet_tabs_template: SchemaTemplate):
@@ -47,7 +48,14 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
                     # set the user friendly name
                     worksheet.write(0, column_index, formatted_column_name, self.header_format)
 
-                    column_width = len(formatted_column_name) if len(formatted_column_name) > 25 else 25
+                    min_width = 18
+                    max_width = 30
+                    if max_width - 4 > len(formatted_column_name) > min_width:
+                        column_width = len(formatted_column_name) + 4
+                    elif len(formatted_column_name) >= max_width - 4:
+                        column_width = max_width
+                    else:
+                        column_width = min_width
 
                     worksheet.set_column(column_index, column_index, column_width)
 
@@ -69,11 +77,13 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
                         worksheet.set_row(3, None, None, {'hidden': True})
 
                     if column_index == 0:
-                        worksheet.set_row(0, 30)
-                        worksheet.set_row(4, 30)
-                        worksheet.write(4, column_index, "FILL OUT INFORMATION BELOW THIS ROW", self.header_format)
+                        worksheet.set_row(0, 50)  # set row height for the user friendly name
+                        worksheet.set_row(1, 50)  # set row height for description
+                        worksheet.set_row(2, 50)  # set row height for example
+                        worksheet.set_row(4, 30)  # set row height for guide text row
+                        worksheet.write(4, column_index, "FILL OUT INFORMATION BELOW THIS ROW", self.guide_format)
                     else:
-                        worksheet.write(4, column_index, '', self.header_format)
+                        worksheet.write(4, column_index, '', self.guide_format)
 
         if self.include_schemas_tab:
             self.generate_and_add_schema_worksheet_to_spreadsheet(spreadsheet_tabs_template.metadata_schema_urls)
