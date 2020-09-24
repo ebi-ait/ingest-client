@@ -77,6 +77,8 @@ class TestSchemaTemplate(TestCase):
             print("expected: " + user_friendly_dict[key])
             self.assertEqual(user_friendly_dict[key], uf)
 
+
+
     # TODO improve this test, at the moment just tests that the spreadsheet can be built, nothing about the
     #  contents.
     def test_vanilla_spreadsheet(self):
@@ -88,6 +90,8 @@ class TestSchemaTemplate(TestCase):
         reader = Reader("uf_test.xlsx")
         print(type(reader))
         self.assertIsInstance(reader, Workbook)
+        # cleanup
+        os.remove(file)
 
     def test_correct_description_used(self):
         file = "uf_test.xlsx"
