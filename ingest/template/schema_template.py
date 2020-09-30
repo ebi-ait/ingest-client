@@ -19,7 +19,7 @@ class SchemaTemplate():
 
     # TODO: simplify construction, move existing opinionated constructor to a static method or builder
     def __init__(self, ingest_api_url="http://api.ingest.dev.data.humancellatlas.org",
-                 migrations_url="https://schema.dev.data.humancellatlas.org/property_migrations",
+                 migrations_url="https://schema.dev.archive.data.humancellatlas.org/property_migrations",
                  metadata_schema_urls=None, json_schema_docs=None, tab_config=None, property_migrations=None,
                  custom_properties=None):
         """ Creates and empty/default dictionary containing the following information:

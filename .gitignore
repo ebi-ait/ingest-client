@@ -115,3 +115,4 @@ _local
 
 gcp.json
 _local/
+venv*/
