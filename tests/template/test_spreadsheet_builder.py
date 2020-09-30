@@ -94,7 +94,7 @@ class TestSchemaTemplate(TestCase):
         reader = Reader("vanilla_test.xlsx")
         self.assertIsInstance(reader, Workbook)
         # cleanup
-        # os.remove(file)
+        os.remove(file)
 
     def test_correct_description_used(self):
         file = "uf_test.xlsx"

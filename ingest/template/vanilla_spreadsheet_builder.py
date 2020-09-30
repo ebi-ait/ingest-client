@@ -49,9 +49,10 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
 
                     min_width = 18
                     max_width = 30
-                    if max_width - 4 > len(formatted_column_name) > min_width:
-                        column_width = len(formatted_column_name) + 4
-                    elif len(formatted_column_name) >= max_width - 4:
+                    padding = 4
+                    if max_width - padding > len(formatted_column_name) > min_width:
+                        column_width = len(formatted_column_name) + padding
+                    elif len(formatted_column_name) >= max_width - padding:
                         column_width = max_width
                     else:
                         column_width = min_width
@@ -76,10 +77,10 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
                         worksheet.set_row(3, None, None, {'hidden': True})
 
                     if column_index == 0:
-                        worksheet.set_row(0, 50)  # set row height for the user friendly name
-                        worksheet.set_row(1, 50)  # set row height for description
-                        worksheet.set_row(2, 50)  # set row height for example
-                        worksheet.set_row(4, 30)  # set row height for guide text row
+                        worksheet.set_row(0, self.header_row_height)
+                        worksheet.set_row(1, self.header_row_height)
+                        worksheet.set_row(2, self.header_row_height)
+                        worksheet.set_row(4, self.guide_row_height)
                         worksheet.write(4, column_index, "FILL OUT INFORMATION BELOW THIS ROW", self.guide_format)
                     else:
                         worksheet.write(4, column_index, '', self.guide_format)

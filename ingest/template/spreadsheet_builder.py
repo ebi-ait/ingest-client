@@ -35,6 +35,8 @@ class SpreadsheetBuilder():
         )
         self.include_schemas_tab = False
         self.hidden_row = hide_row
+        self.header_row_height = 50
+        self.guide_row_height = 30
 
     def save_spreadsheet(self):
         self.spreadsheet.close()
