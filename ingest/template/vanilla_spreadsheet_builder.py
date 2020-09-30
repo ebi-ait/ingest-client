@@ -45,7 +45,14 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
                         formatted_column_name += " (Required)"
 
                     # set the user friendly name
+<<<<<<< HEAD
                     worksheet.write(0, column_index, formatted_column_name, self.header_format)
+=======
+                    if required:
+                        worksheet.write(0, column_index, formatted_column_name, self.header_required_format)
+                    else:
+                        worksheet.write(0, column_index, formatted_column_name, self.header_format)
+>>>>>>> parent of c766f42a... tidied up required header formatting
 
                     min_width = 18
                     max_width = 30
