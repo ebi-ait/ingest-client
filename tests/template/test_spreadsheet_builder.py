@@ -80,22 +80,21 @@ class TestSchemaTemplate(TestCase):
     # TODO improve this test, at the moment just tests that the spreadsheet can be built, nothing about the
     #  contents.
     def test_vanilla_spreadsheet(self):
-        file = "uf_test.xlsx"
+        file = "vanilla_test.xlsx"
         template = SchemaTemplate(
-            # metadata_schema_urls=["https://schema.humancellatlas.org/type/biomaterial/15.5.0/donor_organism",
-            #                      "https://schema.humancellatlas.org/type/biomaterial/10.4.0/specimen_from_organism",
-            #                      "https://schema.humancellatlas.org/type/biomaterial/13.3.0/cell_suspension",
-            #                      "https://schema.humancellatlas.org/type/protocol/sequencing/6.2.0/library_preparation_protocol",
-            #                      "https://schema.humancellatlas.org/type/file/9.2.0/sequence_file"]
+            metadata_schema_urls=["https://schema.humancellatlas.org/type/biomaterial/15.5.0/donor_organism",
+                                 "https://schema.humancellatlas.org/type/biomaterial/10.4.0/specimen_from_organism",
+                                 "https://schema.humancellatlas.org/type/biomaterial/13.3.0/cell_suspension",
+                                 "https://schema.humancellatlas.org/type/protocol/sequencing/6.2.0/library_preparation_protocol",
+                                 "https://schema.humancellatlas.org/type/file/9.2.0/sequence_file"]
         )
         builder = VanillaSpreadsheetBuilder(file)
         builder.generate_spreadsheet(schema_template=template)
         builder.save_spreadsheet()
-        reader = Reader("uf_test.xlsx")
-        print(type(reader))
+        reader = Reader("vanilla_test.xlsx")
         self.assertIsInstance(reader, Workbook)
         # cleanup
-        os.remove(file)
+        # os.remove(file)
 
     def test_correct_description_used(self):
         file = "uf_test.xlsx"
