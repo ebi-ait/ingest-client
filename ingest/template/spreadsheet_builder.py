@@ -28,7 +28,7 @@ class SpreadsheetBuilder():
         self.header_format = self.spreadsheet.add_format(
             {'bold': True, 'bg_color': '#D0D0D0', 'font_size': 12, 'valign': 'vcenter', 'text_wrap': True})
         self.header_required_format = self.spreadsheet.add_format(
-            {'bold': True, 'bg_color': '#bbd8ee', 'font_size': 12, 'valign': 'vcenter', 'text_wrap': True})
+            {'bold': True, 'bg_color': '#3b6fb6', 'font_size': 12, 'valign': 'vcenter', 'text_wrap': True})
         self.locked_format = self.spreadsheet.add_format({'locked': True})
         self.desc_format = self.spreadsheet.add_format(
             {'font_color': '#808080', 'italic': True, 'text_wrap': True, 'font_size': 12, 'valign': 'top'})

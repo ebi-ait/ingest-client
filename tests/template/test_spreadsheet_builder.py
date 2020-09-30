@@ -82,11 +82,11 @@ class TestSchemaTemplate(TestCase):
     def test_vanilla_spreadsheet(self):
         file = "uf_test.xlsx"
         template = SchemaTemplate(
-            metadata_schema_urls=["https://schema.humancellatlas.org/type/biomaterial/15.5.0/donor_organism",
-                                 "https://schema.humancellatlas.org/type/biomaterial/10.4.0/specimen_from_organism",
-                                 "https://schema.humancellatlas.org/type/biomaterial/13.3.0/cell_suspension",
-                                 "https://schema.humancellatlas.org/type/protocol/sequencing/6.2.0/library_preparation_protocol",
-                                 "https://schema.humancellatlas.org/type/file/9.2.0/sequence_file"]
+            # metadata_schema_urls=["https://schema.humancellatlas.org/type/biomaterial/15.5.0/donor_organism",
+            #                      "https://schema.humancellatlas.org/type/biomaterial/10.4.0/specimen_from_organism",
+            #                      "https://schema.humancellatlas.org/type/biomaterial/13.3.0/cell_suspension",
+            #                      "https://schema.humancellatlas.org/type/protocol/sequencing/6.2.0/library_preparation_protocol",
+            #                      "https://schema.humancellatlas.org/type/file/9.2.0/sequence_file"]
         )
         builder = VanillaSpreadsheetBuilder(file)
         builder.generate_spreadsheet(schema_template=template)
