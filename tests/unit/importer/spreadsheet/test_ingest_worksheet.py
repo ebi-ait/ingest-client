@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import ingest.utils.spreadsheet as spreadsheet_utils
 from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
-from tests.importer.utils.test_utils import create_test_workbook
+from tests.utils import create_test_workbook
 
 
 class IngestWorksheetTest(TestCase):

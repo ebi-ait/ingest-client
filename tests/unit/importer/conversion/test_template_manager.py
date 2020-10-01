@@ -9,7 +9,7 @@ from ingest.importer.conversion.template_manager import TemplateManager, RowTemp
 from ingest.importer.data_node import DataNode
 from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet, \
     IngestRow
-from tests.importer.utils.test_utils import create_test_workbook
+from tests.utils import create_test_workbook
 
 
 def _mock_schema_template_lookup(value_type='string', multivalue=False):

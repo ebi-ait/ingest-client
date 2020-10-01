@@ -1,4 +1,5 @@
 import logging
+from typing import Tuple
 
 from requests import HTTPError
 
@@ -50,7 +51,7 @@ class XlsImporter:
 
         return entity_map, []
 
-    def import_file(self, file_path, submission_url, is_update, project_uuid=None):
+    def import_file(self, file_path, submission_url, is_update, project_uuid=None) -> Tuple[Submission, TemplateManager]:
         submission = None
         try:
             spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid)
