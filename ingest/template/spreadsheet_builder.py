@@ -26,12 +26,17 @@ class SpreadsheetBuilder():
 
         self.spreadsheet = xlsxwriter.Workbook(output_file)
         self.header_format = self.spreadsheet.add_format(
-            {'bold': True, 'bg_color': '#D0D0D0', 'font_size': 12, 'valign': 'vcenter'})
+            {'bold': True, 'bg_color': '#D0D0D0', 'font_size': 12, 'valign': 'vcenter', 'text_wrap': True})
         self.locked_format = self.spreadsheet.add_format({'locked': True})
         self.desc_format = self.spreadsheet.add_format(
             {'font_color': '#808080', 'italic': True, 'text_wrap': True, 'font_size': 12, 'valign': 'top'})
+        self.guide_format = self.spreadsheet.add_format(
+            {'bold': True, 'bg_color': '#D0D0D0', 'font_size': 12, 'valign': 'vcenter'}
+        )
         self.include_schemas_tab = False
         self.hidden_row = hide_row
+        self.header_row_height = 50
+        self.guide_row_height = 30
 
     def save_spreadsheet(self):
         self.spreadsheet.close()
