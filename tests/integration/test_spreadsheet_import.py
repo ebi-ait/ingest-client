@@ -1,8 +1,10 @@
 import os
 import unittest
-from unittest import TestCase
-
 import requests
+
+from unittest import TestCase
+from tests.utils import delete_file
+
 
 from ingest.api.ingestapi import IngestApi
 from ingest.importer.importer import XlsImporter
@@ -14,13 +16,6 @@ DEPLOYMENT = 'develop'
 SPREADSHEET_FILE = 'dcp_integration_test_metadata_1_SS2_bundle.xlsx'
 SPREADSHEET_LOCATION = f'https://raw.github.com/HumanCellAtlas/metadata-schema/{DEPLOYMENT}/infrastructure_testing_files' \
                        f'/current/{SPREADSHEET_FILE}'
-
-
-def delete_file(file):
-    if os.path.exists(file):
-        print(f'Deleting file {file}')
-        os.remove(file)
-        print(f'File {file} deleted')
 
 
 def download_file(url, path):

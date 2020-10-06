@@ -1,3 +1,4 @@
+import os
 from openpyxl import Workbook
 from mock import Mock, MagicMock
 from ingest.importer.importer import WorkbookImporter
@@ -42,3 +43,10 @@ def check_default_sheet_inclusion(include_default_sheet, workbook):
     if not include_default_sheet:
         default_sheet = workbook['Sheet']
         workbook.remove(default_sheet)
+
+
+def delete_file(file):
+    if os.path.exists(file):
+        print(f'Deleting file {file}')
+        os.remove(file)
+        print(f'File {file} deleted')
