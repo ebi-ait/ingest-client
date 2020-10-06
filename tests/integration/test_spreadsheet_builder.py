@@ -1,12 +1,13 @@
 import os
-
-from ingest.template.schema_template import SchemaTemplate
-
-from unittest import TestCase
-from ingest.template.vanilla_spreadsheet_builder import VanillaSpreadsheetBuilder
 import unittest
+
 from openpyxl import Workbook
 from openpyxl import load_workbook as Reader
+from unittest import TestCase
+
+from ingest.template.schema_template import SchemaTemplate
+from ingest.template.vanilla_spreadsheet_builder import VanillaSpreadsheetBuilder
+from tests.utils import delete_file
 
 
 class TestSpreadsheetBuilder(TestCase):
@@ -71,6 +72,8 @@ class TestSpreadsheetBuilder(TestCase):
             print("from method: " + uf)
             print("expected: " + user_friendly_dict[key])
             self.assertEqual(user_friendly_dict[key], uf)
+
+        delete_file("uf_test.xlsx")
 
 
     # TODO improve this test, at the moment just tests that the spreadsheet can be built, nothing about the
