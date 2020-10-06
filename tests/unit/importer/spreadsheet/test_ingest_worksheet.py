@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import ingest.utils.spreadsheet as spreadsheet_utils
 from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
-from tests.importer.utils.test_utils import create_test_workbook
+from tests.utils import create_test_workbook
 
 
 class IngestWorksheetTest(TestCase):
@@ -176,3 +176,67 @@ class IngestWorksheetTest(TestCase):
         self.assertEqual('sn_profiles', sn_profiles.get_module_field_name())
         self.assertEqual('file_names', file_names.get_module_field_name())
         self.assertIsNone(account.get_module_field_name())
+
+    def test__has_column__returns_true__when_column_exists(self):
+        # given:
+        rows = [
+            ['name', 'address', 'mobile', 'email'],
+            ['Jane Doe', 'Cambridge', '12-345-67', 'jane.doe@domain.com']
+        ]
+
+        worksheet = spreadsheet_utils.create_worksheet('person', rows)
+        ingest_worksheet = IngestWorksheet(worksheet, header_row_idx=1)
+
+        # when:
+        result = ingest_worksheet.has_column('name')
+
+        # then:
+        self.assertTrue(result)
+
+    def test__has_column__returns_false__when_column_is_missing(self):
+        # given:
+        rows = [
+            ['name', 'address', 'mobile', 'email'],
+            ['Jane Doe', 'Cambridge', '12-345-67', 'jane.doe@domain.com']
+        ]
+
+        worksheet = spreadsheet_utils.create_worksheet('person', rows)
+        ingest_worksheet = IngestWorksheet(worksheet, header_row_idx=1)
+
+        # when:
+        result = ingest_worksheet.has_column('unknown')
+
+        # then:
+        self.assertFalse(result)
+
+    def test__has_column__returns_false__when_column_is_none(self):
+        # given:
+        rows = [
+            ['name', 'address', 'mobile', 'email'],
+            ['Jane Doe', 'Cambridge', '12-345-67', 'jane.doe@domain.com']
+        ]
+
+        worksheet = spreadsheet_utils.create_worksheet('person', rows)
+        ingest_worksheet = IngestWorksheet(worksheet, header_row_idx=1)
+
+        # when:
+        result = ingest_worksheet.has_column(None)
+
+        # then:
+        self.assertFalse(result)
+
+    def test__has_column__returns_false__when_column_is_empty(self):
+        # given:
+        rows = [
+            ['name', 'address', 'mobile', 'email'],
+            ['Jane Doe', 'Cambridge', '12-345-67', 'jane.doe@domain.com']
+        ]
+
+        worksheet = spreadsheet_utils.create_worksheet('person', rows)
+        ingest_worksheet = IngestWorksheet(worksheet, header_row_idx=1)
+
+        # when:
+        result = ingest_worksheet.has_column('')
+
+        # then:
+        self.assertFalse(result)

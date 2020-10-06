@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 import requests
 
@@ -381,7 +382,7 @@ class Submission(object):
         self.manifest = self.ingest_api.create_submission_manifest(self.submission_url, manifest_json)
         return self.manifest
 
-    def get_entities(self):
+    def get_entities(self) -> List[Entity]:
         return self.metadata_dict.values()
 
 
@@ -528,7 +529,7 @@ class InvalidLinkInSpreadsheet(Error):
 class LinkedEntityNotFound(Error):
     def __init__(self, from_entity, entity_type, id):
         message = f'A link from a {from_entity.type} with id {from_entity.id} to a {entity_type} with id, ' \
-            f'"{id}", is not found in the spreadsheet.'
+                  f'"{id}", is not found in the spreadsheet.'
         super(LinkedEntityNotFound, self).__init__('LinkedEntityNotFound', message)
         self.entity = entity_type
         self.id = id
