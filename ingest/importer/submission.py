@@ -244,6 +244,9 @@ class EntityLinker(object):
         return 'process_id_' + str(self.process_id_ctr)
 
 
+_KEY_SEPARATOR = '$'
+
+
 class Entity(object):
     def __init__(self, entity_type, entity_id, content, ingest_json=None, links_by_entity=None,
                  direct_links=None, is_reference=False, linking_details=None, concrete_type=None,
@@ -258,7 +261,7 @@ class Entity(object):
         self.is_reference = is_reference
         self.concrete_type = concrete_type
         self.spreadsheet_location = spreadsheet_location
-        self.back_links = 0
+        self._back_links = set()
 
     def _prepare_links_by_entity(self, links_by_entity):
         self.links_by_entity = {}
@@ -275,8 +278,11 @@ class Entity(object):
         if linking_details is not None:
             self.linking_details.update(linking_details)
 
-    def _link_back(self):
-        self.back_links += 1
+    def _link_back(self, key: str):
+        self._back_links.add(key)
+
+    def _composite_key(self):
+        return f'{self.type}{_KEY_SEPARATOR}{self.id}'
 
     @property
     def uuid(self):
@@ -292,10 +298,13 @@ class Entity(object):
             links = []
             self.links_by_entity[other.type] = links
         links.append(other.id)
-        other._link_back()
+        other._link_back(self._composite_key())
 
     def get_links(self, of_type: str) -> iter:
         return self.links_by_entity.get(of_type, [])
+
+    def count_back_links(self) -> int:
+        return len(self._back_links)
 
 
 class Submission(object):

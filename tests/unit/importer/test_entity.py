@@ -38,10 +38,14 @@ class EntityTest(TestCase):
         specimen.link(project)
         specimen.link(donor)
 
+        # and: repeat linking
+        donor.link(project)
+        specimen.link(donor)
+
         # then:
-        self.assertEqual(2, project.back_links)
-        self.assertEqual(1, donor.back_links)
-        self.assertEqual(0, specimen.back_links)
+        self.assertEqual(2, project.count_back_links())
+        self.assertEqual(1, donor.count_back_links())
+        self.assertEqual(0, specimen.count_back_links())
 
 
 class EntityMapTest(TestCase):
