@@ -258,6 +258,7 @@ class Entity(object):
         self.is_reference = is_reference
         self.concrete_type = concrete_type
         self.spreadsheet_location = spreadsheet_location
+        self.back_links = set()
 
     def _prepare_links_by_entity(self, links_by_entity):
         self.links_by_entity = {}
@@ -288,6 +289,7 @@ class Entity(object):
             links = []
             self.links_by_entity[other.type] = links
         links.append(other.id)
+        other.back_links.add(self)
 
     def get_links(self, of_type: str) -> iter:
         return self.links_by_entity.get(of_type, [])

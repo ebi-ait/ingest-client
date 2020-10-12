@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from ingest.importer.submission import Entity, EntityMap
 
+PROJECT = 'project'
 BIOMATERIAL = 'biomaterial'
 PROTOCOL = 'protocol'
 
@@ -25,6 +26,22 @@ class EntityTest(TestCase):
 
         # then:
         self.assertIn(dissociation.id, cell.get_links(PROTOCOL))
+
+    def test_back_links(self):
+        # given:
+        project = test_entity(PROJECT, '6492bba')
+        donor = test_entity(BIOMATERIAL, '5550101')
+        specimen = test_entity(BIOMATERIAL, 'ab67891')
+
+        # when:
+        donor.link(project)
+        specimen.link(project)
+        specimen.link(donor)
+
+        # then:
+        for entity in [donor, specimen]:
+            self.assertIn(entity, project.back_links)
+        self.assertIn(specimen, donor.back_links)
 
 
 class EntityMapTest(TestCase):
