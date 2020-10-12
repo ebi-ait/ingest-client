@@ -282,6 +282,16 @@ class Entity(object):
     def url(self):
         return self.ingest_json['_links']['self']['href']
 
+    def link(self, other: 'Entity'):
+        links = self.links_by_entity.get(other.type)
+        if links is None:
+            links = []
+            self.links_by_entity[other.type] = links
+        links.append(other.id)
+
+    def get_links(self, of_type: str) -> iter:
+        return self.links_by_entity.get(of_type, [])
+
 
 class Submission(object):
     ENTITY_LINK = {
@@ -500,6 +510,33 @@ class EntityMap(object):
         for entity in self.get_entities():
             count = count + len(entity.direct_links)
         return count
+
+    def find_unlinked(self) -> list:
+        table = {}
+
+        def links(_key):
+            _links = table.get(_key)
+            if _links is None:
+                _links = set()
+                table[_key] = _links
+            return _links
+
+        for entity in self.get_entities():
+            source_key = f'{entity.type}${entity.id}'
+            links(source_key)
+            for entity_type, ids in entity.links_by_entity.items():
+                for entity_id in ids:
+                    destination_key = f'{entity_type}${entity_id}'
+                    # bidirectional relation
+                    links(source_key).add(destination_key)
+                    links(destination_key).add(source_key)
+
+        unlinked = []
+        for source_key, links in table.items():
+            if len(links) == 0:
+                entity_type, entity_id = source_key.split('$')
+                unlinked.append(self.get_entity(entity_type, entity_id))
+        return unlinked
 
 
 class Error(Exception):
