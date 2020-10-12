@@ -512,6 +512,15 @@ class EntityMap(object):
         return count
 
     def find_unlinked(self) -> list:
+        table = self._build_linking_table()
+        unlinked = []
+        for source_key, links in table.items():
+            if len(links) == 0:
+                entity_type, entity_id = source_key.split('$')
+                unlinked.append(self.get_entity(entity_type, entity_id))
+        return unlinked
+
+    def _build_linking_table(self):
         table = {}
 
         def links(_key):
@@ -531,12 +540,7 @@ class EntityMap(object):
                     links(source_key).add(destination_key)
                     links(destination_key).add(source_key)
 
-        unlinked = []
-        for source_key, links in table.items():
-            if len(links) == 0:
-                entity_type, entity_id = source_key.split('$')
-                unlinked.append(self.get_entity(entity_type, entity_id))
-        return unlinked
+        return table
 
 
 class Error(Exception):
