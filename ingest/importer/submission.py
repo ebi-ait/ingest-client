@@ -306,6 +306,9 @@ class Entity(object):
     def count_back_links(self) -> int:
         return len(self._back_links)
 
+    def is_linked(self) -> bool:
+        return self.links_by_entity or self._back_links
+
 
 class Submission(object):
     ENTITY_LINK = {

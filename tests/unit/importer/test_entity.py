@@ -7,8 +7,8 @@ BIOMATERIAL = 'biomaterial'
 PROTOCOL = 'protocol'
 
 
-def test_entity(type: str, id: str, content: dict = {}):
-    return Entity(type, id, content)
+def test_entity(entity_type: str, entity_id: str, content: dict = {}, links: dict = {}):
+    return Entity(entity_type, entity_id, content, links_by_entity=links)
 
 
 class EntityTest(TestCase):
@@ -46,6 +46,20 @@ class EntityTest(TestCase):
         self.assertEqual(2, project.count_back_links())
         self.assertEqual(1, donor.count_back_links())
         self.assertEqual(0, specimen.count_back_links())
+
+    def test_is_linked(self):
+        # given:
+        unlinked = test_entity(PROJECT, '7877b11')
+        project = test_entity(PROJECT, '891011b')
+        donor = test_entity(BIOMATERIAL, 'cdbbadd')
+
+        # and:
+        donor.link(project)
+
+        # expect:
+        self.assertFalse(unlinked.is_linked())
+        self.assertTrue(project.is_linked())
+        self.assertTrue(donor.is_linked())
 
 
 class EntityMapTest(TestCase):
