@@ -39,9 +39,9 @@ class EntityTest(TestCase):
         specimen.link(donor)
 
         # then:
-        for entity in [donor, specimen]:
-            self.assertIn(entity, project.back_links)
-        self.assertIn(specimen, donor.back_links)
+        self.assertEqual(2, project.back_links)
+        self.assertEqual(1, donor.back_links)
+        self.assertEqual(0, specimen.back_links)
 
 
 class EntityMapTest(TestCase):
