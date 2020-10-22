@@ -9,8 +9,7 @@
         "biomaterial_description": "Nuclei from the left ventricle of Donor1, CBTM-361B",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249695"
+        ]
       },
       "genus_species": [
         {
@@ -77,8 +76,7 @@
         "biomaterial_description": "Nuclei from the apex of Donor2, CBTM-362C",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249693"
+        ]
       },
       "genus_species": [
         {
@@ -145,8 +143,7 @@
         "biomaterial_description": "Nuclei from the right atrium of Donor2, CBTM-362C",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249690"
+        ]
       },
       "genus_species": [
         {
@@ -213,8 +210,7 @@
         "biomaterial_description": "Nuclei from the right ventricle of Donor2, CBTM-362C",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249799"
+        ]
       },
       "genus_species": [
         {
@@ -281,8 +277,7 @@
         "biomaterial_description": "Nuclei from the interventricular septum of Donor2, CBTM-362C",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249720"
+        ]
       },
       "genus_species": [
         {
@@ -349,8 +344,7 @@
         "biomaterial_description": "Nuclei from the left atrium of Donor3, CBTM-364B",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249697"
+        ]
       },
       "genus_species": [
         {
@@ -417,8 +411,7 @@
         "biomaterial_description": "Nuclei from the left ventricle of Donor3, CBTM-364B",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249706"
+        ]
       },
       "genus_species": [
         {
@@ -485,8 +478,7 @@
         "biomaterial_description": "Nuclei from the left ventricle of Donor3, CBTM-364B",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249706"
+        ]
       },
       "genus_species": [
         {
@@ -553,8 +545,7 @@
         "biomaterial_description": "Nuclei from the right atrium of Donor3, CBTM-364B",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249759"
+        ]
       },
       "genus_species": [
         {
@@ -621,8 +612,7 @@
         "biomaterial_description": "Nuclei from the right ventricle of Donor3, CBTM-364B",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249710"
+        ]
       },
       "genus_species": [
         {
@@ -689,8 +679,7 @@
         "biomaterial_description": "Nuclei from the left atrium of Donor2, CBTM-362C",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249775"
+        ]
       },
       "genus_species": [
         {
@@ -757,8 +746,7 @@
         "biomaterial_description": "Nuclei from the left ventricle of Donor2, CBTM-362C",
         "ncbi_taxon_id": [
           9606
-        ],
-        "biosamples_accession": "SAMEA7249749"
+        ]
       },
       "genus_species": [
         {
