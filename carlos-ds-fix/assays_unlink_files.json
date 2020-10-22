@@ -1,0 +1,134 @@
+{
+  "CBTM-361B_LV_nuclei": {
+    "assay_process": "04b600cd-d87b-4907-b916-9228dfbaa41b",
+    "files": [
+      "cc1285d8-5c24-41b5-a961-82d07e129f73",
+      "e0046088-ae3c-47e5-a321-bc4b06c6f6cd",
+      "34c1f7fa-8fdf-4f39-9cbb-47dd2d0a471c"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-361B_LV",
+      "uuid": "8360631b-1666-43a7-9f7f-37dfe2aba7d1"
+    }
+  },
+  "CBTM-362C_AX_nuclei": {
+    "assay_process": "45545c0a-5daf-4e59-80c1-f6316f73b4e5",
+    "files": [
+      "b03fec5f-1d5a-4c27-88d0-7b2d7e1d8b0b",
+      "548e2de6-36df-4085-81a8-9b67b6baa875",
+      "fc736c62-ce61-4147-9476-7ff14076ffc8"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-362C_AX",
+      "uuid": "ef8a3721-c500-49ac-875f-95c61e94c8ba"
+    }
+  },
+  "CBTM-362C_RA_nuclei": {
+    "assay_process": "4fdbb7bf-d52e-41f2-b420-629c3b8dd029",
+    "files": [
+      "a2c6baf6-2ecc-4923-99b5-abed53ecfd42",
+      "4d98d28c-a402-49c6-a278-9ae47f5fc8f3",
+      "9add8a66-f868-4cfc-aa42-39a090e94bc4"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-362C_RA",
+      "uuid": "9ae7cd0e-e885-4548-8591-24f8ebf7e47c"
+    }
+  },
+  "CBTM-362C_RV_nuclei": {
+    "assay_process": "962bc830-0320-4aa1-a04a-150b95468515",
+    "files": [
+      "132aeeb0-924b-45eb-99c0-08404d010161",
+      "a8f693cf-c6d8-4ae5-8e29-8469e78f09cd",
+      "129b3150-4d2a-4987-a84f-8d9a23193444"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-362C_RV",
+      "uuid": "41cde1ff-2314-4e3d-bed3-eff94c35c4ba"
+    }
+  },
+  "CBTM-362C_SP_nuclei": {
+    "assay_process": "20693537-da65-4808-9ee2-d1364eb56366",
+    "files": [
+      "21a4ef75-cc84-4313-a39b-bf1e35f200cc",
+      "2e86fd27-43b2-4ad5-9ed0-a7ac6820fb74",
+      "1f822c5c-b185-4c40-94d0-3f5bde97f472"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-362C_SP",
+      "uuid": "5092168f-1f3b-4c72-ba79-d63b9b8b9af1"
+    }
+  },
+  "CBTM-364B_LA_nuclei": {
+    "assay_process": "1d107423-a7e9-4814-892f-fdb712135ee9",
+    "files": [
+      "b95e4ce7-5e4f-4407-9e16-462e811f7a17",
+      "5b341137-182c-43fc-b005-68c444478bda",
+      "259f97c0-8891-492d-9f90-bbb6ab8fe760"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-364B_LA",
+      "uuid": "d24afdd0-a1e5-4b88-82f0-a9ec1c183272"
+    }
+  },
+  "CBTM-364B_LV_nuclei": {
+    "assay_process": "c5d65371-d671-4614-b840-37f9c4d6ff36",
+    "files": [
+      "4cfd6755-0551-48e5-92d3-2cf1c9ad986f",
+      "25eb58de-68a2-4932-926d-97f3aa54e24b",
+      "7648ee37-3b5e-40a1-955b-7a0341235f3a"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-364B_LV",
+      "uuid": "eaadc926-fb4f-4957-8747-453b1e5ed6f2"
+    }
+  },
+  "CBTM-364B_RA_nuclei": {
+    "assay_process": "aafb5cdd-6f4c-45ab-8ac5-916a78d98612",
+    "files": [
+      "525c1a62-3d1b-4984-aa56-db91bccf1775",
+      "e0ed5cb4-0fb8-4f1f-ae0b-9ae0e2fd50f4",
+      "1ae0a66d-fa30-4ba5-a4d7-1c95f1539935"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-364B_RA",
+      "uuid": "760a4767-2b32-4288-bbbc-03325db50121"
+    }
+  },
+   "CBTM-364B_RV_nuclei": {
+    "assay_process": "145bd58a-1709-4220-8e81-a2af700fbb6c",
+    "files": [
+      "c47afc14-5c5e-4e09-a3ef-6edd802101fc",
+      "2ad80e3c-9741-4bb2-9be8-3897e6e17727",
+      "9ffc40cf-436d-48f0-b1f4-64e13c8110c2"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-364B_RV",
+      "uuid": "cbf01b61-8d19-45f1-be05-d4bc7b2a5123"
+    }
+  },
+  "CBTM-362C_LA_nuclei": {
+    "assay_process": "9ae22ea4-d0c8-41ec-b937-a125c4ba5657",
+    "files": [
+      "4bbe6c3a-f8c4-43c1-aa2a-9f3786196b86",
+      "712cf0c1-b311-4c3a-8d89-e9605dfbc156",
+      "0d218608-07b2-43af-8dc6-dd9ab7a35300"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-362C_LA",
+      "uuid": "e1435aac-f172-4ff3-92c6-4e7d29c72675"
+    }
+  },
+   "CBTM-362C_LV_nuclei": {
+    "assay_process": "40f8fdf5-1806-4c01-bc3f-c23d0e96d8bd",
+    "files": [
+      "36d29e2c-8dc2-4fdf-8662-09c4ebfcf19e",
+      "a312aedd-1d67-4342-9470-35526cc6fc30",
+      "79d0fbbc-530d-49af-87ec-8a1574714ffe"
+    ],
+    "input_biomaterial": {
+      "id": "CBTM-362C_LV",
+      "uuid": "56e2239f-4a04-41a5-aa59-24256cff2e0f"
+    }
+  }
+}
