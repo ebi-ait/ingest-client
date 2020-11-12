@@ -91,17 +91,12 @@ class EntityLinker(object):
     def _generate_direct_links(self, entity_map, entity):
         project = entity_map.get_project()
 
-        # TODO Revisit if we need to link all entities to the project
-        # currently, all entities are indirectly link to the project via the submission envelope
-        # another issue is that protocols and files don't have links to project in ingest-core
-
-        if project and not entity.type == 'project':
-            if entity.type != 'protocol' and entity.type != 'file':
-                entity.direct_links.append({
-                    'entity': 'project',
-                    'id': project.id,
-                    'relationship': 'projects'
-                })
+        if project and entity.type != 'project':
+            entity.direct_links.append({
+                'entity': 'project',
+                'id': project.id,
+                'relationship': 'projects'
+            })
 
         if project and entity.concrete_type == 'supplementary_file':
             project.direct_links.append({
