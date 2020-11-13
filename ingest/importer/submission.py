@@ -95,7 +95,7 @@ class EntityLinker(object):
             entity.direct_links.append({
                 'entity': 'project',
                 'id': project.id,
-                'relationship': 'projects'
+                'relationship': 'project'
             })
 
         if project and entity.concrete_type == 'supplementary_file':
