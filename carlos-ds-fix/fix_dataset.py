@@ -157,7 +157,7 @@ if __name__ == '__main__':
     ]
 
     for donor_uuid in donors_to_update:
-        donor = get_entity_by_uuid(donor_uuid)
+        donor = get_entity_by_uuid('biomaterials', donor_uuid)
         donor_url = donor['_links']['self']['href']
         content = donor['content']
         content.update({"diseases": [{
