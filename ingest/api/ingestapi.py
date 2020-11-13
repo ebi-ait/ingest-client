@@ -54,6 +54,10 @@ class IngestApi:
 
     def get_headers(self):
         # refresh token
+        if self.token and not self.headers.get('Authorization'):
+            self.set_token(f'Bearer {self.token}')
+            print(f'Bearer {self.token}')
+
         if self.token_manager:
             self.set_token(f'Bearer {self.token_manager.get_token()}')
             self.logger.debug(f'Token refreshed!')
@@ -248,6 +252,7 @@ class IngestApi:
 
     def get_entities(self, submission_url, entity_type):
         r = self.get(submission_url, headers=self.get_headers())
+        r.raise_for_status()
         if r.status_code == requests.codes.ok:
             if entity_type in json.loads(r.text)["_links"]:
                 yield from self.get_all(json.loads(r.text)["_links"][entity_type]["href"], entity_type)

@@ -6,12 +6,16 @@ from ingest.api.ingestapi import IngestApi
 from ingest.importer.conversion import template_manager
 
 TOKEN = ''
-CELL_SUSPENSIONS_FILE = 'cell_suspensions.json'
-NEW_ASSAYS_FILE = 'assay_grouping.json'
-UPDATE_ASSAYS_FILE = 'assays_unlink_files.json'
-SUBMISSION_URL = 'http://localhost:8080/submissionEnvelopes/5f1b0e98fe9c934c8b835c80'
-ingest_api = IngestApi(url='http://localhost:8080')
-ingest_api.set_token(TOKEN)
+CELL_SUSPENSIONS_FILE = './carlos-ds-fix/cell_suspensions.json'
+CWD = './carlos-ds-fix'
+NEW_ASSAYS_FILE = f'{CWD}/assay_grouping.json'
+UPDATE_ASSAYS_FILE = f'{CWD}/assays_unlink_files.json'
+UPDATE_DONORS_FILE = f'{CWD}/outdated_donors.json'
+OUTPUT_FILE = f'{CWD}/assay_grouping_process_uuids.json'
+INGEST_API = 'https://api.ingest.dev.archive.data.humancellatlas.org'
+SUBMISSION_URL = f'{INGEST_API}/submissionEnvelopes/5f1b0e98fe9c934c8b835c80'
+ingest_api = IngestApi(url=INGEST_API)
+ingest_api.set_token(f'Bearer {TOKEN}')
 template_mgr = template_manager.build(None, ingest_api)
 
 
@@ -137,6 +141,32 @@ if __name__ == '__main__':
             file_content['library_prep_id'] = process_id
             ingest_api.patch(output_file_url, {'content': file_content})
 
-    with open('../_local/assay_grouping_process_uuids.json', "w") as open_file:
+    donors_to_update = [
+        "bcc392bb-ca37-428e-8513-58c53a8116a0",
+        "96dd85dd-6f2e-4b2a-947f-9a66ff2ba8f0",
+        "f141b80f-70c3-42ac-83f9-f77af6dac71c",
+        "73689cb0-8a83-4d84-a642-b3af2a72a086",
+        "981597b0-882f-4797-8d31-a4353bc49371",
+        "2ff6b64f-c1f3-413f-bf30-7a1b7a2ad62c",
+        "4d72ef99-5ce9-43bd-9aed-b867d466eb84",
+        "818a588a-50a6-429a-85a1-8e8d85b0ea37",
+        "092c9a21-3e90-4e39-b7a8-294377bec28f",
+        "c2723205-b835-4ca5-8ff1-d0e3989018f7",
+        "f6a1741e-8a24-435f-b57e-c7897175bc0f",
+        "5beade7e-dfeb-45db-9d97-afc594bc7ee2"
+    ]
+
+    for donor_uuid in donors_to_update:
+        donor = get_entity_by_uuid(donor_uuid)
+        donor_url = donor['_links']['self']['href']
+        content = donor['content']
+        content.update({"diseases": [{
+            "text": "normal",
+            "ontology_label": "normal",
+            "ontology": "PATO:0000461"
+        }]})
+        ingest_api.patch(donor_url, {'content': content})
+
+    with open(OUTPUT_FILE, "w") as open_file:
         json.dump(NEW_ASSAYS, open_file, indent=4)
         open_file.close()
