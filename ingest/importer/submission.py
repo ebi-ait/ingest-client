@@ -127,6 +127,12 @@ class EntityLinker(object):
             linking_process.direct_links.append({
                 'entity': 'project',
                 'id': project.id,
+                'relationship': 'project'
+            })
+            # TODO: Remove when process.projects is deprectated
+            linking_process.direct_links.append({
+                'entity': 'project',
+                'id': project.id,
                 'relationship': 'projects'
             })
             entity_map.add_entity(linking_process)
