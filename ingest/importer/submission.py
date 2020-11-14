@@ -98,7 +98,7 @@ class EntityLinker(object):
                 'relationship': 'project'
             })
             # TODO: Remove when biomaterial/process.projects is deprecated
-            if entity.type == 'biomaterial' and entity.type == 'process':
+            if entity.type == 'biomaterial' or entity.type == 'process':
                 entity.direct_links.append({
                     'entity': 'project',
                     'id': project.id,
