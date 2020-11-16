@@ -406,6 +406,11 @@ class EntityLinkerTest(TestCase):
                             'relationship': 'projects'
                         },
                         {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        },
+                        {
                             'entity': 'process',
                             'id': 'process_id_1',
                             'relationship': 'inputToProcesses'
@@ -424,6 +429,11 @@ class EntityLinkerTest(TestCase):
                             'entity': 'project',
                             'id': 'dummy-project-id',
                             'relationship': 'projects'
+                        },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
                         },
                         {
                             'entity': 'process',
@@ -445,6 +455,11 @@ class EntityLinkerTest(TestCase):
                             'relationship': 'projects'
                         },
                         {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        },
+                        {
                             'entity': 'protocol',
                             'id': 'protocol_id_1',
                             'relationship': 'protocols'
@@ -463,6 +478,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_1'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 },
                 'protocol_id_2': {
@@ -470,6 +490,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_2'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 }
             }
@@ -490,7 +515,8 @@ class EntityLinkerTest(TestCase):
                 self.assertTrue(entity)
 
                 for link in expected_links:
-                    self.assertTrue(link in entity.direct_links, f'{json.dumps(link)} is not in direct links')
+                    self.assertTrue(link in entity.direct_links, f'{json.dumps(link)} is not in direct links for '
+                                                                 f'entity type {entity_type} and id {entity_id}')
 
     def test_generate_direct_links_biomaterial_to_biomaterial_no_process(self):
         # given
@@ -553,6 +579,11 @@ class EntityLinkerTest(TestCase):
                             'relationship': 'projects'
                         },
                         {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        },
+                        {
                             'entity': 'process',
                             'id': 'process_id_1',
                             'relationship': 'inputToProcesses'
@@ -571,6 +602,11 @@ class EntityLinkerTest(TestCase):
                             'entity': 'project',
                             'id': 'dummy-project-id',
                             'relationship': 'projects'
+                        },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
                         },
                         {
                             'entity': 'process',
@@ -592,6 +628,11 @@ class EntityLinkerTest(TestCase):
                             'relationship': 'projects'
                         },
                         {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        },
+                        {
                             'entity': 'protocol',
                             'id': 'protocol_id_1',
                             'relationship': 'protocols'
@@ -610,6 +651,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_1'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 },
                 'protocol_id_2': {
@@ -617,6 +663,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_2'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 }
             }
@@ -686,6 +737,11 @@ class EntityLinkerTest(TestCase):
                             'entity': 'process',
                             'id': 'process_id_1',
                             'relationship': 'inputToProcesses'
+                        },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
                         }
                     ]
                 },
@@ -701,6 +757,11 @@ class EntityLinkerTest(TestCase):
                             'entity': 'process',
                             'id': 'process_id_1',
                             'relationship': 'derivedByProcesses'
+                        },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
                         }
                     ]
                 }
@@ -715,6 +776,11 @@ class EntityLinkerTest(TestCase):
                             'entity': 'project',
                             'id': 'dummy-project-id',
                             'relationship': 'projects'
+                        },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
                         },
                         {
                             'entity': 'protocol',
@@ -735,6 +801,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_1'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 },
                 'protocol_id_2': {
@@ -742,6 +813,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_2'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 }
             }
@@ -813,6 +889,11 @@ class EntityLinkerTest(TestCase):
                             'entity': 'process',
                             'id': 'process_id_1',
                             'relationship': 'inputToProcesses'
+                        },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
                         }
                     ]
                 },
@@ -829,6 +910,11 @@ class EntityLinkerTest(TestCase):
                             'id': 'process_id_1',
                             'relationship': 'derivedByProcesses'
                         },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 }
             },
@@ -842,6 +928,11 @@ class EntityLinkerTest(TestCase):
                             'entity': 'project',
                             'id': 'dummy-project-id',
                             'relationship': 'projects'
+                        },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
                         },
                         {
                             'entity': 'protocol',
@@ -862,6 +953,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_1'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 },
                 'protocol_id_2': {
@@ -869,6 +965,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_2'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 }
             }
@@ -943,6 +1044,11 @@ class EntityLinkerTest(TestCase):
                             'relationship': 'projects'
                         },
                         {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        },
+                        {
                             'entity': 'process',
                             'id': 'process_id_1',
                             'relationship': 'inputToProcesses'
@@ -960,6 +1066,11 @@ class EntityLinkerTest(TestCase):
                             'entity': 'process',
                             'id': 'process_id_1',
                             'relationship': 'derivedByProcesses'
+                        },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
                         }
                     ]
                 },
@@ -974,6 +1085,11 @@ class EntityLinkerTest(TestCase):
                             'entity': 'project',
                             'id': 'dummy-project-id',
                             'relationship': 'projects'
+                        },
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
                         },
                         {
                             'entity': 'protocol',
@@ -994,6 +1110,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_1'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 },
                 'protocol_id_2': {
@@ -1001,6 +1122,11 @@ class EntityLinkerTest(TestCase):
                         'key': 'protocol_2'
                     },
                     'direct_links': [
+                        {
+                            'entity': 'project',
+                            'id': 'dummy-project-id',
+                            'relationship': 'project'
+                        }
                     ]
                 }
             }
