@@ -49,7 +49,7 @@ class IngestSubmitter(object):
             for link in entity.direct_links:
                 to_entity = entity_map.get_entity(link['entity'], link['id'])
                 try:
-                    submission.link_entity(entity, to_entity, relationship=link['relationship'])
+                    submission.link_entity(entity, to_entity, relationship=link['relationship'], is_collection=link.get('is_collection', True))
                     progress = progress + 1
                     expected_links = int(submission.manifest.get('expectedLinks', 0))
                     if progress % self.PROGRESS_CTR == 0 or (progress == expected_links):
@@ -95,7 +95,8 @@ class EntityLinker(object):
             entity.direct_links.append({
                 'entity': 'project',
                 'id': project.id,
-                'relationship': 'project'
+                'relationship': 'project',
+                'is_collection': False
             })
             # TODO: Remove when biomaterial/process.projects is deprecated
             if entity.type == 'biomaterial' or entity.type == 'process':
@@ -127,7 +128,8 @@ class EntityLinker(object):
             linking_process.direct_links.append({
                 'entity': 'project',
                 'id': project.id,
-                'relationship': 'project'
+                'relationship': 'project',
+                'is_collection': False
             })
             # TODO: Remove when process.projects is deprectated
             linking_process.direct_links.append({
@@ -362,7 +364,7 @@ class Submission(object):
         key = entity_type + '.' + id
         return self.metadata_dict[key]
 
-    def link_entity(self, from_entity, to_entity, relationship):
+    def link_entity(self, from_entity, to_entity, relationship, is_collection=True):
         if from_entity.is_reference and not from_entity.ingest_json:
             from_entity.ingest_json = self.ingest_api.get_entity_by_uuid(self.ENTITY_LINK[from_entity.type],
                                                                          from_entity.id)
@@ -372,7 +374,7 @@ class Submission(object):
 
         from_entity_ingest = from_entity.ingest_json
         to_entity_ingest = to_entity.ingest_json
-        self.ingest_api.link_entity(from_entity_ingest, to_entity_ingest, relationship)
+        self.ingest_api.link_entity(from_entity_ingest, to_entity_ingest, relationship, is_collection)
 
     def define_manifest(self, entity_map):
         # TODO provide a better way to serialize

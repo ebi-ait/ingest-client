@@ -371,7 +371,7 @@ class IngestApi:
         if r.status_code == requests.codes.ok:
             return json.loads(r.text)["uuid"]["uuid"]
 
-    def link_entity(self, from_entity, to_entity, relationship):
+    def link_entity(self, from_entity, to_entity, relationship, is_collection=True):
         if not from_entity:
             raise ValueError("Error: from_entity is None")
 
@@ -406,8 +406,14 @@ class IngestApi:
             'Content-type': 'text/uri-list',
             'Authorization': self.get_headers()['Authorization']
         }
-        r = self.session.post(from_uri.rsplit("{")[0],
-                              data=to_uri.rsplit("{")[0], headers=headers)
+
+        if is_collection:
+            r = self.session.post(from_uri.rsplit("{")[0],
+                                  data=to_uri.rsplit("{")[0], headers=headers)
+        else:
+            r = self.session.put(from_uri.rsplit("{")[0],
+                                 data=to_uri.rsplit("{")[0], headers=headers)
+
         r.raise_for_status()
 
         return r
