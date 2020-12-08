@@ -307,7 +307,7 @@ class IngestApi:
     def create_file(self, submission_url, filename, content, uuid=None):
         submission_files_url = self.get_link_in_submission(submission_url, 'files')
 
-        submission_files_url = submission_files_url + "/" + quote(filename)
+        submission_files_url = submission_files_url
 
         file_to_create_object = {
             "fileName": filename,
@@ -362,7 +362,7 @@ class IngestApi:
         submission_url = self.get_link_in_submission(submission_url, entity_type)
         self.logger.debug(f"POST {submission_url} {json.dumps(content)}")
 
-        r = self.session.post(submission_url, json=content, headers=self.get_headers(), params=params)
+        r = self.session.post(submission_url, json={'content': content}, headers=self.get_headers(), params=params)
         r.raise_for_status()
         return r.json()
 
