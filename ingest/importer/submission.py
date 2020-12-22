@@ -49,7 +49,8 @@ class IngestSubmitter(object):
             for link in entity.direct_links:
                 to_entity = entity_map.get_entity(link['entity'], link['id'])
                 try:
-                    submission.link_entity(entity, to_entity, relationship=link['relationship'], is_collection=link.get('is_collection', True))
+                    submission.link_entity(entity, to_entity, relationship=link['relationship'],
+                                           is_collection=link.get('is_collection', True))
                     progress = progress + 1
                     expected_links = int(submission.manifest.get('expectedLinks', 0))
                     if progress % self.PROGRESS_CTR == 0 or (progress == expected_links):
@@ -353,7 +354,7 @@ class Submission(object):
                                                       uuid=uuid)
         else:
             response = self.ingest_api.create_entity(self.submission_url,
-                                                     entity.content,
+                                                     {"content": entity.content},
                                                      link_name, uuid=uuid)
         entity.ingest_json = response
         self.metadata_dict[entity.type + '.' + entity.id] = entity

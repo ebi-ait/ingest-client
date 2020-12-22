@@ -293,21 +293,19 @@ class IngestApi:
             return len(result["_embedded"][entity_type])
 
     def create_project(self, submission_url, content, uuid=None):
-        return self.create_entity(submission_url, content, "projects", uuid)
+        return self.create_entity(submission_url, {'content': content}, "projects", uuid)
 
     def create_biomaterial(self, submission_url, content, uuid=None):
-        return self.create_entity(submission_url, content, "biomaterials", uuid)
+        return self.create_entity(submission_url, {'content': content}, "biomaterials", uuid)
 
-    def create_process(self, submission_url, json_object, uuid=None):
-        return self.create_entity(submission_url, json_object, "processes", uuid)
+    def create_process(self, submission_url, content, uuid=None):
+        return self.create_entity(submission_url, {'content': content}, "processes", uuid)
 
     def create_protocol(self, submission_url, content, uuid=None):
-        return self.create_entity(submission_url, content, "protocols", uuid)
+        return self.create_entity(submission_url, {'content': content}, "protocols", uuid)
 
     def create_file(self, submission_url, filename, content, uuid=None):
         submission_files_url = self.get_link_in_submission(submission_url, 'files')
-
-        submission_files_url = submission_files_url + "/" + quote(filename)
 
         file_to_create_object = {
             "fileName": filename,
@@ -354,15 +352,15 @@ class IngestApi:
     def create_submission_error(self, submission_url, data):
         return self.create_entity(submission_url, data, 'submissionEnvelopeErrors')
 
-    def create_entity(self, submission_url, content, entity_type, uuid=None):
+    def create_entity(self, submission_url, data, entity_type, uuid=None):
         params = {}
         if uuid:
             params["updatingUuid"] = uuid
 
         submission_url = self.get_link_in_submission(submission_url, entity_type)
-        self.logger.debug(f"POST {submission_url} {json.dumps(content)}")
+        self.logger.debug(f"POST {submission_url} {json.dumps(data)}")
 
-        r = self.session.post(submission_url, json=content, headers=self.get_headers(), params=params)
+        r = self.session.post(submission_url, json=data, headers=self.get_headers(), params=params)
         r.raise_for_status()
         return r.json()
 

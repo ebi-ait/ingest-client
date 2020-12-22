@@ -31,7 +31,7 @@ class IngestApiTest(TestCase):
 
         file = ingest_api.create_file(submission_url, filename, {})
         self.assertEqual(file, {'uuid': 'file-uuid'})
-        mock_requests_post.assert_called_with('url/sub/id/files/mock-filename',
+        mock_requests_post.assert_called_with('url/sub/id/files',
                                               headers={'Content-type': 'application/json',
                                                        'Authorization': 'Bearer token'},
                                               json={'fileName': 'mock-filename', 'content': {}},
