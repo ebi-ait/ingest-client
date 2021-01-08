@@ -16,7 +16,7 @@ DEPLOYMENT = 'develop'
 SPREADSHEET_FILE = 'dcp_integration_test_metadata_1_SS2_bundle.xlsx'
 SPREADSHEET_LOCATION = f'https://raw.github.com/HumanCellAtlas/metadata-schema/{DEPLOYMENT}/infrastructure_testing_files' \
                        f'/current/{SPREADSHEET_FILE}'
-
+TOKEN_AUDIENCE = 'https://dev.data.humancellatlas.org/'
 
 def download_file(url, path):
     response = requests.get(url)
@@ -33,10 +33,9 @@ class SpreadsheetImport(TestCase):
         self.configure_ingest_client()
 
     def configure_ingest_client(self):
-        self.s2s_token_client = S2STokenClient()
         gcp_credentials_file = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-
-        self.s2s_token_client.setup_from_file(gcp_credentials_file)
+        self.s2s_token_client = S2STokenClient.from_file(gcp_credentials_file)
+        self.s2s_token_client.set_audience(TOKEN_AUDIENCE)
         self.token_manager = TokenManager(self.s2s_token_client)
         self.ingest_api = IngestApi(url=INGEST_API, token_manager=self.token_manager)
 
