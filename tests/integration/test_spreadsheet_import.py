@@ -5,18 +5,18 @@ import requests
 from unittest import TestCase
 from tests.utils import delete_file
 
-
 from ingest.api.ingestapi import IngestApi
 from ingest.importer.importer import XlsImporter
-from ingest.utils.s2s_token_client import S2STokenClient
+from ingest.utils.s2s_token_client import S2STokenClient, ServiceCredential
 from ingest.utils.token_manager import TokenManager
 
-INGEST_API = 'https://api.ingest.dev.archive.data.humancellatlas.org/'
+INGEST_API = os.environ.get('INGEST_API', 'https://api.ingest.dev.archive.data.humancellatlas.org/')
 DEPLOYMENT = 'develop'
 SPREADSHEET_FILE = 'dcp_integration_test_metadata_1_SS2_bundle.xlsx'
 SPREADSHEET_LOCATION = f'https://raw.github.com/HumanCellAtlas/metadata-schema/{DEPLOYMENT}/infrastructure_testing_files' \
                        f'/current/{SPREADSHEET_FILE}'
-INGEST_API_JWT_AUDIENCE = 'https://dev.data.humancellatlas.org/'
+INGEST_API_JWT_AUDIENCE = os.environ.get('INGEST_API_JWT_AUDIENCE', 'https://dev.data.humancellatlas.org/')
+
 
 def download_file(url, path):
     response = requests.get(url)
@@ -26,7 +26,7 @@ def download_file(url, path):
 
 
 @unittest.skipIf(not os.environ.get('GOOGLE_APPLICATION_CREDENTIALS'),
-    'The environment variable GOOGLE_APPLICATION_CREDENTIALS should contain the location of GCP credentials file')
+                 'The environment variable GOOGLE_APPLICATION_CREDENTIALS should contain the location of GCP credentials file')
 class SpreadsheetImport(TestCase):
     def setUp(self):
         self.test_data_path = os.path.dirname(os.path.realpath(__file__))
@@ -34,8 +34,8 @@ class SpreadsheetImport(TestCase):
 
     def configure_ingest_client(self):
         gcp_credentials_file = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-        self.s2s_token_client = S2STokenClient.from_file(gcp_credentials_file)
-        self.s2s_token_client.set_audience(INGEST_API_JWT_AUDIENCE)
+        self.s2s_token_client = S2STokenClient(ServiceCredential.from_file(gcp_credentials_file),
+                                               INGEST_API_JWT_AUDIENCE)
         self.token_manager = TokenManager(self.s2s_token_client)
         self.ingest_api = IngestApi(url=INGEST_API, token_manager=self.token_manager)
 

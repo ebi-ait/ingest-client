@@ -4,10 +4,9 @@ import os
 from .dcp_auth_client import DCPAuthClient
 
 
-class S2STokenClient:
-    def __init__(self, credentials: dict, audience: str = None):
-        self._credentials = credentials
-        self.audience = audience
+class ServiceCredential:
+    def __init__(self, value: dict):
+        self.value = value
 
     @classmethod
     def from_env_var(cls, env_var_name):
@@ -20,13 +19,16 @@ class S2STokenClient:
             service_credentials = json.load(fh)
         return cls(service_credentials)
 
-    def set_audience(self, audience: str):
-        self.audience = audience
+
+class S2STokenClient:
+    def __init__(self, credential: ServiceCredential, audience: str):
+        self._credentials = credential
+        self._audience = audience
 
     def retrieve_token(self) -> str:
-        if not self.audience:
+        if not self._audience:
             raise Error('The audience must be set.')
-        return DCPAuthClient.get_service_jwt(service_credentials=self._credentials, audience=self.audience)
+        return DCPAuthClient.get_service_jwt(service_credentials=self._credentials.value, audience=self._audience)
 
 
 class Error(Exception):
