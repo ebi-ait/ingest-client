@@ -1,11 +1,12 @@
 import json
 import os
+from typing import Dict
 
 from .dcp_auth_client import DCPAuthClient
 
 
 class ServiceCredential:
-    def __init__(self, value: dict):
+    def __init__(self, value: Dict[str, str]):
         self.value = value
 
     @classmethod
