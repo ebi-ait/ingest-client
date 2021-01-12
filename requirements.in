@@ -1,0 +1,13 @@
+coverage
+dataclasses
+jsonref
+openpyxl
+polling
+PyYAML>=5.3.1
+requests[security]
+urllib3
+xlsxwriter
+sortedcontainers
+mergedeep
+cryptography
+PyJWT
