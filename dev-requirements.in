@@ -1,5 +1,5 @@
+-c requirements.txt
 flake8==3.5.0
 mock
 nose
 sortedcontainers
--r requirements.txt

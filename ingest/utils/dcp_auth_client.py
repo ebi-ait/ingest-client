@@ -82,7 +82,7 @@ class DCPAuthClient(object):
                    }
         additional_headers = {'kid': service_credentials["private_key_id"]}
         signed_jwt = jwt.encode(payload, service_credentials["private_key"], headers=additional_headers,
-                                algorithm='RS256').decode()
+                                algorithm='RS256')
         return signed_jwt
 
     def verify_jwt(self, token, audience, trusted_google_project):

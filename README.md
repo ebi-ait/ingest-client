@@ -50,22 +50,46 @@ The schema template provides access to attributes of each key that is useful for
 | {key}.example  | An example of the expected value for this property  |  `project.contact.contact_name.example` = John,D,Doe |
 
 
-
-
-
-
-
 ## Developer Notes
 
-Requirements for this project are listed in 2 files: `requirements.txt` and `requirements-dev.txt`.
-The `requirements-dev.txt` file contains dependencies specific for development, and needs to be 
-installed:
+This package is currently only compatible with Python 3.
 
+### Requirements
+
+Requirements for this project are listed in 2 files: `requirements.txt` and `dev-requirements.txt`.
+The `dev-requirements.txt` file contains dependencies specific for development
+
+The requirement files (`requirements.txt`, `dev-requirements.txt`) are generated using `pip-compile` from [pip-tools](https://github.com/jazzband/pip-tools) 
+```
+pip-compile requirements.in --output-file=- > requirements.txt
+pip-compile dev-requirements.in --output-file=- > dev-requirements.txt
+```
+The direct dependencies are listed in `requirements.in`, `dev-requirements.in` input files.
+
+#### Install dependencies
+
+* by using `pip-sync` from `pip-tools`
+```
+pip-sync requirements.txt dev-requirements.txt
+```
+* or by just using `pip install` 
+```
     pip install -r requirements.txt
-    pip install -r requirements-dev.txt
-    
+    pip install -r dev-requirements.txt
+```
 
-Note: This package is currently only compatible with Python 3. 
+#### Upgrade dependencies
+
+To update all packages, periodically re-run `pip-compile --upgrade`
+
+To update a specific package to the latest or a specific version use the `--upgrade-package` or `-P` flag:
+
+```
+pip-compile --upgrade-package requests
+```
+
+See more options in the pip-compile [documentation](https://github.com/jazzband/pip-tools#updating-requirements) .
+
 
 ### Running the Tests
 
