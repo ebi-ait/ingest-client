@@ -6,7 +6,7 @@ MODULE_TITLE_PATTERN = re.compile(r'^(?P<main_label>\w+( \w+)*)( - (?P<field_nam
 
 HEADER_ROW_IDX = 4
 START_DATA_ROW = 6
-MAX_ROW_LIMIT = 10000
+MAX_ROW_LIMIT = 50000
 
 
 class IngestWorksheet(object):
