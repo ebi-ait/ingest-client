@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import List
 
@@ -38,7 +39,7 @@ class IngestSubmitter(object):
         submission_entity = Entity('submission_envelope',
                                    submission_envelope['uuid']['uuid'],
                                    None,
-                                   is_reference=True,
+                                   is_linking_reference=True,
                                    ingest_json=submission_envelope
                                    )
         submission.link_entity(project, submission_entity, 'submissionEnvelopes')
@@ -69,6 +70,8 @@ class IngestSubmitter(object):
         for entity in entities:
             if entity.is_reference:
                 submission.update_entity(entity)
+            if entity.is_linking_reference:
+                pass # do nothing
             else:
                 submission.add_entity(entity)
 
@@ -255,9 +258,10 @@ class EntityLinker(object):
         return 'process_id_' + str(self.process_id_ctr)
 
 
+# TODO Check how we can refactor to merge MetadataEntity and Entity
 class Entity(object):
     def __init__(self, entity_type, entity_id, content, ingest_json=None, links_by_entity=None,
-                 direct_links=None, is_reference=False, linking_details=None, concrete_type=None,
+                 direct_links=None, is_reference=False, is_linking_reference=False, linking_details=None, concrete_type=None,
                  spreadsheet_location=None):
         self.type = entity_type
         self.id = entity_id
@@ -266,7 +270,8 @@ class Entity(object):
         self._prepare_direct_links(direct_links)
         self._prepare_linking_details(linking_details)
         self.ingest_json = ingest_json
-        self.is_reference = is_reference
+        self.is_reference = is_reference  # if entity is in a row and has uuid
+        self.is_linking_reference = is_linking_reference  # if the entity uuid is only specified in a linking column
         self.concrete_type = concrete_type
         self.spreadsheet_location = spreadsheet_location
 
@@ -331,7 +336,7 @@ class Submission(object):
             if entity.content and entity.type != 'file':
                 self._create_entity(entity, entity.id)
         except requests.HTTPError as e:
-            error = f'Failed to create update entity: {e.response.text}'
+            error = f'Failed to update entity: {e.response.text}'
             if e.response.status_code == requests.codes.bad_request:
                 self.logger.warning(error)
             else:
@@ -365,12 +370,12 @@ class Submission(object):
         key = entity_type + '.' + id
         return self.metadata_dict[key]
 
-    def link_entity(self, from_entity, to_entity, relationship, is_collection=True):
-        if from_entity.is_reference and not from_entity.ingest_json:
+    def link_entity(self, from_entity: Entity, to_entity: Entity, relationship, is_collection=True):
+        if from_entity.is_linking_reference and not from_entity.ingest_json:
             from_entity.ingest_json = self.ingest_api.get_entity_by_uuid(self.ENTITY_LINK[from_entity.type],
                                                                          from_entity.id)
 
-        if to_entity.is_reference and not to_entity.ingest_json:
+        if to_entity.is_linking_reference and not to_entity.ingest_json:
             to_entity.ingest_json = self.ingest_api.get_entity_by_uuid(self.ENTITY_LINK[to_entity.type], to_entity.id)
 
         from_entity_ingest = from_entity.ingest_json
@@ -407,7 +412,7 @@ class EntityMap(object):
 
     @staticmethod
     def load(entity_json):
-        dictionary = EntityMap()
+        entity_map = EntityMap()
 
         for entity_type, entities_dict in entity_json.items():
             for entity_id, entity_body in entities_dict.items():
@@ -423,9 +428,9 @@ class EntityMap(object):
                                                       entity_id=entity_uuid,
                                                       content=None,
                                                       spreadsheet_location=entity_body.get('spreadsheet_location'),
-                                                      is_reference=True)
+                                                      is_linking_reference=True)
 
-                        dictionary.add_entity(external_link_entity)
+                        entity_map.add_entity(external_link_entity)
 
                         if not entity_body.get('links_by_entity'):
                             entity_body['links_by_entity'] = {}
@@ -440,14 +445,15 @@ class EntityMap(object):
                                 content=entity_body.get('content'),
                                 links_by_entity=entity_body.get('links_by_entity', {}),
                                 is_reference=entity_body.get('is_reference', False),
+                                is_linking_reference=entity_body.get('is_linking_reference', False),
                                 linking_details=entity_body.get('linking_details', {}),
                                 concrete_type=entity_body.get('concrete_type'),
                                 spreadsheet_location=entity_body.get(
                                     'spreadsheet_location'))
 
-                dictionary.add_entity(entity)
+                entity_map.add_entity(entity)
 
-        return dictionary
+        return entity_map
 
     def get_entity_types(self):
         return list(self.entities_dict_by_type.keys())
@@ -466,7 +472,7 @@ class EntityMap(object):
         entities = []
         entities_dict = self.entities_dict_by_type.get(type, {})
         for entity_id, entity in entities_dict.items():
-            if not entity.is_reference:
+            if not (entity.is_reference and entity.is_linking_reference):
                 entities.append(entity)
 
         return entities
@@ -492,7 +498,7 @@ class EntityMap(object):
         all_entities = []
         for entity_type, entities_dict in self.entities_dict_by_type.items():
             for entity_id, entity in entities_dict.items():
-                if not entity.is_reference:
+                if not (entity.is_reference and entity.is_linking_reference):
                     all_entities.append(entity)
         return all_entities
 

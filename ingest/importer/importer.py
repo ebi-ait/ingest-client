@@ -185,7 +185,7 @@ class WorkbookImporter:
             project_metadata = MetadataEntity(domain_type=_PROJECT_TYPE,
                                               concrete_type=_PROJECT_TYPE,
                                               object_id=project_uuid,
-                                              is_reference=True,
+                                              is_linking_reference=True,
                                               content={})
             registry.add_submittable(project_metadata)
 
