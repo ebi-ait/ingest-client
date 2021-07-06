@@ -8,7 +8,10 @@ from ingest.importer.conversion.metadata_entity import MetadataEntity
 from ingest.importer.conversion.template_manager import TemplateManager
 from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
 from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
-from ingest.importer.submission import IngestSubmitter, EntityMap, EntityLinker, Submission
+from ingest.importer.submission.entity_linker import EntityLinker
+from ingest.importer.submission.entity_map import EntityMap
+from ingest.importer.submission.ingest_submitter import IngestSubmitter
+from ingest.importer.submission.submission import Submission
 from ingest.template.exceptions import UnknownKeySchemaException
 from ingest.utils.IngestError import ImporterError, ParserError
 
@@ -26,6 +29,7 @@ class XlsImporter:
     def __init__(self, ingest_api):
         self.ingest_api = ingest_api
         self.logger = logging.getLogger(__name__)
+        self.submitter = IngestSubmitter(self.ingest_api)
 
     def generate_json(self, file_path, is_update, project_uuid=None):
         ingest_workbook = IngestWorkbook.from_file(file_path)
@@ -51,28 +55,31 @@ class XlsImporter:
 
         return entity_map, []
 
-    def import_file(self, file_path, submission_url, is_update, project_uuid=None) -> Tuple[Submission, TemplateManager]:
-        submission = None
+    def import_file(self, file_path, submission_url=None, is_update=False, project_uuid=None) -> Tuple[Submission, TemplateManager]:
         try:
-            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid)
-            if not errors:
-                entity_map = self._process_links_from_spreadsheet(template_mgr, spreadsheet_json)
+            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update=False, project_uuid=project_uuid)
+            entity_map = EntityMap.load(spreadsheet_json)
 
-                # TODO the submission_url should be passed to the IngestSubmitter instead
-                submitter = IngestSubmitter(self.ingest_api)
-                submission = submitter.submit(entity_map, submission_url)
-                self.logger.info(f'Submission in {submission_url} is done!')
-            else:
+            if errors:
                 self.report_errors(submission_url, errors)
+            elif is_update:
+                self.submitter.update_entities(entity_map)
+            else:
+                entity_map = self._process_links_from_spreadsheet(template_mgr, spreadsheet_json)
+                submission = self.submitter.add_entities(entity_map, submission_url)
+                return submission, template_mgr
         except HTTPError as httpError:
             status = httpError.response.status_code
             text = httpError.response.text
             importer_error = ImporterError(f'Received an HTTP {status} from  {httpError.request.url}: {text}')
             self.ingest_api.create_submission_error(submission_url, importer_error.getJSON())
+            return None, template_mgr
         except Exception as e:
             self.ingest_api.create_submission_error(submission_url, ImporterError(str(e)).getJSON())
             self.logger.error(str(e), exc_info=True)
-        else:
+            return None, template_mgr
+        finally:
+            self.logger.info(f'Submission in {submission_url} is done!')
             return submission, template_mgr
 
     def report_errors(self, submission_url, errors):
@@ -91,7 +98,7 @@ class XlsImporter:
         return entity_map
 
     @staticmethod
-    def create_update_spreadsheet(submission: Submission, template_mgr: TemplateManager, file_path):
+    def update_spreadsheet_with_uuids(submission: Submission, template_mgr: TemplateManager, file_path):
         if not submission:
             return
         wb = IngestWorkbook.from_file(file_path, read_only=False)
@@ -191,6 +198,7 @@ class WorkbookImporter:
 
             importable_worksheets = [ws for ws in importable_worksheets
                                      if _PROJECT_TYPE not in ws.title.lower()]
+
         for worksheet in importable_worksheets:
             try:
                 self.sheet_in_schemas(worksheet)

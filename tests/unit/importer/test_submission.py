@@ -1,11 +1,16 @@
 import json
 from unittest import TestCase
+from unittest.mock import Mock
 
 from mock import MagicMock, patch, call
 
 import ingest.api.ingestapi
-from ingest.importer.submission import Submission, Entity, IngestSubmitter, EntityLinker, LinkedEntityNotFound, \
-    InvalidLinkInSpreadsheet, MultipleProcessesFound, EntityMap
+from ingest.importer.submission.entity import Entity
+from ingest.importer.submission.entity_linker import EntityLinker
+from ingest.importer.submission.entity_map import EntityMap
+from ingest.importer.submission.errors import InvalidLinkInSpreadsheet, LinkedEntityNotFound, MultipleProcessesFound
+from ingest.importer.submission.ingest_submitter import IngestSubmitter
+from ingest.importer.submission.submission import Submission
 
 
 class SubmissionTest(TestCase):
@@ -166,11 +171,12 @@ def _create_spreadsheet_json():
 
 class IngestSubmitterTest(TestCase):
 
-    @patch('ingest.importer.submission.Submission')
+    @patch('ingest.importer.submission.ingest_submitter.Submission')
     def test_submit(self, submission_constructor):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.get_submission = MagicMock()
+        ingest_api.create_submission_manifest = MagicMock()
         submission = self._mock_submission(submission_constructor)
 
         # and:
@@ -181,43 +187,42 @@ class IngestSubmitterTest(TestCase):
 
         # when:
         submitter = IngestSubmitter(ingest_api)
-        submitter.submit(entity_map, submission_url='url')
+        submitter.add_entities(entity_map, submission_url='url')
 
         # then:
         submission_constructor.assert_called_with(ingest_api, 'url')
         submission.define_manifest.assert_called_with(entity_map)
         submission.add_entity.assert_has_calls([call(product), call(user)], any_order=True)
 
-    @patch('ingest.importer.submission.Submission')
-    def test_submit_update_entities(self, submission_constructor):
+    def test_submit_update_entities(self):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.get_submission = MagicMock()
-        submission = self._mock_submission(submission_constructor)
+        ingest_api.create_submission_manifest = MagicMock()
+        ingest_api.patch = MagicMock()
 
         # and:
         product = Entity('product', 'product_1', {'k': 'v'})
         project = Entity('project', 'id', {'k': 'v'})
         user1 = Entity('user', 'user_1', {'k': 'v'})
-        user2 = Entity('user', 'user_2', {'k': 'v'}, is_reference=True)
-        user3 = Entity('user', 'user_3', {'k': 'v'}, is_reference=True)
+        user2 = Entity('user', 'user_2', {'k': 'v'}, {'content':  {'k': 'v0'}, '_links':{'self':{'href': 'url'}}}, is_reference=True)
+        user3 = Entity('user', 'user_3', {'k': 'v'}, {'content':  {'k': 'v0'}, '_links':{'self':{'href': 'url'}}}, is_reference=True)
         entity_map = EntityMap(product, user1, user2, user3, project)
 
         # when:
         submitter = IngestSubmitter(ingest_api)
-        submitter.submit(entity_map, submission_url='url')
+        submitter.update_entity = MagicMock()
+        submitter.update_entities(entity_map)
 
         # then:
-        submission_constructor.assert_called_with(ingest_api, 'url')
-        submission.define_manifest.assert_called_with(entity_map)
-        submission.add_entity.assert_has_calls([call(product), call(user1)], any_order=True)
-        submission.update_entity.assert_has_calls([call(user2), call(user3)], any_order=True)
+        submitter.update_entity.assert_has_calls([call(user2), call(user3)], any_order=True)
 
-    @patch('ingest.importer.submission.Submission')
+    @patch('ingest.importer.submission.ingest_submitter.Submission')
     def test_submit_linked_entity(self, submission_constructor):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.get_submission = MagicMock()
+        ingest_api.create_submission_manifest = MagicMock()
         ingest_api.patch = MagicMock()
         ingest_api.get_link_from_resource = MagicMock()
         submission = self._mock_submission(submission_constructor)
@@ -232,15 +237,16 @@ class IngestSubmitterTest(TestCase):
             'id': 'user_1',
             'relationship': 'wish_list'
         }
-        linked_product = Entity('product', 'product_1', {}, direct_links=[link_to_user])
-        project = Entity('project', 'id', {})
+        linked_product = Entity('product', 'product_1', {}, direct_links=[link_to_user], is_reference=False, is_linking_reference=False)
+        project = Entity('project', 'id', {}, is_reference=False, is_linking_reference=False)
         entity_map.add_entity(linked_product)
         entity_map.add_entity(project)
 
         # when:
         submitter = IngestSubmitter(ingest_api)
+        submitter.link_submission_to_project = MagicMock()
         submitter.PROGRESS_CTR = 1
-        submitter.submit(entity_map, submission_url='url')
+        submitter.add_entities(entity_map, submission_url='url')
 
         # then:
         submission_constructor.assert_called_with(ingest_api, 'url')
