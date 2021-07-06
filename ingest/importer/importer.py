@@ -55,7 +55,7 @@ class XlsImporter:
 
         return entity_map, []
 
-    def import_file(self, file_path, submission_url=None, is_update=False, project_uuid=None) -> Tuple[Submission, TemplateManager]:
+    def import_file(self, file_path, submission_url, is_update=False, project_uuid=None) -> Tuple[Submission, TemplateManager]:
         try:
             spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update=False, project_uuid=project_uuid)
             entity_map = EntityMap.load(spreadsheet_json)
