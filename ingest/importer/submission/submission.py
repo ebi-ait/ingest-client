@@ -1,10 +1,9 @@
-import copy
-import json
 import logging
 from typing import List
 
 from ingest.api.ingestapi import IngestApi
 from ingest.importer.submission.entity import Entity
+from ingest.importer.submission.entity_map import EntityMap
 
 format = '[%(filename)s:%(lineno)s - %(funcName)20s() ] %(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=format)
@@ -55,11 +54,11 @@ class Submission(object):
 
         return entity
 
-    def get_entity(self, entity_type, id):
+    def get_entity(self, entity_type: str, id: str):
         key = entity_type + '.' + id
         return self.metadata_dict[key]
 
-    def link_entity(self, from_entity: Entity, to_entity: Entity, relationship, is_collection=True):
+    def link_entity(self, from_entity: Entity, to_entity: Entity, relationship: str, is_collection=True):
         if from_entity.is_linking_reference and not from_entity.ingest_json:
             from_entity.ingest_json = self.ingest_api.get_entity_by_uuid(ENTITY_LINK[from_entity.type],
                                                                          from_entity.id)
@@ -71,7 +70,7 @@ class Submission(object):
         to_entity_ingest = to_entity.ingest_json
         self.ingest_api.link_entity(from_entity_ingest, to_entity_ingest, relationship, is_collection)
 
-    def define_manifest(self, entity_map):
+    def define_manifest(self, entity_map: EntityMap):
         # TODO provide a better way to serialize
         manifest_json = {
             'totalCount': entity_map.count_total(),
@@ -89,8 +88,3 @@ class Submission(object):
 
     def get_entities(self) -> List[Entity]:
         return self.metadata_dict.values()
-
-
-def json_equals(json1:dict, json2: dict):
-    return json.dumps(json1, sort_keys=True) == json.dumps(json2, sort_keys=True)
-

@@ -1,10 +1,16 @@
 import copy
+import json
 import logging
+from typing import List
 
 from ingest.api.ingestapi import IngestApi
 from ingest.importer.submission.entity import Entity
 from ingest.importer.submission.entity_map import EntityMap
-from ingest.importer.submission.submission import Submission, ENTITY_LINK, json_equals
+from ingest.importer.submission.submission import Submission, ENTITY_LINK
+
+
+def json_equals(json1:dict, json2: dict):
+    return json.dumps(json1, sort_keys=True) == json.dumps(json2, sort_keys=True)
 
 
 class IngestSubmitter(object):
@@ -52,7 +58,7 @@ class IngestSubmitter(object):
                                    )
         submission.link_entity(project, submission_entity, 'submissionEnvelopes')
 
-    def link_entities(self, entities, entity_map, submission):
+    def link_entities(self, entities: List[Entity], entity_map: EntityMap, submission: Submission):
         progress = 0
         for entity in entities:
             for link in entity.direct_links:
@@ -73,3 +79,4 @@ class IngestSubmitter(object):
                     self.logger.error(error_message)
                     self.logger.error(f'{str(link_error)}')
                     raise
+
