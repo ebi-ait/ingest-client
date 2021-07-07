@@ -274,8 +274,6 @@ class IngestSubmitterTest(TestCase):
     def test_update_entity(self):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
-        ingest_api.get_submission = MagicMock()
-        ingest_api.create_submission_manifest = MagicMock()
         ingest_api.patch = MagicMock()
 
         # and:
@@ -291,8 +289,6 @@ class IngestSubmitterTest(TestCase):
     def test_update_entity__given_empty_ingest_json__then_fetch_resource(self):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
-        ingest_api.get_submission = MagicMock()
-        ingest_api.create_submission_manifest = MagicMock()
         ingest_api.patch = MagicMock()
         ingest_json = {'content': {'k': 'v', 'k2': 'v2'}, '_links': {'self': {'href': 'url'}}}
         ingest_api.get_entity_by_uuid = Mock(return_value=ingest_json)
@@ -310,8 +306,6 @@ class IngestSubmitterTest(TestCase):
     def test_update_entity__given_content_has_no_update__then_do_not_patch(self):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
-        ingest_api.get_submission = MagicMock()
-        ingest_api.create_submission_manifest = MagicMock()
         ingest_api.patch = MagicMock()
         ingest_json = {'content': {'k': 'v2', 'k2': 'v2'}, '_links': {'self': {'href': 'url'}}}
         ingest_api.get_entity_by_uuid = Mock(return_value=ingest_json)
