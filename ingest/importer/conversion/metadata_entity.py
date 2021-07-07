@@ -71,7 +71,7 @@ class MetadataEntity:
 
     @property
     def is_linking_reference(self):
-        return self.is_linking_reference
+        return self._is_linking_reference
 
     @property
     def external_links(self):
