@@ -144,6 +144,19 @@ def _create_spreadsheet_json():
                     'process': ['process_id_2']
                 }
             },
+            'biomaterial_id_4': {
+                'content': {
+                    'key': 'biomaterial_3'
+                },
+                'links_by_entity': {
+                    'biomaterial': ['biomaterial_id_2'],
+                    'process': ['process_id_2']
+                },
+                'external_links_by_entity': {
+                    'biomaterial': ['biomaterial_uuid']
+                },
+
+            },
         },
         'file': {
             'file_id_1': {
@@ -194,7 +207,7 @@ class IngestSubmitterTest(TestCase):
         submission.define_manifest.assert_called_with(entity_map)
         submission.add_entity.assert_has_calls([call(product), call(user)], any_order=True)
 
-    def test_submit_update_entities(self):
+    def test_update_entities(self):
         # given:
         ingest_api = MagicMock('mock_ingest_api')
         ingest_api.get_submission = MagicMock()
@@ -205,8 +218,10 @@ class IngestSubmitterTest(TestCase):
         product = Entity('product', 'product_1', {'k': 'v'})
         project = Entity('project', 'id', {'k': 'v'})
         user1 = Entity('user', 'user_1', {'k': 'v'})
-        user2 = Entity('user', 'user_2', {'k': 'v'}, {'content':  {'k': 'v0'}, '_links':{'self':{'href': 'url'}}}, is_reference=True)
-        user3 = Entity('user', 'user_3', {'k': 'v'}, {'content':  {'k': 'v0'}, '_links':{'self':{'href': 'url'}}}, is_reference=True)
+        user2 = Entity('user', 'user_2', {'k': 'v'}, {'content': {'k': 'v0'}, '_links': {'self': {'href': 'url'}}},
+                       is_reference=True)
+        user3 = Entity('user', 'user_3', {'k': 'v'}, {'content': {'k': 'v0'}, '_links': {'self': {'href': 'url'}}},
+                       is_reference=True)
         entity_map = EntityMap(product, user1, user2, user3, project)
 
         # when:
@@ -237,7 +252,8 @@ class IngestSubmitterTest(TestCase):
             'id': 'user_1',
             'relationship': 'wish_list'
         }
-        linked_product = Entity('product', 'product_1', {}, direct_links=[link_to_user], is_reference=False, is_linking_reference=False)
+        linked_product = Entity('product', 'product_1', {}, direct_links=[link_to_user], is_reference=False,
+                                is_linking_reference=False)
         project = Entity('project', 'id', {}, is_reference=False, is_linking_reference=False)
         entity_map.add_entity(linked_product)
         entity_map.add_entity(project)
@@ -254,6 +270,61 @@ class IngestSubmitterTest(TestCase):
         submission.add_entity.assert_has_calls([call(user), call(linked_product)], any_order=True)
         submission.link_entity.assert_called_with(linked_product, user, relationship='wish_list', is_collection=True)
         ingest_api.patch.assert_called_once()
+
+    def test_update_entity(self):
+        # given:
+        ingest_api = MagicMock('mock_ingest_api')
+        ingest_api.get_submission = MagicMock()
+        ingest_api.create_submission_manifest = MagicMock()
+        ingest_api.patch = MagicMock()
+
+        # and:
+        user1 = Entity('user', 'user_1', {'k': 'v2'}, {'content': {'k': 'v', 'k2': 'v2'}, '_links': {'self': {'href': 'url'}}})
+
+        # when:
+        submitter = IngestSubmitter(ingest_api)
+        submitter.update_entity(user1)
+
+        # then:
+        ingest_api.patch.assert_called_with('url', {'content': {'k': 'v2', 'k2': 'v2'}})
+
+    def test_update_entity__given_empty_ingest_json__then_fetch_resource(self):
+        # given:
+        ingest_api = MagicMock('mock_ingest_api')
+        ingest_api.get_submission = MagicMock()
+        ingest_api.create_submission_manifest = MagicMock()
+        ingest_api.patch = MagicMock()
+        ingest_json = {'content': {'k': 'v', 'k2': 'v2'}, '_links': {'self': {'href': 'url'}}}
+        ingest_api.get_entity_by_uuid = Mock(return_value=ingest_json)
+
+        # and:
+        user1 = Entity('biomaterial', 'biomaterial_uuid', {'k': 'v2'}, None)
+
+        # when:
+        submitter = IngestSubmitter(ingest_api)
+        submitter.update_entity(user1)
+
+        # then:
+        ingest_api.patch.assert_called_with('url', {'content': {'k': 'v2', 'k2': 'v2'}})
+
+    def test_update_entity__given_content_has_no_update__then_do_not_patch(self):
+        # given:
+        ingest_api = MagicMock('mock_ingest_api')
+        ingest_api.get_submission = MagicMock()
+        ingest_api.create_submission_manifest = MagicMock()
+        ingest_api.patch = MagicMock()
+        ingest_json = {'content': {'k': 'v2', 'k2': 'v2'}, '_links': {'self': {'href': 'url'}}}
+        ingest_api.get_entity_by_uuid = Mock(return_value=ingest_json)
+
+        # and:
+        user1 = Entity('biomaterial', 'biomaterial_uuid', {'k': 'v2'}, None)
+
+        # when:
+        submitter = IngestSubmitter(ingest_api)
+        submitter.update_entity(user1)
+
+        # then:
+        ingest_api.patch.assert_not_called()
 
     @staticmethod
     def _mock_submission(submission_constructor):
@@ -297,6 +368,63 @@ class EntityMapTest(TestCase):
         # and:
         protocol1 = entity_map.get_entity('protocol', 'protocol_id_1')
         self.assertEqual({'key': 'protocol_1'}, protocol1.content)
+
+        # and:
+        biomaterial3 = entity_map.get_entity('biomaterial', 'biomaterial_uuid')
+        self.assertTrue(biomaterial3.is_linking_reference)
+
+    def test_load__is_linking_reference(self):
+        # given:
+        spreadsheet_json = {
+            'biomaterial': {
+                'biomaterial_id': {
+                    'content': {
+                        'key': 'biomaterial_3'
+                    },
+                    'links_by_entity': {
+                        'biomaterial': ['biomaterial_id_2'],
+                        'process': ['process_id_2']
+                    },
+                    'external_links_by_entity': {
+                        'biomaterial': ['biomaterial_uuid']
+                    },
+
+                },
+            }
+        }
+
+        # when:
+        entity_map = EntityMap.load(spreadsheet_json)
+
+        # then:
+        self.assertEqual(['biomaterial'], list(entity_map.get_entity_types()))
+
+        # and:
+        biomaterial = entity_map.get_entity('biomaterial', 'biomaterial_uuid')
+        self.assertTrue(biomaterial.is_linking_reference)
+
+    def test_load__is_reference(self):
+        # given:
+        spreadsheet_json = {
+            'biomaterial': {
+                'biomaterial_uuid': {
+                    'content': {
+                        'key': 'value'
+                    },
+                    'is_reference': True
+                }
+            }
+        }
+
+        # when:
+        entity_map = EntityMap.load(spreadsheet_json)
+
+        # then:
+        self.assertEqual(['biomaterial'], list(entity_map.get_entity_types()))
+
+        # and:
+        biomaterial = entity_map.get_entity('biomaterial', 'biomaterial_uuid')
+        self.assertTrue(biomaterial.is_reference)
 
     def _assert_correct_entity(self, entity, entity_id='', content={}, entity_type='', links={}):
         self.assertTrue(entity)
