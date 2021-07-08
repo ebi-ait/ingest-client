@@ -29,6 +29,7 @@ class EntityLinker(object):
                 'is_collection': False
             })
             # TODO: Remove when biomaterial/process.projects is deprecated
+            # https://github.com/ebi-ait/dcp-ingest-central/issues/88
             if entity.type == 'biomaterial' or entity.type == 'process':
                 entity.direct_links.append({
                     'entity': 'project',
