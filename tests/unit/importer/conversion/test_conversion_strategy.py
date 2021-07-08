@@ -471,7 +471,8 @@ class ExternalReferenceCellConversionTest(TestCase):
         # then:
         expected_id = '20ea8c50-b1b0-4318-97ff-f32cecf47079 - converted'
         self.assertEqual(expected_id, metadata.object_id)
-        self.assertTrue(expected_id, metadata._is_reference)
+        self.assertTrue(metadata.is_reference)
+        self.assertFalse(metadata.is_linking_reference)
 
 
 class LinkingDetailCellConversionTest(TestCase):

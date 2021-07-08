@@ -56,8 +56,8 @@ class XlsImporterTest(TestCase):
         with self.assertRaises(SchemaRetrievalError):
             importer.generate_json('file_path', is_update=False)
 
-    @patch('ingest.importer.submission.EntityMap.load')
-    @patch('ingest.importer.submission.EntityLinker.process_links_from_spreadsheet')
+    @patch('ingest.importer.submission.entity_map.EntityMap.load')
+    @patch('ingest.importer.submission.entity_linker.EntityLinker.handle_links_from_spreadsheet')
     @patch('ingest.importer.importer.XlsImporter.generate_json')
     def test_dry_run_import_file_success(self, mock_generate_json, mock_entity_linker, mock_entity_map):
         mock_entity_map.return_value = MagicMock()
@@ -70,8 +70,8 @@ class XlsImporterTest(TestCase):
         self.assertEqual(entity_map, 'entity_map_w_links')
         self.assertFalse(errors)
 
-    @patch('ingest.importer.submission.EntityMap.load')
-    @patch('ingest.importer.submission.EntityLinker.process_links_from_spreadsheet')
+    @patch('ingest.importer.submission.entity_map.EntityMap.load')
+    @patch('ingest.importer.submission.entity_linker.EntityLinker.handle_links_from_spreadsheet')
     @patch('ingest.importer.importer.XlsImporter.generate_json')
     def test_dry_run_import_file_error(self, mock_generate_json, mock_entity_linker, mock_entity_map):
         mock_entity_map.return_value = MagicMock()

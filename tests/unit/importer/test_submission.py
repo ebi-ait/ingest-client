@@ -1,11 +1,16 @@
 import json
 from unittest import TestCase
+from unittest.mock import Mock
 
 from mock import MagicMock, patch, call
 
 import ingest.api.ingestapi
-from ingest.importer.submission import Submission, Entity, IngestSubmitter, EntityLinker, LinkedEntityNotFound, \
-    InvalidLinkInSpreadsheet, MultipleProcessesFound, EntityMap
+from ingest.importer.submission.entity import Entity
+from ingest.importer.submission.entity_linker import EntityLinker
+from ingest.importer.submission.entity_map import EntityMap
+from ingest.importer.submission.errors import InvalidLinkInSpreadsheet, LinkedEntityNotFound, MultipleProcessesFound
+from ingest.importer.submission.ingest_submitter import IngestSubmitter
+from ingest.importer.submission.submission import Submission
 
 
 class SubmissionTest(TestCase):
@@ -139,6 +144,19 @@ def _create_spreadsheet_json():
                     'process': ['process_id_2']
                 }
             },
+            'biomaterial_id_4': {
+                'content': {
+                    'key': 'biomaterial_3'
+                },
+                'links_by_entity': {
+                    'biomaterial': ['biomaterial_id_2'],
+                    'process': ['process_id_2']
+                },
+                'external_links_by_entity': {
+                    'biomaterial': ['biomaterial_uuid']
+                },
+
+            },
         },
         'file': {
             'file_id_1': {
@@ -166,11 +184,16 @@ def _create_spreadsheet_json():
 
 class IngestSubmitterTest(TestCase):
 
-    @patch('ingest.importer.submission.Submission')
+    def setUp(self) -> None:
+        self.ingest_api = MagicMock('mock_ingest_api')
+        self.ingest_api.get_submission = MagicMock()
+        self.ingest_api.create_submission_manifest = MagicMock()
+        self.ingest_api.patch = MagicMock()
+        self.ingest_api.get_link_from_resource = MagicMock()
+
+    @patch('ingest.importer.submission.ingest_submitter.Submission')
     def test_submit(self, submission_constructor):
         # given:
-        ingest_api = MagicMock('mock_ingest_api')
-        ingest_api.get_submission = MagicMock()
         submission = self._mock_submission(submission_constructor)
 
         # and:
@@ -180,46 +203,42 @@ class IngestSubmitterTest(TestCase):
         entity_map = EntityMap(product, user, project)
 
         # when:
-        submitter = IngestSubmitter(ingest_api)
-        submitter.submit(entity_map, submission_url='url')
+        submitter = IngestSubmitter(self.ingest_api)
+        submitter.add_entities(entity_map, submission_url='url')
 
         # then:
-        submission_constructor.assert_called_with(ingest_api, 'url')
+        submission_constructor.assert_called_with(self.ingest_api, 'url')
         submission.define_manifest.assert_called_with(entity_map)
         submission.add_entity.assert_has_calls([call(product), call(user)], any_order=True)
 
-    @patch('ingest.importer.submission.Submission')
-    def test_submit_update_entities(self, submission_constructor):
+    def test_update_entities(self):
         # given:
-        ingest_api = MagicMock('mock_ingest_api')
-        ingest_api.get_submission = MagicMock()
-        submission = self._mock_submission(submission_constructor)
+        entity_map = self._create_test_entity_map()
+        user2 = entity_map.get_entity('user', 'user_2')
+        user3 = entity_map.get_entity('user', 'user_3')
 
-        # and:
+        # when:
+        submitter = IngestSubmitter(self.ingest_api)
+        submitter.update_entity = MagicMock()
+        submitter.update_entities(entity_map)
+
+        # then:
+        submitter.update_entity.assert_has_calls([call(user2), call(user3)], any_order=True)
+
+    def _create_test_entity_map(self) -> EntityMap:
         product = Entity('product', 'product_1', {'k': 'v'})
         project = Entity('project', 'id', {'k': 'v'})
         user1 = Entity('user', 'user_1', {'k': 'v'})
-        user2 = Entity('user', 'user_2', {'k': 'v'}, is_reference=True)
-        user3 = Entity('user', 'user_3', {'k': 'v'}, is_reference=True)
+        user2 = Entity('user', 'user_2', {'k': 'v'}, {'content': {'k': 'v0'}, '_links': {'self': {'href': 'url'}}},
+                       is_reference=True)
+        user3 = Entity('user', 'user_3', {'k': 'v'}, {'content': {'k': 'v0'}, '_links': {'self': {'href': 'url'}}},
+                       is_reference=True)
         entity_map = EntityMap(product, user1, user2, user3, project)
+        return entity_map
 
-        # when:
-        submitter = IngestSubmitter(ingest_api)
-        submitter.submit(entity_map, submission_url='url')
-
-        # then:
-        submission_constructor.assert_called_with(ingest_api, 'url')
-        submission.define_manifest.assert_called_with(entity_map)
-        submission.add_entity.assert_has_calls([call(product), call(user1)], any_order=True)
-        submission.update_entity.assert_has_calls([call(user2), call(user3)], any_order=True)
-
-    @patch('ingest.importer.submission.Submission')
+    @patch('ingest.importer.submission.ingest_submitter.Submission')
     def test_submit_linked_entity(self, submission_constructor):
         # given:
-        ingest_api = MagicMock('mock_ingest_api')
-        ingest_api.get_submission = MagicMock()
-        ingest_api.patch = MagicMock()
-        ingest_api.get_link_from_resource = MagicMock()
         submission = self._mock_submission(submission_constructor)
 
         # and:
@@ -232,22 +251,65 @@ class IngestSubmitterTest(TestCase):
             'id': 'user_1',
             'relationship': 'wish_list'
         }
-        linked_product = Entity('product', 'product_1', {}, direct_links=[link_to_user])
-        project = Entity('project', 'id', {})
+        linked_product = Entity('product', 'product_1', {}, direct_links=[link_to_user], is_reference=False,
+                                is_linking_reference=False)
+        project = Entity('project', 'id', {}, is_reference=False, is_linking_reference=False)
         entity_map.add_entity(linked_product)
         entity_map.add_entity(project)
 
         # when:
-        submitter = IngestSubmitter(ingest_api)
+        submitter = IngestSubmitter(self.ingest_api)
+        submitter.link_submission_to_project = MagicMock()
         submitter.PROGRESS_CTR = 1
-        submitter.submit(entity_map, submission_url='url')
+        submitter.add_entities(entity_map, submission_url='url')
 
         # then:
-        submission_constructor.assert_called_with(ingest_api, 'url')
+        submission_constructor.assert_called_with(self.ingest_api, 'url')
         submission.define_manifest.assert_called_with(entity_map)
         submission.add_entity.assert_has_calls([call(user), call(linked_product)], any_order=True)
         submission.link_entity.assert_called_with(linked_product, user, relationship='wish_list', is_collection=True)
-        ingest_api.patch.assert_called_once()
+        self.ingest_api.patch.assert_called_once()
+
+    def test_update_entity(self):
+        # given:
+        user1 = Entity('user', 'user_1', {'k': 'v2'}, {'content': {'k': 'v', 'k2': 'v2'}, '_links': {'self': {'href': 'url'}}})
+
+        # when:
+        submitter = IngestSubmitter(self.ingest_api)
+        submitter.update_entity(user1)
+
+        # then:
+        self.ingest_api.patch.assert_called_with('url', {'content': {'k': 'v2', 'k2': 'v2'}})
+
+    def test_update_entity__given_empty_ingest_json__then_fetch_resource(self):
+        # given:
+        ingest_json = {'content': {'k': 'v', 'k2': 'v2'}, '_links': {'self': {'href': 'url'}}}
+        self.ingest_api.get_entity_by_uuid = Mock(return_value=ingest_json)
+
+        # and:
+        user1 = Entity('biomaterial', 'biomaterial_uuid', {'k': 'v2'}, None)
+
+        # when:
+        submitter = IngestSubmitter(self.ingest_api)
+        submitter.update_entity(user1)
+
+        # then:
+        self.ingest_api.patch.assert_called_with('url', {'content': {'k': 'v2', 'k2': 'v2'}})
+
+    def test_update_entity__given_content_has_no_update__then_do_not_patch(self):
+        # given:
+        ingest_json = {'content': {'k': 'v2', 'k2': 'v2'}, '_links': {'self': {'href': 'url'}}}
+        self.ingest_api.get_entity_by_uuid = Mock(return_value=ingest_json)
+
+        # and:
+        user1 = Entity('biomaterial', 'biomaterial_uuid', {'k': 'v2'}, None)
+
+        # when:
+        submitter = IngestSubmitter(self.ingest_api)
+        submitter.update_entity(user1)
+
+        # then:
+        self.ingest_api.patch.assert_not_called()
 
     @staticmethod
     def _mock_submission(submission_constructor):
@@ -291,6 +353,63 @@ class EntityMapTest(TestCase):
         # and:
         protocol1 = entity_map.get_entity('protocol', 'protocol_id_1')
         self.assertEqual({'key': 'protocol_1'}, protocol1.content)
+
+        # and:
+        biomaterial3 = entity_map.get_entity('biomaterial', 'biomaterial_uuid')
+        self.assertTrue(biomaterial3.is_linking_reference)
+
+    def test_load__is_linking_reference(self):
+        # given:
+        spreadsheet_json = {
+            'biomaterial': {
+                'biomaterial_id': {
+                    'content': {
+                        'key': 'biomaterial_3'
+                    },
+                    'links_by_entity': {
+                        'biomaterial': ['biomaterial_id_2'],
+                        'process': ['process_id_2']
+                    },
+                    'external_links_by_entity': {
+                        'biomaterial': ['biomaterial_uuid']
+                    },
+
+                },
+            }
+        }
+
+        # when:
+        entity_map = EntityMap.load(spreadsheet_json)
+
+        # then:
+        self.assertEqual(['biomaterial'], list(entity_map.get_entity_types()))
+
+        # and:
+        biomaterial = entity_map.get_entity('biomaterial', 'biomaterial_uuid')
+        self.assertTrue(biomaterial.is_linking_reference)
+
+    def test_load__is_reference(self):
+        # given:
+        spreadsheet_json = {
+            'biomaterial': {
+                'biomaterial_uuid': {
+                    'content': {
+                        'key': 'value'
+                    },
+                    'is_reference': True
+                }
+            }
+        }
+
+        # when:
+        entity_map = EntityMap.load(spreadsheet_json)
+
+        # then:
+        self.assertEqual(['biomaterial'], list(entity_map.get_entity_types()))
+
+        # and:
+        biomaterial = entity_map.get_entity('biomaterial', 'biomaterial_uuid')
+        self.assertTrue(biomaterial.is_reference)
 
     def _assert_correct_entity(self, entity, entity_id='', content={}, entity_type='', links={}):
         self.assertTrue(entity)
@@ -505,9 +624,9 @@ class EntityLinkerTest(TestCase):
             }
         }
 
-        entity_linker = EntityLinker(self.mocked_template_manager)
-        entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        entity_map = EntityMap.load(spreadsheet_json)
+        entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
+        output = entity_linker.handle_links_from_spreadsheet()
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -683,9 +802,9 @@ class EntityLinkerTest(TestCase):
             }
         }
 
-        entity_linker = EntityLinker(self.mocked_template_manager)
-        entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        entity_map = EntityMap.load(spreadsheet_json)
+        entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
+        output = entity_linker.handle_links_from_spreadsheet()
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -838,9 +957,9 @@ class EntityLinkerTest(TestCase):
             }
         }
 
-        entity_linker = EntityLinker(self.mocked_template_manager)
-        entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        entity_map = EntityMap.load(spreadsheet_json)
+        entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
+        output = entity_linker.handle_links_from_spreadsheet()
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -995,9 +1114,9 @@ class EntityLinkerTest(TestCase):
             }
         }
 
-        entity_linker = EntityLinker(self.mocked_template_manager)
-        entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        entity_map = EntityMap.load(spreadsheet_json)
+        entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
+        output = entity_linker.handle_links_from_spreadsheet()
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -1157,9 +1276,9 @@ class EntityLinkerTest(TestCase):
             }
         }
 
-        entity_linker = EntityLinker(self.mocked_template_manager)
-        entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        entity_map = EntityMap.load(spreadsheet_json)
+        entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
+        output = entity_linker.handle_links_from_spreadsheet()
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -1186,11 +1305,11 @@ class EntityLinkerTest(TestCase):
             }
         }
 
-        entities_dictionaries = EntityMap.load(spreadsheet_json)
-        entity_linker = EntityLinker(self.mocked_template_manager)
+        entity_map = EntityMap.load(spreadsheet_json)
+        entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
 
         with self.assertRaises(LinkedEntityNotFound) as context:
-            entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+            entity_linker.handle_links_from_spreadsheet()
 
         self.assertEqual('biomaterial', context.exception.entity)
         self.assertEqual('biomaterial_id_1', context.exception.id)
@@ -1224,11 +1343,11 @@ class EntityLinkerTest(TestCase):
             }
         }
 
-        entities_dictionaries = EntityMap.load(spreadsheet_json)
-        entity_linker = EntityLinker(self.mocked_template_manager)
+        entity_map = EntityMap.load(spreadsheet_json)
+        entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
 
         with self.assertRaises(InvalidLinkInSpreadsheet) as context:
-            entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+            entity_linker.handle_links_from_spreadsheet()
 
         self.assertEqual('biomaterial', context.exception.from_entity.type)
         self.assertEqual('file', context.exception.link_entity_type)
@@ -1270,11 +1389,11 @@ class EntityLinkerTest(TestCase):
             }
         }
 
-        entities_dictionaries = EntityMap.load(spreadsheet_json)
-        entity_linker = EntityLinker(self.mocked_template_manager)
+        entity_map = EntityMap.load(spreadsheet_json)
+        entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
 
         with self.assertRaises(MultipleProcessesFound) as context:
-            entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+            entity_linker.handle_links_from_spreadsheet()
 
         self.assertEqual('biomaterial', context.exception.from_entity.type)
         self.assertEqual(['process_id_1', 'process_id_2'], context.exception.process_ids)
