@@ -1,26 +1,104 @@
+from ingest.importer.conversion.template_manager import TemplateManager
 from ingest.importer.submission.entity import Entity
+from ingest.importer.submission.entity_map import EntityMap
 from ingest.importer.submission.errors import LinkedEntityNotFound, InvalidLinkInSpreadsheet, MultipleProcessesFound
 
 
 class EntityLinker(object):
 
-    def __init__(self, template_manager):
+    def __init__(self, template_manager: TemplateManager, entity_map: EntityMap):
         self.template_manager = template_manager
         self.process_id_ctr = 0
+        self.entity_map = entity_map
 
-    def handle_links_from_spreadsheet(self, entity_map):
-        for entity in entity_map.get_entities():
+    def handle_links_from_spreadsheet(self):
+        for entity in self.entity_map.get_entities():
             if entity.is_reference:
                 continue
+            self._validate_entity_links(entity)
+            self._generate_direct_links(entity)
 
-            self._validate_entity_links(entity_map, entity)
-            self._generate_direct_links(entity_map, entity)
+        return self.entity_map
 
-        return entity_map
+    def _generate_direct_links(self, entity):
+        project = self.entity_map.get_project()
 
-    def _generate_direct_links(self, entity_map, entity):
-        project = entity_map.get_project()
+        self._link_entity_to_project(entity, project)
+        self._link_supplementary_file_to_project(entity, project)
 
+        links_by_entity = entity.links_by_entity
+        linked_biomaterial_ids = links_by_entity.get('biomaterial', [])
+        linked_file_ids = links_by_entity.get('file', [])
+
+        if linked_biomaterial_ids or linked_file_ids:
+            linking_process = self.create_or_get_process(entity)
+            self._link_process_to_project(linking_process, project)
+            self.entity_map.add_entity(linking_process)
+
+            self._link_entity_as_output_to_process(entity, linking_process)
+            self._link_protocols_to_process(entity, linking_process)
+
+            self._link_input_biomaterials_to_entity(linked_biomaterial_ids, linking_process)
+            self._link_input_files_to_entity(linked_file_ids, linking_process)
+
+    def _link_entity_as_output_to_process(self, entity, linking_process):
+        entity.direct_links.append({
+            'entity': linking_process.type,
+            'id': linking_process.id,
+            'relationship': 'derivedByProcesses'
+        })
+
+    def _link_input_files_to_entity(self, linked_file_ids, linking_process):
+        for linked_file_id in linked_file_ids:
+            linked_file_entity = self.entity_map.get_entity('file', linked_file_id)
+            linked_file_entity.direct_links.append({
+                'entity': linking_process.type,
+                'id': linking_process.id,
+                'relationship': 'inputToProcesses'
+            })
+
+    def _link_input_biomaterials_to_entity(self, linked_biomaterial_ids, linking_process):
+        for linked_biomaterial_id in linked_biomaterial_ids:
+            linked_biomaterial_entity = self.entity_map.get_entity('biomaterial', linked_biomaterial_id)
+            linked_biomaterial_entity.direct_links.append({
+                'entity': linking_process.type,
+                'id': linking_process.id,
+                'relationship': 'inputToProcesses'
+            })
+
+    def _link_protocols_to_process(self, entity: Entity, linking_process):
+        links_by_entity = entity.links_by_entity
+        linked_protocol_ids = links_by_entity.get('protocol', [])
+        for linked_protocol_id in linked_protocol_ids:
+            linking_process.direct_links.append({
+                'entity': 'protocol',
+                'id': linked_protocol_id,
+                'relationship': 'protocols'
+            })
+
+    def _link_process_to_project(self, linking_process, project):
+        linking_process.direct_links.append({
+            'entity': 'project',
+            'id': project.id,
+            'relationship': 'project',
+            'is_collection': False
+        })
+        # TODO: Remove when process.projects is deprectated
+        linking_process.direct_links.append({
+            'entity': 'project',
+            'id': project.id,
+            'relationship': 'projects'
+        })
+
+    def _link_supplementary_file_to_project(self, entity, project):
+        if project and entity.concrete_type == 'supplementary_file':
+            project.direct_links.append({
+                'entity': 'file',
+                'id': entity.id,
+                'relationship': 'supplementaryFiles'
+            })
+
+    def _link_entity_to_project(self, entity, project):
         if project and entity.type != 'project':
             entity.direct_links.append({
                 'entity': 'project',
@@ -37,82 +115,7 @@ class EntityLinker(object):
                     'relationship': 'projects'
                 })
 
-        if project and entity.concrete_type == 'supplementary_file':
-            project.direct_links.append({
-                'entity': 'file',
-                'id': entity.id,
-                'relationship': 'supplementaryFiles'
-            })
-
-        links_by_entity = entity.links_by_entity
-
-        linked_biomaterial_ids = links_by_entity.get('biomaterial', [])
-        linked_process_id = links_by_entity['process'][0] if links_by_entity.get('process') else None
-        linked_protocol_ids = links_by_entity.get('protocol', [])
-        linked_file_ids = links_by_entity.get('file', [])
-
-        linking_details = entity.linking_details
-
-        if linked_biomaterial_ids or linked_file_ids:
-
-            linking_process = self.link_process(entity_map, linked_process_id, linking_details)
-            linking_process.direct_links.append({
-                'entity': 'project',
-                'id': project.id,
-                'relationship': 'project',
-                'is_collection': False
-            })
-            # TODO: Remove when process.projects is deprectated
-            linking_process.direct_links.append({
-                'entity': 'project',
-                'id': project.id,
-                'relationship': 'projects'
-            })
-            entity_map.add_entity(linking_process)
-
-            # link output of process
-            entity.direct_links.append({
-                'entity': linking_process.type,
-                'id': linking_process.id,
-                'relationship': 'derivedByProcesses'
-            })
-
-            # apply all protocols to the linking process
-            for linked_protocol_id in linked_protocol_ids:
-                linking_process.direct_links.append({
-                    'entity': 'protocol',
-                    'id': linked_protocol_id,
-                    'relationship': 'protocols'
-                })
-
-            # biomaterial-biomaterial
-            # file-biomaterial
-            for linked_biomaterial_id in linked_biomaterial_ids:
-                linked_biomaterial_entity = entity_map.get_entity('biomaterial', linked_biomaterial_id)
-                linked_biomaterial_entity.direct_links.append({
-                    'entity': linking_process.type,
-                    'id': linking_process.id,
-                    'relationship': 'inputToProcesses'
-                })
-
-            # file-file
-            for linked_file_id in linked_file_ids:
-                linked_file_entity = entity_map.get_entity('file', linked_file_id)
-                linked_file_entity.direct_links.append({
-                    'entity': linking_process.type,
-                    'id': linking_process.id,
-                    'relationship': 'inputToProcesses'
-                })
-
-    def link_process(self, entity_map, linked_process_id, linking_details):
-        if not linked_process_id:
-            linked_process_id = self._generate_empty_process_id()
-
-        linking_process = self.create_or_get_process(entity_map, linked_process_id, linking_details)
-
-        return linking_process
-
-    def _validate_entity_links(self, entity_map, entity):
+    def _validate_entity_links(self, entity):
         links_by_entity = entity.links_by_entity
 
         for link_entity_type, link_entity_ids in links_by_entity.items():
@@ -121,16 +124,23 @@ class EntityLinker(object):
                     # these will be created later
                     if not self._is_valid_spreadsheet_link(entity.type, link_entity_type):
                         raise InvalidLinkInSpreadsheet(entity, link_entity_type, link_entity_id)
-                    if not entity_map.get_entity(link_entity_type, link_entity_id):
+                    if not self.entity_map.get_entity(link_entity_type, link_entity_id):
                         raise LinkedEntityNotFound(entity, link_entity_type, link_entity_id)
-                    if not entity_map.get_entity(link_entity_type, link_entity_id):
+                    if not self.entity_map.get_entity(link_entity_type, link_entity_id):
                         raise LinkedEntityNotFound(entity, link_entity_type, link_entity_id)
 
                 if link_entity_type == 'process' and not len(link_entity_ids) == 1:
                     raise MultipleProcessesFound(entity, link_entity_ids)
 
-    def create_or_get_process(self, entity_map, process_id, linking_details):
-        process = entity_map.get_entity('process', process_id)
+    def create_or_get_process(self, entity):
+        links_by_entity = entity.links_by_entity
+        process_id = links_by_entity['process'][0] if links_by_entity.get('process') else None
+        linking_details = entity.linking_details
+
+        if not process_id:
+            process_id = self._generate_empty_process_id()
+
+        process = self.entity_map.get_entity('process', process_id)
 
         if not process:
             process = self.create_process(process_id, linking_details)
