@@ -1,3 +1,6 @@
+from openpyxl import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
+
 EXCLUDE_KEYS = ['describedBy', 'schema_type']
 
 
@@ -37,3 +40,22 @@ class XlsDownloader:
 
     def get_concrete_entity(self, content):
         return content.get('describedBy').rsplit('/', 1)[-1]
+
+    @staticmethod
+    def create_workbook(input_json: dict) -> Workbook:
+        workbook = Workbook()
+        workbook.remove(workbook.active)
+
+        for ws_title, ws_elements in input_json.items():
+            worksheet: Worksheet = workbook.create_sheet(title=ws_title)
+            XlsDownloader.add_worksheet_content(worksheet, ws_elements)
+
+        return workbook
+
+    @staticmethod
+    def add_worksheet_content(worksheet, ws_elements: dict):
+        row = col = 1
+        for header, cell_value in ws_elements.items():
+            worksheet.cell(row=row, column=col, value=header)
+            worksheet.cell(row=row + 1, column=col, value=cell_value)
+            col += 1
