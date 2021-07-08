@@ -108,7 +108,7 @@ class EntityMap(object):
                     all_entities.append(entity)
         return all_entities
 
-    def get_project(self):
+    def get_project(self) -> Entity:
         project_id = list(self.entities_dict_by_type.get('project').keys())[0]
         return self.get_entity('project', project_id)
 

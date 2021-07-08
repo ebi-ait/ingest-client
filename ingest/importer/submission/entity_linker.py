@@ -1,3 +1,5 @@
+from typing import List
+
 from ingest.importer.conversion.template_manager import TemplateManager
 from ingest.importer.submission.entity import Entity
 from ingest.importer.submission.entity_map import EntityMap
@@ -20,7 +22,7 @@ class EntityLinker(object):
 
         return self.entity_map
 
-    def _generate_direct_links(self, entity):
+    def _generate_direct_links(self, entity: Entity):
         project = self.entity_map.get_project()
 
         self._link_entity_to_project(entity, project)
@@ -41,14 +43,14 @@ class EntityLinker(object):
             self._link_input_biomaterials_to_entity(linked_biomaterial_ids, linking_process)
             self._link_input_files_to_entity(linked_file_ids, linking_process)
 
-    def _link_entity_as_output_to_process(self, entity, linking_process):
+    def _link_entity_as_output_to_process(self, entity: Entity, linking_process: Entity):
         entity.direct_links.append({
             'entity': linking_process.type,
             'id': linking_process.id,
             'relationship': 'derivedByProcesses'
         })
 
-    def _link_input_files_to_entity(self, linked_file_ids, linking_process):
+    def _link_input_files_to_entity(self, linked_file_ids: List[str], linking_process: Entity):
         for linked_file_id in linked_file_ids:
             linked_file_entity = self.entity_map.get_entity('file', linked_file_id)
             linked_file_entity.direct_links.append({
@@ -57,7 +59,7 @@ class EntityLinker(object):
                 'relationship': 'inputToProcesses'
             })
 
-    def _link_input_biomaterials_to_entity(self, linked_biomaterial_ids, linking_process):
+    def _link_input_biomaterials_to_entity(self, linked_biomaterial_ids: List[str], linking_process: Entity):
         for linked_biomaterial_id in linked_biomaterial_ids:
             linked_biomaterial_entity = self.entity_map.get_entity('biomaterial', linked_biomaterial_id)
             linked_biomaterial_entity.direct_links.append({
@@ -66,7 +68,7 @@ class EntityLinker(object):
                 'relationship': 'inputToProcesses'
             })
 
-    def _link_protocols_to_process(self, entity: Entity, linking_process):
+    def _link_protocols_to_process(self, entity: Entity, linking_process: Entity):
         links_by_entity = entity.links_by_entity
         linked_protocol_ids = links_by_entity.get('protocol', [])
         for linked_protocol_id in linked_protocol_ids:
@@ -76,7 +78,7 @@ class EntityLinker(object):
                 'relationship': 'protocols'
             })
 
-    def _link_process_to_project(self, linking_process, project):
+    def _link_process_to_project(self, linking_process: Entity, project: Entity):
         linking_process.direct_links.append({
             'entity': 'project',
             'id': project.id,
@@ -90,7 +92,7 @@ class EntityLinker(object):
             'relationship': 'projects'
         })
 
-    def _link_supplementary_file_to_project(self, entity, project):
+    def _link_supplementary_file_to_project(self, entity: Entity, project: Entity):
         if project and entity.concrete_type == 'supplementary_file':
             project.direct_links.append({
                 'entity': 'file',
@@ -98,7 +100,7 @@ class EntityLinker(object):
                 'relationship': 'supplementaryFiles'
             })
 
-    def _link_entity_to_project(self, entity, project):
+    def _link_entity_to_project(self, entity: Entity, project: Entity):
         if project and entity.type != 'project':
             entity.direct_links.append({
                 'entity': 'project',
@@ -115,7 +117,7 @@ class EntityLinker(object):
                     'relationship': 'projects'
                 })
 
-    def _validate_entity_links(self, entity):
+    def _validate_entity_links(self, entity: Entity):
         links_by_entity = entity.links_by_entity
 
         for link_entity_type, link_entity_ids in links_by_entity.items():
@@ -132,7 +134,7 @@ class EntityLinker(object):
                 if link_entity_type == 'process' and not len(link_entity_ids) == 1:
                     raise MultipleProcessesFound(entity, link_entity_ids)
 
-    def create_or_get_process(self, entity):
+    def create_or_get_process(self, entity: Entity) -> Entity:
         links_by_entity = entity.links_by_entity
         process_id = links_by_entity['process'][0] if links_by_entity.get('process') else None
         linking_details = entity.linking_details
@@ -162,7 +164,7 @@ class EntityLinker(object):
 
         return link_key in VALID_ENTITY_LINKS_MAP
 
-    def create_process(self, process_id, linking_details):
+    def create_process(self, process_id: str, linking_details: dict):
         schema_type = 'process'
         described_by = self.template_manager.get_schema_url(schema_type)
 
