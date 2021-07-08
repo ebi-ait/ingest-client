@@ -36,7 +36,6 @@ class Submission(object):
     def add_entity(self, entity: Entity):
         link_name = ENTITY_LINK[entity.type]
 
-        # TODO: how to get filename?!!!
         if entity.type == 'file':
             file_name = entity.content['file_core']['file_name']
             response = self.ingest_api.create_file(self.submission_url,
