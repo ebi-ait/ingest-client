@@ -51,7 +51,7 @@ class XlsImporter:
         if errors:
             return None, errors
 
-        entity_map = self._process_links_from_spreadsheet(template_mgr, spreadsheet_json)
+        entity_map = self._handle_links_from_spreadsheet(template_mgr, spreadsheet_json)
 
         return entity_map, []
 
@@ -67,7 +67,7 @@ class XlsImporter:
             elif is_update:
                 self.submitter.update_entities(entity_map)
             else:
-                entity_map = self._process_links_from_spreadsheet(template_mgr, spreadsheet_json)
+                entity_map = self._handle_links_from_spreadsheet(template_mgr, spreadsheet_json)
                 submission = self.submitter.add_entities(entity_map, submission_url)
                 return submission, template_mgr
         except HTTPError as httpError:
@@ -93,10 +93,10 @@ class XlsImporter:
             )
 
     @staticmethod
-    def _process_links_from_spreadsheet(template_mgr, spreadsheet_json):
+    def _handle_links_from_spreadsheet(template_mgr, spreadsheet_json):
         entity_map = EntityMap.load(spreadsheet_json)
         entity_linker = EntityLinker(template_mgr, entity_map)
-        entity_map = entity_linker.handle_links_from_spreadsheet(entity_map)
+        entity_map = entity_linker.handle_links_from_spreadsheet()
         return entity_map
 
     @staticmethod
