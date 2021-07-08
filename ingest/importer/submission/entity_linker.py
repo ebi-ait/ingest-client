@@ -8,7 +8,7 @@ class EntityLinker(object):
         self.template_manager = template_manager
         self.process_id_ctr = 0
 
-    def process_links_from_spreadsheet(self, entity_map):
+    def handle_links_from_spreadsheet(self, entity_map):
         for entity in entity_map.get_entities():
             if entity.is_reference:
                 continue

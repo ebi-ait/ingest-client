@@ -626,7 +626,7 @@ class EntityLinkerTest(TestCase):
 
         entity_linker = EntityLinker(self.mocked_template_manager)
         entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        output = entity_linker.handle_links_from_spreadsheet(entities_dictionaries)
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -804,7 +804,7 @@ class EntityLinkerTest(TestCase):
 
         entity_linker = EntityLinker(self.mocked_template_manager)
         entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        output = entity_linker.handle_links_from_spreadsheet(entities_dictionaries)
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -959,7 +959,7 @@ class EntityLinkerTest(TestCase):
 
         entity_linker = EntityLinker(self.mocked_template_manager)
         entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        output = entity_linker.handle_links_from_spreadsheet(entities_dictionaries)
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -1116,7 +1116,7 @@ class EntityLinkerTest(TestCase):
 
         entity_linker = EntityLinker(self.mocked_template_manager)
         entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        output = entity_linker.handle_links_from_spreadsheet(entities_dictionaries)
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -1278,7 +1278,7 @@ class EntityLinkerTest(TestCase):
 
         entity_linker = EntityLinker(self.mocked_template_manager)
         entities_dictionaries = EntityMap.load(spreadsheet_json)
-        output = entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+        output = entity_linker.handle_links_from_spreadsheet(entities_dictionaries)
 
         self._assert_equal_direct_links(expected_json, output)
 
@@ -1309,7 +1309,7 @@ class EntityLinkerTest(TestCase):
         entity_linker = EntityLinker(self.mocked_template_manager)
 
         with self.assertRaises(LinkedEntityNotFound) as context:
-            entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+            entity_linker.handle_links_from_spreadsheet(entities_dictionaries)
 
         self.assertEqual('biomaterial', context.exception.entity)
         self.assertEqual('biomaterial_id_1', context.exception.id)
@@ -1347,7 +1347,7 @@ class EntityLinkerTest(TestCase):
         entity_linker = EntityLinker(self.mocked_template_manager)
 
         with self.assertRaises(InvalidLinkInSpreadsheet) as context:
-            entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+            entity_linker.handle_links_from_spreadsheet(entities_dictionaries)
 
         self.assertEqual('biomaterial', context.exception.from_entity.type)
         self.assertEqual('file', context.exception.link_entity_type)
@@ -1393,7 +1393,7 @@ class EntityLinkerTest(TestCase):
         entity_linker = EntityLinker(self.mocked_template_manager)
 
         with self.assertRaises(MultipleProcessesFound) as context:
-            entity_linker.process_links_from_spreadsheet(entities_dictionaries)
+            entity_linker.handle_links_from_spreadsheet(entities_dictionaries)
 
         self.assertEqual('biomaterial', context.exception.from_entity.type)
         self.assertEqual(['process_id_1', 'process_id_2'], context.exception.process_ids)

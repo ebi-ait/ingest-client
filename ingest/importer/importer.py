@@ -96,7 +96,7 @@ class XlsImporter:
     def _process_links_from_spreadsheet(template_mgr, spreadsheet_json):
         entity_map = EntityMap.load(spreadsheet_json)
         entity_linker = EntityLinker(template_mgr)
-        entity_map = entity_linker.process_links_from_spreadsheet(entity_map)
+        entity_map = entity_linker.handle_links_from_spreadsheet(entity_map)
         return entity_map
 
     @staticmethod
