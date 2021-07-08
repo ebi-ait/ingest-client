@@ -215,14 +215,9 @@ class IngestSubmitterTest(TestCase):
         ingest_api.patch = MagicMock()
 
         # and:
-        product = Entity('product', 'product_1', {'k': 'v'})
-        project = Entity('project', 'id', {'k': 'v'})
-        user1 = Entity('user', 'user_1', {'k': 'v'})
-        user2 = Entity('user', 'user_2', {'k': 'v'}, {'content': {'k': 'v0'}, '_links': {'self': {'href': 'url'}}},
-                       is_reference=True)
-        user3 = Entity('user', 'user_3', {'k': 'v'}, {'content': {'k': 'v0'}, '_links': {'self': {'href': 'url'}}},
-                       is_reference=True)
-        entity_map = EntityMap(product, user1, user2, user3, project)
+        entity_map = self._create_test_entity_map()
+        user2 = entity_map.get_entity('user', 'user_2')
+        user3 = entity_map.get_entity('user', 'user_3')
 
         # when:
         submitter = IngestSubmitter(ingest_api)
@@ -231,6 +226,17 @@ class IngestSubmitterTest(TestCase):
 
         # then:
         submitter.update_entity.assert_has_calls([call(user2), call(user3)], any_order=True)
+
+    def _create_test_entity_map(self) -> EntityMap:
+        product = Entity('product', 'product_1', {'k': 'v'})
+        project = Entity('project', 'id', {'k': 'v'})
+        user1 = Entity('user', 'user_1', {'k': 'v'})
+        user2 = Entity('user', 'user_2', {'k': 'v'}, {'content': {'k': 'v0'}, '_links': {'self': {'href': 'url'}}},
+                       is_reference=True)
+        user3 = Entity('user', 'user_3', {'k': 'v'}, {'content': {'k': 'v0'}, '_links': {'self': {'href': 'url'}}},
+                       is_reference=True)
+        entity_map = EntityMap(product, user1, user2, user3, project)
+        return entity_map
 
     @patch('ingest.importer.submission.ingest_submitter.Submission')
     def test_submit_linked_entity(self, submission_constructor):
