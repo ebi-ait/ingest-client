@@ -1,5 +1,5 @@
 {
-  "project": [
+  "Project": [
     {
       "project.uuid": "3e329187-a9c4-48ec-90e3-cc45f7c2311c",
       "project.project_core.project_short_name": "kriegsteinBrainOrganoids",
@@ -10,7 +10,7 @@
       "project.insdc_study_accessions": "PRJNA515930"
     }
   ],
-  "project.contributors": [
+  "Project - Contributors": [
     {
       "project.contributors.name": "Alex A,,Pollen",
       "project.contributors.email": "alex.pollen@ucsf.edu",
@@ -45,7 +45,7 @@
       "project.contributors.project_role.ontology_label": "data curator"
     }
   ],
-  "project.publications": [
+  "Project - Publications": [
     {
       "project.publications.authors": "Pollen AA||Bhaduri A||Andrews MG||Nowakowski TJ||Meyerson OS||Mostajo-Radji MA||Di Lullo E||Alvarado B||Bedolli M||Dougherty ML||Fiddes IT||Kronenberg ZN||Shuga J||Leyrat AA||West JA||Bershteyn M||Lowe CB||Pavlovic BJ||Salama SR||Haussler D||Eichler EE||Kriegstein AR",
       "project.publications.title": "Establishing Cerebral Organoids as Models of Human-Specific Brain Evolution.",
@@ -54,7 +54,7 @@
       "project.publications.url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6544371/"
     }
   ],
-  "project.funders": [
+  "Project - Funders": [
     {
       "project.funders.grant_id": "U01 MH105989",
       "project.funders.organization": "NIMH NIH HHS"

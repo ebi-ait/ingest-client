@@ -28,8 +28,10 @@ class XlsDownloader:
             if not worksheet_name:
                 raise Exception('There should be a worksheet name')
 
-            rows = self.workbook.get(worksheet_name, [])
-            self.workbook[worksheet_name] = rows
+            user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
+
+            rows = self.workbook.get(user_friendly_worksheet_name, [])
+            self.workbook[user_friendly_worksheet_name] = rows
             self._flatten_object(content, row, parent_key=worksheet_name)
             rows.append(row)
 
@@ -50,6 +52,11 @@ class XlsDownloader:
             else:
                 stringified = [str(e) for e in object]
                 flattened_object[parent_key] = '||'.join(stringified)
+
+    def _format_worksheet_name(self, worksheet_name):
+        names = worksheet_name.split('.')
+        new_worksheet_name = ' - '.join([n.capitalize() for n in names])
+        return new_worksheet_name
 
     def is_object_list(self, content):
         return content and isinstance(content[0], dict)

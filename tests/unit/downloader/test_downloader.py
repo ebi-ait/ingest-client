@@ -5,7 +5,6 @@ from ingest.downloader.downloader import XlsDownloader
 
 
 class XlsDownloaderTest(TestCase):
-
     def test_convert_json__has_no_modules(self):
         # given
         entity_list = [{
@@ -28,7 +27,7 @@ class XlsDownloaderTest(TestCase):
         actual = downloader.convert_json(entity_list)
 
         expected = {
-            'project': [
+            'Project': [
                 {
                     'project.uuid': 'uuid1',
                     'project.project_core.project_short_name': 'label',
@@ -68,7 +67,7 @@ class XlsDownloaderTest(TestCase):
         actual = downloader.convert_json(entity_list)
 
         expected = {
-            'project': [
+            'Project': [
                 {
                     'project.uuid': 'uuid1',
                     'project.project_core.project_short_name': 'label',
@@ -120,7 +119,7 @@ class XlsDownloaderTest(TestCase):
         actual = downloader.convert_json(entity_list)
 
         expected = {
-            'project': [
+            'Project': [
                 {
                     'project.uuid': 'uuid1',
                     'project.project_core.project_short_name': 'label',
@@ -128,7 +127,7 @@ class XlsDownloaderTest(TestCase):
                     'project.project_core.project_description': 'desc'
                 }
             ],
-            'project.contributors': [
+            'Project - Contributors': [
                 {'project.contributors.corresponding_contributor': 'True',
                  'project.contributors.country': 'USA',
                  'project.contributors.email': 'alex.pollen@ucsf.edu',
@@ -167,7 +166,7 @@ class XlsDownloaderTest(TestCase):
         actual = downloader.convert_json(entity_list)
 
         expected = {
-            'project': [
+            'Project': [
                 {
                     'project.uuid': 'uuid1',
                     'project.project_core.project_short_name': 'label',
@@ -204,7 +203,7 @@ class XlsDownloaderTest(TestCase):
         actual = downloader.convert_json(entity_list)
 
         expected = {
-            'project': [
+            'Project': [
                 {
                     'project.uuid': 'uuid1',
                     'project.project_core.project_short_name': 'label',
