@@ -11,10 +11,10 @@ class XlsDownloader:
         self.workbook = {}
 
     def convert_json(self, entity_list: List[dict]):
-        self.flatten_object_list(entity_list)
+        self._flatten_object_list(entity_list)
         return self.workbook
 
-    def flatten_object_list(self, object_list: List[dict], object_key: str = ''):
+    def _flatten_object_list(self, object_list: List[dict], object_key: str = ''):
         for entity in object_list:
             worksheet_name = object_key
             row = {}
@@ -30,26 +30,26 @@ class XlsDownloader:
 
             rows = self.workbook.get(worksheet_name, [])
             self.workbook[worksheet_name] = rows
-            self.flatten_object(content, row, parent_key=worksheet_name)
+            self._flatten_object(content, row, parent_key=worksheet_name)
             rows.append(row)
 
-    def flatten_object(self, content: dict, output: dict, parent_key: str = ''):
-        if isinstance(content, dict):
-            for key in content:
+    def _flatten_object(self, object: dict, flattened_object: dict, parent_key: str = ''):
+        if isinstance(object, dict):
+            for key in object:
                 full_key = f'{parent_key}.{key}' if parent_key else key
                 if key in EXCLUDE_KEYS:
                     continue
-                value = content[key]
+                value = object[key]
                 if isinstance(value, dict) or isinstance(value, list):
-                    self.flatten_object(value, output, parent_key=full_key)
+                    self._flatten_object(value, flattened_object, parent_key=full_key)
                 else:
-                    output[full_key] = str(value)
-        elif isinstance(content, list):
-            if self.is_object_list(content):
-                self.flatten_object_list(content, parent_key)
+                    flattened_object[full_key] = str(value)
+        elif isinstance(object, list):
+            if self.is_object_list(object):
+                self._flatten_object_list(object, parent_key)
             else:
-                stringified = [str(e) for e in content]
-                output[parent_key] = '||'.join(stringified)
+                stringified = [str(e) for e in object]
+                flattened_object[parent_key] = '||'.join(stringified)
 
     def is_object_list(self, content):
         return content and isinstance(content[0], dict)
