@@ -55,6 +55,7 @@ class XlsDownloader:
 
     def _format_worksheet_name(self, worksheet_name):
         names = worksheet_name.split('.')
+        names = [n.replace('_', ' ') for n in names]
         new_worksheet_name = ' - '.join([n.capitalize() for n in names])
         return new_worksheet_name
 
