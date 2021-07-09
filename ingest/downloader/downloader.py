@@ -1,3 +1,5 @@
+from typing import List
+
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
@@ -5,20 +7,33 @@ EXCLUDE_KEYS = ['describedBy', 'schema_type']
 
 
 class XlsDownloader:
-    def convert_json(self, entity_list):
-        workbook = {}
+    def __init__(self):
+        self.workbook = {}
 
-        for entity in entity_list:
-            content = entity['content']
-            concrete_type = self.get_concrete_entity(content)
-            worksheet = workbook.get(concrete_type, [])
-            workbook[concrete_type] = worksheet
-            row = {f'{concrete_type}.uuid': entity['uuid']['uuid']}
-            self.flatten(content, row, parent_key='project')
-            worksheet.append(row)
-        return workbook
+    def convert_json(self, entity_list: List[dict]):
+        self.flatten_object_list(entity_list)
+        return self.workbook
 
-    def flatten(self, content, output, parent_key=''):
+    def flatten_object_list(self, object_list: List[dict], object_key: str = ''):
+        for entity in object_list:
+            worksheet_name = object_key
+            row = {}
+            content = entity
+
+            if not object_key:
+                content = entity['content']
+                worksheet_name = self.get_concrete_entity(content)
+                row = {f'{worksheet_name}.uuid': entity['uuid']['uuid']}
+
+            if not worksheet_name:
+                raise Exception('There should be a worksheet name')
+
+            rows = self.workbook.get(worksheet_name, [])
+            self.workbook[worksheet_name] = rows
+            self.flatten_object(content, row, parent_key=worksheet_name)
+            rows.append(row)
+
+    def flatten_object(self, content: dict, output: dict, parent_key: str = ''):
         if isinstance(content, dict):
             for key in content:
                 full_key = f'{parent_key}.{key}' if parent_key else key
@@ -27,18 +42,19 @@ class XlsDownloader:
                 value = content[key]
 
                 if isinstance(value, dict) or isinstance(value, list):
-                    self.flatten(value, output, parent_key=full_key)
+                    self.flatten_object(value, output, parent_key=full_key)
                 else:
-                    output[full_key] = value
+                    output[full_key] = str(value)
         elif isinstance(content, list):
-            for elem in content:
-                if isinstance(elem, dict):
-                    self.flatten(elem, output, parent_key=parent_key)
-                else:
+            if content and isinstance(content[0], dict):
+                self.flatten_object_list(content, parent_key)
+            else:
+                for elem in content:
                     stringified = [str(e) for e in content]
                     output[parent_key] = '||'.join(stringified)
 
-    def get_concrete_entity(self, content):
+    @staticmethod
+    def get_concrete_entity(content):
         return content.get('describedBy').rsplit('/', 1)[-1]
 
     @staticmethod

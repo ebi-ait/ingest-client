@@ -100,7 +100,7 @@ class XlsDownloaderTest(TestCase):
                         "institution": "University of California, San Francisco (UCSF)",
                         "laboratory": "Department of Neurology",
                         "country": "USA",
-                        "corresponding_contributor": true,
+                        "corresponding_contributor": True,
                         "project_role": {
                             "text": "experimental scientist",
                             "ontology": "EFO:0009741",
@@ -108,6 +108,54 @@ class XlsDownloaderTest(TestCase):
                         }
                     }
                 ]
+            },
+            'uuid': {
+                'uuid': 'uuid1'
+            }
+        }]
+
+        # when
+
+        downloader = XlsDownloader()
+        actual = downloader.convert_json(entity_list)
+
+        expected = {
+            'project': [
+                {
+                    'project.uuid': 'uuid1',
+                    'project.project_core.project_short_name': 'label',
+                    'project.project_core.project_title': 'title',
+                    'project.project_core.project_description': 'desc'
+                }
+            ],
+            'project.contributors': [
+                {'project.contributors.corresponding_contributor': 'True',
+                 'project.contributors.country': 'USA',
+                 'project.contributors.email': 'alex.pollen@ucsf.edu',
+                 'project.contributors.institution': 'University of California, San Francisco (UCSF)',
+                 'project.contributors.laboratory': 'Department of Neurology',
+                 'project.contributors.name': 'Alex A,,Pollen',
+                 'project.contributors.project_role.ontology': 'EFO:0009741',
+                 'project.contributors.project_role.ontology_label': 'experimental scientist',
+                 'project.contributors.project_role.text': 'experimental scientist'}
+            ]
+        }
+
+        # then
+        self.assertEqual(actual, expected)
+
+    def test_convert_json__has_boolean(self):
+        # given
+        entity_list = [{
+            'content': {
+                'describedBy': 'https://schema.humancellatlas.org/type/project/14.2.0/project',
+                'schema_type': 'project',
+                'project_core': {
+                    'project_short_name': 'label',
+                    'project_title': 'title',
+                    'project_description': 'desc'
+                },
+                'boolean_field': True
             },
             'uuid': {
                 'uuid': 'uuid1'
@@ -124,7 +172,45 @@ class XlsDownloaderTest(TestCase):
                     'project.uuid': 'uuid1',
                     'project.project_core.project_short_name': 'label',
                     'project.project_core.project_title': 'title',
-                    'project.project_core.project_description': 'desc'
+                    'project.project_core.project_description': 'desc',
+                    'project.boolean_field': 'True'
+                }
+            ]
+        }
+
+        # then
+        self.assertEqual(actual, expected)
+
+    def test_convert_json__has_integer(self):
+        # given
+        entity_list = [{
+            'content': {
+                'describedBy': 'https://schema.humancellatlas.org/type/project/14.2.0/project',
+                'schema_type': 'project',
+                'project_core': {
+                    'project_short_name': 'label',
+                    'project_title': 'title',
+                    'project_description': 'desc'
+                },
+                'int_field': 1
+            },
+            'uuid': {
+                'uuid': 'uuid1'
+            }
+        }]
+
+        # when
+        downloader = XlsDownloader()
+        actual = downloader.convert_json(entity_list)
+
+        expected = {
+            'project': [
+                {
+                    'project.uuid': 'uuid1',
+                    'project.project_core.project_short_name': 'label',
+                    'project.project_core.project_title': 'title',
+                    'project.project_core.project_description': 'desc',
+                    'project.int_field': '1'
                 }
             ]
         }
@@ -139,23 +225,12 @@ class XlsDownloaderTest(TestCase):
         with open('project-list.json') as file:
             entity_list = json.load(file)
 
-
         # when
         downloader = XlsDownloader()
         actual = downloader.convert_json(entity_list)
 
-        expected = {
-            'project': [
-                {
-                    'project.uuid': 'uuid1',
-                    'project.project_core.project_short_name': 'label',
-                    'project.project_core.project_title': 'title',
-                    'project.project_core.project_description': 'desc'
-                }
-            ]
-        }
+        with open('project-list-flattened.json') as file:
+            expected = json.load(file)
 
         # then
         self.assertEqual(actual, expected)
-
-
