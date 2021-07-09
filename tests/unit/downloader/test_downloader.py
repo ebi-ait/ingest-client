@@ -265,19 +265,32 @@ class XlsDownloaderTest(TestCase):
                 'uuid': 'uuid1'
             }
         },
-        {
-            'content': {
-                "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism",
-                "schema_type": "biomaterial",
-                "biomaterial_core": {
-                    "biomaterial_id": "label",
-                    "biomaterial_description": "desc"
+            {
+                'content': {
+                    "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism",
+                    "schema_type": "biomaterial",
+                    "biomaterial_core": {
+                        "biomaterial_id": "label",
+                        "biomaterial_description": "desc"
+                    }
+                },
+                'uuid': {
+                    'uuid': 'uuid2'
                 }
             },
-            'uuid': {
-                'uuid': 'uuid1'
+            {
+                'content': {
+                    "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism",
+                    "schema_type": "biomaterial",
+                    "biomaterial_core": {
+                        "biomaterial_id": "label",
+                        "biomaterial_description": "desc"
+                    }
+                },
+                'uuid': {
+                    'uuid': 'uuid3'
+                }
             }
-        }
         ]
 
         # when
@@ -307,7 +320,12 @@ class XlsDownloaderTest(TestCase):
             ],
             'Donor organism': [
                 {
-                    'donor_organism.uuid': 'uuid1',
+                    'donor_organism.uuid': 'uuid2',
+                    'donor_organism.biomaterial_core.biomaterial_id': 'label',
+                    'donor_organism.biomaterial_core.biomaterial_description': 'desc'
+                },
+                {
+                    'donor_organism.uuid': 'uuid3',
                     'donor_organism.biomaterial_core.biomaterial_id': 'label',
                     'donor_organism.biomaterial_core.biomaterial_description': 'desc'
                 }
