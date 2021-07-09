@@ -5,6 +5,9 @@ EXCLUDE_KEYS = ['describedBy', 'schema_type']
 
 
 class XlsDownloader:
+    def __init__(self):
+        self.row = 1
+
     def convert_json(self, entity_list):
         workbook = {}
 
@@ -41,21 +44,32 @@ class XlsDownloader:
     def get_concrete_entity(self, content):
         return content.get('describedBy').rsplit('/', 1)[-1]
 
-    @staticmethod
-    def create_workbook(input_json: dict) -> Workbook:
+    def create_workbook(self, input_json: dict) -> Workbook:
         workbook = Workbook()
         workbook.remove(workbook.active)
 
         for ws_title, ws_elements in input_json.items():
             worksheet: Worksheet = workbook.create_sheet(title=ws_title)
-            XlsDownloader.add_worksheet_content(worksheet, ws_elements)
+            self.add_worksheet_content(worksheet, ws_elements)
 
         return workbook
 
-    @staticmethod
-    def add_worksheet_content(worksheet, ws_elements: dict):
-        row = col = 1
-        for header, cell_value in ws_elements.items():
-            worksheet.cell(row=row, column=col, value=header)
-            worksheet.cell(row=row + 1, column=col, value=cell_value)
+    def add_worksheet_content(self, worksheet, ws_elements: dict):
+        is_header = True
+        if isinstance(ws_elements, list):
+            for content in ws_elements:
+                self.add_row_content(worksheet, content, is_header)
+                is_header = False
+                self.row += 1
+        else:
+            self.add_row_content(worksheet, ws_elements)
+
+    def add_row_content(self, worksheet, content, is_header=True):
+        col = 1
+        for header, cell_value in content.items():
+            if is_header:
+                self.row = 1
+                worksheet.cell(row=self.row, column=col, value=header)
+                self.row += 1
+            worksheet.cell(row=self.row, column=col, value=cell_value)
             col += 1
