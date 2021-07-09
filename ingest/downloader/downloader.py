@@ -40,18 +40,19 @@ class XlsDownloader:
                 if key in EXCLUDE_KEYS:
                     continue
                 value = content[key]
-
                 if isinstance(value, dict) or isinstance(value, list):
                     self.flatten_object(value, output, parent_key=full_key)
                 else:
                     output[full_key] = str(value)
         elif isinstance(content, list):
-            if content and isinstance(content[0], dict):
+            if self.is_object_list(content):
                 self.flatten_object_list(content, parent_key)
             else:
-                for elem in content:
-                    stringified = [str(e) for e in content]
-                    output[parent_key] = '||'.join(stringified)
+                stringified = [str(e) for e in content]
+                output[parent_key] = '||'.join(stringified)
+
+    def is_object_list(self, content):
+        return content and isinstance(content[0], dict)
 
     @staticmethod
     def get_concrete_entity(content):
