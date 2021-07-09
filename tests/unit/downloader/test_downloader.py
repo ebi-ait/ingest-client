@@ -6,8 +6,7 @@ from ingest.downloader.downloader import XlsDownloader
 
 class XlsDownloaderTest(TestCase):
 
-    def test_convert_json(self):
-        self.maxDiff = None
+    def test_convert_json__has_no_modules(self):
         # given
         entity_list = [{
             'content': {
@@ -24,8 +23,96 @@ class XlsDownloaderTest(TestCase):
             }
         }]
 
-        with open('project-list.json') as file:
-            entity_list = json.load(file)
+        # when
+        downloader = XlsDownloader()
+        actual = downloader.convert_json(entity_list)
+
+        expected = {
+            'project': [
+                {
+                    'project.uuid': 'uuid1',
+                    'project.project_core.project_short_name': 'label',
+                    'project.project_core.project_title': 'title',
+                    'project.project_core.project_description': 'desc'
+                }
+            ]
+        }
+
+        self.assertEqual(actual, expected)
+
+    def test_convert_json__has_string_arrays(self):
+        # given
+        entity_list = [{
+            'content': {
+                "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
+                "schema_type": "project",
+                "project_core": {
+                    "project_short_name": "label",
+                    "project_title": "title",
+                    "project_description": "desc"
+                },
+                "insdc_project_accessions": [
+                    "SRP180337"
+                ],
+                "geo_series_accessions": [
+                    "GSE124298", "GSE124299"
+                ]
+            },
+            'uuid': {
+                'uuid': 'uuid1'
+            }
+        }]
+
+        # when
+        downloader = XlsDownloader()
+        actual = downloader.convert_json(entity_list)
+
+        expected = {
+            'project': [
+                {
+                    'project.uuid': 'uuid1',
+                    'project.project_core.project_short_name': 'label',
+                    'project.project_core.project_title': 'title',
+                    'project.project_core.project_description': 'desc',
+                    'project.insdc_project_accessions': 'SRP180337',
+                    'project.geo_series_accessions': "GSE124298||GSE124299"
+                }
+            ]
+        }
+
+        self.assertEqual(actual, expected)
+
+    def test_convert_json__has_modules(self):
+        # given
+        entity_list = [{
+            'content': {
+                "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
+                "schema_type": "project",
+                "project_core": {
+                    "project_short_name": "label",
+                    "project_title": "title",
+                    "project_description": "desc"
+                },
+                "contributors": [
+                    {
+                        "name": "Alex A,,Pollen",
+                        "email": "alex.pollen@ucsf.edu",
+                        "institution": "University of California, San Francisco (UCSF)",
+                        "laboratory": "Department of Neurology",
+                        "country": "USA",
+                        "corresponding_contributor": true,
+                        "project_role": {
+                            "text": "experimental scientist",
+                            "ontology": "EFO:0009741",
+                            "ontology_label": "experimental scientist"
+                        }
+                    }
+                ]
+            },
+            'uuid': {
+                'uuid': 'uuid1'
+            }
+        }]
 
         # when
         downloader = XlsDownloader()
@@ -44,3 +131,31 @@ class XlsDownloaderTest(TestCase):
 
         # then
         self.assertEqual(actual, expected)
+
+    def test_convert_json__project_metadata(self):
+        self.maxDiff = None
+
+        # given
+        with open('project-list.json') as file:
+            entity_list = json.load(file)
+
+
+        # when
+        downloader = XlsDownloader()
+        actual = downloader.convert_json(entity_list)
+
+        expected = {
+            'project': [
+                {
+                    'project.uuid': 'uuid1',
+                    'project.project_core.project_short_name': 'label',
+                    'project.project_core.project_title': 'title',
+                    'project.project_core.project_description': 'desc'
+                }
+            ]
+        }
+
+        # then
+        self.assertEqual(actual, expected)
+
+
