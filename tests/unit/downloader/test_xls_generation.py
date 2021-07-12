@@ -1,3 +1,4 @@
+import json
 import unittest
 
 from openpyxl import Workbook
@@ -28,6 +29,7 @@ class MyTestCase(unittest.TestCase):
 
         #expect
         self.assertEqual(len(workbook.worksheets), 1)
+
         project_sheet: Worksheet = workbook[project_sheet_title]
         self.assertEqual(project_sheet.title, project_sheet_title)
 
@@ -93,18 +95,44 @@ class MyTestCase(unittest.TestCase):
 
         #expect
         self.assertEqual(len(workbook.worksheets), 1)
-        contributors_sheet: Worksheet = workbook[contributors_sheet_title]
-        self.assertEqual(contributors_sheet.title, contributors_sheet_title)
 
-        rows = list(contributors_sheet.rows)
+        self.__assert_sheet(workbook, contributors_sheet_title, input_json)
+
+    def test_given_input_has_many_rows_and_many_sheets_of_data_successfully_creates_a_workbook(self):
+        # given
+        project_sheet_title = 'Project'
+        contributors_sheet_title = 'Project - Contributors'
+        publications_sheet_title = 'Project - Publications'
+        funders_sheet_title = 'Project - Funders'
+
+        # when
+        with open('project-list-flattened.json') as file:
+            input_json = json.load(file)
+
+        #when
+        workbook: Workbook = self.downloader.create_workbook(input_json)
+
+        # expect
+        self.assertEqual(len(workbook.worksheets), 4)
+
+        self.__assert_sheet(workbook, project_sheet_title, input_json)
+        self.__assert_sheet(workbook, contributors_sheet_title, input_json)
+        self.__assert_sheet(workbook, publications_sheet_title, input_json)
+        self.__assert_sheet(workbook, funders_sheet_title, input_json)
+
+    def __assert_sheet(self, workbook, sheet_title, input_json):
+        sheet: Worksheet = workbook[sheet_title]
+        self.assertEqual(sheet.title, sheet_title)
+
+        rows = list(sheet.rows)
         header_row = rows.pop(0)
         for cell in header_row:
-            self.assertTrue(cell.value in input_json[contributors_sheet_title][0].keys())
+            self.assertTrue(cell.value in input_json[sheet_title][0].keys())
 
         i = 0
         for row in rows:
             for cell in row:
-                self.assertTrue(cell.value in input_json[contributors_sheet_title][i].values())
+                self.assertTrue(cell.value in input_json[sheet_title][i].values())
             i += 1
 
 
