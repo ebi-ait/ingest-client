@@ -5,28 +5,22 @@ from ingest.downloader.downloader import XlsDownloader
 
 
 class XlsDownloaderTest(TestCase):
-    def test_convert_json__has_no_modules(self):
-        # given
-        entity_list = [{
-            'content': {
-                "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
-                "schema_type": "project",
-                "project_core": {
-                    "project_short_name": "label",
-                    "project_title": "title",
-                    "project_description": "desc"
-                }
-            },
-            'uuid': {
-                'uuid': 'uuid1'
+    def setUp(self) -> None:
+        self.content = {
+            "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
+            "schema_type": "project",
+            "project_core": {
+                "project_short_name": "label",
+                "project_title": "title",
+                "project_description": "desc"
             }
-        }]
+        }
 
-        # when
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        self.uuid = {
+            'uuid': 'uuid1'
+        }
 
-        expected = {
+        self.flattened_metadata_entity = {
             'Project': [
                 {
                     'project.uuid': 'uuid1',
@@ -37,96 +31,77 @@ class XlsDownloaderTest(TestCase):
             ]
         }
 
-        self.assertEqual(actual, expected)
+    def test_convert_json__has_no_modules(self):
+        # given
+        self.metadata_entity = {
+            'content': self.content,
+            'uuid': self.uuid
+        }
+        entity_list = [self.metadata_entity]
+
+        # when
+        downloader = XlsDownloader()
+        actual = downloader.convert_json(entity_list)
+
+        self.assertEqual(actual, self.flattened_metadata_entity)
 
     def test_convert_json__has_string_arrays(self):
         # given
-        entity_list = [{
-            'content': {
-                "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
-                "schema_type": "project",
-                "project_core": {
-                    "project_short_name": "label",
-                    "project_title": "title",
-                    "project_description": "desc"
-                },
-                "insdc_project_accessions": [
-                    "SRP180337"
-                ],
-                "geo_series_accessions": [
-                    "GSE124298", "GSE124299"
-                ]
-            },
-            'uuid': {
-                'uuid': 'uuid1'
-            }
-        }]
+        self.content.update({
+            "insdc_project_accessions": [
+                "SRP180337"
+            ],
+            "geo_series_accessions": [
+                "GSE124298", "GSE124299"
+            ]
+        })
+        self.metadata_entity = {
+            'content': self.content,
+            'uuid': self.uuid
+        }
+        entity_list = [self.metadata_entity]
 
         # when
         downloader = XlsDownloader()
         actual = downloader.convert_json(entity_list)
 
-        expected = {
-            'Project': [
-                {
-                    'project.uuid': 'uuid1',
-                    'project.project_core.project_short_name': 'label',
-                    'project.project_core.project_title': 'title',
-                    'project.project_core.project_description': 'desc',
-                    'project.insdc_project_accessions': 'SRP180337',
-                    'project.geo_series_accessions': "GSE124298||GSE124299"
-                }
-            ]
-        }
+        self.flattened_metadata_entity['Project'][0].update({
+            'project.insdc_project_accessions': 'SRP180337',
+            'project.geo_series_accessions': "GSE124298||GSE124299"
+        })
 
-        self.assertEqual(actual, expected)
+        self.assertEqual(actual, self.flattened_metadata_entity)
 
     def test_convert_json__has_modules(self):
         # given
-        entity_list = [{
-            'content': {
-                "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
-                "schema_type": "project",
-                "project_core": {
-                    "project_short_name": "label",
-                    "project_title": "title",
-                    "project_description": "desc"
-                },
-                "contributors": [
-                    {
-                        "name": "Alex A,,Pollen",
-                        "email": "alex.pollen@ucsf.edu",
-                        "institution": "University of California, San Francisco (UCSF)",
-                        "laboratory": "Department of Neurology",
-                        "country": "USA",
-                        "corresponding_contributor": True,
-                        "project_role": {
-                            "text": "experimental scientist",
-                            "ontology": "EFO:0009741",
-                            "ontology_label": "experimental scientist"
-                        }
-                    }
-                ]
-            },
-            'uuid': {
-                'uuid': 'uuid1'
+        self.content.update({"contributors": [
+            {
+                "name": "Alex A,,Pollen",
+                "email": "alex.pollen@ucsf.edu",
+                "institution": "University of California, San Francisco (UCSF)",
+                "laboratory": "Department of Neurology",
+                "country": "USA",
+                "corresponding_contributor": True,
+                "project_role": {
+                    "text": "experimental scientist",
+                    "ontology": "EFO:0009741",
+                    "ontology_label": "experimental scientist"
+                }
             }
-        }]
+        ]})
+        self.metadata_entity = {
+            'content': self.content,
+            'uuid': self.uuid
+        }
+
+        entity_list = [self.metadata_entity]
 
         # when
 
         downloader = XlsDownloader()
         actual = downloader.convert_json(entity_list)
 
-        expected = {
-            'Project': [
-                {
-                    'project.uuid': 'uuid1',
-                    'project.project_core.project_short_name': 'label',
-                    'project.project_core.project_title': 'title',
-                    'project.project_core.project_description': 'desc'
-                }
-            ],
+        self.flattened_metadata_entity.update({
             'Project - Contributors': [
                 {'project.contributors.corresponding_contributor': 'True',
                  'project.contributors.country': 'USA',
@@ -138,65 +113,42 @@ class XlsDownloaderTest(TestCase):
                  'project.contributors.project_role.ontology_label': 'experimental scientist',
                  'project.contributors.project_role.text': 'experimental scientist'}
             ]
-        }
+        })
 
         # then
-        self.assertEqual(actual, expected)
+        self.assertEqual(actual, self.flattened_metadata_entity)
 
     def test_convert_json__has_boolean(self):
         # given
-        entity_list = [{
-            'content': {
-                'describedBy': 'https://schema.humancellatlas.org/type/project/14.2.0/project',
-                'schema_type': 'project',
-                'project_core': {
-                    'project_short_name': 'label',
-                    'project_title': 'title',
-                    'project_description': 'desc'
-                },
-                'boolean_field': True
-            },
-            'uuid': {
-                'uuid': 'uuid1'
-            }
-        }]
+        self.content.update({
+            'boolean_field': True
+        })
+        self.metadata_entity = {
+            'content': self.content,
+            'uuid': self.uuid
+        }
+        entity_list = [self.metadata_entity]
 
         # when
         downloader = XlsDownloader()
         actual = downloader.convert_json(entity_list)
 
-        expected = {
-            'Project': [
-                {
-                    'project.uuid': 'uuid1',
-                    'project.project_core.project_short_name': 'label',
-                    'project.project_core.project_title': 'title',
-                    'project.project_core.project_description': 'desc',
-                    'project.boolean_field': 'True'
-                }
-            ]
-        }
-
+        self.flattened_metadata_entity['Project'][0].update({
+            'project.boolean_field': 'True'
+        })
         # then
-        self.assertEqual(actual, expected)
+        self.assertEqual(actual, self.flattened_metadata_entity)
 
     def test_convert_json__has_integer(self):
         # given
-        entity_list = [{
-            'content': {
-                'describedBy': 'https://schema.humancellatlas.org/type/project/14.2.0/project',
-                'schema_type': 'project',
-                'project_core': {
-                    'project_short_name': 'label',
-                    'project_title': 'title',
-                    'project_description': 'desc'
-                },
-                'int_field': 1
-            },
-            'uuid': {
-                'uuid': 'uuid1'
-            }
-        }]
+        self.content.update({
+            'int_field': 1
+        })
+        self.metadata_entity = {
+            'content': self.content,
+            'uuid': self.uuid
+        }
+        entity_list = [self.metadata_entity]
 
         # when
         downloader = XlsDownloader()
