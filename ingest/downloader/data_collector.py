@@ -7,9 +7,9 @@ class DataCollector:
         self.api = ingest_api
 
     def collect_data_by_submission_uuid(self, submission_uuid):
-        submission = self.api.get_submission_by_uuid(submission_uuid).json
+        submission = self.api.get_submission_by_uuid(submission_uuid)
 
-        project_json = self.api.get_related_entities('relatedProjects', submission, 'projects').json
+        project_json = self.api.get_related_entities('relatedProjects', submission, 'projects')
         data_by_submission = [
             project_json
         ]
@@ -19,7 +19,7 @@ class DataCollector:
         return data_by_submission
 
     def __get_biomaterials(self, data_by_submission, submission):
-        biomaterials_json = self.api.get_related_entities('biomaterials', submission, 'biomaterials').json
+        biomaterials_json = self.api.get_related_entities('biomaterials', submission, 'biomaterials')
         if biomaterials_json:
             biomaterials_json = biomaterials_json['_embedded']['biomaterials']
             data_by_submission.extend(biomaterials_json)
