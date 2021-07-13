@@ -39,10 +39,11 @@ class XlsDownloader:
     def _flatten_object(self, object: dict, flattened_object: dict, parent_key: str = ''):
         if isinstance(object, dict):
             for key in object:
-                full_key = f'{parent_key}.{key}' if parent_key else key
                 if key in EXCLUDE_KEYS:
                     continue
+
                 value = object[key]
+                full_key = f'{parent_key}.{key}' if parent_key else key
                 if isinstance(value, dict) or isinstance(value, list):
                     self._flatten_object(value, flattened_object, parent_key=full_key)
                 else:
