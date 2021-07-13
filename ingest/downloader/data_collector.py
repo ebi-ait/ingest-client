@@ -8,11 +8,9 @@ class DataCollector:
 
     def collect_data_by_submission_uuid(self, submission_uuid):
         submission = self.api.get_submission_by_uuid(submission_uuid)
-
-        project_json = self.api.get_related_entities('relatedProjects', submission, 'projects')
-        data_by_submission = [
-            project_json
-        ]
+        related_projects_url = f"{submission['_links']['self']['href']}/relatedProjects"
+        project_json = self.api.get_all(related_projects_url, 'projects')
+        data_by_submission = list(project_json)
 
         self.__get_biomaterials(data_by_submission, submission)
 
@@ -21,5 +19,4 @@ class DataCollector:
     def __get_biomaterials(self, data_by_submission, submission):
         biomaterials_json = self.api.get_related_entities('biomaterials', submission, 'biomaterials')
         if biomaterials_json:
-            biomaterials_json = biomaterials_json['_embedded']['biomaterials']
-            data_by_submission.extend(biomaterials_json)
+            data_by_submission.extend(list(biomaterials_json))
