@@ -22,16 +22,15 @@ class MyTestCase(unittest.TestCase):
             mock_project_json = json.load(file)
         with open('../resources/mock_biomaterials.json') as file:
             mock_biomaterials_json = json.load(file)
-        self.mock_ingest_api.get_submission_by_uuid.return_value = mock_submission_json
 
-        mock_data = [Mock(), Mock()]
-        mock_data[0] = mock_project_json
-        mock_data[1] = mock_biomaterials_json
-        self.mock_ingest_api.get_related_entities.side_effect = mock_data
+        self.mock_ingest_api.get_submission_by_uuid.return_value = mock_submission_json
+        self.mock_ingest_api.get_all.return_value = iter([mock_project_json])
+        self.mock_ingest_api.get_related_entities.return_value = iter(mock_biomaterials_json)
+
         expected_json = [
             mock_project_json,
         ]
-        expected_json.extend(mock_biomaterials_json['_embedded']['biomaterials'])
+        expected_json.extend(mock_biomaterials_json)
 
         #when
         result_json = self.data_collector.collect_data_by_submission_uuid(project_uuid)
