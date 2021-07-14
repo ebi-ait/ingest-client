@@ -1,6 +1,6 @@
 import json
 import unittest
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock
 
 from ingest.api.ingestapi import IngestApi
 from ingest.downloader.data_collector import DataCollector
@@ -24,7 +24,7 @@ class MyTestCase(unittest.TestCase):
             mock_biomaterials_json = json.load(file)
 
         self.mock_ingest_api.get_submission_by_uuid.return_value = mock_submission_json
-        self.mock_ingest_api.get_all.return_value = iter([mock_project_json])
+        self.mock_ingest_api.get_related_projects.return_value = mock_project_json
         self.mock_ingest_api.get_related_entities.return_value = iter(mock_biomaterials_json)
 
         expected_json = [
