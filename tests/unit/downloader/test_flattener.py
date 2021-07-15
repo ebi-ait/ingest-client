@@ -1,10 +1,10 @@
 import json
 from unittest import TestCase
 
-from ingest.downloader.downloader import XlsDownloader
+from ingest.downloader.flattener import Flattener
 
 
-class XlsDownloaderTest(TestCase):
+class FlattenerTest(TestCase):
     def setUp(self) -> None:
         self.content = {
             "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
@@ -31,7 +31,7 @@ class XlsDownloaderTest(TestCase):
             ]
         }
 
-    def test_convert_json__has_no_modules(self):
+    def test_flatten__has_no_modules(self):
         # given
         self.metadata_entity = {
             'content': self.content,
@@ -40,12 +40,12 @@ class XlsDownloaderTest(TestCase):
         entity_list = [self.metadata_entity]
 
         # when
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
 
         self.assertEqual(actual, self.flattened_metadata_entity)
 
-    def test_convert_json__has_string_arrays(self):
+    def test_flatten__has_string_arrays(self):
         # given
         self.content.update({
             "insdc_project_accessions": [
@@ -62,8 +62,8 @@ class XlsDownloaderTest(TestCase):
         entity_list = [self.metadata_entity]
 
         # when
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
 
         self.flattened_metadata_entity['Project'][0].update({
             'project.insdc_project_accessions': 'SRP180337',
@@ -72,7 +72,7 @@ class XlsDownloaderTest(TestCase):
 
         self.assertEqual(actual, self.flattened_metadata_entity)
 
-    def test_convert_json__has_modules(self):
+    def test_flatten__has_modules(self):
         # given
         self.content.update({"contributors": [
             {
@@ -97,9 +97,8 @@ class XlsDownloaderTest(TestCase):
         entity_list = [self.metadata_entity]
 
         # when
-
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
 
         self.flattened_metadata_entity.update({
             'Project - Contributors': [
@@ -118,7 +117,7 @@ class XlsDownloaderTest(TestCase):
         # then
         self.assertEqual(actual, self.flattened_metadata_entity)
 
-    def test_convert_json__has_ontology_property_with_single_element(self):
+    def test_flatten__has_ontology_property_with_single_element(self):
         # given
         self.content.update(
             {"organ_parts": [
@@ -137,9 +136,8 @@ class XlsDownloaderTest(TestCase):
         entity_list = [self.metadata_entity]
 
         # when
-
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
 
         self.flattened_metadata_entity['Project'][0].update({
             'project.organ_parts.ontology': 'UBERON:0000376',
@@ -151,7 +149,7 @@ class XlsDownloaderTest(TestCase):
         # then
         self.assertEqual(actual, self.flattened_metadata_entity)
 
-    def test_convert_json__has_ontology_property_with_multiple_elements(self):
+    def test_flatten__has_ontology_property_with_multiple_elements(self):
         # given
         self.content.update(
             {'organ_parts': [
@@ -175,8 +173,8 @@ class XlsDownloaderTest(TestCase):
         entity_list = [self.metadata_entity]
 
         # when
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
 
         self.flattened_metadata_entity['Project'][0].update({
             'project.organ_parts.ontology': 'UBERON:0000376||UBERON:0002386',
@@ -188,7 +186,7 @@ class XlsDownloaderTest(TestCase):
         # then
         self.assertEqual(actual, self.flattened_metadata_entity)
 
-    def test_convert_json__has_boolean(self):
+    def test_flatten__has_boolean(self):
         # given
         self.content.update({
             'boolean_field': True
@@ -200,8 +198,8 @@ class XlsDownloaderTest(TestCase):
         entity_list = [self.metadata_entity]
 
         # when
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
 
         self.flattened_metadata_entity['Project'][0].update({
             'project.boolean_field': 'True'
@@ -209,7 +207,7 @@ class XlsDownloaderTest(TestCase):
         # then
         self.assertEqual(actual, self.flattened_metadata_entity)
 
-    def test_convert_json__has_integer(self):
+    def test_flatten__has_integer(self):
         # given
         self.content.update({
             'int_field': 1
@@ -221,8 +219,8 @@ class XlsDownloaderTest(TestCase):
         entity_list = [self.metadata_entity]
 
         # when
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
 
         expected = {
             'Project': [
@@ -239,7 +237,7 @@ class XlsDownloaderTest(TestCase):
         # then
         self.assertEqual(actual, expected)
 
-    def test_convert_json__project_metadata(self):
+    def test_flatten__project_metadata(self):
         self.maxDiff = None
 
         # given
@@ -247,8 +245,8 @@ class XlsDownloaderTest(TestCase):
             entity_list = json.load(file)
 
         # when
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
 
         with open('project-list-flattened.json') as file:
             expected = json.load(file)
@@ -256,7 +254,7 @@ class XlsDownloaderTest(TestCase):
         # then
         self.assertEqual(actual, expected)
 
-    def test_convert_json__has_different_entities(self):
+    def test_flatten__has_different_entities(self):
         # given
         entity_list = [{
             'content': {
@@ -316,9 +314,8 @@ class XlsDownloaderTest(TestCase):
         ]
 
         # when
-
-        downloader = XlsDownloader()
-        actual = downloader.convert_json(entity_list)
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
 
         expected = {
             'Project': [
