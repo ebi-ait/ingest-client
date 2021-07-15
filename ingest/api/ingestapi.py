@@ -124,8 +124,9 @@ class IngestApi:
     def get_projects(self, submission_id):
         return self.__get_projects_by_submission_id_and_type(submission_id, 'projects')
 
-    def get_related_projects(self, submission_id):
-        return self.__get_projects_by_submission_id_and_type(submission_id, 'relatedProjects')
+    def get_related_project(self, submission_id):
+        projects = self.__get_projects_by_submission_id_and_type(submission_id, 'relatedProjects')
+        return projects[0] if projects else None
 
     def __get_projects_by_submission_id_and_type(self, submission_id, project_type):
         submission_url = f'{self.url}/submissionEnvelopes/{submission_id}/{project_type}'
