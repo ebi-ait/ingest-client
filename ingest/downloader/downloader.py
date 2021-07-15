@@ -51,10 +51,13 @@ class XlsDownloader:
                 else:
                     flattened_object[full_key] = str(value)
         elif isinstance(object, list):
-            if self._is_list_of_objects(object):
-                self._flatten_object_list(flattened_object, object, parent_key)
-            else:
-                self._flatten_scalar_list(flattened_object, object, parent_key)
+            self._flatten_list(flattened_object, object, parent_key)
+
+    def _flatten_list(self, flattened_object, object, parent_key):
+        if self._is_list_of_objects(object):
+            self._flatten_object_list(flattened_object, object, parent_key)
+        else:
+            self._flatten_scalar_list(flattened_object, object, parent_key)
 
     def _flatten_scalar_list(self, flattened_object, object, parent_key):
         stringified = [str(e) for e in object]
