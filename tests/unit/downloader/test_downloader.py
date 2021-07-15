@@ -120,7 +120,6 @@ class XlsDownloaderTest(TestCase):
 
     def test_convert_json__has_ontology_property_with_single_element(self):
         # given
-
         self.content.update(
             {"organ_parts": [
                 {
@@ -154,7 +153,6 @@ class XlsDownloaderTest(TestCase):
 
     def test_convert_json__has_ontology_property_with_multiple_elements(self):
         # given
-
         self.content.update(
             {'organ_parts': [
                 {
@@ -177,7 +175,6 @@ class XlsDownloaderTest(TestCase):
         entity_list = [self.metadata_entity]
 
         # when
-
         downloader = XlsDownloader()
         actual = downloader.convert_json(entity_list)
 

@@ -3,6 +3,7 @@ from typing import List
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
+ONTOLOGY_REQUIRED_PROPS = ['ontology', 'ontology_label']
 EXCLUDE_KEYS = ['describedBy', 'schema_type']
 FIRST_DATA_ROW_NO = 4
 
@@ -50,8 +51,13 @@ class XlsDownloader:
                 else:
                     flattened_object[full_key] = str(value)
         elif isinstance(object, list):
-            if self.is_object_list(object):
-                self._flatten_object_list(object, parent_key)
+            if self.is_list_of_objects(object):
+                if self.is_list_of_ontology_objects(object):
+                    keys = self.get_keys_of_a_list_of_object(object)
+                    for key in keys:
+                        flattened_object[f'{parent_key}.{key}'] = '||'.join([elem[key] for elem in object])
+                else:
+                    self._flatten_object_list(object, parent_key)
             else:
                 stringified = [str(e) for e in object]
                 flattened_object[parent_key] = '||'.join(stringified)
@@ -62,7 +68,7 @@ class XlsDownloader:
         new_worksheet_name = ' - '.join([n.capitalize() for n in names])
         return new_worksheet_name
 
-    def is_object_list(self, content):
+    def is_list_of_objects(self, content):
         return content and isinstance(content[0], dict)
 
     @staticmethod
@@ -98,3 +104,12 @@ class XlsDownloader:
                 self.row += 1
             worksheet.cell(row=self.row, column=col, value=cell_value)
             col += 1
+
+    def is_list_of_ontology_objects(self, object: dict):
+        first_elem = object[0] if object else {}
+        result = [prop in first_elem for prop in ONTOLOGY_REQUIRED_PROPS]
+        return all(result)
+
+    def get_keys_of_a_list_of_object(self, object: dict):
+        first_elem = object[0] if object else {}
+        return list(first_elem.keys())
