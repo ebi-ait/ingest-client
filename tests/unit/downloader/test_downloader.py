@@ -118,6 +118,79 @@ class XlsDownloaderTest(TestCase):
         # then
         self.assertEqual(actual, self.flattened_metadata_entity)
 
+    def test_convert_json__has_ontology_property_with_single_element(self):
+        # given
+
+        self.content.update(
+            {"organ_parts": [
+                {
+                    "ontology": "UBERON:0000376",
+                    "ontology_label": "hindlimb stylopod",
+                    "text": "hindlimb stylopod"
+                }
+            ]})
+
+        self.metadata_entity = {
+            'content': self.content,
+            'uuid': self.uuid
+        }
+
+        entity_list = [self.metadata_entity]
+
+        # when
+
+        downloader = XlsDownloader()
+        actual = downloader.convert_json(entity_list)
+
+        self.flattened_metadata_entity['Project'][0].update({
+            'project.organ_parts.ontology': 'UBERON:0000376',
+            'project.organ_parts.ontology_label': 'hindlimb stylopod',
+            'project.organ_parts.text': 'hindlimb stylopod',
+
+        })
+
+        # then
+        self.assertEqual(actual, self.flattened_metadata_entity)
+
+    def test_convert_json__has_ontology_property_with_multiple_elements(self):
+        # given
+
+        self.content.update(
+            {'organ_parts': [
+                {
+                    'ontology': 'UBERON:0000376',
+                    'ontology_label': 'dummylabel1',
+                    'text': 'dummytext1'
+                },
+                {
+                    'ontology': 'UBERON:0002386',
+                    'ontology_label': 'dummylabel2',
+                    'text': 'dummytext2'
+                }
+            ]})
+
+        self.metadata_entity = {
+            'content': self.content,
+            'uuid': self.uuid
+        }
+
+        entity_list = [self.metadata_entity]
+
+        # when
+
+        downloader = XlsDownloader()
+        actual = downloader.convert_json(entity_list)
+
+        self.flattened_metadata_entity['Project'][0].update({
+            'project.organ_parts.ontology': 'UBERON:0000376||UBERON:0002386',
+            'project.organ_parts.ontology_label': 'dummylabel1||dummylabel2',
+            'project.organ_parts.text': 'dummytext1||dummytext2',
+
+        })
+
+        # then
+        self.assertEqual(actual, self.flattened_metadata_entity)
+
     def test_convert_json__has_boolean(self):
         # given
         self.content.update({
