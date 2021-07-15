@@ -34,6 +34,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(project_sheet.title, project_sheet_title)
 
         rows = list(project_sheet.rows)
+        rows = rows[3:]
         header_row = rows.pop(0)
         for cell in header_row:
             self.assertTrue(cell.value in input_json[project_sheet_title].keys())
@@ -125,6 +126,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(sheet.title, sheet_title)
 
         rows = list(sheet.rows)
+        rows = rows[3:]
         header_row = rows.pop(0)
         for cell in header_row:
             self.assertTrue(cell.value in input_json[sheet_title][0].keys())

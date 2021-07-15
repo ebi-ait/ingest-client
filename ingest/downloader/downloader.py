@@ -4,12 +4,13 @@ from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
 EXCLUDE_KEYS = ['describedBy', 'schema_type']
+FIRST_DATA_ROW_NO = 4
 
 
 class XlsDownloader:
     def __init__(self):
         self.workbook = {}
-        self.row = 1
+        self.row = FIRST_DATA_ROW_NO
 
     def convert_json(self, entity_list: List[dict]):
         self._flatten_object_list(entity_list)
@@ -92,7 +93,7 @@ class XlsDownloader:
         col = 1
         for header, cell_value in content.items():
             if is_header:
-                self.row = 1
+                self.row = FIRST_DATA_ROW_NO
                 worksheet.cell(row=self.row, column=col, value=header)
                 self.row += 1
             worksheet.cell(row=self.row, column=col, value=cell_value)
