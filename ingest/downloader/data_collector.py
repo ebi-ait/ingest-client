@@ -14,19 +14,14 @@ class DataCollector:
             project_json
         ]
 
-        self.__get_biomaterials(data_by_submission, submission)
-        self.__get_protocols(data_by_submission, submission)
+        self.__get_entities_by_submission_and_type(data_by_submission, submission, 'biomaterials')
+        self.__get_entities_by_submission_and_type(data_by_submission, submission, 'protocols')
+        self.__get_entities_by_submission_and_type(data_by_submission, submission, 'files')
 
         return data_by_submission
 
-    def __get_biomaterials(self, data_by_submission, submission):
-        biomaterials_json = \
-            self.api.get_related_entities('biomaterials', submission, 'biomaterials')
-        if biomaterials_json:
-            data_by_submission.extend(list(biomaterials_json))
-
-    def __get_protocols(self, data_by_submission, submission):
-        protocols_json = \
-            self.api.get_related_entities('protocols', submission, 'protocols')
-        if protocols_json:
-            data_by_submission.extend(list(protocols_json))
+    def __get_entities_by_submission_and_type(self, data_by_submission, submission, entity_type):
+        entity_json = \
+            self.api.get_related_entities(entity_type, submission, entity_type)
+        if entity_json:
+            data_by_submission.extend(list(entity_json))
