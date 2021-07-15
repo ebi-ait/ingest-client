@@ -30,7 +30,7 @@ class MyTestCase(unittest.TestCase):
             mock_files_json = json.load(file)
 
         self.mock_ingest_api.get_submission_by_uuid.return_value = mock_submission_json
-        self.mock_ingest_api.get_related_projects.return_value = mock_project_json
+        self.mock_ingest_api.get_related_project.return_value = mock_project_json
         self.mock_ingest_api.get_related_entities.side_effect = \
             [
                 iter(mock_biomaterials_json),
