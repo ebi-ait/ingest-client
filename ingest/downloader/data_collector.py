@@ -9,7 +9,7 @@ class DataCollector:
     def collect_data_by_submission_uuid(self, submission_uuid):
         submission = self.api.get_submission_by_uuid(submission_uuid)
         submission_id = submission['_links']['self']['href'].rsplit()[0]
-        project_json = self.api.get_related_project(submission_uuid)
+        project_json = self.api.get_related_project(submission_id)
 
         if project_json:
             data_by_submission = [
