@@ -15,6 +15,7 @@ class DataCollector:
         ]
 
         self.__get_biomaterials(data_by_submission, submission)
+        self.__get_protocols(data_by_submission, submission)
 
         return data_by_submission
 
@@ -23,3 +24,9 @@ class DataCollector:
             self.api.get_related_entities('biomaterials', submission, 'biomaterials')
         if biomaterials_json:
             data_by_submission.extend(list(biomaterials_json))
+
+    def __get_protocols(self, data_by_submission, submission):
+        protocols_json = \
+            self.api.get_related_entities('protocols', submission, 'protocols')
+        if protocols_json:
+            data_by_submission.extend(list(protocols_json))
