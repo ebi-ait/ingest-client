@@ -131,10 +131,10 @@ class IngestApi:
     def __get_projects_by_submission_id_and_type(self, submission_id, project_type):
         submission_url = f'{self.url}/submissionEnvelopes/{submission_id}/{project_type}'
         r = self.get(submission_url, headers=self.get_headers())
-        projects = []
+        projects = {}
         if r.status_code == requests.codes.ok:
             projects = json.loads(r.text)
-        return projects
+        return projects.get('_embedded', {}).get('projects', [])
 
     def get_project_by_id(self, id):
         submission_url = self.url + '/projects/' + id
