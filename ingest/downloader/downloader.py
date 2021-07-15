@@ -14,10 +14,10 @@ class XlsDownloader:
         self.row = FIRST_DATA_ROW_NO
 
     def convert_json(self, entity_list: List[dict]):
-        self._flatten_object_list(entity_list)
+        self._flatten(entity_list)
         return self.workbook
 
-    def _flatten_object_list(self, object_list: List[dict], object_key: str = ''):
+    def _flatten(self, object_list: List[dict], object_key: str = ''):
         for entity in object_list:
             worksheet_name = object_key
             row = {}
@@ -52,15 +52,24 @@ class XlsDownloader:
                     flattened_object[full_key] = str(value)
         elif isinstance(object, list):
             if self.is_list_of_objects(object):
-                if self.is_list_of_ontology_objects(object):
-                    keys = self.get_keys_of_a_list_of_object(object)
-                    for key in keys:
-                        flattened_object[f'{parent_key}.{key}'] = '||'.join([elem[key] for elem in object])
-                else:
-                    self._flatten_object_list(object, parent_key)
+                self._flatten_object_list(flattened_object, object, parent_key)
             else:
-                stringified = [str(e) for e in object]
-                flattened_object[parent_key] = '||'.join(stringified)
+                self._flatten_scalar_list(flattened_object, object, parent_key)
+
+    def _flatten_scalar_list(self, flattened_object, object, parent_key):
+        stringified = [str(e) for e in object]
+        flattened_object[parent_key] = '||'.join(stringified)
+
+    def _flatten_object_list(self, flattened_object, object, parent_key):
+        if self.is_list_of_ontology_objects(object):
+            self._flatten_ontology_list(object, flattened_object, parent_key)
+        else:
+            self._flatten(object, parent_key)
+
+    def _flatten_ontology_list(self, object, flattened_object, parent_key):
+        keys = self.get_keys_of_a_list_of_object(object)
+        for key in keys:
+            flattened_object[f'{parent_key}.{key}'] = '||'.join([elem[key] for elem in object])
 
     def _format_worksheet_name(self, worksheet_name):
         names = worksheet_name.split('.')
