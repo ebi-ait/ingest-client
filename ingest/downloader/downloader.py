@@ -51,7 +51,7 @@ class XlsDownloader:
                 else:
                     flattened_object[full_key] = str(value)
         elif isinstance(object, list):
-            if self.is_list_of_objects(object):
+            if self._is_list_of_objects(object):
                 self._flatten_object_list(flattened_object, object, parent_key)
             else:
                 self._flatten_scalar_list(flattened_object, object, parent_key)
@@ -61,13 +61,13 @@ class XlsDownloader:
         flattened_object[parent_key] = '||'.join(stringified)
 
     def _flatten_object_list(self, flattened_object, object, parent_key):
-        if self.is_list_of_ontology_objects(object):
+        if self._is_list_of_ontology_objects(object):
             self._flatten_ontology_list(object, flattened_object, parent_key)
         else:
             self._flatten(object, parent_key)
 
     def _flatten_ontology_list(self, object, flattened_object, parent_key):
-        keys = self.get_keys_of_a_list_of_object(object)
+        keys = self._get_keys_of_a_list_of_object(object)
         for key in keys:
             flattened_object[f'{parent_key}.{key}'] = '||'.join([elem[key] for elem in object])
 
@@ -77,8 +77,17 @@ class XlsDownloader:
         new_worksheet_name = ' - '.join([n.capitalize() for n in names])
         return new_worksheet_name
 
-    def is_list_of_objects(self, content):
+    def _is_list_of_objects(self, content):
         return content and isinstance(content[0], dict)
+
+    def _is_list_of_ontology_objects(self, object: dict):
+        first_elem = object[0] if object else {}
+        result = [prop in first_elem for prop in ONTOLOGY_REQUIRED_PROPS]
+        return all(result)
+
+    def _get_keys_of_a_list_of_object(self, object: dict):
+        first_elem = object[0] if object else {}
+        return list(first_elem.keys())
 
     @staticmethod
     def get_concrete_entity(content):
@@ -113,12 +122,3 @@ class XlsDownloader:
                 self.row += 1
             worksheet.cell(row=self.row, column=col, value=cell_value)
             col += 1
-
-    def is_list_of_ontology_objects(self, object: dict):
-        first_elem = object[0] if object else {}
-        result = [prop in first_elem for prop in ONTOLOGY_REQUIRED_PROPS]
-        return all(result)
-
-    def get_keys_of_a_list_of_object(self, object: dict):
-        first_elem = object[0] if object else {}
-        return list(first_elem.keys())
