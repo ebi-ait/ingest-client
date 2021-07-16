@@ -74,6 +74,13 @@ class FlattenerTest(TestCase):
             'project.geo_series_accessions': "GSE124298||GSE124299"
         })
 
+        self.flattened_metadata_entity['Project']['headers'].extend(
+            [
+                'project.insdc_project_accessions',
+                'project.geo_series_accessions'
+            ]
+        )
+
         self.assertEqual(actual, self.flattened_metadata_entity)
 
     def test_flatten__has_modules(self):
@@ -105,17 +112,30 @@ class FlattenerTest(TestCase):
         actual = flattener.flatten(entity_list)
 
         self.flattened_metadata_entity.update({
-            'Project - Contributors': [
-                {'project.contributors.corresponding_contributor': 'True',
-                 'project.contributors.country': 'USA',
-                 'project.contributors.email': 'alex.pollen@ucsf.edu',
-                 'project.contributors.institution': 'University of California, San Francisco (UCSF)',
-                 'project.contributors.laboratory': 'Department of Neurology',
-                 'project.contributors.name': 'Alex A,,Pollen',
-                 'project.contributors.project_role.ontology': 'EFO:0009741',
-                 'project.contributors.project_role.ontology_label': 'experimental scientist',
-                 'project.contributors.project_role.text': 'experimental scientist'}
-            ]
+            'Project - Contributors': {
+                'headers': [
+                    'project.contributors.name',
+                    'project.contributors.email',
+                    'project.contributors.institution',
+                    'project.contributors.laboratory',
+                    'project.contributors.country',
+                    'project.contributors.corresponding_contributor',
+                    'project.contributors.project_role.text',
+                    'project.contributors.project_role.ontology',
+                    'project.contributors.project_role.ontology_label'
+                ],
+                'values': [
+                    {'project.contributors.corresponding_contributor': 'True',
+                     'project.contributors.country': 'USA',
+                     'project.contributors.email': 'alex.pollen@ucsf.edu',
+                     'project.contributors.institution': 'University of California, San Francisco (UCSF)',
+                     'project.contributors.laboratory': 'Department of Neurology',
+                     'project.contributors.name': 'Alex A,,Pollen',
+                     'project.contributors.project_role.ontology': 'EFO:0009741',
+                     'project.contributors.project_role.ontology_label': 'experimental scientist',
+                     'project.contributors.project_role.text': 'experimental scientist'}
+                ]
+            }
         })
 
         # then
@@ -149,6 +169,13 @@ class FlattenerTest(TestCase):
             'project.organ_parts.text': 'hindlimb stylopod',
 
         })
+        self.flattened_metadata_entity['Project']['headers'].extend(
+            [
+                'project.organ_parts.ontology',
+                'project.organ_parts.ontology_label',
+                'project.organ_parts.text'
+            ]
+        )
 
         # then
         self.assertEqual(actual, self.flattened_metadata_entity)
@@ -186,6 +213,13 @@ class FlattenerTest(TestCase):
             'project.organ_parts.text': 'dummytext1||dummytext2',
 
         })
+        self.flattened_metadata_entity['Project']['headers'].extend(
+            [
+                'project.organ_parts.ontology',
+                'project.organ_parts.ontology_label',
+                'project.organ_parts.text'
+            ]
+        )
 
         # then
         self.assertEqual(actual, self.flattened_metadata_entity)
@@ -208,6 +242,8 @@ class FlattenerTest(TestCase):
         self.flattened_metadata_entity['Project']['values'][0].update({
             'project.boolean_field': 'True'
         })
+        self.flattened_metadata_entity['Project']['headers'].append('project.boolean_field')
+
         # then
         self.assertEqual(actual, self.flattened_metadata_entity)
 
@@ -332,8 +368,12 @@ class FlattenerTest(TestCase):
 
         expected = {
             'Project': {
-                'headers': ['project.uuid', 'project.project_core.project_short_name',
-                            'project.project_core.project_title', 'project.project_core.project_description'],
+                'headers': [
+                    'project.uuid',
+                    'project.project_core.project_short_name',
+                    'project.project_core.project_title',
+                    'project.project_core.project_description'
+                ],
                 'values': [
                     {
                         'project.uuid': 'uuid1',
@@ -343,16 +383,17 @@ class FlattenerTest(TestCase):
                     }
                 ]},
             'Project - Contributors': {
-                'headers': ['project.contributors.corresponding_contributor',
-                            'project.contributors.country',
-                            'project.contributors.email',
-                            'project.contributors.institution',
-                            'project.contributors.laboratory',
-                            'project.contributors.name',
-                            'project.contributors.project_role.ontology',
-                            'project.contributors.project_role.ontology_label',
-                            'project.contributors.project_role.text'
-                            ],
+                'headers': [
+                    'project.contributors.name',
+                    'project.contributors.email',
+                    'project.contributors.institution',
+                    'project.contributors.laboratory',
+                    'project.contributors.country',
+                    'project.contributors.corresponding_contributor',
+                    'project.contributors.project_role.text',
+                    'project.contributors.project_role.ontology',
+                    'project.contributors.project_role.ontology_label'
+                ],
                 'values': [
                     {'project.contributors.corresponding_contributor': 'True',
                      'project.contributors.country': 'USA',
@@ -366,8 +407,11 @@ class FlattenerTest(TestCase):
                 ]
             },
             'Donor organism': {
-                'headers': ['donor_organism.uuid', 'donor_organism.biomaterial_core.biomaterial_id',
-                            'donor_organism.biomaterial_core.biomaterial_description'],
+                'headers': [
+                    'donor_organism.uuid',
+                    'donor_organism.biomaterial_core.biomaterial_id',
+                    'donor_organism.biomaterial_core.biomaterial_description'
+                ],
                 'values': [
                     {
                         'donor_organism.uuid': 'uuid2',

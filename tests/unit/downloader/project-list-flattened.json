@@ -23,13 +23,15 @@
   },
   "Project - Contributors": {
     "headers": [
-      "project.uuid",
-      "project.project_core.project_short_name",
-      "project.project_core.project_title",
-      "project.project_core.project_description",
-      "project.insdc_project_accessions",
-      "project.geo_series_accessions",
-      "project.insdc_study_accessions"
+      "project.contributors.name",
+      "project.contributors.email",
+      "project.contributors.institution",
+      "project.contributors.laboratory",
+      "project.contributors.country",
+      "project.contributors.corresponding_contributor",
+      "project.contributors.project_role.text",
+      "project.contributors.project_role.ontology",
+      "project.contributors.project_role.ontology_label"
     ],
     "values": [
       {

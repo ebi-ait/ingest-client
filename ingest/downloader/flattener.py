@@ -24,10 +24,18 @@ class Flattener:
         if not worksheet_name:
             raise Exception('There should be a worksheet name')
         user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
-        rows = self.workbook.get(user_friendly_worksheet_name, [])
-        self.workbook[user_friendly_worksheet_name] = rows
         self._flatten_object(content, row, parent_key=worksheet_name)
+        worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
+        rows = worksheet.get('values')
         rows.append(row)
+        headers = worksheet.get('headers')
+        for key in row.keys():
+            if key not in headers:
+                headers.append(key)
+        self.workbook[user_friendly_worksheet_name] = {
+            'headers': headers,
+            'values': rows
+        }
 
     def _flatten_object(self, object: dict, flattened_object: dict, parent_key: str = ''):
         if isinstance(object, dict):
