@@ -21,14 +21,18 @@ class FlattenerTest(TestCase):
         }
 
         self.flattened_metadata_entity = {
-            'Project': [
-                {
-                    'project.uuid': 'uuid1',
-                    'project.project_core.project_short_name': 'label',
-                    'project.project_core.project_title': 'title',
-                    'project.project_core.project_description': 'desc'
-                }
-            ]
+            'Project': {
+                'headers': ['project.uuid', 'project.project_core.project_short_name',
+                            'project.project_core.project_title', 'project.project_core.project_description'],
+                'values': [
+                    {
+                        'project.uuid': 'uuid1',
+                        'project.project_core.project_short_name': 'label',
+                        'project.project_core.project_title': 'title',
+                        'project.project_core.project_description': 'desc'
+                    }
+                ]
+            }
         }
 
     def test_flatten__has_no_modules(self):
@@ -65,7 +69,7 @@ class FlattenerTest(TestCase):
         flattener = Flattener()
         actual = flattener.flatten(entity_list)
 
-        self.flattened_metadata_entity['Project'][0].update({
+        self.flattened_metadata_entity['Project']['values'][0].update({
             'project.insdc_project_accessions': 'SRP180337',
             'project.geo_series_accessions': "GSE124298||GSE124299"
         })
@@ -139,7 +143,7 @@ class FlattenerTest(TestCase):
         flattener = Flattener()
         actual = flattener.flatten(entity_list)
 
-        self.flattened_metadata_entity['Project'][0].update({
+        self.flattened_metadata_entity['Project']['values'][0].update({
             'project.organ_parts.ontology': 'UBERON:0000376',
             'project.organ_parts.ontology_label': 'hindlimb stylopod',
             'project.organ_parts.text': 'hindlimb stylopod',
@@ -176,7 +180,7 @@ class FlattenerTest(TestCase):
         flattener = Flattener()
         actual = flattener.flatten(entity_list)
 
-        self.flattened_metadata_entity['Project'][0].update({
+        self.flattened_metadata_entity['Project']['values'][0].update({
             'project.organ_parts.ontology': 'UBERON:0000376||UBERON:0002386',
             'project.organ_parts.ontology_label': 'dummylabel1||dummylabel2',
             'project.organ_parts.text': 'dummytext1||dummytext2',
@@ -201,7 +205,7 @@ class FlattenerTest(TestCase):
         flattener = Flattener()
         actual = flattener.flatten(entity_list)
 
-        self.flattened_metadata_entity['Project'][0].update({
+        self.flattened_metadata_entity['Project']['values'][0].update({
             'project.boolean_field': 'True'
         })
         # then
@@ -223,15 +227,24 @@ class FlattenerTest(TestCase):
         actual = flattener.flatten(entity_list)
 
         expected = {
-            'Project': [
-                {
-                    'project.uuid': 'uuid1',
-                    'project.project_core.project_short_name': 'label',
-                    'project.project_core.project_title': 'title',
-                    'project.project_core.project_description': 'desc',
-                    'project.int_field': '1'
-                }
-            ]
+            'Project': {
+                'headers': [
+                    'project.uuid',
+                    'project.project_core.project_short_name',
+                    'project.project_core.project_title',
+                    'project.project_core.project_description',
+                    'project.int_field'
+                ],
+                'values': [
+                    {
+                        'project.uuid': 'uuid1',
+                        'project.project_core.project_short_name': 'label',
+                        'project.project_core.project_title': 'title',
+                        'project.project_core.project_description': 'desc',
+                        'project.int_field': '1'
+                    }
+                ]
+            }
         }
 
         # then
@@ -318,37 +331,56 @@ class FlattenerTest(TestCase):
         actual = flattener.flatten(entity_list)
 
         expected = {
-            'Project': [
-                {
-                    'project.uuid': 'uuid1',
-                    'project.project_core.project_short_name': 'label',
-                    'project.project_core.project_title': 'title',
-                    'project.project_core.project_description': 'desc'
-                }
-            ],
-            'Project - Contributors': [
-                {'project.contributors.corresponding_contributor': 'True',
-                 'project.contributors.country': 'USA',
-                 'project.contributors.email': 'alex.pollen@ucsf.edu',
-                 'project.contributors.institution': 'University of California, San Francisco (UCSF)',
-                 'project.contributors.laboratory': 'Department of Neurology',
-                 'project.contributors.name': 'Alex A,,Pollen',
-                 'project.contributors.project_role.ontology': 'EFO:0009741',
-                 'project.contributors.project_role.ontology_label': 'experimental scientist',
-                 'project.contributors.project_role.text': 'experimental scientist'}
-            ],
-            'Donor organism': [
-                {
-                    'donor_organism.uuid': 'uuid2',
-                    'donor_organism.biomaterial_core.biomaterial_id': 'label',
-                    'donor_organism.biomaterial_core.biomaterial_description': 'desc'
-                },
-                {
-                    'donor_organism.uuid': 'uuid3',
-                    'donor_organism.biomaterial_core.biomaterial_id': 'label',
-                    'donor_organism.biomaterial_core.biomaterial_description': 'desc'
-                }
-            ],
+            'Project': {
+                'headers': ['project.uuid', 'project.project_core.project_short_name',
+                            'project.project_core.project_title', 'project.project_core.project_description'],
+                'values': [
+                    {
+                        'project.uuid': 'uuid1',
+                        'project.project_core.project_short_name': 'label',
+                        'project.project_core.project_title': 'title',
+                        'project.project_core.project_description': 'desc'
+                    }
+                ]},
+            'Project - Contributors': {
+                'headers': ['project.contributors.corresponding_contributor',
+                            'project.contributors.country',
+                            'project.contributors.email',
+                            'project.contributors.institution',
+                            'project.contributors.laboratory',
+                            'project.contributors.name',
+                            'project.contributors.project_role.ontology',
+                            'project.contributors.project_role.ontology_label',
+                            'project.contributors.project_role.text'
+                            ],
+                'values': [
+                    {'project.contributors.corresponding_contributor': 'True',
+                     'project.contributors.country': 'USA',
+                     'project.contributors.email': 'alex.pollen@ucsf.edu',
+                     'project.contributors.institution': 'University of California, San Francisco (UCSF)',
+                     'project.contributors.laboratory': 'Department of Neurology',
+                     'project.contributors.name': 'Alex A,,Pollen',
+                     'project.contributors.project_role.ontology': 'EFO:0009741',
+                     'project.contributors.project_role.ontology_label': 'experimental scientist',
+                     'project.contributors.project_role.text': 'experimental scientist'}
+                ]
+            },
+            'Donor organism': {
+                'headers': ['donor_organism.uuid', 'donor_organism.biomaterial_core.biomaterial_id',
+                            'donor_organism.biomaterial_core.biomaterial_description'],
+                'values': [
+                    {
+                        'donor_organism.uuid': 'uuid2',
+                        'donor_organism.biomaterial_core.biomaterial_id': 'label',
+                        'donor_organism.biomaterial_core.biomaterial_description': 'desc'
+                    },
+                    {
+                        'donor_organism.uuid': 'uuid3',
+                        'donor_organism.biomaterial_core.biomaterial_id': 'label',
+                        'donor_organism.biomaterial_core.biomaterial_description': 'desc'
+                    }
+                ]
+            },
         }
 
         # then
