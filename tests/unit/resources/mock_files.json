@@ -1,0 +1,722 @@
+[
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+            "file_core": {
+                "content_description": [
+                    {
+                        "ontology": "data:3112",
+                        "ontology_label": "Gene expression matrix",
+                        "text": "Natural log TPM matrix."
+                    }
+                ],
+                "file_name": "GSE132257_GEO_processed_protocol_and_fresh_frozen_natural_log_TPM_matrix.txt.gz",
+                "file_source": "GEO",
+                "format": "txt.gz"
+            },
+            "schema_type": "file"
+        },
+        "fileName": "GSE132257_GEO_processed_protocol_and_fresh_frozen_natural_log_TPM_matrix.txt.gz",
+        "submissionDate": "2021-07-09T17:47:26.069Z",
+        "updateDate": "2021-07-09T17:48:31.018Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "File",
+        "uuid": {
+            "uuid": "ea17a7bc-2853-453c-917b-3708ea96004c"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.069Z",
+        "dcpVersion": "2021-07-09T17:48:27.114Z",
+        "contentLastModified": "2021-07-09T17:48:27.114Z",
+        "accession": null,
+        "validationState": "Invalid",
+        "validationErrors": [
+            {
+                "errorType": "FILE_NOT_UPLOADED",
+                "message": "File cloudUrl property not set.",
+                "userFriendlyMessage": "File not uploaded.",
+                "absoluteDataPath": "root of document"
+            }
+        ],
+        "isUpdate": false,
+        "cloudUrl": null,
+        "checksums": null,
+        "lastExportedChecksums": null,
+        "validationJob": null,
+        "validationId": null,
+        "dataFileUuid": "4dc17209-1f7d-4e51-b13b-edfa1861ccd2",
+        "size": null,
+        "fileContentType": null,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7147"
+            },
+            "file": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7147",
+                "title": "A single file"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7147/draftEvent"
+            },
+            "validationJob": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7147/validationJob"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7147/project",
+                "title": "A single project"
+            },
+            "inputToProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7147/inputToProcesses"
+            },
+            "derivedByProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7147/derivedByProcesses"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7147/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+            "file_core": {
+                "content_description": [
+                    {
+                        "ontology": "data:3112",
+                        "ontology_label": "Gene expression matrix",
+                        "text": "Raw UMI count matrix."
+                    }
+                ],
+                "file_name": "GSE132257_GEO_processed_protocol_and_fresh_frozen_raw_UMI_count_matrix.txt.gz",
+                "file_source": "GEO",
+                "format": "txt.gz"
+            },
+            "schema_type": "file"
+        },
+        "fileName": "GSE132257_GEO_processed_protocol_and_fresh_frozen_raw_UMI_count_matrix.txt.gz",
+        "submissionDate": "2021-07-09T17:47:26.082Z",
+        "updateDate": "2021-07-09T17:49:04.011Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "File",
+        "uuid": {
+            "uuid": "04fe5bad-8653-483d-a245-81a14a9c4438"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.082Z",
+        "dcpVersion": "2021-07-09T17:48:57.917Z",
+        "contentLastModified": "2021-07-09T17:48:57.917Z",
+        "accession": null,
+        "validationState": "Invalid",
+        "validationErrors": [
+            {
+                "errorType": "FILE_NOT_UPLOADED",
+                "message": "File cloudUrl property not set.",
+                "userFriendlyMessage": "File not uploaded.",
+                "absoluteDataPath": "root of document"
+            }
+        ],
+        "isUpdate": false,
+        "cloudUrl": null,
+        "checksums": null,
+        "lastExportedChecksums": null,
+        "validationJob": null,
+        "validationId": null,
+        "dataFileUuid": "260f51a8-340e-4d16-8dd5-fdfe9cc0b2fa",
+        "size": null,
+        "fileContentType": null,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7148"
+            },
+            "file": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7148",
+                "title": "A single file"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7148/draftEvent"
+            },
+            "validationJob": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7148/validationJob"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7148/project",
+                "title": "A single project"
+            },
+            "inputToProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7148/inputToProcesses"
+            },
+            "derivedByProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7148/derivedByProcesses"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7148/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+            "file_core": {
+                "content_description": [
+                    {
+                        "ontology": "data:3113",
+                        "ontology_label": "Sample annotation",
+                        "text": "Cell annotation."
+                    }
+                ],
+                "file_name": "GSE132257_processed_protocol_and_fresh_frozen_cell_annotation.txt.gz",
+                "file_source": "GEO",
+                "format": "txt.gz"
+            },
+            "schema_type": "file"
+        },
+        "fileName": "GSE132257_processed_protocol_and_fresh_frozen_cell_annotation.txt.gz",
+        "submissionDate": "2021-07-09T17:47:26.094Z",
+        "updateDate": "2021-07-09T17:49:16.037Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "File",
+        "uuid": {
+            "uuid": "d4d1608d-c7d3-4f4a-9892-778c662b0dad"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.094Z",
+        "dcpVersion": "2021-07-09T17:49:12.049Z",
+        "contentLastModified": "2021-07-09T17:49:12.049Z",
+        "accession": null,
+        "validationState": "Invalid",
+        "validationErrors": [
+            {
+                "errorType": "FILE_NOT_UPLOADED",
+                "message": "File cloudUrl property not set.",
+                "userFriendlyMessage": "File not uploaded.",
+                "absoluteDataPath": "root of document"
+            }
+        ],
+        "isUpdate": false,
+        "cloudUrl": null,
+        "checksums": null,
+        "lastExportedChecksums": null,
+        "validationJob": null,
+        "validationId": null,
+        "dataFileUuid": "1416c582-52c7-44db-92f3-ff64020e52ee",
+        "size": null,
+        "fileContentType": null,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7149"
+            },
+            "file": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7149",
+                "title": "A single file"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7149/draftEvent"
+            },
+            "validationJob": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7149/validationJob"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7149/project",
+                "title": "A single project"
+            },
+            "inputToProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7149/inputToProcesses"
+            },
+            "derivedByProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7149/derivedByProcesses"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf7149/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+            "file_core": {
+                "content_description": [
+                    {
+                        "ontology": "data:3113",
+                        "ontology_label": "Sample annotation",
+                        "text": "Cell annotation."
+                    }
+                ],
+                "file_name": "GSE132465_GEO_processed_CRC_10X_cell_annotation.txt.gz",
+                "file_source": "GEO",
+                "format": "txt.gz"
+            },
+            "schema_type": "file"
+        },
+        "fileName": "GSE132465_GEO_processed_CRC_10X_cell_annotation.txt.gz",
+        "submissionDate": "2021-07-09T17:47:26.106Z",
+        "updateDate": "2021-07-09T17:49:34.026Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "File",
+        "uuid": {
+            "uuid": "bb9c4eeb-6f69-48ac-a464-8f008891ef84"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.106Z",
+        "dcpVersion": "2021-07-09T17:49:28.790Z",
+        "contentLastModified": "2021-07-09T17:49:28.790Z",
+        "accession": null,
+        "validationState": "Invalid",
+        "validationErrors": [
+            {
+                "errorType": "FILE_NOT_UPLOADED",
+                "message": "File cloudUrl property not set.",
+                "userFriendlyMessage": "File not uploaded.",
+                "absoluteDataPath": "root of document"
+            }
+        ],
+        "isUpdate": false,
+        "cloudUrl": null,
+        "checksums": null,
+        "lastExportedChecksums": null,
+        "validationJob": null,
+        "validationId": null,
+        "dataFileUuid": "23b8fac5-c941-46eb-87b7-c08b585acadc",
+        "size": null,
+        "fileContentType": null,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714a"
+            },
+            "file": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714a",
+                "title": "A single file"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714a/draftEvent"
+            },
+            "validationJob": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714a/validationJob"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714a/project",
+                "title": "A single project"
+            },
+            "inputToProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714a/inputToProcesses"
+            },
+            "derivedByProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714a/derivedByProcesses"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714a/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+            "file_core": {
+                "content_description": [
+                    {
+                        "ontology": "data:3112",
+                        "ontology_label": "Gene expression matrix",
+                        "text": "Natural log TPM matrix."
+                    }
+                ],
+                "file_name": "GSE132465_GEO_processed_CRC_10X_natural_log_TPM_matrix.txt.gz",
+                "file_source": "GEO",
+                "format": "txt.gz"
+            },
+            "schema_type": "file"
+        },
+        "fileName": "GSE132465_GEO_processed_CRC_10X_natural_log_TPM_matrix.txt.gz",
+        "submissionDate": "2021-07-09T17:47:26.118Z",
+        "updateDate": "2021-07-09T17:49:58.029Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "File",
+        "uuid": {
+            "uuid": "7739bad4-0f1d-42f4-8ca1-b325388c1907"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.118Z",
+        "dcpVersion": "2021-07-09T17:49:53.301Z",
+        "contentLastModified": "2021-07-09T17:49:53.301Z",
+        "accession": null,
+        "validationState": "Invalid",
+        "validationErrors": [
+            {
+                "errorType": "FILE_NOT_UPLOADED",
+                "message": "File cloudUrl property not set.",
+                "userFriendlyMessage": "File not uploaded.",
+                "absoluteDataPath": "root of document"
+            }
+        ],
+        "isUpdate": false,
+        "cloudUrl": null,
+        "checksums": null,
+        "lastExportedChecksums": null,
+        "validationJob": null,
+        "validationId": null,
+        "dataFileUuid": "f9ced301-0da3-4eeb-a823-7eb015c8bb62",
+        "size": null,
+        "fileContentType": null,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714b"
+            },
+            "file": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714b",
+                "title": "A single file"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714b/draftEvent"
+            },
+            "validationJob": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714b/validationJob"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714b/project",
+                "title": "A single project"
+            },
+            "inputToProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714b/inputToProcesses"
+            },
+            "derivedByProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714b/derivedByProcesses"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714b/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+            "file_core": {
+                "content_description": [
+                    {
+                        "ontology": "data:3112",
+                        "ontology_label": "Gene expression matrix",
+                        "text": "Raw UMI count matrix."
+                    }
+                ],
+                "file_name": "GSE132465_GEO_processed_CRC_10X_raw_UMI_count_matrix.txt.gz",
+                "file_source": "GEO",
+                "format": "txt.gz"
+            },
+            "schema_type": "file"
+        },
+        "fileName": "GSE132465_GEO_processed_CRC_10X_raw_UMI_count_matrix.txt.gz",
+        "submissionDate": "2021-07-09T17:47:26.131Z",
+        "updateDate": "2021-07-09T17:50:16.033Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "File",
+        "uuid": {
+            "uuid": "52c8cbba-ee56-4848-a200-d739440f4a8a"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.131Z",
+        "dcpVersion": "2021-07-09T17:50:12.685Z",
+        "contentLastModified": "2021-07-09T17:50:12.685Z",
+        "accession": null,
+        "validationState": "Invalid",
+        "validationErrors": [
+            {
+                "errorType": "FILE_NOT_UPLOADED",
+                "message": "File cloudUrl property not set.",
+                "userFriendlyMessage": "File not uploaded.",
+                "absoluteDataPath": "root of document"
+            }
+        ],
+        "isUpdate": false,
+        "cloudUrl": null,
+        "checksums": null,
+        "lastExportedChecksums": null,
+        "validationJob": null,
+        "validationId": null,
+        "dataFileUuid": "de9ca0d1-6557-4556-b847-21854b475238",
+        "size": null,
+        "fileContentType": null,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714c"
+            },
+            "file": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714c",
+                "title": "A single file"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714c/draftEvent"
+            },
+            "validationJob": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714c/validationJob"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714c/project",
+                "title": "A single project"
+            },
+            "inputToProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714c/inputToProcesses"
+            },
+            "derivedByProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714c/derivedByProcesses"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714c/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+            "file_core": {
+                "content_description": [
+                    {
+                        "ontology": "data:3113",
+                        "ontology_label": "Sample annotation",
+                        "text": "Cell annotation."
+                    }
+                ],
+                "file_name": "GSE144735_processed_KUL3_CRC_10X_annotation.txt.gz",
+                "file_source": "GEO",
+                "format": "txt.gz"
+            },
+            "schema_type": "file"
+        },
+        "fileName": "GSE144735_processed_KUL3_CRC_10X_annotation.txt.gz",
+        "submissionDate": "2021-07-09T17:47:26.146Z",
+        "updateDate": "2021-07-09T17:50:34.026Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "File",
+        "uuid": {
+            "uuid": "4e34a976-53ce-4aea-9f4c-3c98dd0d2604"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.146Z",
+        "dcpVersion": "2021-07-09T17:50:29.620Z",
+        "contentLastModified": "2021-07-09T17:50:29.620Z",
+        "accession": null,
+        "validationState": "Invalid",
+        "validationErrors": [
+            {
+                "errorType": "FILE_NOT_UPLOADED",
+                "message": "File cloudUrl property not set.",
+                "userFriendlyMessage": "File not uploaded.",
+                "absoluteDataPath": "root of document"
+            }
+        ],
+        "isUpdate": false,
+        "cloudUrl": null,
+        "checksums": null,
+        "lastExportedChecksums": null,
+        "validationJob": null,
+        "validationId": null,
+        "dataFileUuid": "00ca7055-e88e-49ac-8aa7-3c3b014be197",
+        "size": null,
+        "fileContentType": null,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714d"
+            },
+            "file": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714d",
+                "title": "A single file"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714d/draftEvent"
+            },
+            "validationJob": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714d/validationJob"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714d/project",
+                "title": "A single project"
+            },
+            "inputToProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714d/inputToProcesses"
+            },
+            "derivedByProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714d/derivedByProcesses"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714d/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+            "file_core": {
+                "content_description": [
+                    {
+                        "ontology": "data:3112",
+                        "ontology_label": "Gene expression matrix",
+                        "text": "Natural log TPM matrix."
+                    }
+                ],
+                "file_name": "GSE144735_processed_KUL3_CRC_10X_natural_log_TPM_matrix.txt.gz",
+                "file_source": "GEO",
+                "format": "txt.gz"
+            },
+            "schema_type": "file"
+        },
+        "fileName": "GSE144735_processed_KUL3_CRC_10X_natural_log_TPM_matrix.txt.gz",
+        "submissionDate": "2021-07-09T17:47:26.171Z",
+        "updateDate": "2021-07-09T17:50:46.031Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "File",
+        "uuid": {
+            "uuid": "3ce04978-9781-45cd-a05f-753cff5d8601"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.171Z",
+        "dcpVersion": "2021-07-09T17:50:40.851Z",
+        "contentLastModified": "2021-07-09T17:50:40.851Z",
+        "accession": null,
+        "validationState": "Invalid",
+        "validationErrors": [
+            {
+                "errorType": "FILE_NOT_UPLOADED",
+                "message": "File cloudUrl property not set.",
+                "userFriendlyMessage": "File not uploaded.",
+                "absoluteDataPath": "root of document"
+            }
+        ],
+        "isUpdate": false,
+        "cloudUrl": null,
+        "checksums": null,
+        "lastExportedChecksums": null,
+        "validationJob": null,
+        "validationId": null,
+        "dataFileUuid": "6520ddbf-0439-40bb-a567-a9235b3aa702",
+        "size": null,
+        "fileContentType": null,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714e"
+            },
+            "file": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714e",
+                "title": "A single file"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714e/draftEvent"
+            },
+            "validationJob": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714e/validationJob"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714e/project",
+                "title": "A single project"
+            },
+            "inputToProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714e/inputToProcesses"
+            },
+            "derivedByProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714e/derivedByProcesses"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714e/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+            "file_core": {
+                "content_description": [
+                    {
+                        "ontology": "data:3112",
+                        "ontology_label": "Gene expression matrix",
+                        "text": "Raw UMI count matrix."
+                    }
+                ],
+                "file_name": "GSE144735_processed_KUL3_CRC_10X_raw_UMI_count_matrix.txt.gz",
+                "file_source": "GEO",
+                "format": "txt.gz"
+            },
+            "schema_type": "file"
+        },
+        "fileName": "GSE144735_processed_KUL3_CRC_10X_raw_UMI_count_matrix.txt.gz",
+        "submissionDate": "2021-07-09T17:47:26.184Z",
+        "updateDate": "2021-07-09T17:49:46.021Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "File",
+        "uuid": {
+            "uuid": "90ef9046-d112-42e2-aa0c-69744fb3d31d"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.184Z",
+        "dcpVersion": "2021-07-09T17:49:41.126Z",
+        "contentLastModified": "2021-07-09T17:49:41.126Z",
+        "accession": null,
+        "validationState": "Invalid",
+        "validationErrors": [
+            {
+                "errorType": "FILE_NOT_UPLOADED",
+                "message": "File cloudUrl property not set.",
+                "userFriendlyMessage": "File not uploaded.",
+                "absoluteDataPath": "root of document"
+            }
+        ],
+        "isUpdate": false,
+        "cloudUrl": null,
+        "checksums": null,
+        "lastExportedChecksums": null,
+        "validationJob": null,
+        "validationId": null,
+        "dataFileUuid": "79c58532-be62-41fe-abae-042da9338cb7",
+        "size": null,
+        "fileContentType": null,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714f"
+            },
+            "file": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714f",
+                "title": "A single file"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714f/draftEvent"
+            },
+            "validationJob": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714f/validationJob"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714f/project",
+                "title": "A single project"
+            },
+            "inputToProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714f/inputToProcesses"
+            },
+            "derivedByProcesses": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714f/derivedByProcesses"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/files/60e88baed5d575160aaf714f/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    }
+        ]

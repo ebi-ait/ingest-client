@@ -1,0 +1,947 @@
+[
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/biomaterial_collection/9.2.0/collection_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "collection_protocol",
+                "protocol_name": "Surgical resection",
+                "protocol_description": "After resection, samples from the tumor and non-malignant colon tissues were collected and immediately transferred for tissue preparation. Half of the tissues were subjected to single-cell isolation and the other half were cryopreserved for subsequent DNA and RNA extraction."
+            },
+            "method": {
+                "text": "surgical resection",
+                "ontology": "EFO:0009744",
+                "ontology_label": "surgical resection"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.900Z",
+        "updateDate": "2021-07-09T17:47:47.788Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "ecaa39ad-5cb2-4568-a19f-501ec59aedba"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.900Z",
+        "dcpVersion": "2021-07-09T17:47:25.900Z",
+        "contentLastModified": "2021-07-09T17:47:25.899Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7137"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7137",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7137/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7137/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7137/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7137/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/biomaterial_collection/6.2.0/dissociation_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "SMC_dissociation_protocol",
+                "protocol_name": "SMC protocol",
+                "protocol_description": "Samples using SMC tissue dissociation protocols used a tumor dissociation kit (Miltenyi Biotech, Germany), according to the manufacturer’s instructions. Briefly, tissues were cut into 2-4 mm pieces and transferred to C tubes containing an enzyme mix (Enzyme H, R, and A in RPMI1640 media)."
+            },
+            "method": {
+                "text": "enzymatic dissociation",
+                "ontology": "EFO:0009128",
+                "ontology_label": "enzymatic dissociation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.909Z",
+        "updateDate": "2021-07-09T17:47:47.804Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "7606b04b-95bf-44ac-96a5-3205d2e0fa55"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.909Z",
+        "dcpVersion": "2021-07-09T17:47:25.909Z",
+        "contentLastModified": "2021-07-09T17:47:25.909Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7138"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7138",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7138/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7138/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7138/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7138/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/biomaterial_collection/6.2.0/dissociation_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "KUL_dissociation_protocol",
+                "protocol_name": "KUL protocol",
+                "protocol_description": "Samples using KUL3 tissue dissociation protocols were dissociated using an enzymatic manual tumor dissociation method. After rinsing with cold PBS, the tumor specimens were minced to obtain < 1mm3 pieces. The resulting pieces were incubated in the digestion buffer (2 mg/ml Collagenase P and 0.2 mg/ml DNase I in 10 ml DMEM) for 10 minutes at 37°C. The resulting suspension was filtered using a 40 um nylon mesh, mixed with 30 ml ice cold PBS/FBS and centrifuged at 300xG for 5 minutes at 4°C. The supernatant was removed and the pellet was resuspended with 1 ml RBC lysis buffer and incubated at RT for 5 minutes. The resulting suspension was centrifuged at 150xG for 5 minutes at 4°C and the supernatant is removed. The pellet is resuspended in 0.04% BSA and filtered using a 40um tip strainer. The number of cells in the resulting cell suspension was quantified by LUNA Counter."
+            },
+            "method": {
+                "text": "enzymatic dissociation",
+                "ontology": "EFO:0009128",
+                "ontology_label": "enzymatic dissociation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.918Z",
+        "updateDate": "2021-07-09T17:47:47.814Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "d6cf99e7-5ef0-4065-9c3a-c6c7c136640f"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.918Z",
+        "dcpVersion": "2021-07-09T17:47:25.918Z",
+        "contentLastModified": "2021-07-09T17:47:25.918Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7139"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7139",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7139/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7139/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7139/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7139/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/biomaterial_collection/6.2.0/dissociation_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "Singapore_dissociation_protocol",
+                "protocol_name": "Singapore protocol",
+                "protocol_description": "The protocol consisted of tissue digestion by collagenase IV and DNases I in RPMI1640 media at 37°C for 1 h, followed by mechanical shearing with a 16 1/2 gauge needle, washing in PBS containing 1% BSA and 2 mM EDTA, and red blood cell lysis using ACK lysis buffer."
+            },
+            "method": {
+                "text": "enzymatic dissociation",
+                "ontology": "EFO:0009128",
+                "ontology_label": "enzymatic dissociation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.929Z",
+        "updateDate": "2021-07-09T17:47:47.823Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "7e719ac2-b534-4522-8a4c-64d0de51f72d"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.929Z",
+        "dcpVersion": "2021-07-09T17:47:25.929Z",
+        "contentLastModified": "2021-07-09T17:47:25.928Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713a"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713a",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713a/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713a/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713a/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713a/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/biomaterial_collection/3.1.0/enrichment_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "SMC_enrichment_protocol1",
+                "protocol_name": "SMC tissue dissociation protocol – part 1",
+                "protocol_description": "Gentle MACS programs (h_tumor_01, 02, and 03) were run in a MACSmix tube rotator, with two 30-min incubation periods at 37°C between each run."
+            },
+            "method": {
+                "text": "magnetic affinity cell sorting",
+                "ontology": "EFO:0009109",
+                "ontology_label": "magnetic affinity cell sorting"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.938Z",
+        "updateDate": "2021-07-09T17:47:47.832Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "a9b6287d-af3f-4320-8004-c10692409e02"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.938Z",
+        "dcpVersion": "2021-07-09T17:47:25.938Z",
+        "contentLastModified": "2021-07-09T17:47:25.938Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713b"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713b",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713b/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713b/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713b/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713b/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/biomaterial_collection/3.1.0/enrichment_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "SMC_enrichment_protocol2",
+                "protocol_name": "SMC tissue dissociation protocol – part 2",
+                "protocol_description": "The digested samples were filtered through a 70-µm strainer, purified via a Ficoll-Paque PLUS (GE healthcare, USA) gradient, and cryopreserved in cell bank (Zenoaq, Japan) before sequencing."
+            },
+            "method": {
+                "text": "density gradient centrifugation",
+                "ontology": "EFO:0009112",
+                "ontology_label": "density gradient centrifugation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.947Z",
+        "updateDate": "2021-07-09T17:47:47.842Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "4d19dc78-ed96-4652-a46f-73864bc1ec77"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.947Z",
+        "dcpVersion": "2021-07-09T17:47:25.947Z",
+        "contentLastModified": "2021-07-09T17:47:25.947Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713c"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713c",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713c/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713c/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713c/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713c/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/sequencing/6.2.0/library_preparation_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "library_preparation_protocol",
+                "protocol_name": "Chromium Single Cell 3’ v2 librarly preparation protocol.",
+                "protocol_description": "For freshly prepared samples, the single cell suspensions were loaded to Chromium system (10X genomics) immediately after cell dissociation targeting 5,000 cells per run. The cryopreserved single cell dissociates were loaded after a rapid thaw-wash cycle. Following the manufacturer’s instructions, barcoded sequencing libraries were generated using Chromium Single Cell 3’ v2 kits."
+            },
+            "cell_barcode": {
+                "barcode_read": "Read 1",
+                "barcode_offset": 0,
+                "barcode_length": 16
+            },
+            "input_nucleic_acid_molecule": {
+                "text": "polyA RNA",
+                "ontology": "OBI:0000869",
+                "ontology_label": "polyA RNA"
+            },
+            "nucleic_acid_source": "single cell",
+            "library_construction_method": {
+                "text": "10x 3' v2",
+                "ontology": "EFO:0009899",
+                "ontology_label": "10x 3' v2"
+            },
+            "end_bias": "3 prime tag",
+            "primer": "poly-dT",
+            "strand": "first",
+            "umi_barcode": {
+                "barcode_read": "Read 1",
+                "barcode_offset": 16,
+                "barcode_length": 10
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.957Z",
+        "updateDate": "2021-07-09T17:47:47.853Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "64db2348-3b6f-4ac1-8634-aaa2d03297d8"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.957Z",
+        "dcpVersion": "2021-07-09T17:47:25.957Z",
+        "contentLastModified": "2021-07-09T17:47:25.957Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713d"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713d",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713d/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713d/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713d/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713d/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/sequencing/10.1.0/sequencing_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "GPL20301",
+                "protocol_name": "GPL20301 sequencing protocol.",
+                "protocol_description": "Sequenced across 8 lanes on a Hiseq 4000 platform (Illumina) targeting 100,000 reads per cell."
+            },
+            "instrument_manufacturer_model": {
+                "text": "Illumina HiSeq 4000",
+                "ontology": "EFO:0008563",
+                "ontology_label": "Illumina HiSeq 4000"
+            },
+            "paired_end": false,
+            "method": {
+                "text": "tag based single cell RNA sequencing",
+                "ontology": "EFO:0008440",
+                "ontology_label": "tag based single cell RNA sequencing"
+            },
+            "10x": {
+                "fastq_method": "CellRanger",
+                "fastq_method_version": "2.1.0"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.967Z",
+        "updateDate": "2021-07-09T17:47:47.864Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "f0101646-713d-4f4b-b561-d4e9fb4647f3"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.967Z",
+        "dcpVersion": "2021-07-09T17:47:25.967Z",
+        "contentLastModified": "2021-07-09T17:47:25.966Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713e"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713e",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713e/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713e/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713e/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713e/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/sequencing/10.1.0/sequencing_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "GPL16791",
+                "protocol_name": "GPL16791 sequencing protocol.",
+                "protocol_description": "Sequenced on a Hiseq 2500 platform (Illumina)."
+            },
+            "instrument_manufacturer_model": {
+                "text": "Illumina HiSeq 2500",
+                "ontology": "EFO:0008565",
+                "ontology_label": "Illumina HiSeq 2500"
+            },
+            "paired_end": false,
+            "method": {
+                "text": "tag based single cell RNA sequencing",
+                "ontology": "EFO:0008440",
+                "ontology_label": "tag based single cell RNA sequencing"
+            },
+            "10x": {
+                "fastq_method": "CellRanger",
+                "fastq_method_version": "2.1.0"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.976Z",
+        "updateDate": "2021-07-09T17:47:47.882Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "7875a3e9-5fdf-4f29-8ea7-78c416677568"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.976Z",
+        "dcpVersion": "2021-07-09T17:47:25.976Z",
+        "contentLastModified": "2021-07-09T17:47:25.975Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713f"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713f",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713f/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713f/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713f/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf713f/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/sequencing/10.1.0/sequencing_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "GPL24676",
+                "protocol_name": "GPL24676 sequencing protocol.",
+                "protocol_description": "Sequencing was performed on Illumina NextSeq 500 and Illumina NovaSeq 6000 for quality control and coverage respectively."
+            },
+            "instrument_manufacturer_model": {
+                "text": "Illumina NovaSeq 6000",
+                "ontology": "EFO:0008637",
+                "ontology_label": "Illumina NovaSeq 6000"
+            },
+            "paired_end": false,
+            "method": {
+                "text": "tag based single cell RNA sequencing",
+                "ontology": "EFO:0008440",
+                "ontology_label": "tag based single cell RNA sequencing"
+            },
+            "10x": {
+                "fastq_method": "CellRanger",
+                "fastq_method_version": "2.1.0"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.986Z",
+        "updateDate": "2021-07-09T17:47:47.895Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "8399a721-ef4f-4198-9db2-79cf8856bc72"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.986Z",
+        "dcpVersion": "2021-07-09T17:47:25.986Z",
+        "contentLastModified": "2021-07-09T17:47:25.985Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7140"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7140",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7140/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7140/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7140/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7140/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/analysis/9.2.0/analysis_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "expression_matrix_protocol1a",
+                "protocol_name": "Data processing protocol 1a.",
+                "protocol_description": "To eliminate doublets, cells with a number of genes exceeding the outliers were removed. The raw gene expression matrix from the CellRanger pipeline was filtered using the Seurat R package (version 2.3) and selected according to the following criteria: cells with > 1000 UMI counts, > 200 genes, and < 6,000 genes, and < 20% of mitochondrial gene expression in UMI counts. After filtering step, the raw gene expression matrix was normalized to the total UMI counts per cell."
+            },
+            "type": {
+                "text": "data transformation",
+                "ontology": "OBI:0200000",
+                "ontology_label": "data transformation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:25.996Z",
+        "updateDate": "2021-07-09T17:47:47.916Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "4e32aaf5-6ae6-4e64-9155-74222fee8865"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:25.996Z",
+        "dcpVersion": "2021-07-09T17:47:25.996Z",
+        "contentLastModified": "2021-07-09T17:47:25.995Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7141"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7141",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7141/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7141/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7141/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88badd5d575160aaf7141/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/analysis/9.2.0/analysis_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "expression_matrix_protocol1b",
+                "protocol_name": "Data processing protocol 1b.",
+                "protocol_description": "To eliminate doublets, cells with a number of genes exceeding the outliers were removed. The raw gene expression matrix from the CellRanger pipeline was filtered using the Seurat R package (version 2.3) and selected according to the following criteria: cells with > 1000 UMI counts, > 200 genes, and < 6,000 genes, and < 20% of mitochondrial gene expression in UMI counts. After filtering step, the raw gene expression matrix was normalized to the total UMI counts per cell and transformed to the natural log scale."
+            },
+            "type": {
+                "text": "data transformation",
+                "ontology": "OBI:0200000",
+                "ontology_label": "data transformation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:26.018Z",
+        "updateDate": "2021-07-09T17:47:47.925Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "6ccc8272-f922-4c8b-b211-810e8a6c430e"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.018Z",
+        "dcpVersion": "2021-07-09T17:47:26.018Z",
+        "contentLastModified": "2021-07-09T17:47:26.018Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7142"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7142",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7142/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7142/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7142/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7142/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/analysis/9.2.0/analysis_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "expression_matrix_protocol2a",
+                "protocol_name": "Data processing protocol 2a.",
+                "protocol_description": "The raw gene expression matrix from the CellRanger pipeline was filtered using the Seurat R package (version 2.3) and selected according to the following criteria: cells with > 1000 UMI counts, > 200 genes, and < 6,000 genes, and < 20% of mitochondrial gene expression in UMI counts."
+            },
+            "type": {
+                "text": "data transformation",
+                "ontology": "OBI:0200000",
+                "ontology_label": "data transformation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:26.028Z",
+        "updateDate": "2021-07-09T17:47:47.935Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "05a895d9-2348-4a81-af29-c7c5a117b8fd"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.028Z",
+        "dcpVersion": "2021-07-09T17:47:26.028Z",
+        "contentLastModified": "2021-07-09T17:47:26.027Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7143"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7143",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7143/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7143/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7143/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7143/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/analysis/9.2.0/analysis_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "expression_matrix_protocol2b",
+                "protocol_name": "Data processing protocol 2b.",
+                "protocol_description": "The raw gene expression matrix from the CellRanger pipeline was filtered using the Seurat R package (version 2.3) and selected according to the following criteria: cells with > 1000 UMI counts, > 200 genes, and < 6,000 genes, and < 20% of mitochondrial gene expression in UMI counts."
+            },
+            "type": {
+                "text": "data transformation",
+                "ontology": "OBI:0200000",
+                "ontology_label": "data transformation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:26.037Z",
+        "updateDate": "2021-07-09T17:47:47.945Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "c3c1ef30-e9df-4937-a07b-0e8f9303fce9"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.037Z",
+        "dcpVersion": "2021-07-09T17:47:26.037Z",
+        "contentLastModified": "2021-07-09T17:47:26.037Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7144"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7144",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7144/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7144/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7144/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7144/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/analysis/9.2.0/analysis_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "cell_type_annotation_protocol_1",
+                "protocol_name": "Cell type annotation.",
+                "protocol_description": "Seurat multiCCA and RCA pipelines were combined for initial clustering and cell type identification and removed discordant cells from 2 methods."
+            },
+            "type": {
+                "text": "data transformation",
+                "ontology": "OBI:0200000",
+                "ontology_label": "data transformation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:26.047Z",
+        "updateDate": "2021-07-09T17:47:47.959Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "3c996506-da0e-4710-ae50-17c9a0cabdfe"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.047Z",
+        "dcpVersion": "2021-07-09T17:47:26.047Z",
+        "contentLastModified": "2021-07-09T17:47:26.047Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7145"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7145",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7145/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7145/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7145/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7145/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    },
+    {
+        "content": {
+            "describedBy": "https://schema.humancellatlas.org/type/protocol/analysis/9.2.0/analysis_protocol",
+            "schema_type": "protocol",
+            "protocol_core": {
+                "protocol_id": "cell_type_annotation_protocol_2",
+                "protocol_name": "Cell type annotation.",
+                "protocol_description": "Cell type annotation."
+            },
+            "type": {
+                "text": "data transformation",
+                "ontology": "OBI:0200000",
+                "ontology_label": "data transformation"
+            }
+        },
+        "submissionDate": "2021-07-09T17:47:26.056Z",
+        "updateDate": "2021-07-09T17:47:47.969Z",
+        "user": null,
+        "lastModifiedUser": "anonymousUser",
+        "type": "Protocol",
+        "uuid": {
+            "uuid": "60c46f3c-d2fb-469c-ad25-b71ba233f44f"
+        },
+        "events": [],
+        "firstDcpVersion": "2021-07-09T17:47:26.056Z",
+        "dcpVersion": "2021-07-09T17:47:26.056Z",
+        "contentLastModified": "2021-07-09T17:47:26.056Z",
+        "accession": null,
+        "validationState": "Valid",
+        "validationErrors": [],
+        "isUpdate": false,
+        "linked": true,
+        "_links": {
+            "self": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7146"
+            },
+            "protocol": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7146",
+                "title": "A single protocol"
+            },
+            "processing": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7146/processingEvent"
+            },
+            "draft": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7146/draftEvent"
+            },
+            "project": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7146/project",
+                "title": "A single project"
+            },
+            "submissionEnvelope": {
+                "href": "https://api.ingest.archive.data.humancellatlas.org/protocols/60e88baed5d575160aaf7146/submissionEnvelope",
+                "title": "A single submission envelope"
+            }
+        }
+    }
+]

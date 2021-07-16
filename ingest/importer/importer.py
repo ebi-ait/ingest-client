@@ -187,7 +187,6 @@ class WorkbookImporter:
     def do_import(self, workbook: IngestWorkbook, is_update, project_uuid=None):
         registry = _ImportRegistry(self.template_mgr)
         importable_worksheets = workbook.importable_worksheets()
-
         workbook_errors = self.validate_worksheets(is_update, importable_worksheets)
 
         if project_uuid:
