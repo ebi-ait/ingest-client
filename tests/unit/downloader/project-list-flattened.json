@@ -1,87 +1,124 @@
 {
-  "Project": [
-    {
-      "project.uuid": "3e329187-a9c4-48ec-90e3-cc45f7c2311c",
-      "project.project_core.project_short_name": "kriegsteinBrainOrganoids",
-      "project.project_core.project_title": "Establishing Cerebral Organoids as Models of Human-Specific Brain Evolution",
-      "project.project_core.project_description": "Direct comparisons of human and non-human primate brain tissue have the potential to reveal molecular pathways underlying remarkable specializations of the human brain. However, chimpanzee tissue is largely inaccessible during neocortical neurogenesis when differences in brain size first appear. To identify human-specific features of cortical development, we leveraged recent innovations that permit generating pluripotent stem cell-derived cerebral organoids from chimpanzee. First, we systematically evaluated the fidelity of organoid models to primary human and macaque cortex, finding organoid models preserve gene regulatory networks related to cell types and developmental processes but exhibit increased metabolic stress. Second, we identified 261 genes differentially expressed in human compared to chimpanzee organoids and macaque cortex. Many of these genes overlap with human-specific segmental duplications and a subset suggest increased PI3K/AKT/mTOR activation in human outer radial glia. Together, our findings establish a platform for systematic analysis of molecular changes contributing to human brain development and evolution. Overall design: Single cell mRNA sequencing of iPS-derived neural and glial progenitor cells using the Fluidigm C1 system This series includes re-analysis of publicly available data in accessions: phs000989.v3, GSE99951, GSE86207, GSE75140. Sample metadata and accession IDs for the re-analyzed samples are included in the file \"GSE124299_metadata_on_processed_samples.xlsx\" available on the foot of this record. The following samples have no raw data due to data loss: GSM3569728, GSM3569738, GSM3571601, GSM3571606, GSM3571615, GSM3571621, GSM3571625, and GSM3571631",
-      "project.insdc_project_accessions": "SRP180337",
-      "project.geo_series_accessions": "GSE124299",
-      "project.insdc_study_accessions": "PRJNA515930"
-    }
-  ],
-  "Project - Contributors": [
-    {
-      "project.contributors.name": "Alex A,,Pollen",
-      "project.contributors.email": "alex.pollen@ucsf.edu",
-      "project.contributors.institution": "University of California, San Francisco (UCSF)",
-      "project.contributors.laboratory": "Department of Neurology",
-      "project.contributors.country": "USA",
-      "project.contributors.corresponding_contributor": "True",
-      "project.contributors.project_role.text": "experimental scientist",
-      "project.contributors.project_role.ontology": "EFO:0009741",
-      "project.contributors.project_role.ontology_label": "experimental scientist"
-    },
-    {
-      "project.contributors.name": "Parisa,,Nejad",
-      "project.contributors.email": "pnejad@ucsc.edu",
-      "project.contributors.institution": "University of California, Santa Cruz",
-      "project.contributors.laboratory": "Human Cell Atlas Data Coordination Platform",
-      "project.contributors.country": "USA",
-      "project.contributors.corresponding_contributor": "False",
-      "project.contributors.project_role.text": "data wrangler",
-      "project.contributors.project_role.ontology": "EFO:0009737",
-      "project.contributors.project_role.ontology_label": "data curator"
-    },
-    {
-      "project.contributors.name": "Schwartz,,Rachel",
-      "project.contributors.email": "raschwar@ucsc.edu",
-      "project.contributors.institution": "University of California, Santa Cruz",
-      "project.contributors.laboratory": "Human Cell Atlas Data Coordination Platform",
-      "project.contributors.country": "USA",
-      "project.contributors.corresponding_contributor": "False",
-      "project.contributors.project_role.text": "data wrangler",
-      "project.contributors.project_role.ontology": "EFO:0009737",
-      "project.contributors.project_role.ontology_label": "data curator"
-    }
-  ],
-  "Project - Publications": [
-    {
-      "project.publications.authors": "Pollen AA||Bhaduri A||Andrews MG||Nowakowski TJ||Meyerson OS||Mostajo-Radji MA||Di Lullo E||Alvarado B||Bedolli M||Dougherty ML||Fiddes IT||Kronenberg ZN||Shuga J||Leyrat AA||West JA||Bershteyn M||Lowe CB||Pavlovic BJ||Salama SR||Haussler D||Eichler EE||Kriegstein AR",
-      "project.publications.title": "Establishing Cerebral Organoids as Models of Human-Specific Brain Evolution.",
-      "project.publications.doi": "10.1016/j.cell.2019.01.017",
-      "project.publications.pmid": "30735633",
-      "project.publications.url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6544371/"
-    }
-  ],
-  "Project - Funders": [
-    {
-      "project.funders.grant_id": "U01 MH105989",
-      "project.funders.organization": "NIMH NIH HHS"
-    },
-    {
-      "project.funders.grant_id": "R35 NS097305",
-      "project.funders.organization": "NINDS NIH HHS"
-    },
-    {
-      "project.funders.grant_id": "T32 HD007470",
-      "project.funders.organization": "NICHD NIH HHS"
-    },
-    {
-      "project.funders.grant_id": "T32 GM007266",
-      "project.funders.organization": "NIGMS NIH HHS"
-    },
-    {
-      "project.funders.grant_id": "F32 NS103266",
-      "project.funders.organization": "NINDS NIH HHS"
-    },
-    {
-      "project.funders.grant_id": "NA",
-      "project.funders.organization": "Howard Hughes Medical Institute"
-    },
-    {
-      "project.funders.grant_id": "P51 OD011132",
-      "project.funders.organization": "NIH HHS"
-    }
-  ]
+  "Project": {
+    "headers": [
+      "project.uuid",
+      "project.project_core.project_short_name",
+      "project.project_core.project_title",
+      "project.project_core.project_description",
+      "project.insdc_project_accessions",
+      "project.geo_series_accessions",
+      "project.insdc_study_accessions"
+    ],
+    "values": [
+      {
+        "project.uuid": "3e329187-a9c4-48ec-90e3-cc45f7c2311c",
+        "project.project_core.project_short_name": "kriegsteinBrainOrganoids",
+        "project.project_core.project_title": "Establishing Cerebral Organoids as Models of Human-Specific Brain Evolution",
+        "project.project_core.project_description": "Direct comparisons of human and non-human primate brain tissue have the potential to reveal molecular pathways underlying remarkable specializations of the human brain. However, chimpanzee tissue is largely inaccessible during neocortical neurogenesis when differences in brain size first appear. To identify human-specific features of cortical development, we leveraged recent innovations that permit generating pluripotent stem cell-derived cerebral organoids from chimpanzee. First, we systematically evaluated the fidelity of organoid models to primary human and macaque cortex, finding organoid models preserve gene regulatory networks related to cell types and developmental processes but exhibit increased metabolic stress. Second, we identified 261 genes differentially expressed in human compared to chimpanzee organoids and macaque cortex. Many of these genes overlap with human-specific segmental duplications and a subset suggest increased PI3K/AKT/mTOR activation in human outer radial glia. Together, our findings establish a platform for systematic analysis of molecular changes contributing to human brain development and evolution. Overall design: Single cell mRNA sequencing of iPS-derived neural and glial progenitor cells using the Fluidigm C1 system This series includes re-analysis of publicly available data in accessions: phs000989.v3, GSE99951, GSE86207, GSE75140. Sample metadata and accession IDs for the re-analyzed samples are included in the file \"GSE124299_metadata_on_processed_samples.xlsx\" available on the foot of this record. The following samples have no raw data due to data loss: GSM3569728, GSM3569738, GSM3571601, GSM3571606, GSM3571615, GSM3571621, GSM3571625, and GSM3571631",
+        "project.insdc_project_accessions": "SRP180337",
+        "project.geo_series_accessions": "GSE124299",
+        "project.insdc_study_accessions": "PRJNA515930"
+      }
+    ]
+  },
+  "Project - Contributors": {
+    "headers": [
+      "project.uuid",
+      "project.project_core.project_short_name",
+      "project.project_core.project_title",
+      "project.project_core.project_description",
+      "project.insdc_project_accessions",
+      "project.geo_series_accessions",
+      "project.insdc_study_accessions"
+    ],
+    "values": [
+      {
+        "project.contributors.name": "Alex A,,Pollen",
+        "project.contributors.email": "alex.pollen@ucsf.edu",
+        "project.contributors.institution": "University of California, San Francisco (UCSF)",
+        "project.contributors.laboratory": "Department of Neurology",
+        "project.contributors.country": "USA",
+        "project.contributors.corresponding_contributor": "True",
+        "project.contributors.project_role.text": "experimental scientist",
+        "project.contributors.project_role.ontology": "EFO:0009741",
+        "project.contributors.project_role.ontology_label": "experimental scientist"
+      },
+      {
+        "project.contributors.name": "Parisa,,Nejad",
+        "project.contributors.email": "pnejad@ucsc.edu",
+        "project.contributors.institution": "University of California, Santa Cruz",
+        "project.contributors.laboratory": "Human Cell Atlas Data Coordination Platform",
+        "project.contributors.country": "USA",
+        "project.contributors.corresponding_contributor": "False",
+        "project.contributors.project_role.text": "data wrangler",
+        "project.contributors.project_role.ontology": "EFO:0009737",
+        "project.contributors.project_role.ontology_label": "data curator"
+      },
+      {
+        "project.contributors.name": "Schwartz,,Rachel",
+        "project.contributors.email": "raschwar@ucsc.edu",
+        "project.contributors.institution": "University of California, Santa Cruz",
+        "project.contributors.laboratory": "Human Cell Atlas Data Coordination Platform",
+        "project.contributors.country": "USA",
+        "project.contributors.corresponding_contributor": "False",
+        "project.contributors.project_role.text": "data wrangler",
+        "project.contributors.project_role.ontology": "EFO:0009737",
+        "project.contributors.project_role.ontology_label": "data curator"
+      }
+    ]
+  },
+  "Project - Publications": {
+    "headers": [
+      "project.publications.authors",
+      "project.publications.title",
+      "project.publications.doi",
+      "project.publications.pmid",
+      "project.publications.url"
+    ],
+    "values": [
+      {
+        "project.publications.authors": "Pollen AA||Bhaduri A||Andrews MG||Nowakowski TJ||Meyerson OS||Mostajo-Radji MA||Di Lullo E||Alvarado B||Bedolli M||Dougherty ML||Fiddes IT||Kronenberg ZN||Shuga J||Leyrat AA||West JA||Bershteyn M||Lowe CB||Pavlovic BJ||Salama SR||Haussler D||Eichler EE||Kriegstein AR",
+        "project.publications.title": "Establishing Cerebral Organoids as Models of Human-Specific Brain Evolution.",
+        "project.publications.doi": "10.1016/j.cell.2019.01.017",
+        "project.publications.pmid": "30735633",
+        "project.publications.url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6544371/"
+      }
+    ]
+  },
+  "Project - Funders": {
+    "headers": [
+      "project.funders.grant_id",
+      "project.funders.organization"
+    ],
+    "values": [
+      {
+        "project.funders.grant_id": "U01 MH105989",
+        "project.funders.organization": "NIMH NIH HHS"
+      },
+      {
+        "project.funders.grant_id": "R35 NS097305",
+        "project.funders.organization": "NINDS NIH HHS"
+      },
+      {
+        "project.funders.grant_id": "T32 HD007470",
+        "project.funders.organization": "NICHD NIH HHS"
+      },
+      {
+        "project.funders.grant_id": "T32 GM007266",
+        "project.funders.organization": "NIGMS NIH HHS"
+      },
+      {
+        "project.funders.grant_id": "F32 NS103266",
+        "project.funders.organization": "NINDS NIH HHS"
+      },
+      {
+        "project.funders.grant_id": "NA",
+        "project.funders.organization": "Howard Hughes Medical Institute"
+      },
+      {
+        "project.funders.grant_id": "P51 OD011132",
+        "project.funders.organization": "NIH HHS"
+      }
+    ]
+  }
 }
