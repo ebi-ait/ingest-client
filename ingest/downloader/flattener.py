@@ -17,25 +17,39 @@ class Flattener:
         worksheet_name = object_key
         row = {}
         content = entity
+
         if not object_key:
             content = entity['content']
             worksheet_name = self._get_concrete_entity(content)
             row = {f'{worksheet_name}.uuid': entity['uuid']['uuid']}
+
         if not worksheet_name:
             raise Exception('There should be a worksheet name')
-        user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
+
         self._flatten_object(content, row, parent_key=worksheet_name)
+
+        user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
         worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
-        rows = worksheet.get('values')
-        rows.append(row)
-        headers = worksheet.get('headers')
-        for key in row.keys():
-            if key not in headers:
-                headers.append(key)
+
+        rows = self._update_rows(row, worksheet)
+        headers = self._update_headers(row, worksheet)
+
         self.workbook[user_friendly_worksheet_name] = {
             'headers': headers,
             'values': rows
         }
+
+    def _update_rows(self, row, worksheet):
+        rows = worksheet.get('values')
+        rows.append(row)
+        return rows
+
+    def _update_headers(self, row, worksheet):
+        headers = worksheet.get('headers')
+        for key in row.keys():
+            if key not in headers:
+                headers.append(key)
+        return headers
 
     def _flatten_object(self, object: dict, flattened_object: dict, parent_key: str = ''):
         if isinstance(object, dict):
