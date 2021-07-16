@@ -5,12 +5,12 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 from ingest.downloader.flattener import Flattener
 
-FIRST_DATA_ROW_NO = 4
+HEADER_ROW_NO = 4
 
 
 class XlsDownloader:
     def __init__(self):
-        self.row = FIRST_DATA_ROW_NO
+        self.row = HEADER_ROW_NO
         self.flattener = Flattener()
 
     def convert_json(self, metadata_list: List[dict]):
@@ -27,21 +27,22 @@ class XlsDownloader:
         return workbook
 
     def add_worksheet_content(self, worksheet, ws_elements: dict):
-        is_header = True
-        if isinstance(ws_elements, list):
-            for content in ws_elements:
-                self.add_row_content(worksheet, content, is_header)
-                is_header = False
-                self.row += 1
-        else:
-            self.add_row_content(worksheet, ws_elements)
+        headers = ws_elements.get('headers')
+        self.__add_header_row(worksheet, headers)
+        all_values = ws_elements.get('values')
 
-    def add_row_content(self, worksheet, content, is_header=True):
+        for row_values in all_values:
+            self.row += 1
+            self.__add_row_content(worksheet, headers, row_values)
+
+    def __add_header_row(self, worksheet, headers: list):
+        self.row = HEADER_ROW_NO
         col = 1
-        for header, cell_value in content.items():
-            if is_header:
-                self.row = FIRST_DATA_ROW_NO
-                worksheet.cell(row=self.row, column=col, value=header)
-                self.row += 1
-            worksheet.cell(row=self.row, column=col, value=cell_value)
+        for header in headers:
+            worksheet.cell(row=self.row, column=col, value=header)
             col += 1
+
+    def __add_row_content(self, worksheet, headers: list, values: dict):
+        for header, value in values.items():
+            index = headers.index(header)
+            worksheet.cell(row=self.row, column=index+1, value=value)

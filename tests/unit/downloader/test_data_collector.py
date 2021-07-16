@@ -6,7 +6,7 @@ from ingest.api.ingestapi import IngestApi
 from ingest.downloader.data_collector import DataCollector
 
 
-class MyTestCase(unittest.TestCase):
+class DataCollectorTest(unittest.TestCase):
 
     def setUp(self) -> None:
         self.maxDiff = None
