@@ -429,3 +429,65 @@ class FlattenerTest(TestCase):
 
         # then
         self.assertEqual(actual, expected)
+
+    def test_flatten__rows_have_different_columns(self):
+        # given
+        entity_list = [
+            {
+                'content': {
+                    "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
+                    "schema_type": "project",
+                    "project_core": {
+                        "project_short_name": "label1",
+                    }
+                },
+                'uuid': {
+                    'uuid': 'uuid1'
+                }
+            },
+            {
+                'content': {
+                    "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
+                    "schema_type": "project",
+                    "project_core": {
+                        "project_short_name": "label2",
+                        "project_title": "title",
+                        "project_description": "desc"
+                    }
+                },
+                'uuid': {
+                    'uuid': 'uuid2'
+                }
+            },
+
+        ]
+
+        # when
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
+
+        expected = {
+            'Project': {
+                'headers': [
+                    'project.uuid',
+                    'project.project_core.project_short_name',
+                    'project.project_core.project_title',
+                    'project.project_core.project_description'
+                ],
+                'values': [
+                    {
+                        'project.uuid': 'uuid1',
+                        'project.project_core.project_short_name': 'label1'
+                    },
+                    {
+                        'project.uuid': 'uuid2',
+                        'project.project_core.project_short_name': 'label2',
+                        'project.project_core.project_title': 'title',
+                        'project.project_core.project_description': 'desc'
+                    }
+                ]
+            }
+        }
+
+        # then
+        self.assertEqual(actual, expected)
