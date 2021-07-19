@@ -22,7 +22,11 @@ class XlsDownloader:
         workbook.remove(workbook.active)
 
         for ws_title, ws_elements in input_json.items():
-            worksheet: Worksheet = workbook.create_sheet(title=ws_title)
+            if ws_title == 'Project':
+                worksheet: Worksheet = workbook.create_sheet(title=ws_title, index=0)
+            else:
+                worksheet: Worksheet = workbook.create_sheet(title=ws_title)
+
             self.add_worksheet_content(worksheet, ws_elements)
 
         return workbook

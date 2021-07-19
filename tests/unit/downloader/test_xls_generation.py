@@ -152,6 +152,7 @@ class XLSGenerationTest(unittest.TestCase):
         for cell in header_row:
             self.assertTrue(cell.value in input_json[sheet_title]['headers'])
 
+        rows.pop(0)
         i = 0
         input_values = input_json[sheet_title]['values']
         for row in rows:
