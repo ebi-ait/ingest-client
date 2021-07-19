@@ -4,6 +4,7 @@ from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
 from ingest.downloader.flattener import Flattener
+from ingest.importer.spreadsheet.ingest_worksheet import START_DATA_ROW
 
 HEADER_ROW_NO = 4
 
@@ -31,6 +32,7 @@ class XlsDownloader:
         self.__add_header_row(worksheet, headers)
         all_values = ws_elements.get('values')
 
+        self.row = START_DATA_ROW - 1
         for row_values in all_values:
             self.row += 1
             self.__add_row_content(worksheet, headers, row_values)
