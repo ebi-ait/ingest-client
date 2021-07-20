@@ -43,10 +43,8 @@ class XlsDownloader:
 
     def __add_header_row(self, worksheet, headers: list):
         self.row = HEADER_ROW_NO
-        col = 1
-        for header in headers:
-            worksheet.cell(row=self.row, column=col, value=header)
-            col += 1
+        for col, header in enumerate(headers):
+            worksheet.cell(row=self.row, column=col+1, value=header)
 
     def __add_row_content(self, worksheet, headers: list, values: dict):
         for header, value in values.items():

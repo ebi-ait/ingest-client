@@ -16,7 +16,49 @@ class XLSGenerationTest(unittest.TestCase):
     def test_given_input_has_only_1_set_of_data_successfully_creates_a_workbook(self):
         #given
         project_sheet_title = 'Project'
-        input_json = {
+        input_json = self.__input_json1(project_sheet_title)
+
+        # when
+        workbook: Workbook = self.downloader.create_workbook(input_json)
+
+        #expect
+        self.assertEqual(len(workbook.worksheets), 1)
+
+        self.__assert_sheet(workbook, project_sheet_title, input_json)
+
+    def test_given_input_has_many_rows_of_data_successfully_creates_a_workbook(self):
+        #given
+        contributors_sheet_title = 'Project - Contributors'
+
+        input_json = self.__input_json2(contributors_sheet_title)
+
+        # when
+        workbook: Workbook = self.downloader.create_workbook(input_json)
+
+        #expect
+        self.assertEqual(len(workbook.worksheets), 1)
+
+        self.__assert_sheet(workbook, contributors_sheet_title, input_json)
+
+    def test_given_input_has_many_rows_and_many_sheets_of_data_successfully_creates_a_workbook(self):
+        # given
+        sheet_titles = ['Project', 'Project - Contributors', 'Project - Publications', 'Project - Funders']
+
+        # when
+        with open('project-list-flattened.json') as file:
+            input_json = json.load(file)
+
+        #when
+        workbook: Workbook = self.downloader.create_workbook(input_json)
+
+        # expect
+        self.assertEqual(len(workbook.worksheets), 4)
+
+        map(lambda title: self.__assert_sheet(workbook, title, input_json), sheet_titles)
+
+    @staticmethod
+    def __input_json1(project_sheet_title):
+        return {
             project_sheet_title: {
                 "headers": [
                     "project.uuid",
@@ -41,19 +83,9 @@ class XLSGenerationTest(unittest.TestCase):
             }
         }
 
-        # when
-        workbook: Workbook = self.downloader.create_workbook(input_json)
-
-        #expect
-        self.assertEqual(len(workbook.worksheets), 1)
-
-        self.__assert_sheet(workbook, project_sheet_title, input_json)
-
-    def test_given_input_has_many_rows_of_data_successfully_creates_a_workbook(self):
-        #given
-        contributors_sheet_title = 'Project - Contributors'
-
-        input_json = {
+    @staticmethod
+    def __input_json2(contributors_sheet_title):
+        return {
             contributors_sheet_title: {
                 'headers': [
                     "project.contributors.name",
@@ -112,36 +144,6 @@ class XLSGenerationTest(unittest.TestCase):
             }
         }
 
-        # when
-        workbook: Workbook = self.downloader.create_workbook(input_json)
-
-        #expect
-        self.assertEqual(len(workbook.worksheets), 1)
-
-        self.__assert_sheet(workbook, contributors_sheet_title, input_json)
-
-    def test_given_input_has_many_rows_and_many_sheets_of_data_successfully_creates_a_workbook(self):
-        # given
-        project_sheet_title = 'Project'
-        contributors_sheet_title = 'Project - Contributors'
-        publications_sheet_title = 'Project - Publications'
-        funders_sheet_title = 'Project - Funders'
-
-        # when
-        with open('project-list-flattened.json') as file:
-            input_json = json.load(file)
-
-        #when
-        workbook: Workbook = self.downloader.create_workbook(input_json)
-
-        # expect
-        self.assertEqual(len(workbook.worksheets), 4)
-
-        self.__assert_sheet(workbook, project_sheet_title, input_json)
-        self.__assert_sheet(workbook, contributors_sheet_title, input_json)
-        self.__assert_sheet(workbook, publications_sheet_title, input_json)
-        self.__assert_sheet(workbook, funders_sheet_title, input_json)
-
     def __assert_sheet(self, workbook, sheet_title, input_json):
         sheet: Worksheet = workbook[sheet_title]
         self.assertEqual(sheet.title, sheet_title)
@@ -153,12 +155,10 @@ class XLSGenerationTest(unittest.TestCase):
             self.assertTrue(cell.value in input_json[sheet_title]['headers'])
 
         rows.pop(0)
-        i = 0
         input_values = input_json[sheet_title]['values']
-        for row in rows:
+        for i, row in enumerate(rows):
             for cell in row:
                 self.assertTrue(cell.value in input_values[i].values())
-            i += 1
 
 
 if __name__ == '__main__':
