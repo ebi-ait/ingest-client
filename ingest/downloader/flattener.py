@@ -1,5 +1,8 @@
 from typing import List
 
+MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
+SCALAR_LIST_DELIMETER = '||'
+
 ONTOLOGY_REQUIRED_PROPS = ['ontology', 'ontology_label']
 EXCLUDE_KEYS = ['describedBy', 'schema_type']
 
@@ -31,7 +34,7 @@ class Flattener:
         user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
         worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
 
-        rows = self._update_rows(row, worksheet)
+        rows = self._append_row_to_worksheet(row, worksheet)
         headers = self._update_headers(row, worksheet)
 
         self.workbook[user_friendly_worksheet_name] = {
@@ -39,7 +42,7 @@ class Flattener:
             'values': rows
         }
 
-    def _update_rows(self, row, worksheet):
+    def _append_row_to_worksheet(self, row, worksheet):
         rows = worksheet.get('values')
         rows.append(row)
         return rows
@@ -74,7 +77,7 @@ class Flattener:
 
     def _flatten_scalar_list(self, flattened_object, object, parent_key):
         stringified = [str(e) for e in object]
-        flattened_object[parent_key] = '||'.join(stringified)
+        flattened_object[parent_key] = SCALAR_LIST_DELIMETER.join(stringified)
 
     def _flatten_object_list(self, flattened_object: dict, object: dict, parent_key: str):
         if self._is_list_of_ontology_objects(object):
@@ -85,12 +88,12 @@ class Flattener:
     def _flatten_ontology_list(self, object: dict, flattened_object: dict, parent_key: str):
         keys = self._get_keys_of_a_list_of_object(object)
         for key in keys:
-            flattened_object[f'{parent_key}.{key}'] = '||'.join([elem[key] for elem in object])
+            flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join([elem[key] for elem in object])
 
     def _format_worksheet_name(self, worksheet_name):
         names = worksheet_name.split('.')
         names = [n.replace('_', ' ') for n in names]
-        new_worksheet_name = ' - '.join([n.capitalize() for n in names])
+        new_worksheet_name = MODULE_WORKSHEET_NAME_CONNECTOR.join([n.capitalize() for n in names])
         return new_worksheet_name
 
     def _is_list_of_objects(self, content):
