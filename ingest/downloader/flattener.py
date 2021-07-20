@@ -1,5 +1,6 @@
 from typing import List
 
+MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
 SCALAR_LIST_DELIMETER = '||'
 
 ONTOLOGY_REQUIRED_PROPS = ['ontology', 'ontology_label']
@@ -33,7 +34,7 @@ class Flattener:
         user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
         worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
 
-        rows = self._update_rows(row, worksheet)
+        rows = self._append_row_to_worksheet(row, worksheet)
         headers = self._update_headers(row, worksheet)
 
         self.workbook[user_friendly_worksheet_name] = {
@@ -41,7 +42,7 @@ class Flattener:
             'values': rows
         }
 
-    def _update_rows(self, row, worksheet):
+    def _append_row_to_worksheet(self, row, worksheet):
         rows = worksheet.get('values')
         rows.append(row)
         return rows
@@ -92,7 +93,7 @@ class Flattener:
     def _format_worksheet_name(self, worksheet_name):
         names = worksheet_name.split('.')
         names = [n.replace('_', ' ') for n in names]
-        new_worksheet_name = ' - '.join([n.capitalize() for n in names])
+        new_worksheet_name = MODULE_WORKSHEET_NAME_CONNECTOR.join([n.capitalize() for n in names])
         return new_worksheet_name
 
     def _is_list_of_objects(self, content):
