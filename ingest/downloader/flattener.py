@@ -1,5 +1,7 @@
 from typing import List
 
+SCALAR_LIST_DELIMETER = '||'
+
 ONTOLOGY_REQUIRED_PROPS = ['ontology', 'ontology_label']
 EXCLUDE_KEYS = ['describedBy', 'schema_type']
 
@@ -74,7 +76,7 @@ class Flattener:
 
     def _flatten_scalar_list(self, flattened_object, object, parent_key):
         stringified = [str(e) for e in object]
-        flattened_object[parent_key] = '||'.join(stringified)
+        flattened_object[parent_key] = SCALAR_LIST_DELIMETER.join(stringified)
 
     def _flatten_object_list(self, flattened_object: dict, object: dict, parent_key: str):
         if self._is_list_of_ontology_objects(object):
@@ -85,7 +87,7 @@ class Flattener:
     def _flatten_ontology_list(self, object: dict, flattened_object: dict, parent_key: str):
         keys = self._get_keys_of_a_list_of_object(object)
         for key in keys:
-            flattened_object[f'{parent_key}.{key}'] = '||'.join([elem[key] for elem in object])
+            flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join([elem[key] for elem in object])
 
     def _format_worksheet_name(self, worksheet_name):
         names = worksheet_name.split('.')
