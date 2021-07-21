@@ -35,8 +35,8 @@ class XlsDownloader:
         self.__add_header_row(worksheet, headers)
         all_values = ws_elements.get('values')
 
-        for row_no, row_values in enumerate(all_values, start=START_DATA_ROW):
-            self.__add_row_content(worksheet, headers, row_no, row_values)
+        for row_number, row_values in enumerate(all_values, start=START_DATA_ROW):
+            self.__add_row_content(worksheet, headers, row_number, row_values)
 
     @staticmethod
     def __add_header_row(worksheet, headers: list):
@@ -44,7 +44,7 @@ class XlsDownloader:
             worksheet.cell(row=HEADER_ROW_NO, column=col, value=header)
 
     @staticmethod
-    def __add_row_content(worksheet, headers: list, row_no: int, values: dict):
+    def __add_row_content(worksheet, headers: list, row_number: int, values: dict):
         for header, value in values.items():
             index = headers.index(header)
-            worksheet.cell(row=row_no, column=index+1, value=value)
+            worksheet.cell(row=row_number, column=index + 1, value=value)
