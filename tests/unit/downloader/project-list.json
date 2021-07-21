@@ -1,0 +1,187 @@
+[
+  {
+    "content": {
+      "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
+      "schema_type": "project",
+      "project_core": {
+        "project_short_name": "kriegsteinBrainOrganoids",
+        "project_title": "Establishing Cerebral Organoids as Models of Human-Specific Brain Evolution",
+        "project_description": "Direct comparisons of human and non-human primate brain tissue have the potential to reveal molecular pathways underlying remarkable specializations of the human brain. However, chimpanzee tissue is largely inaccessible during neocortical neurogenesis when differences in brain size first appear. To identify human-specific features of cortical development, we leveraged recent innovations that permit generating pluripotent stem cell-derived cerebral organoids from chimpanzee. First, we systematically evaluated the fidelity of organoid models to primary human and macaque cortex, finding organoid models preserve gene regulatory networks related to cell types and developmental processes but exhibit increased metabolic stress. Second, we identified 261 genes differentially expressed in human compared to chimpanzee organoids and macaque cortex. Many of these genes overlap with human-specific segmental duplications and a subset suggest increased PI3K/AKT/mTOR activation in human outer radial glia. Together, our findings establish a platform for systematic analysis of molecular changes contributing to human brain development and evolution. Overall design: Single cell mRNA sequencing of iPS-derived neural and glial progenitor cells using the Fluidigm C1 system This series includes re-analysis of publicly available data in accessions: phs000989.v3, GSE99951, GSE86207, GSE75140. Sample metadata and accession IDs for the re-analyzed samples are included in the file \"GSE124299_metadata_on_processed_samples.xlsx\" available on the foot of this record. The following samples have no raw data due to data loss: GSM3569728, GSM3569738, GSM3571601, GSM3571606, GSM3571615, GSM3571621, GSM3571625, and GSM3571631"
+      },
+      "insdc_project_accessions": [
+        "SRP180337"
+      ],
+      "geo_series_accessions": [
+        "GSE124299"
+      ],
+      "insdc_study_accessions": [
+        "PRJNA515930"
+      ],
+      "contributors": [
+        {
+          "name": "Alex A,,Pollen",
+          "email": "alex.pollen@ucsf.edu",
+          "institution": "University of California, San Francisco (UCSF)",
+          "laboratory": "Department of Neurology",
+          "country": "USA",
+          "corresponding_contributor": true,
+          "project_role": {
+            "text": "experimental scientist",
+            "ontology": "EFO:0009741",
+            "ontology_label": "experimental scientist"
+          }
+        },
+        {
+          "name": "Parisa,,Nejad",
+          "email": "pnejad@ucsc.edu",
+          "institution": "University of California, Santa Cruz",
+          "laboratory": "Human Cell Atlas Data Coordination Platform",
+          "country": "USA",
+          "corresponding_contributor": false,
+          "project_role": {
+            "text": "data wrangler",
+            "ontology": "EFO:0009737",
+            "ontology_label": "data curator"
+          }
+        },
+        {
+          "name": "Schwartz,,Rachel",
+          "email": "raschwar@ucsc.edu",
+          "institution": "University of California, Santa Cruz",
+          "laboratory": "Human Cell Atlas Data Coordination Platform",
+          "country": "USA",
+          "corresponding_contributor": false,
+          "project_role": {
+            "text": "data wrangler",
+            "ontology": "EFO:0009737",
+            "ontology_label": "data curator"
+          }
+        }
+      ],
+      "publications": [
+        {
+          "authors": [
+            "Pollen AA",
+            "Bhaduri A",
+            "Andrews MG",
+            "Nowakowski TJ",
+            "Meyerson OS",
+            "Mostajo-Radji MA",
+            "Di Lullo E",
+            "Alvarado B",
+            "Bedolli M",
+            "Dougherty ML",
+            "Fiddes IT",
+            "Kronenberg ZN",
+            "Shuga J",
+            "Leyrat AA",
+            "West JA",
+            "Bershteyn M",
+            "Lowe CB",
+            "Pavlovic BJ",
+            "Salama SR",
+            "Haussler D",
+            "Eichler EE",
+            "Kriegstein AR"
+          ],
+          "title": "Establishing Cerebral Organoids as Models of Human-Specific Brain Evolution.",
+          "doi": "10.1016/j.cell.2019.01.017",
+          "pmid": 30735633,
+          "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6544371/"
+        }
+      ],
+      "funders": [
+        {
+          "grant_id": "U01 MH105989",
+          "organization": "NIMH NIH HHS"
+        },
+        {
+          "grant_id": "R35 NS097305",
+          "organization": "NINDS NIH HHS"
+        },
+        {
+          "grant_id": "T32 HD007470",
+          "organization": "NICHD NIH HHS"
+        },
+        {
+          "grant_id": "T32 GM007266",
+          "organization": "NIGMS NIH HHS"
+        },
+        {
+          "grant_id": "F32 NS103266",
+          "organization": "NINDS NIH HHS"
+        },
+        {
+          "grant_id": "NA",
+          "organization": "Howard Hughes Medical Institute"
+        },
+        {
+          "grant_id": "P51 OD011132",
+          "organization": "NIH HHS"
+        }
+      ]
+    },
+    "submissionDate": "2021-06-24T19:49:44.720Z",
+    "updateDate": "2021-06-24T19:53:07.441Z",
+    "user": null,
+    "lastModifiedUser": "anonymousUser",
+    "type": "Project",
+    "uuid": {
+      "uuid": "3e329187-a9c4-48ec-90e3-cc45f7c2311c"
+    },
+    "events": [],
+    "firstDcpVersion": "2021-06-24T19:49:44.720Z",
+    "dcpVersion": "2021-06-24T19:49:44.720Z",
+    "contentLastModified": "2021-06-24T19:49:44.720Z",
+    "accession": null,
+    "validationState": "Valid",
+    "validationErrors": [],
+    "isUpdate": false,
+    "releaseDate": null,
+    "accessionDate": null,
+    "technology": null,
+    "organ": null,
+    "cellCount": null,
+    "dataAccess": null,
+    "identifyingOrganisms": null,
+    "primaryWrangler": null,
+    "secondaryWrangler": null,
+    "wranglingState": null,
+    "wranglingPriority": null,
+    "wranglingNotes": null,
+    "isInCatalogue": null,
+    "cataloguedDate": null,
+    "publicationsInfo": null,
+    "hasOpenSubmission": false,
+    "_links": {
+      "self": {
+        "href": "https://api.ingest.archive.data.humancellatlas.org/projects/60d4e1d8d20b7e03a5b35fa0"
+      },
+      "project": {
+        "href": "https://api.ingest.archive.data.humancellatlas.org/projects/60d4e1d8d20b7e03a5b35fa0",
+        "title": "A single project"
+      },
+      "processing": {
+        "href": "https://api.ingest.archive.data.humancellatlas.org/projects/60d4e1d8d20b7e03a5b35fa0/processingEvent"
+      },
+      "draft": {
+        "href": "https://api.ingest.archive.data.humancellatlas.org/projects/60d4e1d8d20b7e03a5b35fa0/draftEvent"
+      },
+      "bundleManifests": {
+        "href": "https://api.ingest.archive.data.humancellatlas.org/projects/60d4e1d8d20b7e03a5b35fa0/bundleManifests",
+        "title": "Access or create bundle manifests (describing which submitted contents went into which bundle in the datastore)"
+      },
+      "supplementaryFiles": {
+        "href": "https://api.ingest.archive.data.humancellatlas.org/projects/60d4e1d8d20b7e03a5b35fa0/supplementaryFiles"
+      },
+      "submissionEnvelopes": {
+        "href": "https://api.ingest.archive.data.humancellatlas.org/projects/60d4e1d8d20b7e03a5b35fa0/submissionEnvelopes",
+        "title": "Access or create new submission envelopes"
+      },
+      "submissionEnvelope": {
+        "href": "https://api.ingest.archive.data.humancellatlas.org/projects/60d4e1d8d20b7e03a5b35fa0/submissionEnvelope",
+        "title": "A single submission envelope"
+      }
+    }
+  }
+]

@@ -121,13 +121,20 @@ class IngestApi:
         if r.status_code == requests.codes.ok:
             return json.loads(r.text)["_embedded"]["submissionEnvelopes"]
 
-    def getProjects(self, id):
-        submissionUrl = self.url + '/submissionEnvelopes/' + id + '/projects'
-        r = self.get(submissionUrl, headers=self.get_headers())
-        projects = []
+    def get_projects(self, submission_id):
+        return self.__get_projects_by_submission_id_and_type(submission_id, 'projects')
+
+    def get_related_project(self, submission_id):
+        projects = self.__get_projects_by_submission_id_and_type(submission_id, 'relatedProjects')
+        return projects[0] if projects else None
+
+    def __get_projects_by_submission_id_and_type(self, submission_id, project_type):
+        submission_url = f'{self.url}/submissionEnvelopes/{submission_id}/{project_type}'
+        r = self.get(submission_url, headers=self.get_headers())
+        projects = {}
         if r.status_code == requests.codes.ok:
             projects = json.loads(r.text)
-        return projects
+        return projects.get('_embedded', {}).get('projects', [])
 
     def get_project_by_id(self, id):
         submission_url = self.url + '/projects/' + id
