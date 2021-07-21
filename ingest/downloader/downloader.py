@@ -11,7 +11,6 @@ HEADER_ROW_NO = 4
 
 class XlsDownloader:
     def __init__(self):
-        self.row = HEADER_ROW_NO
         self.flattener = Flattener()
 
     def convert_json(self, metadata_list: List[dict]):
@@ -36,17 +35,16 @@ class XlsDownloader:
         self.__add_header_row(worksheet, headers)
         all_values = ws_elements.get('values')
 
-        self.row = START_DATA_ROW - 1
-        for row_values in all_values:
-            self.row += 1
-            self.__add_row_content(worksheet, headers, row_values)
+        for row_no, row_values in enumerate(all_values, start=START_DATA_ROW):
+            self.__add_row_content(worksheet, headers, row_no, row_values)
 
-    def __add_header_row(self, worksheet, headers: list):
-        self.row = HEADER_ROW_NO
+    @staticmethod
+    def __add_header_row(worksheet, headers: list):
         for col, header in enumerate(headers, start=1):
-            worksheet.cell(row=self.row, column=col, value=header)
+            worksheet.cell(row=HEADER_ROW_NO, column=col, value=header)
 
-    def __add_row_content(self, worksheet, headers: list, values: dict):
+    @staticmethod
+    def __add_row_content(worksheet, headers: list, row_no: int, values: dict):
         for header, value in values.items():
             index = headers.index(header)
-            worksheet.cell(row=self.row, column=index+1, value=value)
+            worksheet.cell(row=row_no, column=index+1, value=value)
