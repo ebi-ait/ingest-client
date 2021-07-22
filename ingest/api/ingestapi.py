@@ -24,7 +24,7 @@ class IngestApi:
             # expand interpolated env vars
             url = os.path.expandvars(url)
         self.url = url if url else "http://localhost:8080"
-        self.headers = {'Content-type': 'application/json'}
+        self.headers = self.__get_basic_header()
         self.token = None
         self._submission_links = {}
         self.logger.info(f"using {self.url} for ingest API")
@@ -69,8 +69,10 @@ class IngestApi:
         r.raise_for_status()
         return r.json()["_links"]
 
-    def get_link_from_resource_url(self, resource_url, link_name):
-        r = self.get(resource_url, headers=self.get_headers())
+    def get_link_from_resource_url(self, resource_url, link_name, headers=None):
+        if not headers:
+            headers = self.get_headers()
+        r = self.get(resource_url, headers=headers)
         r.raise_for_status()
         links = r.json().get('_links', {})
         return links.get(link_name, {}).get('href')
@@ -180,7 +182,8 @@ class IngestApi:
         return r.json()
 
     def get_submission_by_uuid(self, submission_uuid):
-        search_link = self.get_link_from_resource_url(self.url + '/submissionEnvelopes/search', 'findByUuid')
+        headers = self.__get_basic_header()
+        search_link = self.get_link_from_resource_url(self.url + '/submissionEnvelopes/search', 'findByUuid', headers)
         search_link = search_link.replace('{?uuid}', '')  # TODO: use a REST traverser instead of requests?
         r = self.get(search_link, params={'uuid': submission_uuid})
         r.raise_for_status()
@@ -482,3 +485,7 @@ class IngestApi:
         r = self.session.get(find_staging_job_url, params=search_params)
         r.raise_for_status()
         return r.json()
+
+    @staticmethod
+    def __get_basic_header():
+        return {'Content-type': 'application/json'}
