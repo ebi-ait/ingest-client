@@ -81,11 +81,13 @@ class Flattener:
 
     def _flatten_object_list(self, flattened_object: dict, object: dict, parent_key: str):
         if self._is_list_of_ontology_objects(object):
-            self._flatten_ontology_list(object, flattened_object, parent_key)
-        else:
+            self._flatten_include_object_list_to_main_entity(object, flattened_object, parent_key)
+        elif self._is_project(parent_key):
             self.flatten(object, parent_key)
+        else:
+            self._flatten_include_object_list_to_main_entity(object, flattened_object, parent_key)
 
-    def _flatten_ontology_list(self, object: dict, flattened_object: dict, parent_key: str):
+    def _flatten_include_object_list_to_main_entity(self, object: dict, flattened_object: dict, parent_key: str):
         keys = self._get_keys_of_a_list_of_object(object)
         for key in keys:
             flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join([elem[key] for elem in object])
@@ -110,3 +112,7 @@ class Flattener:
 
     def _get_concrete_entity(self, content: dict):
         return content.get('describedBy').rsplit('/', 1)[-1]
+
+    def _is_project(self, parent_key: str):
+        entity_type = parent_key.split('.')[0]
+        return entity_type == 'project'
