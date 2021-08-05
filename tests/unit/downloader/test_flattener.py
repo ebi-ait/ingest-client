@@ -83,7 +83,7 @@ class FlattenerTest(TestCase):
 
         self.assertEqual(actual, self.flattened_metadata_entity)
 
-    def test_flatten__has_modules(self):
+    def test_flatten__has_project_modules(self):
         # given
         self.content.update({"contributors": [
             {
@@ -174,6 +174,55 @@ class FlattenerTest(TestCase):
                 'project.organ_parts.ontology',
                 'project.organ_parts.ontology_label',
                 'project.organ_parts.text'
+            ]
+        )
+
+        # then
+        self.assertEqual(actual, self.flattened_metadata_entity)
+
+    def test_flatten__has_property_with_elements(self):
+        # given
+        content = {
+            "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/collection_protocol",
+            "schema_type": "protocol",
+            "organ_parts": [
+                {
+                    "field_1": "UBERON:0000376",
+                    "field_2": "hindlimb stylopod",
+                    "field_3": "hindlimb stylopod"
+                }
+            ]
+        }
+
+        self.metadata_entity = {
+            'content': self.content,
+            'uuid': self.uuid
+        }
+
+        entity_list = [self.metadata_entity]
+
+        # when
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
+        flattened_metadata_entity = {
+            'Collection Protocol' : {
+                'values': [{
+
+                }],
+                'headers':[]
+            }
+        }
+        flattened_metadata_entity['Collection Protocol']['values'][0].update({
+            'collection_protocol.organ_parts.field_1': 'UBERON:0000376',
+            'collection_protocol.organ_parts.field_2': 'hindlimb stylopod',
+            'collection_protocol.organ_parts.field_3': 'hindlimb stylopod',
+
+        })
+        flattened_metadata_entity['Collection Protocol']['headers'].extend(
+            [
+                'collection_protocol.organ_parts.field_1',
+                'collection_protocol.organ_parts.field_2',
+                'collection_protocol.organ_parts.field_3'
             ]
         )
 
@@ -488,6 +537,24 @@ class FlattenerTest(TestCase):
                 ]
             }
         }
+
+        # then
+        self.assertEqual(actual, expected)
+
+
+    def test_flatten__collection_protocol_metadata(self):
+        self.maxDiff = None
+
+        # given
+        with open('collection_protocol-list.json') as file:
+            entity_list = json.load(file)
+
+        # when
+        flattener = Flattener()
+        actual = flattener.flatten(entity_list)
+
+        with open('collection_protocol-list-flattened.json') as file:
+            expected = json.load(file)
 
         # then
         self.assertEqual(actual, expected)
