@@ -90,8 +90,10 @@ class Flattener:
     def _flatten_to_include_object_list_to_main_entity_worksheet(self, object: dict, flattened_object: dict,
                                                                  parent_key: str):
         keys = self._get_keys_of_a_list_of_object(object)
+
         for key in keys:
-            flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join([elem.get(key, '') for elem in object if elem.get(key)])
+            flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join(
+                [elem.get(key, '') for elem in object if elem.get(key) is not None])
 
     def _format_worksheet_name(self, worksheet_name):
         names = worksheet_name.split('.')

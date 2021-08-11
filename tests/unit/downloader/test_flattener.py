@@ -205,11 +205,11 @@ class FlattenerTest(TestCase):
         flattener = Flattener()
         actual = flattener.flatten(entity_list)
         flattened_metadata_entity = {
-            'Collection Protocol' : {
+            'Collection Protocol': {
                 'values': [{
 
                 }],
-                'headers':[]
+                'headers': []
             }
         }
         flattened_metadata_entity['Collection Protocol']['values'][0].update({
@@ -615,7 +615,6 @@ class FlattenerTest(TestCase):
 
         # then
         self.assertEqual(actual, expected)
-
 
     def test_flatten__collection_protocol_metadata(self):
         self.maxDiff = None
