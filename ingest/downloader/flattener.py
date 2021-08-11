@@ -3,7 +3,7 @@ from typing import List
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
 SCALAR_LIST_DELIMETER = '||'
 
-ONTOLOGY_REQUIRED_PROPS = ['ontology', 'ontology_label', 'text']
+ONTOLOGY_PROPS = ['ontology', 'ontology_label', 'text']
 EXCLUDE_KEYS = ['describedBy', 'schema_type']
 
 
@@ -106,7 +106,7 @@ class Flattener:
 
     def _is_list_of_ontology_objects(self, object: dict):
         first_elem = object[0] if object else {}
-        result = [prop in first_elem for prop in ONTOLOGY_REQUIRED_PROPS]
+        result = [prop in first_elem for prop in ONTOLOGY_PROPS]
         # TODO better check the schema if field is ontology
         return any(result)
 
