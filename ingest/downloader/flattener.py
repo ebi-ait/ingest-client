@@ -3,7 +3,7 @@ from typing import List
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
 SCALAR_LIST_DELIMETER = '||'
 
-ONTOLOGY_REQUIRED_PROPS = ['ontology', 'ontology_label']
+ONTOLOGY_REQUIRED_PROPS = ['ontology', 'ontology_label', 'text']
 EXCLUDE_KEYS = ['describedBy', 'schema_type']
 
 
@@ -87,10 +87,11 @@ class Flattener:
         else:
             self._flatten_to_include_object_list_to_main_entity_worksheet(object, flattened_object, parent_key)
 
-    def _flatten_to_include_object_list_to_main_entity_worksheet(self, object: dict, flattened_object: dict, parent_key: str):
+    def _flatten_to_include_object_list_to_main_entity_worksheet(self, object: dict, flattened_object: dict,
+                                                                 parent_key: str):
         keys = self._get_keys_of_a_list_of_object(object)
         for key in keys:
-            flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join([elem[key] for elem in object])
+            flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join([elem.get(key, '') for elem in object if elem.get(key)])
 
     def _format_worksheet_name(self, worksheet_name):
         names = worksheet_name.split('.')
@@ -104,7 +105,8 @@ class Flattener:
     def _is_list_of_ontology_objects(self, object: dict):
         first_elem = object[0] if object else {}
         result = [prop in first_elem for prop in ONTOLOGY_REQUIRED_PROPS]
-        return all(result)
+        # TODO better check the schema if field is ontology
+        return any(result)
 
     def _get_keys_of_a_list_of_object(self, object: dict):
         first_elem = object[0] if object else {}
