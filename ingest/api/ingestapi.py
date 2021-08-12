@@ -55,7 +55,7 @@ class IngestApi:
     # TODO think of a better way how to manage tokens in this module, allowing clients to unset token for now
     def unset_token(self):
         self.token = None
-        del self.headers['Authorization']
+        self.headers.pop('Authorization', None)
         self.logger.debug(f'Token unset!')
         return self.headers
 
