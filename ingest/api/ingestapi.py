@@ -369,6 +369,10 @@ class IngestApi:
     def create_submission_error(self, submission_url, data):
         return self.create_entity(submission_url, data, 'submissionEnvelopeErrors')
 
+    def delete_submission_errors(self, submission_url: str):
+        r = self.session.delete(f'{submission_url}/submissionErrors')
+        r.raise_for_status()
+
     def create_entity(self, submission_url, data, entity_type, uuid=None):
         params = {}
         if uuid:
@@ -496,3 +500,4 @@ class IngestApi:
     @staticmethod
     def __get_basic_header():
         return {'Content-type': 'application/json'}
+

@@ -3,6 +3,7 @@ from typing import Tuple
 
 from requests import HTTPError
 
+from ingest.api.ingestapi import IngestApi
 from ingest.importer.conversion import template_manager
 from ingest.importer.conversion.metadata_entity import MetadataEntity
 from ingest.importer.conversion.template_manager import TemplateManager
@@ -26,7 +27,7 @@ class XlsImporter:
     for more information on the spreadsheet format.
     """
 
-    def __init__(self, ingest_api):
+    def __init__(self, ingest_api: IngestApi):
         self.ingest_api = ingest_api
         self.logger = logging.getLogger(__name__)
         self.submitter = IngestSubmitter(self.ingest_api)
@@ -61,6 +62,7 @@ class XlsImporter:
             template_mgr = None
             spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid=project_uuid)
             entity_map = EntityMap.load(spreadsheet_json)
+            self.ingest_api.delete_submission_errors(submission_url)
 
             if errors:
                 self.report_errors(submission_url, errors)
