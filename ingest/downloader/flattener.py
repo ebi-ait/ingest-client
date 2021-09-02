@@ -93,7 +93,7 @@ class Flattener:
 
         for key in keys:
             flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join(
-                [elem.get(key, '') for elem in object
+                [elem.get(key) for elem in object
                  if elem.get(key) is not None and elem.get(key) is not ''])
 
     def _format_worksheet_name(self, worksheet_name):
