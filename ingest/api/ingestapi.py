@@ -189,7 +189,7 @@ class IngestApi:
         return r.json()
 
     def get_submission_by_uuid(self, submission_uuid):
-        headers = self.__get_basic_header()
+        headers = self.get_headers()#self.__get_basic_header()
         search_link = self.get_link_from_resource_url(self.url + '/submissionEnvelopes/search', 'findByUuid', headers)
         search_link = search_link.replace('{?uuid}', '')  # TODO: use a REST traverser instead of requests?
         r = self.get(search_link, params={'uuid': submission_uuid})
