@@ -10,10 +10,12 @@ EXCLUDE_KEYS = ['describedBy', 'schema_type']
 class Flattener:
     def __init__(self):
         self.workbook = {}
+        self.schemas = {}
 
     def flatten(self, entity_list: List[dict], object_key: str = ''):
         for entity in entity_list:
             self._flatten_entity(entity, object_key)
+        self.workbook['Schemas'] = list(self.schemas.values())
         return self.workbook
 
     def _flatten_entity(self, entity, object_key):
@@ -23,11 +25,13 @@ class Flattener:
 
         if not object_key:
             content = entity['content']
-            worksheet_name = self._get_concrete_entity(content)
+            concrete_entity = self._get_concrete_entity(content)
+            worksheet_name = concrete_entity
             row = {f'{worksheet_name}.uuid': entity['uuid']['uuid']}
+            self._extract_schema_url(content)
 
         if not worksheet_name:
-            raise Exception('There should be a worksheet name')
+            raise Error('There should be a worksheet name')
 
         self._flatten_object(content, row, parent_key=worksheet_name)
 
@@ -41,6 +45,18 @@ class Flattener:
             'headers': headers,
             'values': rows
         }
+
+    def _extract_schema_url(self, content: dict):
+        concrete_entity = self._get_concrete_entity(content)
+        schema_url = content.get('describedBy')
+        existing_schema_url = self.schemas.get(concrete_entity)
+        if existing_schema_url and existing_schema_url != schema_url:
+            raise Error(f'The concrete entity schema version should be consistent across entities.\
+                    Multiple versions of same concrete entity schema is found:\
+                     {schema_url} and {existing_schema_url}')
+
+        if not existing_schema_url:
+            self.schemas[concrete_entity] = schema_url
 
     def _append_row_to_worksheet(self, row, worksheet):
         rows = worksheet.get('values')
@@ -121,3 +137,7 @@ class Flattener:
     def _is_project(self, parent_key: str):
         entity_type = parent_key.split('.')[0]
         return entity_type == 'project'
+
+
+class Error(Exception):
+    """Base-class for all exceptions raised by this module."""

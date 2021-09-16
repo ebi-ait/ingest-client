@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from ingest.downloader.flattener import Flattener
+from ingest.downloader.flattener import Flattener, Error as FlattenerError
 
 
 class FlattenerTest(TestCase):
@@ -32,7 +32,10 @@ class FlattenerTest(TestCase):
                         'project.project_core.project_description': 'desc'
                     }
                 ]
-            }
+            },
+            'Schemas': [
+                'https://schema.humancellatlas.org/type/project/14.2.0/project'
+            ]
         }
 
     def test_flatten__has_no_modules(self):
@@ -448,7 +451,10 @@ class FlattenerTest(TestCase):
                         'project.int_field': '1'
                     }
                 ]
-            }
+            },
+            'Schemas': [
+                'https://schema.humancellatlas.org/type/project/14.2.0/project'
+            ]
         }
 
         # then
@@ -593,6 +599,10 @@ class FlattenerTest(TestCase):
                     }
                 ]
             },
+            'Schemas': [
+                'https://schema.humancellatlas.org/type/project/14.2.0/project',
+                'https://schema.humancellatlas.org/type/project/14.2.0/donor_organism'
+            ]
         }
 
         # then
@@ -654,15 +664,16 @@ class FlattenerTest(TestCase):
                         'project.project_core.project_description': 'desc'
                     }
                 ]
-            }
+            },
+            'Schemas': [
+                'https://schema.humancellatlas.org/type/project/14.2.0/project'
+            ]
         }
 
         # then
         self.assertEqual(actual, expected)
 
     def test_flatten__collection_protocol_metadata(self):
-        self.maxDiff = None
-
         # given
         with open('collection_protocol-list.json') as file:
             entity_list = json.load(file)
@@ -676,3 +687,35 @@ class FlattenerTest(TestCase):
 
         # then
         self.assertEqual(actual, expected)
+
+    def test_flatten__raises_error__given_multiple_schema_versions_of_same_concrete_entity(self):
+        # given
+        entity_list = [
+            {
+                'content': {
+                    "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism",
+                    "schema_type": "biomaterial",
+                    "field": "value"
+                },
+                'uuid': {
+                    'uuid': 'uuid1'
+                }
+            },
+            {
+                'content': {
+                    "describedBy": "https://schema.humancellatlas.org/type/project/14.3.0/donor_organism",
+                    "schema_type": "biomaterial",
+                    "field": "value"
+                },
+                'uuid': {
+                    'uuid': 'uuid2'
+                }
+            },
+
+        ]
+
+        # when/then
+        flattener = Flattener()
+        with self.assertRaisesRegex(FlattenerError, "Multiple versions of same concrete entity schema"):
+            flattener.flatten(entity_list)
+

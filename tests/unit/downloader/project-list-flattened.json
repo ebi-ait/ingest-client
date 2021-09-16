@@ -122,5 +122,8 @@
         "project.funders.organization": "NIH HHS"
       }
     ]
-  }
+  },
+  "Schemas": [
+    "https://schema.humancellatlas.org/type/project/14.2.0/project"
+  ]
 }
