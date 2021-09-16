@@ -7,6 +7,7 @@ from ingest.downloader.flattener import Flattener
 from ingest.importer.spreadsheet.ingest_worksheet import START_DATA_ROW
 
 HEADER_ROW_NO = 4
+SCHEMAS_WORKSHEET = 'Schemas'
 
 
 class XlsDownloader:
@@ -23,12 +24,27 @@ class XlsDownloader:
         for ws_title, ws_elements in input_json.items():
             if ws_title == 'Project':
                 worksheet: Worksheet = workbook.create_sheet(title=ws_title, index=0)
+            elif ws_title == SCHEMAS_WORKSHEET:
+                continue
             else:
                 worksheet: Worksheet = workbook.create_sheet(title=ws_title)
 
             self.add_worksheet_content(worksheet, ws_elements)
 
+        self.generate_schemas_worksheet(input_json, workbook)
+
         return workbook
+
+    def generate_schemas_worksheet(self, input_json, workbook):
+        schemas = input_json.get(SCHEMAS_WORKSHEET)
+        if not schemas:
+            raise Exception('The schema urls are missing')
+        schemas_worksheet = workbook.create_sheet(SCHEMAS_WORKSHEET)
+        schemas_worksheet.cell(row=1, column=1, value=SCHEMAS_WORKSHEET)
+        row_num = 1
+        for schema in schemas:
+            row_num += 1
+            schemas_worksheet.cell(row=row_num, column=1, value=schema)
 
     def add_worksheet_content(self, worksheet, ws_elements: dict):
         headers = ws_elements.get('headers')
