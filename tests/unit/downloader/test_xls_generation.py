@@ -1,4 +1,5 @@
 import json
+import os
 import unittest
 
 from openpyxl import Workbook
@@ -10,6 +11,7 @@ from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 class XLSGenerationTest(unittest.TestCase):
     def setUp(self) -> None:
+        self.script_dir = os.path.dirname(__file__)
         self.downloader = XlsDownloader()
         self.workbook = Workbook()
         self.workbook.create_sheet(title='Project')
@@ -46,7 +48,7 @@ class XLSGenerationTest(unittest.TestCase):
         sheet_titles = ['Project', 'Project - Contributors', 'Project - Publications', 'Project - Funders']
 
         # when
-        with open('project-list-flattened.json') as file:
+        with open(self.script_dir + '/project-list-flattened.json') as file:
             input_json = json.load(file)
 
         # when
@@ -59,7 +61,7 @@ class XLSGenerationTest(unittest.TestCase):
 
     def test_given_input_create_workbook_with_schemas_worksheet(self):
         # given
-        with open('project-list-flattened.json') as file:
+        with open(self.script_dir + '/project-list-flattened.json') as file:
             input_json = json.load(file)
 
         # when
