@@ -50,13 +50,16 @@ class Flattener:
         concrete_entity = self._get_concrete_entity(content)
         schema_url = content.get('describedBy')
         existing_schema_url = self.schemas.get(concrete_entity)
+        self._validate_no_schema_version_conflicts(existing_schema_url, schema_url)
+
+        if not existing_schema_url:
+            self.schemas[concrete_entity] = schema_url
+
+    def _validate_no_schema_version_conflicts(self, existing_schema_url, schema_url):
         if existing_schema_url and existing_schema_url != schema_url:
             raise ValueError(f'The concrete entity schema version should be consistent across entities.\
                     Multiple versions of same concrete entity schema is found:\
                      {schema_url} and {existing_schema_url}')
-
-        if not existing_schema_url:
-            self.schemas[concrete_entity] = schema_url
 
     def _append_row_to_worksheet(self, row, worksheet):
         rows = worksheet.get('values')
