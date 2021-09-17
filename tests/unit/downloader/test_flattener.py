@@ -67,65 +67,7 @@ class FlattenerTest(TestCase):
 
         self.assertEqual(actual, self.flattened_metadata_entity)
 
-    def test_flatten__has_project_modules(self):
-        # given
-        self.content.update({
-            "contributors": [{
-                "name": "Alex A,,Pollen",
-                "email": "alex.pollen@ucsf.edu",
-                "institution": "University of California, San Francisco (UCSF)",
-                "laboratory": "Department of Neurology",
-                "country": "USA",
-                "corresponding_contributor": True,
-                "project_role": {
-                    "text": "experimental scientist",
-                    "ontology": "EFO:0009741",
-                    "ontology_label": "experimental scientist"
-                }
-            }]
-        })
-
-        metadata_entity = {
-            'content': self.content,
-            'uuid': self.uuid
-        }
-
-        entity_list = [metadata_entity]
-
-        # when
-        flattener = Flattener()
-        actual = flattener.flatten(entity_list)
-
-        self.flattened_metadata_entity.update({
-            'Project - Contributors': {
-                'headers': [
-                    'project.contributors.name',
-                    'project.contributors.email',
-                    'project.contributors.institution',
-                    'project.contributors.laboratory',
-                    'project.contributors.country',
-                    'project.contributors.corresponding_contributor',
-                    'project.contributors.project_role.text',
-                    'project.contributors.project_role.ontology',
-                    'project.contributors.project_role.ontology_label'
-                ],
-                'values': [{
-                    'project.contributors.corresponding_contributor': 'True',
-                    'project.contributors.country': 'USA',
-                    'project.contributors.email': 'alex.pollen@ucsf.edu',
-                    'project.contributors.institution': 'University of California, San Francisco (UCSF)',
-                    'project.contributors.laboratory': 'Department of Neurology',
-                    'project.contributors.name': 'Alex A,,Pollen',
-                    'project.contributors.project_role.ontology': 'EFO:0009741',
-                    'project.contributors.project_role.ontology_label': 'experimental scientist',
-                    'project.contributors.project_role.text': 'experimental scientist'}
-                ]}
-        })
-
-        # then
-        self.assertEqual(actual, self.flattened_metadata_entity)
-
-    def test_flatten__has_property_with_elements(self):
+    def test_flatten__has_list_property_with_elements(self):
         # given
         content = {
             "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/collection_protocol",
@@ -149,29 +91,26 @@ class FlattenerTest(TestCase):
         # when
         flattener = Flattener()
         actual = flattener.flatten(entity_list)
+
         flattened_metadata_entity = {
             'Collection protocol': {
-                'values': [{}],
-                'headers': []
-            }
-        }
-        flattened_metadata_entity['Collection protocol']['values'][0].update({
-            'collection_protocol.organ_parts.field_1': 'UBERON:0000376',
-            'collection_protocol.organ_parts.field_2': 'hindlimb stylopod',
-            'collection_protocol.organ_parts.field_3': 'hindlimb stylopod',
-            'collection_protocol.uuid': 'uuid1'
-        })
-        flattened_metadata_entity['Collection protocol']['headers'].extend(
-            [
-                'collection_protocol.uuid',
-                'collection_protocol.organ_parts.field_1',
-                'collection_protocol.organ_parts.field_2',
-                'collection_protocol.organ_parts.field_3'
+                'values': [{
+                    'collection_protocol.organ_parts.field_1': 'UBERON:0000376',
+                    'collection_protocol.organ_parts.field_2': 'hindlimb stylopod',
+                    'collection_protocol.organ_parts.field_3': 'hindlimb stylopod',
+                    'collection_protocol.uuid': 'uuid1'
+                }],
+                'headers': [
+                    'collection_protocol.uuid',
+                    'collection_protocol.organ_parts.field_1',
+                    'collection_protocol.organ_parts.field_2',
+                    'collection_protocol.organ_parts.field_3'
+                ]
+            },
+            'Schemas': [
+                'https://schema.humancellatlas.org/type/project/14.2.0/collection_protocol'
             ]
-        )
-        flattened_metadata_entity['Schemas'] = [
-            'https://schema.humancellatlas.org/type/project/14.2.0/collection_protocol'
-        ]
+        }
 
         # then
         self.assertEqual(actual, flattened_metadata_entity)
@@ -214,32 +153,14 @@ class FlattenerTest(TestCase):
         flattener = Flattener()
         actual = flattener.flatten(entity_list)
 
-        expected = {
-            'Project': {
-                'headers': [
-                    'project.uuid',
-                    'project.project_core.project_short_name',
-                    'project.project_core.project_title',
-                    'project.project_core.project_description',
-                    'project.int_field'
-                ],
-                'values': [
-                    {
-                        'project.uuid': 'uuid1',
-                        'project.project_core.project_short_name': 'label',
-                        'project.project_core.project_title': 'title',
-                        'project.project_core.project_description': 'desc',
-                        'project.int_field': '1'
-                    }
-                ]
-            },
-            'Schemas': [
-                'https://schema.humancellatlas.org/type/project/14.2.0/project'
-            ]
-        }
+        self.flattened_metadata_entity['Project']['values'][0].update({
+            'project.int_field': '1'
+        })
+
+        self.flattened_metadata_entity['Project']['headers'].append('project.int_field')
 
         # then
-        self.assertEqual(actual, expected)
+        self.assertEqual(actual, self.flattened_metadata_entity)
 
     def test_flatten__rows_have_different_columns(self):
         # given
