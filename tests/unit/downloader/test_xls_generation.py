@@ -71,8 +71,9 @@ class XLSGenerationTest(unittest.TestCase):
         schemas = [[cell.value for cell in row] for row in rows_iter]
         self.assertTrue(schema in schemas for schema in input_json.get('Schemas'))
 
-
-
+    def test_given_input_raises_error_when_no_schemas_worksheet(self):
+        with self.assertRaisesRegex(ValueError, "The schema urls are missing"):
+            self.downloader.create_workbook({})
 
     @staticmethod
     def __input_json1(project_sheet_title):

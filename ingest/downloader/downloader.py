@@ -38,7 +38,7 @@ class XlsDownloader:
     def generate_schemas_worksheet(self, input_json, workbook):
         schemas = input_json.get(SCHEMAS_WORKSHEET)
         if not schemas:
-            raise Exception('The schema urls are missing')
+            raise ValueError('The schema urls are missing')
         schemas_worksheet = workbook.create_sheet(SCHEMAS_WORKSHEET)
         schemas_worksheet.cell(row=1, column=1, value=SCHEMAS_WORKSHEET)
         for row_num, schema in enumerate(schemas, start=2):
