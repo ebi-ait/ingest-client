@@ -4,7 +4,7 @@ import unittest
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
-from ingest.downloader.downloader import XlsDownloader
+from ingest.downloader.downloader import XlsDownloader, SCHEMAS_WORKSHEET
 
 
 class XLSGenerationTest(unittest.TestCase):
@@ -65,11 +65,11 @@ class XLSGenerationTest(unittest.TestCase):
         workbook: Workbook = self.downloader.create_workbook(input_json)
 
         # expect
-        self.assertTrue('Schemas' in workbook.sheetnames)
-        sheet: Worksheet = workbook['Schemas']
+        self.assertTrue(SCHEMAS_WORKSHEET in workbook.sheetnames)
+        sheet: Worksheet = workbook[SCHEMAS_WORKSHEET]
         rows_iter = sheet.iter_rows(min_col=1, min_row=1, max_col=1, max_row=sheet.max_row)
         schemas = [[cell.value for cell in row] for row in rows_iter]
-        self.assertTrue(schema in schemas for schema in input_json.get('Schemas'))
+        self.assertTrue(schema in schemas for schema in input_json.get(SCHEMAS_WORKSHEET))
 
     def test_given_input_raises_error_when_no_schemas_worksheet(self):
         with self.assertRaisesRegex(ValueError, "The schema urls are missing"):
