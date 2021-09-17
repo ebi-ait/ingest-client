@@ -4,7 +4,8 @@ import unittest
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
-from ingest.downloader.downloader import XlsDownloader, SCHEMAS_WORKSHEET
+from ingest.downloader.downloader import XlsDownloader
+from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 
 class XLSGenerationTest(unittest.TestCase):

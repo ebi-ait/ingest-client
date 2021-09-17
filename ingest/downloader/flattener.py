@@ -1,5 +1,7 @@
 from typing import List
 
+from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
+
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
 SCALAR_LIST_DELIMETER = '||'
 
@@ -15,7 +17,7 @@ class Flattener:
     def flatten(self, entity_list: List[dict], object_key: str = ''):
         for entity in entity_list:
             self._flatten_entity(entity, object_key)
-        self.workbook['Schemas'] = list(self.schemas.values())
+        self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
         return self.workbook
 
     def _flatten_entity(self, entity, object_key):

@@ -4,10 +4,10 @@ from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
 from ingest.downloader.flattener import Flattener
+from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 from ingest.importer.spreadsheet.ingest_worksheet import START_DATA_ROW
 
 HEADER_ROW_NO = 4
-SCHEMAS_WORKSHEET = 'Schemas'
 
 
 class XlsDownloader:
