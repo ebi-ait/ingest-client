@@ -41,9 +41,7 @@ class XlsDownloader:
             raise Exception('The schema urls are missing')
         schemas_worksheet = workbook.create_sheet(SCHEMAS_WORKSHEET)
         schemas_worksheet.cell(row=1, column=1, value=SCHEMAS_WORKSHEET)
-        row_num = 1
-        for schema in schemas:
-            row_num += 1
+        for row_num, schema in enumerate(schemas, start=1):
             schemas_worksheet.cell(row=row_num, column=1, value=schema)
 
     def add_worksheet_content(self, worksheet, ws_elements: dict):
