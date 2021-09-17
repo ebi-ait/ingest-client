@@ -69,7 +69,7 @@ class XLSGenerationTest(unittest.TestCase):
         sheet: Worksheet = workbook['Schemas']
         rows_iter = sheet.iter_rows(min_col=1, min_row=1, max_col=1, max_row=sheet.max_row)
         schemas = [[cell.value for cell in row] for row in rows_iter]
-        self.assertTrue(schema in input_json.get('Schemas') for schema in schemas)
+        self.assertTrue(schema in schemas for schema in input_json.get('Schemas'))
 
 
 
