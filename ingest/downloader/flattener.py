@@ -31,7 +31,7 @@ class Flattener:
             self._extract_schema_url(content)
 
         if not worksheet_name:
-            raise Error('There should be a worksheet name')
+            raise ValueError('There should be a worksheet name')
 
         self._flatten_object(content, row, parent_key=worksheet_name)
 
@@ -51,7 +51,7 @@ class Flattener:
         schema_url = content.get('describedBy')
         existing_schema_url = self.schemas.get(concrete_entity)
         if existing_schema_url and existing_schema_url != schema_url:
-            raise Error(f'The concrete entity schema version should be consistent across entities.\
+            raise ValueError(f'The concrete entity schema version should be consistent across entities.\
                     Multiple versions of same concrete entity schema is found:\
                      {schema_url} and {existing_schema_url}')
 
@@ -137,7 +137,3 @@ class Flattener:
     def _is_project(self, parent_key: str):
         entity_type = parent_key.split('.')[0]
         return entity_type == 'project'
-
-
-class Error(Exception):
-    """Base-class for all exceptions raised by this module."""

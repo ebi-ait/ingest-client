@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from ingest.downloader.flattener import Flattener, Error as FlattenerError
+from ingest.downloader.flattener import Flattener
 
 
 class FlattenerTest(TestCase):
@@ -716,6 +716,6 @@ class FlattenerTest(TestCase):
 
         # when/then
         flattener = Flattener()
-        with self.assertRaisesRegex(FlattenerError, "Multiple versions of same concrete entity schema"):
+        with self.assertRaisesRegex(ValueError, "Multiple versions of same concrete entity schema"):
             flattener.flatten(entity_list)
 
