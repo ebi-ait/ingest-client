@@ -1,0 +1,9 @@
+{
+  "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
+  "schema_type": "project",
+  "project_core": {
+    "project_short_name": "label",
+    "project_title": "title",
+    "project_description": "desc"
+  }
+}

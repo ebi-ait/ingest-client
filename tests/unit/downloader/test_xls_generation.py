@@ -1,33 +1,36 @@
 import json
+import os
 import unittest
 
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
 from ingest.downloader.downloader import XlsDownloader
+from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 
 class XLSGenerationTest(unittest.TestCase):
     def setUp(self) -> None:
+        self.script_dir = os.path.dirname(__file__)
         self.downloader = XlsDownloader()
         self.workbook = Workbook()
         self.workbook.create_sheet(title='Project')
 
     def test_given_input_has_only_1_set_of_data_successfully_creates_a_workbook(self):
-        #given
+        # given
         project_sheet_title = 'Project'
         input_json = self.__input_json1(project_sheet_title)
 
         # when
         workbook: Workbook = self.downloader.create_workbook(input_json)
 
-        #expect
-        self.assertEqual(len(workbook.worksheets), 1)
+        # expect
+        self.assertEqual(len(workbook.worksheets), 2)
 
         self.__assert_sheet(workbook, project_sheet_title, input_json)
 
     def test_given_input_has_many_rows_of_data_successfully_creates_a_workbook(self):
-        #given
+        # given
         contributors_sheet_title = 'Project - Contributors'
 
         input_json = self.__input_json2(contributors_sheet_title)
@@ -35,8 +38,8 @@ class XLSGenerationTest(unittest.TestCase):
         # when
         workbook: Workbook = self.downloader.create_workbook(input_json)
 
-        #expect
-        self.assertEqual(len(workbook.worksheets), 1)
+        # expect
+        self.assertEqual(len(workbook.worksheets), 2)
 
         self.__assert_sheet(workbook, contributors_sheet_title, input_json)
 
@@ -45,16 +48,35 @@ class XLSGenerationTest(unittest.TestCase):
         sheet_titles = ['Project', 'Project - Contributors', 'Project - Publications', 'Project - Funders']
 
         # when
-        with open('project-list-flattened.json') as file:
+        with open(self.script_dir + '/project-list-flattened.json') as file:
             input_json = json.load(file)
 
-        #when
+        # when
         workbook: Workbook = self.downloader.create_workbook(input_json)
 
         # expect
-        self.assertEqual(len(workbook.worksheets), 4)
+        self.assertEqual(len(workbook.worksheets), 5)
 
         map(lambda title: self.__assert_sheet(workbook, title, input_json), sheet_titles)
+
+    def test_given_input_create_workbook_with_schemas_worksheet(self):
+        # given
+        with open(self.script_dir + '/project-list-flattened.json') as file:
+            input_json = json.load(file)
+
+        # when
+        workbook: Workbook = self.downloader.create_workbook(input_json)
+
+        # expect
+        self.assertTrue(SCHEMAS_WORKSHEET in workbook.sheetnames)
+        sheet: Worksheet = workbook[SCHEMAS_WORKSHEET]
+        rows_iter = sheet.iter_rows(min_col=1, min_row=1, max_col=1, max_row=sheet.max_row)
+        schemas = [[cell.value for cell in row] for row in rows_iter]
+        self.assertTrue(schema in schemas for schema in input_json.get(SCHEMAS_WORKSHEET))
+
+    def test_given_input_raises_error_when_no_schemas_worksheet(self):
+        with self.assertRaisesRegex(ValueError, "The schema urls are missing"):
+            self.downloader.create_workbook({})
 
     @staticmethod
     def __input_json1(project_sheet_title):
@@ -80,7 +102,8 @@ class XLSGenerationTest(unittest.TestCase):
                         "project.insdc_study_accessions": "PRJNA515930"
                     }
                 ]
-            }
+            },
+            "Schemas": ["dummy-schema-url"]
         }
 
     @staticmethod
@@ -141,7 +164,8 @@ class XLSGenerationTest(unittest.TestCase):
                         'project.contributors.orcid_id': 'https://orcid.org/0000-0000-0000-0001'
                     }
                 ]
-            }
+            },
+            "Schemas": ["dummy-schema-url"]
         }
 
     def __assert_sheet(self, workbook, sheet_title, input_json):

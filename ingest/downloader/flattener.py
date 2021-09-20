@@ -1,5 +1,7 @@
 from typing import List
 
+from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
+
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
 SCALAR_LIST_DELIMETER = '||'
 
@@ -10,10 +12,12 @@ EXCLUDE_KEYS = ['describedBy', 'schema_type']
 class Flattener:
     def __init__(self):
         self.workbook = {}
+        self.schemas = {}
 
     def flatten(self, entity_list: List[dict], object_key: str = ''):
         for entity in entity_list:
             self._flatten_entity(entity, object_key)
+        self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
         return self.workbook
 
     def _flatten_entity(self, entity, object_key):
@@ -25,9 +29,10 @@ class Flattener:
             content = entity['content']
             worksheet_name = self._get_concrete_entity(content)
             row = {f'{worksheet_name}.uuid': entity['uuid']['uuid']}
+            self._extract_schema_url(content)
 
         if not worksheet_name:
-            raise Exception('There should be a worksheet name')
+            raise ValueError('There should be a worksheet name')
 
         self._flatten_object(content, row, parent_key=worksheet_name)
 
@@ -41,6 +46,21 @@ class Flattener:
             'headers': headers,
             'values': rows
         }
+
+    def _extract_schema_url(self, content: dict):
+        concrete_entity = self._get_concrete_entity(content)
+        schema_url = content.get('describedBy')
+        existing_schema_url = self.schemas.get(concrete_entity)
+        self._validate_no_schema_version_conflicts(existing_schema_url, schema_url)
+
+        if not existing_schema_url:
+            self.schemas[concrete_entity] = schema_url
+
+    def _validate_no_schema_version_conflicts(self, existing_schema_url, schema_url):
+        if existing_schema_url and existing_schema_url != schema_url:
+            raise ValueError(f'The concrete entity schema version should be consistent across entities.\
+                    Multiple versions of same concrete entity schema is found:\
+                     {schema_url} and {existing_schema_url}')
 
     def _append_row_to_worksheet(self, row, worksheet):
         rows = worksheet.get('values')
@@ -94,7 +114,7 @@ class Flattener:
         for key in keys:
             flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join(
                 [elem.get(key) for elem in object
-                 if elem.get(key) is not None and elem.get(key) is not ''])
+                 if elem.get(key) is not None and elem.get(key) != ''])
 
     def _format_worksheet_name(self, worksheet_name):
         names = worksheet_name.split('.')

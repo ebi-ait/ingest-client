@@ -38,5 +38,8 @@
         "collection_protocol.reagents.kit_titer": "Titer: Specification is 3.0x10^7"
       }
     ]
-  }
+  },
+  "Schemas": [
+    "https://schema.humancellatlas.org/type/protocol/biomaterial_collection/9.2.0/collection_protocol"
+  ]
 }
