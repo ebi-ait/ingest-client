@@ -27,8 +27,7 @@ class Flattener:
 
         if not object_key:
             content = entity['content']
-            concrete_entity = self._get_concrete_entity(content)
-            worksheet_name = concrete_entity
+            worksheet_name = self._get_concrete_entity(content)
             row = {f'{worksheet_name}.uuid': entity['uuid']['uuid']}
             self._extract_schema_url(content)
 
