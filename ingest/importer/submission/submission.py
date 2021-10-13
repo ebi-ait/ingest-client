@@ -66,7 +66,7 @@ class Submission(object):
             to_entity.ingest_json = self.ingest_api.get_entity_by_uuid(ENTITY_LINK[to_entity.type], to_entity.id)
 
         from_entity_ingest = from_entity.ingest_json
-        to_entity_ingest = to_entity.ingest_jsonr
+        to_entity_ingest = to_entity.ingest_json
 
         self.ingest_api.link_entity(from_entity_ingest, to_entity_ingest, relationship, is_collection)
 
