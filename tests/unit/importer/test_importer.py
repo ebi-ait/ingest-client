@@ -10,6 +10,7 @@ from ingest.importer.importer import WorksheetImporter, WorkbookImporter, Multip
     NoProjectFound, SchemaRetrievalError, UnexpectedEntityUUIDFound, MissingEntityUUIDFound
 from ingest.importer.importer import XlsImporter
 from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook, IngestWorksheet
+from ingest.importer.submission.entity_map import EntityMap
 from ingest.utils.IngestError import ImporterError
 from tests.utils import create_test_workbook, create_ingest_workbook
 
@@ -56,18 +57,18 @@ class XlsImporterTest(TestCase):
         with self.assertRaises(SchemaRetrievalError):
             importer.generate_json('file_path', is_update=False)
 
-    @patch('ingest.importer.submission.entity_map.EntityMap.load')
     @patch('ingest.importer.submission.entity_linker.EntityLinker.handle_links_from_spreadsheet')
+    @patch('ingest.importer.submission.entity_map.EntityMap.load')
     @patch('ingest.importer.importer.XlsImporter.generate_json')
-    def test_dry_run_import_file_success(self, mock_generate_json, mock_entity_linker, mock_entity_map):
-        mock_entity_map.return_value = MagicMock()
-        mock_entity_linker.return_value = 'entity_map_w_links'
+    def test_dry_run_import_file_success(self, mock_generate_json, mock_load, mock_handle_links):
+        mock_entity_map = Mock('entity_map_w_links')
+        mock_load.return_value = mock_entity_map
         mock_generate_json.return_value = ({'test': 'output'}, 'template_manager', [])
         ingest_api = MagicMock('ingest_api')
         importer = XlsImporter(ingest_api)
 
         entity_map, errors = importer.dry_run_import_file('file_path')
-        self.assertEqual(entity_map, 'entity_map_w_links')
+        self.assertEqual(entity_map, mock_entity_map)
         self.assertFalse(errors)
 
     @patch('ingest.importer.submission.entity_map.EntityMap.load')
@@ -475,6 +476,41 @@ class ImporterErrors(TestCase):
         importer.logger.error = MagicMock()
 
         # when:
-        importer.import_file(file_path=None, submission_url=None, is_update=False)
+        importer.import_file(file_path=None, submission_url=None)
         # then:
         self.mock_ingest_api.create_submission_error.assert_called_once_with(None, exception_json)
+
+    @patch('ingest.importer.submission.submission.Submission.link_entity')
+    def test_import_file__link_supplementary_files_to_project(self, mock_link_entity):
+        # given:
+        spreadsheet_json = self._create_spreadsheet_json_with_supplementary_file()
+        importer = XlsImporter(ingest_api=self.mock_ingest_api)
+        mock_template_mgr = Mock()
+        mock_template_mgr.get_schema_url = Mock(return_value='')
+        importer.generate_json = Mock(return_value=(spreadsheet_json, mock_template_mgr, None))
+
+        # when:
+        submission, _ = importer.import_file(file_path='path', submission_url='url')
+
+        # then:
+        self.assertEqual([args.kwargs.get('relationship') for args in mock_link_entity.call_args_list],
+                         ['submissionEnvelopes', 'supplementaryFiles', 'project'])
+
+    def _create_spreadsheet_json_with_supplementary_file(self):
+        return {
+            'project': {
+                'project-uuid': {
+                    'is_reference': True
+                }
+            },
+            'file': {
+                'supplementary-file-id': {
+                    'content': {
+                        'file_core': {
+                            'file_name': 'supplementary_file_name'
+                        }
+                    },
+                    'concrete_type': 'supplementary_file'
+                }
+            }
+        }

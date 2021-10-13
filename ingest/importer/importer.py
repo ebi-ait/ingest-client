@@ -52,7 +52,8 @@ class XlsImporter:
         if errors:
             return None, errors
 
-        entity_map = self._handle_links_from_spreadsheet(template_mgr, spreadsheet_json)
+        entity_map = EntityMap.load(spreadsheet_json)
+        self._handle_links_from_spreadsheet(template_mgr, entity_map)
 
         return entity_map, []
 
@@ -69,8 +70,10 @@ class XlsImporter:
             elif is_update:
                 self.submitter.update_entities(entity_map)
             else:
-                entity_map = self._handle_links_from_spreadsheet(template_mgr, spreadsheet_json)
+                self._handle_links_from_spreadsheet(template_mgr, entity_map)
                 submission = self.submitter.add_entities(entity_map, submission_url)
+                self.submitter.link_submission_to_project(entity_map, submission, submission_url)
+                self.submitter.link_entities(entity_map, submission)
                 return submission, template_mgr
         except HTTPError as httpError:
             status = httpError.response.status_code
@@ -95,11 +98,9 @@ class XlsImporter:
             )
 
     @staticmethod
-    def _handle_links_from_spreadsheet(template_mgr, spreadsheet_json):
-        entity_map = EntityMap.load(spreadsheet_json)
+    def _handle_links_from_spreadsheet(template_mgr: TemplateManager, entity_map: EntityMap):
         entity_linker = EntityLinker(template_mgr, entity_map)
-        entity_map = entity_linker.handle_links_from_spreadsheet()
-        return entity_map
+        entity_linker.handle_links_from_spreadsheet()
 
     @staticmethod
     def update_spreadsheet_with_uuids(submission: Submission, template_mgr: TemplateManager, file_path):

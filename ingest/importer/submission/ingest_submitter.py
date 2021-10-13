@@ -24,11 +24,8 @@ class IngestSubmitter(object):
     def add_entities(self, entity_map: EntityMap, submission_url: str) -> Submission:
         submission = Submission(self.ingest_api, submission_url)
         submission.define_manifest(entity_map)
-        entities = entity_map.get_new_entities()
-        for e in entities:
+        for e in entity_map.get_new_entities():
             submission.add_entity(e)
-        self.link_submission_to_project(entity_map, submission, submission_url)
-        self.link_entities(entities, entity_map, submission)
 
         return submission
 
@@ -56,11 +53,11 @@ class IngestSubmitter(object):
                                    is_linking_reference=True,
                                    ingest_json=submission_envelope
                                    )
-        submission.link_entity(project, submission_entity, 'submissionEnvelopes')
+        submission.link_entity(project, submission_entity, relationship='submissionEnvelopes')
 
-    def link_entities(self, entities: List[Entity], entity_map: EntityMap, submission: Submission):
+    def link_entities(self, entity_map: EntityMap, submission: Submission):
         progress = 0
-        for entity in entities:
+        for entity in entity_map.get_entities():
             for link in entity.direct_links:
                 to_entity = entity_map.get_entity(link['entity'], link['id'])
                 try:
@@ -79,4 +76,3 @@ class IngestSubmitter(object):
                     self.logger.error(error_message)
                     self.logger.error(f'{str(link_error)}')
                     raise
-
