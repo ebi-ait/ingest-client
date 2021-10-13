@@ -10,7 +10,6 @@ from ingest.importer.importer import WorksheetImporter, WorkbookImporter, Multip
     NoProjectFound, SchemaRetrievalError, UnexpectedEntityUUIDFound, MissingEntityUUIDFound
 from ingest.importer.importer import XlsImporter
 from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook, IngestWorksheet
-from ingest.importer.submission.entity_map import EntityMap
 from ingest.utils.IngestError import ImporterError
 from tests.utils import create_test_workbook, create_ingest_workbook
 
