@@ -267,8 +267,6 @@ class IngestSubmitterTest(TestCase):
         submission_constructor.assert_called_with(self.ingest_api, 'url')
         submission.define_manifest.assert_called_with(entity_map)
         submission.add_entity.assert_has_calls([call(user), call(linked_product)], any_order=True)
-        submission.link_entity.assert_called_with(linked_product, user, relationship='wish_list', is_collection=True)
-        self.ingest_api.patch.assert_called_once()
 
     def test_update_entity(self):
         # given:
