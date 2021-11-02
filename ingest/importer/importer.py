@@ -121,7 +121,7 @@ class _ImportRegistry:
     This is a helper class for managing metadata entities during Workbook import.
     """
 
-    def __init__(self, template_mgr):
+    def __init__(self, template_mgr: TemplateManager):
         self.template_mgr = template_mgr
         self._submittable_registry = {}
         self._module_registry = {}
@@ -155,12 +155,9 @@ class _ImportRegistry:
     def add_modules(self, module_field_name, metadata_entities):
         allowed_fields = [module_field_name]
         allowed_fields.extend(self.template_mgr.default_keys)
-        removed_fields = []
         for entity in metadata_entities:
-            removed_fields.extend(entity.list_fields(excluded_fields=allowed_fields))
             entity.retain_fields(module_field_name)
             self.add_module(entity)
-        return removed_fields
 
     def import_modules(self):
         for module_entity in self._module_list:
@@ -211,8 +208,7 @@ class WorkbookImporter:
                 workbook_errors.extend(worksheet_errors)
 
                 if worksheet.is_module_tab():
-                    removed_data = registry.add_modules(module_field_name, metadata_entities)
-                    workbook_errors.extend(self.list_data_removal_errors(worksheet.title, removed_data))
+                    registry.add_modules(module_field_name, metadata_entities)
                 else:
                     registry.add_submittables(metadata_entities)
             except Exception as e:
