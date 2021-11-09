@@ -158,10 +158,10 @@ class RowTemplate:
         self.cell_conversions = cell_conversions
         self.default_values = copy.deepcopy(default_values)
 
-    def do_import(self, row: IngestRow):
+    def do_import(self, row: IngestRow, is_module=False):
         row_errors = []
         metadata = MetadataEntity(domain_type=self.domain_type, concrete_type=self.concrete_type,
-                                  content=self.default_values, row=row)
+                                  content=self.default_values, row=row, is_module=is_module)
         for index, cell in enumerate(row.values):
             if cell.value is None:
                 continue

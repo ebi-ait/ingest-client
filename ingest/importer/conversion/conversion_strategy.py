@@ -90,11 +90,11 @@ class FieldOfSingleElementListCellConversion(CellConversion):
 
 
 class IdentityCellConversion(CellConversion):
-
     def apply(self, metadata: MetadataEntity, cell_data):
         value = self.converter.convert(cell_data)
         metadata.object_id = metadata.object_id or value
-        metadata.define_content(self.applied_field, value)
+        if not metadata.is_module:
+            metadata.define_content(self.applied_field, value)
 
 
 class ExternalReferenceCellConversion(CellConversion):

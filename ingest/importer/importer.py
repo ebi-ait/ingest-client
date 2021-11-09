@@ -156,7 +156,6 @@ class _ImportRegistry:
         allowed_fields = [module_field_name]
         allowed_fields.extend(self.template_mgr.default_keys)
         for entity in metadata_entities:
-            entity.retain_fields(module_field_name)
             self.add_module(entity)
 
     def import_modules(self):
@@ -300,7 +299,7 @@ class WorksheetImporter:
             row_template = self.template.create_row_template(ingest_worksheet)
             rows = ingest_worksheet.get_data_rows()
             for index, row in enumerate(rows):
-                metadata, row_errors = row_template.do_import(row)
+                metadata, row_errors = row_template.do_import(row, ingest_worksheet.is_module_tab())
                 for error in row_errors:
                     if 'location' in error:
                         error["location"] = f'sheet={ingest_worksheet.title} row={index}, {error["location"]}'
