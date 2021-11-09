@@ -104,6 +104,9 @@ class MetadataEntity:
                 self._content[field] = module_list
             module_list.append(value)
 
+    def get_spreadsheet_location(self):
+        return self._spreadsheet_location
+
     def map_for_submission(self):
         return {
             'is_reference': self.is_reference,

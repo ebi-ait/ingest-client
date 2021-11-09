@@ -163,7 +163,11 @@ class _ImportRegistry:
         for module_entity in self._module_list:
             type_map = self._submittable_registry.get(module_entity.domain_type)
             submittable_entity = type_map.get(module_entity.object_id)
-            submittable_entity.add_module_entity(module_entity)
+            if submittable_entity:
+                submittable_entity.add_module_entity(module_entity)
+            else:
+                raise LinkToConcreteEntityNotFound(module_entity)
+
 
     def flatten(self):
         flat_map = {}
@@ -216,7 +220,14 @@ class WorkbookImporter:
                     {"location": f'sheet={worksheet.title}', "type": e.__class__.__name__, "detail": str(e)})
 
         if registry.has_project():
-            registry.import_modules()
+            try:
+                registry.import_modules()
+            except LinkToConcreteEntityNotFound as error:
+                location = error.module_entity.get_spreadsheet_location()
+                workbook_errors.append({
+                    'location': f'sheet={location["worksheet_title"]} row_num={location["row_index"]}',
+                    'type': error.__class__.__name__, "detail": str(error)
+                })
         else:
             e = NoProjectFound()
             workbook_errors.append({"location": "File", "type": e.__class__.__name__, "detail": str(e)})
@@ -355,3 +366,9 @@ class MissingEntityUUIDFound(Exception):
         message = f'The {sheet_name} entities in the spreadsheet should have UUIDs.'
         super(MissingEntityUUIDFound, self).__init__(message)
         self.sheet_name = sheet_name
+
+class LinkToConcreteEntityNotFound(Exception):
+    def __init__(self, module_entity: MetadataEntity):
+        message = f'The module_entity is not linked to any concrete entity'
+        super(LinkToConcreteEntityNotFound, self).__init__(message)
+        self.module_entity = module_entity
