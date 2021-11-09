@@ -49,7 +49,10 @@ class TemplateManager:
             strategy = conversion_strategy.determine_strategy(column_spec)
             cell_conversions.append(strategy)
 
-        default_values = self._define_default_values(concrete_type)
+        default_values = None
+        if not ingest_worksheet.is_module_tab():
+            default_values = self._define_default_values(concrete_type)
+
         return RowTemplate(domain_type, concrete_type, cell_conversions,
                            default_values=default_values)
 
@@ -152,11 +155,11 @@ def build(schemas, ingest_api) -> TemplateManager:
 
 
 class RowTemplate:
-    def __init__(self, domain_type, object_type, cell_conversions, default_values={}):
+    def __init__(self, domain_type, object_type, cell_conversions, default_values=None):
         self.domain_type = domain_type
         self.concrete_type = object_type
         self.cell_conversions = cell_conversions
-        self.default_values = copy.deepcopy(default_values)
+        self.default_values = copy.deepcopy(default_values) if default_values else {}
 
     def do_import(self, row: IngestRow, is_module=False):
         row_errors = []

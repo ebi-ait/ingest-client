@@ -155,8 +155,12 @@ class _ImportRegistry:
     def add_modules(self, module_field_name, metadata_entities):
         allowed_fields = [module_field_name]
         allowed_fields.extend(self.template_mgr.default_keys)
+        all_removed_fields = []
         for entity in metadata_entities:
+            removed_fields = entity.retain_fields(module_field_name)
+            all_removed_fields.extend(removed_fields)
             self.add_module(entity)
+        return all_removed_fields
 
     def import_modules(self):
         for module_entity in self._module_list:
@@ -211,7 +215,8 @@ class WorkbookImporter:
                 workbook_errors.extend(worksheet_errors)
 
                 if worksheet.is_module_tab():
-                    registry.add_modules(module_field_name, metadata_entities)
+                    removed_data = registry.add_modules(module_field_name, metadata_entities)
+                    workbook_errors.extend(self.list_data_removal_errors(worksheet.title, removed_data))
                 else:
                     registry.add_submittables(metadata_entities)
             except Exception as e:

@@ -96,6 +96,14 @@ class MetadataEntity:
             link_map[link_entity_type] = existent_links
         existent_links.extend(new_links)
 
+    def retain_fields(self, *allowed_fields):
+        removed_fields = []
+        for key in self._content.keys():
+            if key not in allowed_fields:
+                removed_fields.append({'key': key, 'value': self._content[key]})
+                self._content.remove_field(key)
+        return removed_fields
+
     def add_module_entity(self, module_entity):
         for field, value in module_entity.content.as_dict().items():
             module_list = self._content[field]
