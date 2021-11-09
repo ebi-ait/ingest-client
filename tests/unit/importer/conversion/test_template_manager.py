@@ -443,9 +443,7 @@ class RowTemplateTest(TestCase):
 
         # and:
         workbook = Workbook()
-        worksheet = workbook.create_sheet('list_of_things')
-        worksheet['A1'] = 'pen'
-        worksheet['B1'] = 'a thing used for writing'
+        worksheet = self.create_test_worksheet(workbook)
         row = list(worksheet.rows)[0]
         row = IngestRow('worksheet_title', 0, row)
 
@@ -457,6 +455,12 @@ class RowTemplateTest(TestCase):
         self.assertEqual('extra field', result.get_content('extra_field'))
         self.assertEqual(errors, [])
 
+    def create_test_worksheet(self, workbook):
+        worksheet = workbook.create_sheet('list_of_things')
+        worksheet['A1'] = 'pen'
+        worksheet['B1'] = 'a thing used for writing'
+        return worksheet
+
     def test_do_import_with_no_default_values(self):
         # given:
         cell_conversions = [FakeConversion('name'), FakeConversion('description')]
@@ -464,9 +468,7 @@ class RowTemplateTest(TestCase):
 
         # and:
         workbook = Workbook()
-        worksheet = workbook.create_sheet('list_of_things')
-        worksheet['A1'] = 'pen'
-        worksheet['B1'] = 'a thing used for writing'
+        worksheet = self.create_test_worksheet(workbook)
         row = list(worksheet.rows)[0]
         row = IngestRow('worksheet_title', 0, row)
 
@@ -484,9 +486,7 @@ class RowTemplateTest(TestCase):
 
         # and:
         workbook = Workbook()
-        worksheet = workbook.create_sheet('list_of_things')
-        worksheet['A1'] = 'pen'
-        worksheet['B1'] = 'a thing used for writing'
+        worksheet = self.create_test_worksheet(workbook)
         row = list(worksheet.rows)[0]
         row = IngestRow('worksheet_title', 0, row)
 
