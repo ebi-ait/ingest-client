@@ -454,8 +454,7 @@ class RowTemplateTest(TestCase):
 
     def test_do_import_with_no_default_values(self):
         # given:
-        cell_conversions = [FakeConversion('name'), FakeConversion('description')]
-        row_template = RowTemplate('user', 'user', cell_conversions)
+        row_template = self._create_row_template()
 
         # and:
         row = self._create_test_row()
@@ -469,8 +468,7 @@ class RowTemplateTest(TestCase):
 
     def test_do_import_row_from_module_worksheet(self):
         # given:
-        cell_conversions = [FakeConversion('name'), FakeConversion('description')]
-        row_template = RowTemplate('user', 'user', cell_conversions)
+        row_template = self._create_row_template()
 
         # and:
         row = self._create_test_row()
@@ -480,6 +478,11 @@ class RowTemplateTest(TestCase):
 
         # then:
         self.assertEqual(result.is_module, True)
+
+    def _create_row_template(self):
+        cell_conversions = [FakeConversion('name'), FakeConversion('description')]
+        row_template = RowTemplate('user', 'user', cell_conversions)
+        return row_template
 
     def _create_test_row(self):
         workbook = Workbook()
