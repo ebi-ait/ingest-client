@@ -153,8 +153,6 @@ class _ImportRegistry:
         self._module_list.append(metadata)
 
     def add_modules(self, module_field_name, metadata_entities):
-        allowed_fields = [module_field_name]
-        allowed_fields.extend(self.template_mgr.default_keys)
         all_removed_fields = []
         for entity in metadata_entities:
             removed_fields = entity.retain_fields(module_field_name)
