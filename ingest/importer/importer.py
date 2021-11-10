@@ -222,18 +222,21 @@ class WorkbookImporter:
                     {"location": f'sheet={worksheet.title}', "type": e.__class__.__name__, "detail": str(e)})
 
         if registry.has_project():
-            try:
-                registry.import_modules()
-            except LinkToConcreteEntityNotFound as error:
-                location = error.module_entity.get_spreadsheet_location()
-                workbook_errors.append({
-                    'location': f'sheet={location["worksheet_title"]} row_num={location["row_index"]}',
-                    'type': error.__class__.__name__, "detail": str(error)
-                })
+            self._import_modules(registry, workbook_errors)
         else:
             e = NoProjectFound()
             workbook_errors.append({"location": "File", "type": e.__class__.__name__, "detail": str(e)})
         return registry.flatten(), workbook_errors
+
+    def _import_modules(self, registry, workbook_errors):
+        try:
+            registry.import_modules()
+        except LinkToConcreteEntityNotFound as error:
+            location = error.module_entity.get_spreadsheet_location()
+            workbook_errors.append({
+                'location': f'sheet={location["worksheet_title"]} row_num={location["row_index"]}',
+                'type': error.__class__.__name__, "detail": str(error)
+            })
 
     def validate_worksheets(self, is_update, importable_worksheets):
         worksheets_with_uuid = []
