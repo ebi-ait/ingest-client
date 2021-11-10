@@ -12,7 +12,7 @@ class MetadataEntity:
     # It's only currently done this way to minimise friction with other parts of the system
     def __init__(self, concrete_type=TYPE_UNDEFINED, domain_type=TYPE_UNDEFINED, object_id=None,
                  content={}, links={}, external_links={}, linking_details={}, row: IngestRow = None,
-                 is_reference=False, is_linking_reference=False):
+                 is_reference=False, is_linking_reference=False, is_module=False):
         self._concrete_type = concrete_type
         self._domain_type = domain_type
         self.object_id = object_id
@@ -26,6 +26,7 @@ class MetadataEntity:
         } if row else None
         self._is_reference = is_reference
         self._is_linking_reference = is_linking_reference
+        self._is_module = is_module
 
     @property
     def concrete_type(self):
@@ -74,6 +75,10 @@ class MetadataEntity:
         return self._is_linking_reference
 
     @property
+    def is_module(self):
+        return self._is_module
+
+    @property
     def external_links(self):
         return copy.deepcopy(self._external_links)
 
@@ -92,12 +97,12 @@ class MetadataEntity:
         existent_links.extend(new_links)
 
     def retain_fields(self, *allowed_fields):
+        removed_fields = []
         for key in self._content.keys():
             if key not in allowed_fields:
+                removed_fields.append({'key': key, 'value': self._content[key]})
                 self._content.remove_field(key)
-
-    def list_fields(self, excluded_fields):
-        return [{'key': key, 'value': self._content[key]} for key in self._content.keys() if key not in excluded_fields]
+        return removed_fields
 
     def add_module_entity(self, module_entity):
         for field, value in module_entity.content.as_dict().items():
@@ -106,6 +111,9 @@ class MetadataEntity:
                 module_list = []
                 self._content[field] = module_list
             module_list.append(value)
+
+    def get_spreadsheet_location(self):
+        return self._spreadsheet_location
 
     def map_for_submission(self):
         return {

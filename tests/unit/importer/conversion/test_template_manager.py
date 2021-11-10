@@ -442,12 +442,7 @@ class RowTemplateTest(TestCase):
         row_template = RowTemplate('user', 'user', cell_conversions, default_values=default_values)
 
         # and:
-        workbook = Workbook()
-        worksheet = workbook.create_sheet('list_of_things')
-        worksheet['A1'] = 'pen'
-        worksheet['B1'] = 'a thing used for writing'
-        row = list(worksheet.rows)[0]
-        row = IngestRow('worksheet_title', 0, row)
+        row = self._create_test_row()
 
         # when:
         result, errors = row_template.do_import(row)
@@ -456,6 +451,47 @@ class RowTemplateTest(TestCase):
         self.assertEqual(schema_url, result.get_content('describedBy'))
         self.assertEqual('extra field', result.get_content('extra_field'))
         self.assertEqual(errors, [])
+
+    def test_do_import_with_no_default_values(self):
+        # given:
+        row_template = self._create_row_template()
+
+        # and:
+        row = self._create_test_row()
+
+        # when:
+        result, errors = row_template.do_import(row)
+
+        # then:
+        self.assertEqual({'description': 'a thing used for writing', 'name': 'pen'}, result.content.as_dict())
+        self.assertEqual(errors, [])
+
+    def test_do_import_row_from_module_worksheet(self):
+        # given:
+        row_template = self._create_row_template()
+
+        # and:
+        row = self._create_test_row()
+
+        # when:
+        result, errors = row_template.do_import(row, is_module=True)
+
+        # then:
+        self.assertEqual(result.is_module, True)
+
+    def _create_row_template(self):
+        cell_conversions = [FakeConversion('name'), FakeConversion('description')]
+        row_template = RowTemplate('user', 'user', cell_conversions)
+        return row_template
+
+    def _create_test_row(self):
+        workbook = Workbook()
+        worksheet = workbook.create_sheet('list_of_things')
+        worksheet['A1'] = 'pen'
+        worksheet['B1'] = 'a thing used for writing'
+        row = list(worksheet.rows)[0]
+        row = IngestRow('worksheet_title', 0, row)
+        return row
 
     def test_do_import_with_conversion_error(self):
         # given:
