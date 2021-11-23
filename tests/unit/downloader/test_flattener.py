@@ -254,7 +254,7 @@ class FlattenerTest(TestCase):
             },
 
         ]
-        entity_list = [Entity.from_json(entity_json) for entity_json in entity_json_list]
+        entity_list = Entity.from_json_list(entity_json_list)
 
         # when/then
         flattener = Flattener()
