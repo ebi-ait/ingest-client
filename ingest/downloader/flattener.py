@@ -15,19 +15,15 @@ class Flattener:
         self.workbook = {}
         self.schemas = {}
 
-    def flatten(self, entity_list: List[Entity], parent_key: str = ''):
+    def flatten(self, entity_list: List[Entity]):
         for entity in entity_list:
-            self._flatten_entity(entity, parent_key)
+            self._flatten_entity(entity)
         self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
         return self.workbook
 
-    def _flatten_entity(self, entity: Entity, object_key: str):
-        worksheet_name = object_key
-        row = {}
-
-        if not object_key:
-            worksheet_name = entity.concrete_type
-            row = {f'{worksheet_name}.uuid': entity.uuid}
+    def _flatten_entity(self, entity: Entity):
+        worksheet_name = entity.concrete_type
+        row = {f'{worksheet_name}.uuid': entity.uuid}
 
         self._extract_schema_url(entity.content, entity.concrete_type)
 
