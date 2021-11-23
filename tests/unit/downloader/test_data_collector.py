@@ -17,7 +17,7 @@ class DataCollectorTest(unittest.TestCase):
         self.parent_dir = os.path.split(self.script_dir)[0]
         self.resources_dir = os.path.join(self.parent_dir, 'resources')
 
-    def test_collected_project_and_biomaterials_data_by_submission_uuid_returns_correctly(self):
+    def test_collect_data_by_submission_uuid_returns_correctly(self):
         # given
         project = self._make_project_data()
         self._mock_ingest_api(project)
@@ -34,6 +34,26 @@ class DataCollectorTest(unittest.TestCase):
 
         # then
         self.assertEqual(result_json, expected_json)
+
+    def test_collect_data_by_submission_uuid_returns_correctlRy2(self):
+        # given
+        project = self._make_project_data()
+        self._mock_ingest_api(project)
+
+        expected_json = [project['project']] + \
+                        project['biomaterials'] + \
+                        project['processes'] + \
+                        project['protocols'] + \
+                        project['files']
+
+        # when
+        project_uuid = '1234'
+        entity_list = self.data_collector.collect_data_by_submission_uuid2(project_uuid)
+
+        # then
+        expected_content_list = [entity['content'] for entity in expected_json]
+        actual_content_list = [entity.content for entity in entity_list]
+        self.assertEqual(expected_content_list, actual_content_list)
 
     def _mock_ingest_api(self, project):
         self.mock_ingest_api.get_submission_by_uuid.return_value = project['submission']
