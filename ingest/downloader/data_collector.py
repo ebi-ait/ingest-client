@@ -24,12 +24,7 @@ class DataCollector:
         self.__get_entities_by_submission_and_type(data_by_submission, submission, 'protocols')
         self.__get_entities_by_submission_and_type(data_by_submission, submission, 'files')
 
-        entity_list = []
-        for entity_json in data_by_submission:
-            entity = Entity.from_json(entity_json)
-            entity_list.append(entity)
-
-        return entity_list
+        return Entity.from_json_list(data_by_submission)
 
     def __get_entities_by_submission_and_type(self, data_by_submission, submission, entity_type):
         entity_json = \
