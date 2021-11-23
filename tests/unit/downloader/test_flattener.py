@@ -2,6 +2,7 @@ import json
 import os
 from unittest import TestCase
 
+from ingest.downloader.entity import Entity
 from ingest.downloader.flattener import Flattener
 
 
@@ -25,7 +26,7 @@ class FlattenerTest(TestCase):
             'content': self.content,
             'uuid': self.uuid
         }
-        entity_list = [metadata_entity]
+        entity_list = [Entity.from_json(metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -47,7 +48,7 @@ class FlattenerTest(TestCase):
             'content': self.content,
             'uuid': self.uuid
         }
-        entity_list = [self.metadata_entity]
+        entity_list = [Entity.from_json(self.metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -86,7 +87,7 @@ class FlattenerTest(TestCase):
             'uuid': self.uuid
         }
 
-        entity_list = [metadata_entity]
+        entity_list = [Entity.from_json(metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -124,7 +125,7 @@ class FlattenerTest(TestCase):
             'content': self.content,
             'uuid': self.uuid
         }
-        entity_list = [self.metadata_entity]
+        entity_list = [Entity.from_json(self.metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -147,7 +148,7 @@ class FlattenerTest(TestCase):
             'content': self.content,
             'uuid': self.uuid
         }
-        entity_list = [self.metadata_entity]
+        entity_list = [Entity.from_json(self.metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -164,7 +165,7 @@ class FlattenerTest(TestCase):
 
     def test_flatten__rows_have_different_columns(self):
         # given
-        entity_list = [
+        entity_json_list = [
             {
                 'content': {
                     "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
@@ -196,6 +197,7 @@ class FlattenerTest(TestCase):
 
         # when
         flattener = Flattener()
+        entity_list = [Entity.from_json(entity_json) for entity_json in entity_json_list]
         actual = flattener.flatten(entity_list)
 
         expected = {
@@ -229,7 +231,7 @@ class FlattenerTest(TestCase):
 
     def test_flatten__raises_error__given_multiple_schema_versions_of_same_concrete_entity(self):
         # given
-        entity_list = [
+        entity_json_list = [
             {
                 'content': {
                     "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism",
@@ -252,6 +254,7 @@ class FlattenerTest(TestCase):
             },
 
         ]
+        entity_list = [Entity.from_json(entity_json) for entity_json in entity_json_list]
 
         # when/then
         flattener = Flattener()

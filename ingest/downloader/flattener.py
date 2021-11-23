@@ -1,5 +1,6 @@
 from typing import List
 
+from ingest.downloader.entity import Entity
 from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
@@ -14,27 +15,21 @@ class Flattener:
         self.workbook = {}
         self.schemas = {}
 
-    def flatten(self, entity_list: List[dict], object_key: str = ''):
+    def flatten(self, entity_list: List[Entity]):
         for entity in entity_list:
-            self._flatten_entity(entity, object_key)
+            self._flatten_entity(entity)
         self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
         return self.workbook
 
-    def _flatten_entity(self, entity, object_key):
-        worksheet_name = object_key
-        row = {}
-        content = entity
-
-        if not object_key:
-            content = entity['content']
-            worksheet_name = self._get_concrete_entity(content)
-            row = {f'{worksheet_name}.uuid': entity['uuid']['uuid']}
-            self._extract_schema_url(content)
+    def _flatten_entity(self, entity: Entity):
+        worksheet_name = self._get_concrete_entity(entity.content)
+        row = {f'{worksheet_name}.uuid': entity.uuid}
+        self._extract_schema_url(entity.content)
 
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
 
-        self._flatten_object(content, row, parent_key=worksheet_name)
+        self._flatten_object(entity.content, row, parent_key=worksheet_name)
 
         user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
         worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
