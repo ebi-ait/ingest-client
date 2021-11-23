@@ -29,7 +29,7 @@ class Flattener:
             worksheet_name = entity.concrete_type
             row = {f'{worksheet_name}.uuid': entity.uuid}
 
-        self._extract_schema_url(entity.content)
+        self._extract_schema_url(entity.content, entity.concrete_type)
 
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
@@ -125,8 +125,7 @@ class Flattener:
             }
             embedded_content.update(embedded_input_ids)
 
-    def _extract_schema_url(self, content: dict):
-        concrete_entity = self._get_concrete_entity(content)
+    def _extract_schema_url(self, content: dict, concrete_entity: str):
         schema_url = content.get('describedBy')
         existing_schema_url = self.schemas.get(concrete_entity)
         self._validate_no_schema_version_conflicts(existing_schema_url, schema_url)
@@ -207,9 +206,6 @@ class Flattener:
     def _get_keys_of_a_list_of_object(self, object: dict):
         first_elem = object[0] if object else {}
         return list(first_elem.keys())
-
-    def _get_concrete_entity(self, content: dict):
-        return content.get('describedBy').rsplit('/', 1)[-1]
 
     def _is_project(self, parent_key: str):
         entity_type = parent_key.split('.')[0]
