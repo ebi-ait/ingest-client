@@ -40,7 +40,7 @@ class Flattener:
             embedded_content = self.embed_link_columns(entity)
             self._flatten_object(embedded_content, row)
 
-        self._add_to_worksheet(row, worksheet_name)
+        self._add_row_to_worksheet(row, worksheet_name)
 
     def _flatten_module_list(self, module_list: dict, object_key: str):
         for module in module_list:
@@ -48,19 +48,20 @@ class Flattener:
 
     def _flatten_module(self, obj: dict, object_key: str):
         worksheet_name = object_key
-        row = {}
+        module_row = {}
 
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
 
-        self._flatten_object(obj, row, parent_key=worksheet_name)
+        self._flatten_object(obj, module_row, parent_key=worksheet_name)
 
-        self._add_to_worksheet(row, worksheet_name)
+        self._add_row_to_worksheet(module_row, worksheet_name)
 
-    def _add_to_worksheet(self, row, worksheet_name):
+    def _add_row_to_worksheet(self, row, worksheet_name):
         user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
         worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
-        rows = self._append_row_to_worksheet(row, worksheet)
+        rows = worksheet.get('values')
+        rows.append(row)
         headers = self._update_headers(row, worksheet)
         self.workbook[user_friendly_worksheet_name] = {
             'headers': headers,
@@ -138,11 +139,6 @@ class Flattener:
             raise ValueError(f'The concrete entity schema version should be consistent across entities.\
                     Multiple versions of same concrete entity schema is found:\
                      {schema_url} and {existing_schema_url}')
-
-    def _append_row_to_worksheet(self, row, worksheet):
-        rows = worksheet.get('values')
-        rows.append(row)
-        return rows
 
     def _update_headers(self, row, worksheet):
         headers = worksheet.get('headers')
