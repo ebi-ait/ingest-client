@@ -31,6 +31,10 @@ class Flattener:
 
         self._flatten_object(entity.content, row, parent_key=worksheet_name)
 
+        if entity.inputs:
+            embedded_content = self.embed_link_columns(entity)
+            self._flatten_object(embedded_content, row)
+
         user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
         worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
 
@@ -41,6 +45,63 @@ class Flattener:
             'headers': headers,
             'values': rows
         }
+
+    def embed_link_columns(self, entity: Entity):
+        embedded_content = {}
+        self._embed_process(entity, embedded_content)
+        self._embed_protocol_ids(entity, embedded_content)
+        self._embed_input_ids(entity, embedded_content)
+        return embedded_content
+
+    def _embed_process(self, entity: Entity, embedded_content):
+        embed_process = {
+            'process': entity.process.content
+        }
+        embedded_content.update(embed_process)
+
+    def _embed_protocol_ids(self, entity: Entity, embedded_content):
+        protocols_by_type = {}
+        for p in entity.protocols:
+            p: Entity
+            protocols = protocols_by_type.get(p.concrete_type, [])
+            protocols.append(p)
+            protocols_by_type[p.concrete_type] = protocols
+
+        for concrete_type, protocols in protocols_by_type.items():
+            protocol_ids = [p.content['protocol_core']['protocol_id'] for p in protocols]
+            protocol_uuids = [p.uuid for p in protocols]
+            embedded_protocol_ids = {
+                concrete_type: {
+                    'protocol_core': {
+                        'protocol_id': protocol_ids
+                    },
+                    'uuid': protocol_uuids
+                }
+            }
+            embedded_content.update(embedded_protocol_ids)
+
+    def _embed_input_ids(self, entity: Entity, embedded_content):
+        # TODO only supports input biomaterials for now
+        # raise an error pls
+        inputs_by_type = {}
+        for i in entity.inputs:
+            i: Entity
+            inputs = inputs_by_type.get(i.concrete_type, [])
+            inputs.append(i)
+            inputs_by_type[i.concrete_type] = inputs
+
+        for concrete_type, inputs in inputs_by_type.items():
+            input_ids_ids = [i.content['biomaterial_core']['biomaterial_id'] for i in inputs]
+            input_ids_uuids = [i.uuid for i in inputs]
+            embedded_input_ids = {
+                concrete_type: {
+                    'biomaterial_core': {
+                        'biomaterial_id': input_ids_ids
+                    },
+                    'uuid': input_ids_uuids
+                }
+            }
+            embedded_content.update(embedded_input_ids)
 
     def _extract_schema_url(self, content: dict):
         concrete_entity = self._get_concrete_entity(content)
