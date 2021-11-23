@@ -15,15 +15,20 @@ class Flattener:
         self.workbook = {}
         self.schemas = {}
 
-    def flatten(self, entity_list: List[Entity]):
+    def flatten(self, entity_list: List[Entity], parent_key: str = ''):
         for entity in entity_list:
-            self._flatten_entity(entity)
+            self._flatten_entity(entity, parent_key)
         self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
         return self.workbook
 
-    def _flatten_entity(self, entity: Entity):
-        worksheet_name = self._get_concrete_entity(entity.content)
-        row = {f'{worksheet_name}.uuid': entity.uuid}
+    def _flatten_entity(self, entity: Entity, object_key: str):
+        worksheet_name = object_key
+        row = {}
+
+        if not object_key:
+            worksheet_name = entity.concrete_type
+            row = {f'{worksheet_name}.uuid': entity.uuid}
+
         self._extract_schema_url(entity.content)
 
         if not worksheet_name:
@@ -35,12 +40,28 @@ class Flattener:
             embedded_content = self.embed_link_columns(entity)
             self._flatten_object(embedded_content, row)
 
+        self._add_to_worksheet(row, worksheet_name)
+
+    def _flatten_module_list(self, module_list: dict, object_key: str):
+        for module in module_list:
+            self._flatten_module(module, object_key)
+
+    def _flatten_module(self, obj: dict, object_key: str):
+        worksheet_name = object_key
+        row = {}
+
+        if not worksheet_name:
+            raise ValueError('There should be a worksheet name')
+
+        self._flatten_object(obj, row, parent_key=worksheet_name)
+
+        self._add_to_worksheet(row, worksheet_name)
+
+    def _add_to_worksheet(self, row, worksheet_name):
         user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
         worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
-
         rows = self._append_row_to_worksheet(row, worksheet)
         headers = self._update_headers(row, worksheet)
-
         self.workbook[user_friendly_worksheet_name] = {
             'headers': headers,
             'values': rows
@@ -159,7 +180,7 @@ class Flattener:
         if self._is_list_of_ontology_objects(object):
             self._flatten_to_include_object_list_to_main_entity_worksheet(object, flattened_object, parent_key)
         elif self._is_project(parent_key):
-            self.flatten(object, parent_key)
+            self._flatten_module_list(object, parent_key)
         else:
             self._flatten_to_include_object_list_to_main_entity_worksheet(object, flattened_object, parent_key)
 

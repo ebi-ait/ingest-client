@@ -30,25 +30,7 @@ class DataCollectorTest(unittest.TestCase):
 
         # when
         project_uuid = '1234'
-        result_json = self.data_collector.collect_data_by_submission_uuid(project_uuid)
-
-        # then
-        self.assertEqual(result_json, expected_json)
-
-    def test_collect_data_by_submission_uuid_returns_correctlRy2(self):
-        # given
-        project = self._make_project_data()
-        self._mock_ingest_api(project)
-
-        expected_json = [project['project']] + \
-                        project['biomaterials'] + \
-                        project['processes'] + \
-                        project['protocols'] + \
-                        project['files']
-
-        # when
-        project_uuid = '1234'
-        entity_list = self.data_collector.collect_data_by_submission_uuid2(project_uuid)
+        entity_list = self.data_collector.collect_data_by_submission_uuid(project_uuid)
 
         # then
         expected_content_list = [entity['content'] for entity in expected_json]

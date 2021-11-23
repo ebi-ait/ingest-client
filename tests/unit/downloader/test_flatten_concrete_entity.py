@@ -1,5 +1,6 @@
 import json
 
+from ingest.downloader.entity import Entity
 from ingest.downloader.flattener import Flattener
 from tests.unit.downloader.test_flattener import FlattenerTest
 
@@ -12,7 +13,7 @@ class FlattenConcreteEntityTest(FlattenerTest):
 
         # when
         flattener = Flattener()
-        actual = flattener.flatten(entity_list)
+        actual = flattener.flatten(Entity.from_json_list(entity_list))
 
         with open(self.script_dir + '/project-list-flattened.json') as file:
             expected = json.load(file)
@@ -27,7 +28,7 @@ class FlattenConcreteEntityTest(FlattenerTest):
 
         # when
         flattener = Flattener()
-        actual = flattener.flatten(entity_list)
+        actual = flattener.flatten(Entity.from_json_list(entity_list))
 
         with open(self.script_dir + '/entities-flattened.json') as file:
             expected = json.load(file)
@@ -42,7 +43,7 @@ class FlattenConcreteEntityTest(FlattenerTest):
 
         # when
         flattener = Flattener()
-        actual = flattener.flatten(entity_list)
+        actual = flattener.flatten(Entity.from_json_list(entity_list))
 
         with open(self.script_dir + '/collection_protocol-list-flattened.json') as file:
             expected = json.load(file)
