@@ -16,7 +16,10 @@ class DataCollector:
 
     def __build_entity_dict(self, submission):
         data_by_submission = self.__get_submission_data(submission)
-        entity_dict = self.__create_entity_dict(data_by_submission)
+        entity_dict = {}
+        for entity_json in data_by_submission:
+            entity = Entity.from_json(entity_json)
+            entity_dict[entity.id] = entity
         linking_map = self.__get_linking_map(submission)
         self.__set_inputs(entity_dict, linking_map)
         return entity_dict
@@ -45,13 +48,6 @@ class DataCollector:
         r.raise_for_status()
         linking_map = r.json()
         return linking_map
-
-    def __create_entity_dict(self, data_by_submission):
-        entity_dict = {}
-        for entity_json in data_by_submission:
-            entity = Entity.from_json(entity_json)
-            entity_dict[entity.id] = entity
-        return entity_dict
 
     def __set_inputs(self, entity_dict, linking_map):
         entities_with_inputs = list(linking_map['biomaterials'].keys()) + list(linking_map['files'].keys())
