@@ -35,11 +35,17 @@ class DataCollectorTest(unittest.TestCase):
         # then
         expected_content_list = [entity['content'] for entity in expected_json]
         actual_content_list = [entity.content for entity in entity_list]
-        self.assertEqual(expected_content_list, actual_content_list)
+        self.assertCountEqual(expected_content_list, actual_content_list)
+
+    def test_collect_data_with_links(self):
+        # given
+        pass
+
 
     def _mock_ingest_api(self, project):
         self.mock_ingest_api.get_submission_by_uuid.return_value = project['submission']
         self.mock_ingest_api.get_related_project.return_value = project['project']
+        self.mock_ingest_api.get.return_value = project['link_map']
         self.mock_ingest_api.get_related_entities.side_effect = \
             [
                 iter(project['biomaterials']),
@@ -61,6 +67,8 @@ class DataCollectorTest(unittest.TestCase):
             mock_protocols_json = json.load(file)
         with open(self.resources_dir + '/mock_files.json') as file:
             mock_files_json = json.load(file)
+        with open(self.resources_dir + '/linking-map.json') as file:
+            link_map = json.load(file)
 
         return {
             'submission': mock_submission_json,
@@ -68,7 +76,8 @@ class DataCollectorTest(unittest.TestCase):
             'biomaterials': mock_biomaterials_json,
             'processes': mock_processes_json,
             'protocols': mock_protocols_json,
-            'files': mock_files_json
+            'files': mock_files_json,
+            'link_map': link_map
         }
 
 
