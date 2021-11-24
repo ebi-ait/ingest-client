@@ -46,6 +46,7 @@ class DataCollectorTest(unittest.TestCase):
         donor = entity_dict['6197380b2807a377aad3a302']
         process = entity_dict['6197380b2807a377aad3a30c']
         protocols = [entity_dict['6197380b2807a377aad3a307']]
+
         self.assertEqual(specimen.inputs, [donor])
         self.assertEqual(specimen.process, process)
         self.assertEqual(specimen.protocols, protocols)
@@ -54,21 +55,26 @@ class DataCollectorTest(unittest.TestCase):
                          'The process which links the specimen to the donor is missing.')
         self.assertEqual([protocol.id for protocol in specimen.protocols], [protocol.id for protocol in protocols],
                          'The protocols for the process which links the specimen to the donor are incorrect.')
+
         cell_suspension = entity_dict['6197380b2807a377aad3a304']
         file = entity_dict['6197380b2807a377aad3a306']
-        process = entity_dict['6197380b2807a377aad3a30e']
-        protocols = [entity_dict['6197380b2807a377aad3a30a'], entity_dict['6197380b2807a377aad3a30b']]
+        assay_process = entity_dict['6197380b2807a377aad3a30e']
+        assay_process_protocols = [entity_dict['6197380b2807a377aad3a30a'], entity_dict['6197380b2807a377aad3a30b']]
+
         self.assertCountEqual([input.id for input in file.inputs], [cell_suspension.id],
                               'The sequencing file has no cell suspension input.')
-        self.assertEqual(file.process.id, process.id,
+        self.assertEqual(file.process.id, assay_process.id,
                          'The process which links the file to the cell suspension is missing.')
-        self.assertEqual([protocol.id for protocol in file.protocols], [protocol.id for protocol in protocols],
+        self.assertEqual([protocol.id for protocol in file.protocols],
+                         [protocol.id for protocol in assay_process_protocols],
                          'The protocols for the process which links the file to the cell suspension is incorrect.')
 
     def _mock_ingest_api(self, project):
         self.mock_ingest_api.get_submission_by_uuid.return_value = project['submission']
         self.mock_ingest_api.get_related_project.return_value = project['project']
-        self.mock_ingest_api.get.return_value = project['link_map']
+        response =  MagicMock()
+        response.json.return_value = project['linking_map']
+        self.mock_ingest_api.get.return_value = response
         self.mock_ingest_api.get_related_entities.side_effect = \
             [
                 iter(project['biomaterials']),
@@ -91,7 +97,7 @@ class DataCollectorTest(unittest.TestCase):
         with open(self.resources_dir + '/mock_files.json') as file:
             mock_files_json = json.load(file)
         with open(self.resources_dir + '/linking-map.json') as file:
-            link_map = json.load(file)
+            linking_map = json.load(file)
 
         return {
             'submission': mock_submission_json,
@@ -100,7 +106,7 @@ class DataCollectorTest(unittest.TestCase):
             'processes': mock_processes_json,
             'protocols': mock_protocols_json,
             'files': mock_files_json,
-            'link_map': link_map
+            'linking_map': linking_map
         }
 
 

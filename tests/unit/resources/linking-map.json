@@ -58,7 +58,7 @@
   "files": {
     "6197380b2807a377aad3a306": {
       "derivedByProcesses": [
-        "6197380b2807# TODO make id not optional\n    # or make entity accept the whole ingest json resourcea377aad3a30e"
+        "6197380b2807a377aad3a30e"
       ],
       "inputToProcesses": []
     },
