@@ -2,8 +2,6 @@ from typing import List
 
 
 class Entity:
-    # TODO make id not optional
-    # or make entity accept the whole ingest json resource
     def __init__(self, content: dict, uuid: str, id: str = None):
         self._content = content
         self._uuid = uuid

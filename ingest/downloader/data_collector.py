@@ -2,7 +2,6 @@ from typing import Dict
 
 from ingest.api.ingestapi import IngestApi
 from ingest.downloader.entity import Entity
-from ingest.downloader.entity_map import EntityMap
 
 
 class DataCollector:
@@ -28,7 +27,10 @@ class DataCollector:
         self.__get_entities_by_submission_and_type(data_by_submission, submission, 'files')
 
         linking_map_url = submission['_links']['linkingMap']['href']
-        linking_map = self.api.get(linking_map_url)
+        headers = {'Content-type': 'application/json', 'Accept': 'application/hal+json'}
+        r = self.api.get(linking_map_url, headers=headers)
+        r.raise_for_status()
+        linking_map = r.json()
 
         entity_dict = {}
         for entity_json in data_by_submission:
@@ -42,7 +44,7 @@ class DataCollector:
             derived_by_processes = entity_link.get('derivedByProcesses')
 
             if derived_by_processes and len(derived_by_processes) > 0:
-                # TODO check if derivedByProcesses returns more than 1
+                # Check if derivedByProcesses returns more than 1
                 # It shouldn't happen because it's not possible to do it via spreadsheet
                 if len(derived_by_processes) > 1:
                     raise Exception(f'Found more than one derived by process for biomaterial {entity.id} {entity.uuid}')
