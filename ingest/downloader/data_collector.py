@@ -11,37 +11,49 @@ class DataCollector:
 
     def collect_data_by_submission_uuid(self, submission_uuid) -> Dict[str, Entity]:
         submission = self.api.get_submission_by_uuid(submission_uuid)
+        entity_dict = self.__build_entity_dict(submission)
+        return entity_dict
+
+    def __build_entity_dict(self, submission):
+        data_by_submission = self.__get_submission_data(submission)
+        entity_dict = self.__create_entity_dict(data_by_submission)
+        linking_map = self.__get_linking_map(submission)
+        self.__set_inputs(entity_dict, linking_map)
+        return entity_dict
+
+    def __get_submission_data(self, submission):
         submission_id = submission['_links']['self']['href'].split('/')[-1]
         project_json = self.api.get_related_project(submission_id)
-
         if project_json:
-            data_by_submission = [
+            submission_data = [
                 project_json
             ]
         else:
             raise Exception('There should be a project')
 
-        self.__get_entities_by_submission_and_type(data_by_submission, submission, 'biomaterials')
-        self.__get_entities_by_submission_and_type(data_by_submission, submission, 'processes')
-        self.__get_entities_by_submission_and_type(data_by_submission, submission, 'protocols')
-        self.__get_entities_by_submission_and_type(data_by_submission, submission, 'files')
+        self.__get_entities_by_submission_and_type(submission_data, submission, 'biomaterials')
+        self.__get_entities_by_submission_and_type(submission_data, submission, 'processes')
+        self.__get_entities_by_submission_and_type(submission_data, submission, 'protocols')
+        self.__get_entities_by_submission_and_type(submission_data, submission, 'files')
 
+        return submission_data
+
+    def __get_linking_map(self, submission):
         linking_map_url = submission['_links']['linkingMap']['href']
         headers = {'Content-type': 'application/json', 'Accept': 'application/hal+json'}
         r = self.api.get(linking_map_url, headers=headers)
         r.raise_for_status()
         linking_map = r.json()
+        return linking_map
 
+    def __create_entity_dict(self, data_by_submission):
         entity_dict = {}
         for entity_json in data_by_submission:
             entity = Entity.from_json(entity_json)
             entity_dict[entity.id] = entity
-
-        self._set_inputs(entity_dict, linking_map)
-
         return entity_dict
 
-    def _set_inputs(self, entity_dict, linking_map):
+    def __set_inputs(self, entity_dict, linking_map):
         entities_with_inputs = list(linking_map['biomaterials'].keys()) + list(linking_map['files'].keys())
 
         for entity_id in entities_with_inputs:
@@ -64,6 +76,7 @@ class DataCollector:
                 process = entity_dict[process_id]
                 protocols = [entity_dict[protocol_id] for protocol_id in protocol_ids]
                 inputs = [entity_dict[id] for id in input_biomaterial_ids + input_files_ids]
+
                 entity.set_input(inputs, process, protocols)
 
     def __get_entities_by_submission_and_type(self, data_by_submission, submission, entity_type):
