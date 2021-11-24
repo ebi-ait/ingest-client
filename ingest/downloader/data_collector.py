@@ -47,7 +47,7 @@ class DataCollector:
                 # Check if derivedByProcesses returns more than 1
                 # It shouldn't happen because it's not possible to do it via spreadsheet
                 if len(derived_by_processes) > 1:
-                    raise Exception(f'Found more than one derived by process for biomaterial {entity.id} {entity.uuid}')
+                    raise ValueError(f'Found more than one derived by process for biomaterial {entity.id} {entity.uuid}')
 
                 process_id = entity_link['derivedByProcesses'][0]
                 protocol_ids = linking_map['processes'][process_id]['protocols']
