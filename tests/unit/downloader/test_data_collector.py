@@ -30,17 +30,40 @@ class DataCollectorTest(unittest.TestCase):
 
         # when
         project_uuid = '1234'
-        entity_list = self.data_collector.collect_data_by_submission_uuid(project_uuid)
+        entity_dict = self.data_collector.collect_data_by_submission_uuid(project_uuid)
 
         # then
+        self._assert_all_entities_are_created(entity_dict, expected_json)
+        self._assert_entities_have_correct_inputs(entity_dict)
+
+    def _assert_all_entities_are_created(self, entity_dict, expected_json):
         expected_content_list = [entity['content'] for entity in expected_json]
-        actual_content_list = [entity.content for entity in entity_list]
+        actual_content_list = [entity.content for entity in entity_dict.values()]
         self.assertCountEqual(expected_content_list, actual_content_list)
 
-    def test_collect_data_with_links(self):
-        # given
-        pass
-
+    def _assert_entities_have_correct_inputs(self, entity_dict):
+        specimen = entity_dict['6197380b2807a377aad3a303']
+        donor = entity_dict['6197380b2807a377aad3a302']
+        process = entity_dict['6197380b2807a377aad3a30c']
+        protocols = [entity_dict['6197380b2807a377aad3a307']]
+        self.assertEqual(specimen.inputs, [donor])
+        self.assertEqual(specimen.process, process)
+        self.assertEqual(specimen.protocols, protocols)
+        self.assertCountEqual([input.id for input in specimen.inputs], [donor.id], 'The specimen has no donor input.')
+        self.assertEqual(specimen.process.id, process.id,
+                         'The process which links the specimen to the donor is missing.')
+        self.assertEqual([protocol.id for protocol in specimen.protocols], [protocol.id for protocol in protocols],
+                         'The protocols for the process which links the specimen to the donor are incorrect.')
+        cell_suspension = entity_dict['6197380b2807a377aad3a304']
+        file = entity_dict['6197380b2807a377aad3a306']
+        process = entity_dict['6197380b2807a377aad3a30e']
+        protocols = [entity_dict['6197380b2807a377aad3a30a'], entity_dict['6197380b2807a377aad3a30b']]
+        self.assertCountEqual([input.id for input in file.inputs], [cell_suspension.id],
+                              'The sequencing file has no cell suspension input.')
+        self.assertEqual(file.process.id, process.id,
+                         'The process which links the file to the cell suspension is missing.')
+        self.assertEqual([protocol.id for protocol in file.protocols], [protocol.id for protocol in protocols],
+                         'The protocols for the process which links the file to the cell suspension is incorrect.')
 
     def _mock_ingest_api(self, project):
         self.mock_ingest_api.get_submission_by_uuid.return_value = project['submission']
