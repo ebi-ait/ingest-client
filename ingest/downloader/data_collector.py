@@ -37,7 +37,13 @@ class DataCollector:
             entity = Entity.from_json(entity_json)
             entity_dict[entity.id] = entity
 
+        self._set_inputs(entity_dict, linking_map)
+
+        return entity_dict
+
+    def _set_inputs(self, entity_dict, linking_map):
         entities_with_inputs = list(linking_map['biomaterials'].keys()) + list(linking_map['files'].keys())
+
         for entity_id in entities_with_inputs:
             entity = entity_dict[entity_id]
             entity_link = linking_map[entity.domain_type + 's'][entity.id]
@@ -47,7 +53,8 @@ class DataCollector:
                 # Check if derivedByProcesses returns more than 1
                 # It shouldn't happen because it's not possible to do it via spreadsheet
                 if len(derived_by_processes) > 1:
-                    raise ValueError(f'Found more than one derived by process for biomaterial {entity.id} {entity.uuid}')
+                    raise ValueError(
+                        f'The {entity.concrete_type} with {entity.uuid} has more than one processes which derived it')
 
                 process_id = entity_link['derivedByProcesses'][0]
                 protocol_ids = linking_map['processes'][process_id]['protocols']
@@ -58,8 +65,6 @@ class DataCollector:
                 protocols = [entity_dict[protocol_id] for protocol_id in protocol_ids]
                 inputs = [entity_dict[id] for id in input_biomaterial_ids + input_files_ids]
                 entity.set_input(inputs, process, protocols)
-
-        return entity_dict
 
     def __get_entities_by_submission_and_type(self, data_by_submission, submission, entity_type):
         entity_json = \
