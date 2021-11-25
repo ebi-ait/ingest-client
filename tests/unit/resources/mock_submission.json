@@ -1,107 +1,112 @@
 {
-    "submissionDate": "2021-07-09T17:47:20.437Z",
-    "updateDate": "2021-07-09T17:47:39.422Z",
-    "user": "5ecce7cb524ebf7978be201d",
-    "lastModifiedUser": "anonymousUser",
-    "type": "Submission",
-    "uuid": {
-        "uuid": "2251fbc1-06a0-464d-a15d-158a3ef58b27"
+  "submissionDate": "2021-11-19T05:37:10.408Z",
+  "updateDate": "2021-11-19T05:39:23.554Z",
+  "user": null,
+  "lastModifiedUser": "anonymousUser",
+  "type": "Submission",
+  "uuid": {
+    "uuid": "f731562d-6539-48e3-97c5-2cf360b95d14"
+  },
+  "events": [],
+  "stagingDetails": {
+    "stagingAreaUuid": {
+      "uuid": "f731562d-6539-48e3-97c5-2cf360b95d14"
     },
-    "events": [],
-    "stagingDetails": {
-        "stagingAreaUuid": {
-            "uuid": "2251fbc1-06a0-464d-a15d-158a3ef58b27"
-        },
-        "stagingAreaLocation": {
-            "value": "s3://org-hca-data-archive-upload-prod/2251fbc1-06a0-464d-a15d-158a3ef58b27/"
-        }
-    },
-    "submissionState": "Invalid",
-    "triggersAnalysis": true,
-    "isUpdate": false,
-    "submitActions": [],
-    "open": true,
-    "_links": {
-        "self": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c"
-        },
-        "submissionEnvelope": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c",
-            "title": "A single submission envelope"
-        },
-        "biomaterials": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/biomaterials"
-        },
-        "processes": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/processes"
-        },
-        "files": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/files",
-            "title": "Access or create, within a submission envelope, a new assay"
-        },
-        "projects": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/projects",
-            "title": "Access or create projects. Creation can only be done inside a submission envelope"
-        },
-        "protocols": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/protocols",
-            "title": "Access or create protocols"
-        },
-        "bundleManifests": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/bundleManifests",
-            "title": "Access or create bundle manifests (describing which submitted contents went into which bundle in the datastore)"
-        },
-        "submissionManifest": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/submissionManifest"
-        },
-        "exportJobs": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/exportJobs"
-        },
-        "submissionEnvelopeErrors": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/submissionErrors",
-            "title": "All submission errors for a single envelope"
-        },
-        "documentSmReport": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/documentSmReport"
-        },
-        "summary": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/summary"
-        },
-        "commitDraft": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitDraftEvent"
-        },
-        "commitValidating": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitValidatingEvent"
-        },
-        "commitValid": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitValidEvent"
-        },
-        "commitInvalid": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitInvalidEvent"
-        },
-        "commitSubmit": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitSubmissionEvent"
-        },
-        "commitProcessing": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitProcessingEvent"
-        },
-        "commitArchiving": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitArchivingEvent"
-        },
-        "commitArchived": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitArchivedEvent"
-        },
-        "commitExporting": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitExportingEvent"
-        },
-        "commitExported": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitExportedEvent"
-        },
-        "commitCleanup": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitCleanupEvent"
-        },
-        "commitComplete": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/submissionEnvelopes/60e88ba8d5d575160aaf709c/commitCompleteEvent"
-        }
+    "stagingAreaLocation": {
+      "value": "s3://org-hca-data-archive-upload-prod/f731562d-6539-48e3-97c5-2cf360b95d14/"
     }
+  },
+  "submissionState": "Invalid",
+  "graphValidationState": "Pending",
+  "graphValidationErrorMessage": null,
+  "triggersAnalysis": true,
+  "isUpdate": false,
+  "submitActions": [],
+  "open": true,
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff"
+    },
+    "submissionEnvelope": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff",
+      "title": "A single submission envelope"
+    },
+    "biomaterials": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/biomaterials"
+    },
+    "processes": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/processes"
+    },
+    "files": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/files",
+      "title": "Access or create, within a submission envelope, a new assay"
+    },
+    "projects": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/projects",
+      "title": "Access or create projects. Creation can only be done inside a submission envelope"
+    },
+    "protocols": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/protocols",
+      "title": "Access or create protocols"
+    },
+    "bundleManifests": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/bundleManifests",
+      "title": "Access or create bundle manifests (describing which submitted contents went into which bundle in the datastore)"
+    },
+    "submissionManifest": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/submissionManifest"
+    },
+    "exportJobs": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/exportJobs"
+    },
+    "submissionEnvelopeErrors": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/submissionErrors",
+      "title": "All submission errors for a single envelope"
+    },
+    "documentSmReport": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/documentSmReport"
+    },
+    "summary": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/summary"
+    },
+    "linkingMap": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/linkingMap"
+    },
+    "commitDraft": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitDraftEvent"
+    },
+    "commitValidating": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitValidatingEvent"
+    },
+    "commitValid": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitValidEvent"
+    },
+    "commitInvalid": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitInvalidEvent"
+    },
+    "commitSubmit": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitSubmissionEvent"
+    },
+    "commitProcessing": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitProcessingEvent"
+    },
+    "commitArchiving": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitArchivingEvent"
+    },
+    "commitArchived": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitArchivedEvent"
+    },
+    "commitExporting": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitExportingEvent"
+    },
+    "commitExported": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitExportedEvent"
+    },
+    "commitCleanup": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitCleanupEvent"
+    },
+    "commitComplete": {
+      "href": "http://localhost:8080/submissionEnvelopes/619738062807a377aad3a2ff/commitCompleteEvent"
+    }
+  }
 }

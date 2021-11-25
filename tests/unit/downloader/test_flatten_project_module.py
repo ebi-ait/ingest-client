@@ -1,3 +1,4 @@
+from ingest.downloader.entity import Entity
 from ingest.downloader.flattener import Flattener
 from tests.unit.downloader.test_flattener import FlattenerTest
 
@@ -30,7 +31,7 @@ class FlattenProjectModuleTest(FlattenerTest):
 
         # when
         flattener = Flattener()
-        actual = flattener.flatten(entity_list)
+        actual = flattener.flatten(Entity.from_json_list(entity_list))
 
         self.flattened_metadata_entity.update({
             'Project - Contributors': {

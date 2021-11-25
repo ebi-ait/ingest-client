@@ -1,175 +1,138 @@
 {
-    "content": {
-        "array_express_accessions": [
-            "E-MTAB-1234"
-        ],
-        "contributors": [
-            {
-                "name": "John Doe",
-                "institution": "Cambridge Genome Institute",
-                "orcid_id": "0000-0000-0000-0001"
-            },
-            {
-                "name": "Jonas Smith",
-                "institution": "Eddington Research Centre",
-                "project_role": {
-                    "text": "data curator",
-                    "ontology": "EFO:0009737",
-                    "ontology_label": "data curator"
-                },
-                "orcid_id": "0000-0000-0000-0002"
-            },
-            {
-                "name": "Lucy Orange",
-                "institution": "Molecular Digestive Oncology Centre",
-                "project_role": {
-                    "text": "principal investigator",
-                    "ontology": "EFO:0009736",
-                    "ontology_label": "principal investigator"
-                },
-                "orcid_id": "0000-0000-0000-0003"
-            }
-        ],
-        "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
-        "funders": [
-            {
-                "grant_title": "Test Project 1",
-                "grant_id": "ABC-1234M3A9A78437847",
-                "organization": "Ministry of Science"
-            },
-            {
-                "grant_title": "Test Project 2",
-                "grant_id": "HGHG847487JKJK",
-                "organization": "Hungarian Cancer Federation"
-            }
-        ],
-        "geo_series_accessions": [
-            "GSE123456",
-            "GSE949548",
-            "GSE948958"
-        ],
-        "insdc_project_accessions": [
-            "ERP123456"
-        ],
-        "insdc_study_accessions": [
-            "PRJNA948595",
-            "PRJNA945859",
-            "PRJNA452145"
-        ],
-        "project_core": {
-            "project_short_name": "GSE123456_cancer",
-            "project_title": "Colorectal cancer.",
-            "project_description": "Immunotherapy for metastatic colorectal cancer is effective only for mismatch repair-deficient tumors with high microsatellite instability that demonstrate immune infiltration, suggesting that tumor cells can determine their immune microenvironment. To understand this cross-talk, we analyzed the transcriptome of 91,103 unsorted single cells from 23 Korean and 6 Belgian patients. Cancer cells displayed transcriptional features reminiscent of normal differentiation programs, and genetic alterations that apparently fostered immunosuppressive microenvironments directed by regulatory T cells, myofibroblasts and myeloid cells. Intercellular network reconstruction supported the association between cancer cell signatures and specific stromal or immune cell populations. Our collective view of the cellular landscape and intercellular interactions in colorectal cancer provide mechanistic information for the design of efficient immuno-oncology treatment strategies."
-        },
-        "publications": [
-            {
-                "authors": [
-                    "Karel G",
-                    "Bela N",
-                    "John S",
-                    "Karen S"
-                ],
-                "title": "Lorem ipsum",
-                "doi": "11.2222/s5556-345-2445-g",
-                "pmid": 483782962,
-                "url": "https://doi.org/11.2222/s5556-345-2445-g"
-            }
-        ],
-        "schema_type": "project"
+  "content": {
+    "describedBy": "https://schema.humancellatlas.org/type/project/15.0.0/project",
+    "schema_type": "project",
+    "project_core": {
+      "project_short_name": "SS2 1 Cell Integration Test",
+      "project_title": "SS2 1 Cell Integration Test",
+      "project_description": "Contains a small file set (SRR3562314) from the dataset 'Single cell transcriptome analysis of human pancreas' to speed up analysis. This test also contains extensive metadata for browser testing. Metadata is fabricated. Where possible the example value is used."
     },
-    "submissionDate": "2011-06-11T14:01:10.585Z",
-    "updateDate": "2011-07-09T17:47:29.091Z",
-    "user": "5ecce575524ebf7778be111b",
-    "lastModifiedUser": "5ecce575524ebf7778be111b",
-    "type": "Project",
-    "uuid": {
-        "uuid": "12345678-dc7c-44a6-7536-446363267351"
-    },
-    "events": [],
-    "firstDcpVersion": "2011-06-11T14:01:10.585Z",
-    "dcpVersion": "2011-07-06T15:19:59.392Z",
-    "contentLastModified": "2011-07-06T15:19:59.392Z",
-    "accession": null,
-    "validationState": "Valid",
-    "validationErrors": [],
-    "isUpdate": false,
-    "releaseDate": null,
-    "accessionDate": null,
-    "technology": {
-        "ontologies": [
-            {
-                "text": "10x 3' v2",
-                "ontology": "EFO:0009899",
-                "ontology_label": "10x 3' v2"
-            }
-        ]
-    },
-    "organ": {
-        "ontologies": [
-            {
-                "text": "colon",
-                "ontology": "UBERON:0001155",
-                "ontology_label": "colon"
-            }
-        ]
-    },
-    "cellCount": 109512,
-    "dataAccess": {
-        "type": "A mixture of open and managed"
-    },
-    "identifyingOrganisms": [
-        "Human"
+    "supplementary_links": [
+      "https://github.com/czbiohub/tabula-muris; http://celltag.org/"
     ],
-    "primaryWrangler": "5ecce575524ebf7778be111b",
-    "secondaryWrangler": null,
-    "wranglingState": "Eligible",
-    "wranglingPriority": 3,
-    "wranglingNotes": "tumor single cell atlas data; AutoImported Snapshot 2021-06-03",
-    "isInCatalogue": true,
-    "cataloguedDate": "2011-06-11T14:01:10.585Z",
-    "publicationsInfo": [
-        {
-            "doi": "11.2222/s5556-345-2445-g",
-            "journalTitle": "Nature genetics",
-            "title": "Lorem ipsum",
-            "authors": [
-                    "Karel G",
-                    "Bela N",
-                    "John S",
-                    "Karen S"
-            ],
-            "url": "https://doi.org/11.2222/s5556-345-2445-g"
-        }
+    "insdc_project_accessions": [
+      "SRP000000"
     ],
-    "hasOpenSubmission": true,
-    "_links": {
-        "self": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/projects/12c36ca6ac56ec2ecbb54a73"
+    "geo_series_accessions": [
+      "GSE00000"
+    ],
+    "array_express_accessions": [
+      "E-AAAA-00"
+    ],
+    "insdc_study_accessions": [
+      "PRJNA000000"
+    ],
+    "contributors": [
+      {
+        "name": "John,D,Doe",
+        "email": "dummy@email.com",
+        "phone": "(+1) 234-555-6789",
+        "institution": "EMBL-EBI",
+        "laboratory": "Division of Vaccine Discovery",
+        "address": "0000 Main Street, Nowheretown, MA, 12091",
+        "country": "USA",
+        "corresponding_contributor": true,
+        "project_role": {
+          "text": "principal investigator"
         },
-        "project": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/projects/12c36ca6ac56ec2ecbb54a73",
-            "title": "A single project"
+        "orcid_id": "0000-1111-2222-3333"
+      },
+      {
+        "name": "Jane,,Smith",
+        "email": "dummy1@email.com",
+        "phone": "(+1) 234-555-6788",
+        "institution": "University of Washington",
+        "laboratory": "Department of Biology",
+        "address": "0001 Main Street, Nowheretown, MA, 12091",
+        "country": "USA",
+        "corresponding_contributor": false,
+        "project_role": {
+          "text": "computational scientist"
         },
-        "processing": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/projects/12c36ca6ac56ec2ecbb54a73/processingEvent"
-        },
-        "draft": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/projects/12c36ca6ac56ec2ecbb54a73/draftEvent"
-        },
-        "bundleManifests": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/projects/12c36ca6ac56ec2ecbb54a73/bundleManifests",
-            "title": "Access or create bundle manifests (describing which submitted contents went into which bundle in the datastore)"
-        },
-        "supplementaryFiles": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/projects/12c36ca6ac56ec2ecbb54a73/supplementaryFiles"
-        },
-        "submissionEnvelopes": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/projects/12c36ca6ac56ec2ecbb54a73/submissionEnvelopes",
-            "title": "Access or create new submission envelopes"
-        },
-        "submissionEnvelope": {
-            "href": "https://api.ingest.archive.data.humancellatlas.org/projects/12c36ca6ac56ec2ecbb54a73/submissionEnvelope",
-            "title": "A single submission envelope"
-        }
+        "orcid_id": "0000-1111-2222-3333"
+      }
+    ],
+    "publications": [
+      {
+        "authors": [
+          "Doe JD"
+        ],
+        "title": "Study of single cells in the human body",
+        "doi": "10.1016/j.cell.2016.07.054",
+        "pmid": 27565351,
+        "url": "http://www.27565351example.com",
+        "official_hca_publication": true
+      }
+    ],
+    "funders": [
+      {
+        "grant_title": "A title of a grant proposal.",
+        "grant_id": "BB/P0000001/1",
+        "organization": "Biotechnology and Biological Sciences Research Council (BBSRC)"
+      }
+    ]
+  },
+  "submissionDate": "2021-11-19T05:37:15.099Z",
+  "updateDate": "2021-11-19T05:37:22.001Z",
+  "user": null,
+  "lastModifiedUser": "anonymousUser",
+  "type": "Project",
+  "uuid": {
+    "uuid": "8c0272a2-413e-4107-bd6a-bf6b433737f4"
+  },
+  "events": [],
+  "firstDcpVersion": "2021-11-19T05:37:15.099Z",
+  "dcpVersion": "2021-11-19T05:37:15.099Z",
+  "contentLastModified": "2021-11-19T05:37:15.099Z",
+  "accession": null,
+  "validationState": "Valid",
+  "validationErrors": [],
+  "isUpdate": false,
+  "releaseDate": null,
+  "accessionDate": null,
+  "technology": null,
+  "organ": null,
+  "cellCount": null,
+  "dataAccess": null,
+  "identifyingOrganisms": null,
+  "primaryWrangler": null,
+  "secondaryWrangler": null,
+  "wranglingState": null,
+  "wranglingPriority": null,
+  "wranglingNotes": null,
+  "isInCatalogue": null,
+  "cataloguedDate": null,
+  "publicationsInfo": null,
+  "dcpReleaseNumber": null,
+  "hasOpenSubmission": true,
+  "_links": {
+    "self": {
+      "href": "http://localhost:8080/projects/6197380b2807a377aad3a301"
+    },
+    "project": {
+      "href": "http://localhost:8080/projects/6197380b2807a377aad3a301",
+      "title": "A single project"
+    },
+    "processing": {
+      "href": "http://localhost:8080/projects/6197380b2807a377aad3a301/processingEvent"
+    },
+    "draft": {
+      "href": "http://localhost:8080/projects/6197380b2807a377aad3a301/draftEvent"
+    },
+    "bundleManifests": {
+      "href": "http://localhost:8080/projects/6197380b2807a377aad3a301/bundleManifests",
+      "title": "Access or create bundle manifests (describing which submitted contents went into which bundle in the datastore)"
+    },
+    "supplementaryFiles": {
+      "href": "http://localhost:8080/projects/6197380b2807a377aad3a301/supplementaryFiles"
+    },
+    "submissionEnvelopes": {
+      "href": "http://localhost:8080/projects/6197380b2807a377aad3a301/submissionEnvelopes",
+      "title": "Access or create new submission envelopes"
+    },
+    "submissionEnvelope": {
+      "href": "http://localhost:8080/projects/6197380b2807a377aad3a301/submissionEnvelope",
+      "title": "A single submission envelope"
     }
+  }
 }

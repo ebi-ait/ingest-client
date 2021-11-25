@@ -2,6 +2,7 @@ import json
 import os
 from unittest import TestCase
 
+from ingest.downloader.entity import Entity
 from ingest.downloader.flattener import Flattener
 
 
@@ -25,7 +26,7 @@ class FlattenerTest(TestCase):
             'content': self.content,
             'uuid': self.uuid
         }
-        entity_list = [metadata_entity]
+        entity_list = [Entity.from_json(metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -47,7 +48,7 @@ class FlattenerTest(TestCase):
             'content': self.content,
             'uuid': self.uuid
         }
-        entity_list = [self.metadata_entity]
+        entity_list = [Entity.from_json(self.metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -86,7 +87,7 @@ class FlattenerTest(TestCase):
             'uuid': self.uuid
         }
 
-        entity_list = [metadata_entity]
+        entity_list = [Entity.from_json(metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -124,7 +125,7 @@ class FlattenerTest(TestCase):
             'content': self.content,
             'uuid': self.uuid
         }
-        entity_list = [self.metadata_entity]
+        entity_list = [Entity.from_json(self.metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -147,7 +148,7 @@ class FlattenerTest(TestCase):
             'content': self.content,
             'uuid': self.uuid
         }
-        entity_list = [self.metadata_entity]
+        entity_list = [Entity.from_json(self.metadata_entity)]
 
         # when
         flattener = Flattener()
@@ -164,7 +165,7 @@ class FlattenerTest(TestCase):
 
     def test_flatten__rows_have_different_columns(self):
         # given
-        entity_list = [
+        entity_json_list = [
             {
                 'content': {
                     "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/project",
@@ -196,6 +197,7 @@ class FlattenerTest(TestCase):
 
         # when
         flattener = Flattener()
+        entity_list = [Entity.from_json(entity_json) for entity_json in entity_json_list]
         actual = flattener.flatten(entity_list)
 
         expected = {
@@ -229,7 +231,7 @@ class FlattenerTest(TestCase):
 
     def test_flatten__raises_error__given_multiple_schema_versions_of_same_concrete_entity(self):
         # given
-        entity_list = [
+        entity_json_list = [
             {
                 'content': {
                     "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism",
@@ -252,8 +254,112 @@ class FlattenerTest(TestCase):
             },
 
         ]
+        entity_list = Entity.from_json_list(entity_json_list)
 
         # when/then
         flattener = Flattener()
         with self.assertRaisesRegex(ValueError, "Multiple versions of same concrete entity schema"):
             flattener.flatten(entity_list)
+
+    def test_flatten__entities_has_input(self):
+        # given
+        metadata_entity = Entity.from_json({
+            'content': {
+                "describedBy": "https://schema.humancellatlas.org/type/biomaterial/14.2.0/specimen_from_organism",
+                "schema_type": "biomaterial",
+                "field": "value",
+                'biomaterial_core': {
+                    'biomaterial_id': 'specimen_id'
+                }
+            },
+            'uuid': {
+                'uuid': 'specimen-uuid'
+            }
+        })
+
+        input_entity = Entity.from_json({
+            'content': {
+                "describedBy": "https://schema.humancellatlas.org/type/biomaterial/14.2.0/donor_organism",
+                "schema_type": "biomaterial",
+                "field": "value",
+                'biomaterial_core': {
+                    'biomaterial_id': 'donor_id'
+                }
+            },
+            'uuid': {
+                'uuid': 'donor-uuid'
+            }
+        })
+
+        process = Entity.from_json({
+            'content': {
+                "describedBy": "https://schema.humancellatlas.org/type/process/14.2.0/process",
+                "schema_type": "process",
+                "field": "value",
+                'process_core': {
+                    'process_id': 'process_id'
+                }
+            },
+            'uuid': {
+                'uuid': 'process-uuid'
+            }
+        })
+
+        protocols = Entity.from_json_list([{
+            'content': {
+                "describedBy": "https://schema.humancellatlas.org/type/protocol/14.2.0/sequencing_protocol",
+                "schema_type": "protocol",
+                "field": "value",
+                'protocol_core': {
+                    'protocol_id': 'protocol_id1'
+                }
+            },
+            'uuid': {
+                'uuid': 'protocol-uuid1'
+            }
+
+        }, {
+            'content': {
+                "describedBy": "https://schema.humancellatlas.org/type/protocol/14.2.0/library_preparation_protocol",
+                "schema_type": "protocol",
+                "field": "value",
+                'protocol_core': {
+                    'protocol_id': 'protocol_id2'
+                }
+            },
+            'uuid': {
+                'uuid': 'protocol-uuid2'
+            }
+        }])
+
+        metadata_entity.set_input([input_entity], process, protocols)
+        # when
+        flattener = Flattener()
+        actual = flattener.flatten([metadata_entity])
+
+        expected = {
+            'Schemas': ['https://schema.humancellatlas.org/type/biomaterial/14.2.0/specimen_from_organism'],
+            'Specimen from organism': {'headers': ['specimen_from_organism.uuid',
+                                                   'specimen_from_organism.field',
+                                                   'specimen_from_organism.biomaterial_core.biomaterial_id',
+                                                   'process.field',
+                                                   'process.process_core.process_id',
+                                                   'sequencing_protocol.protocol_core.protocol_id',
+                                                   'sequencing_protocol.uuid',
+                                                   'library_preparation_protocol.protocol_core.protocol_id',
+                                                   'library_preparation_protocol.uuid',
+                                                   'donor_organism.biomaterial_core.biomaterial_id',
+                                                   'donor_organism.uuid'],
+                                       'values': [
+                                           {'specimen_from_organism.biomaterial_core.biomaterial_id': 'specimen_id',
+                                            'donor_organism.biomaterial_core.biomaterial_id': 'donor_id',
+                                            'donor_organism.uuid': 'donor-uuid',
+                                            'specimen_from_organism.field': 'value',
+                                            'library_preparation_protocol.protocol_core.protocol_id': 'protocol_id2',
+                                            'library_preparation_protocol.uuid': 'protocol-uuid2',
+                                            'process.field': 'value',
+                                            'process.process_core.process_id': 'process_id',
+                                            'sequencing_protocol.protocol_core.protocol_id': 'protocol_id1',
+                                            'sequencing_protocol.uuid': 'protocol-uuid1',
+                                            'specimen_from_organism.uuid': 'specimen-uuid'}]}}
+        self.assertEqual(actual, expected)

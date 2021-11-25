@@ -1,5 +1,6 @@
 from typing import List
 
+from ingest.downloader.entity import Entity
 from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
@@ -14,41 +15,113 @@ class Flattener:
         self.workbook = {}
         self.schemas = {}
 
-    def flatten(self, entity_list: List[dict], object_key: str = ''):
+    def flatten(self, entity_list: List[Entity]):
         for entity in entity_list:
-            self._flatten_entity(entity, object_key)
+            self._flatten_entity(entity)
         self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
         return self.workbook
 
-    def _flatten_entity(self, entity, object_key):
-        worksheet_name = object_key
-        row = {}
-        content = entity
+    def _flatten_entity(self, entity: Entity):
+        worksheet_name = entity.concrete_type
+        row = {f'{worksheet_name}.uuid': entity.uuid}
 
-        if not object_key:
-            content = entity['content']
-            worksheet_name = self._get_concrete_entity(content)
-            row = {f'{worksheet_name}.uuid': entity['uuid']['uuid']}
-            self._extract_schema_url(content)
+        self._extract_schema_url(entity.content, entity.concrete_type)
 
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
 
-        self._flatten_object(content, row, parent_key=worksheet_name)
+        self._flatten_object(entity.content, row, parent_key=worksheet_name)
 
+        if entity.inputs:
+            embedded_content = self.embed_link_columns(entity)
+            self._flatten_object(embedded_content, row)
+
+        self._add_row_to_worksheet(row, worksheet_name)
+
+    def _flatten_module_list(self, module_list: dict, object_key: str):
+        for module in module_list:
+            self._flatten_module(module, object_key)
+
+    def _flatten_module(self, obj: dict, object_key: str):
+        worksheet_name = object_key
+        module_row = {}
+
+        if not worksheet_name:
+            raise ValueError('There should be a worksheet name')
+
+        self._flatten_object(obj, module_row, parent_key=worksheet_name)
+
+        self._add_row_to_worksheet(module_row, worksheet_name)
+
+    def _add_row_to_worksheet(self, row, worksheet_name):
         user_friendly_worksheet_name = self._format_worksheet_name(worksheet_name)
         worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
-
-        rows = self._append_row_to_worksheet(row, worksheet)
+        rows = worksheet.get('values')
+        rows.append(row)
         headers = self._update_headers(row, worksheet)
-
         self.workbook[user_friendly_worksheet_name] = {
             'headers': headers,
             'values': rows
         }
 
-    def _extract_schema_url(self, content: dict):
-        concrete_entity = self._get_concrete_entity(content)
+    def embed_link_columns(self, entity: Entity):
+        embedded_content = {}
+        self._embed_process(entity, embedded_content)
+        self._embed_protocol_ids(entity, embedded_content)
+        self._embed_input_ids(entity, embedded_content)
+        return embedded_content
+
+    def _embed_process(self, entity: Entity, embedded_content):
+        embed_process = {
+            'process': entity.process.content
+        }
+        embedded_content.update(embed_process)
+
+    def _embed_protocol_ids(self, entity: Entity, embedded_content):
+        protocols_by_type = {}
+        for p in entity.protocols:
+            p: Entity
+            protocols = protocols_by_type.get(p.concrete_type, [])
+            protocols.append(p)
+            protocols_by_type[p.concrete_type] = protocols
+
+        for concrete_type, protocols in protocols_by_type.items():
+            protocol_ids = [p.content['protocol_core']['protocol_id'] for p in protocols]
+            protocol_uuids = [p.uuid for p in protocols]
+            embedded_protocol_ids = {
+                concrete_type: {
+                    'protocol_core': {
+                        'protocol_id': protocol_ids
+                    },
+                    'uuid': protocol_uuids
+                }
+            }
+            embedded_content.update(embedded_protocol_ids)
+
+    def _embed_input_ids(self, entity: Entity, embedded_content):
+        # TODO only supports input biomaterials for now
+        # raise an error pls
+        inputs_by_type = {}
+        for i in entity.inputs:
+            i: Entity
+            inputs = inputs_by_type.get(i.concrete_type, [])
+            inputs.append(i)
+            inputs_by_type[i.concrete_type] = inputs
+
+        for concrete_type, inputs in inputs_by_type.items():
+            input_ids_ids = [i.content['biomaterial_core']['biomaterial_id'] for i in inputs]
+            input_ids_uuids = [i.uuid for i in inputs]
+            embedded_input_ids = {
+                concrete_type: {
+                    'biomaterial_core': {
+                        'biomaterial_id': input_ids_ids
+                    },
+                    'uuid': input_ids_uuids
+                }
+            }
+            embedded_content.update(embedded_input_ids)
+
+    def _extract_schema_url(self, content: dict, concrete_entity: str):
         schema_url = content.get('describedBy')
         existing_schema_url = self.schemas.get(concrete_entity)
         self._validate_no_schema_version_conflicts(existing_schema_url, schema_url)
@@ -61,11 +134,6 @@ class Flattener:
             raise ValueError(f'The concrete entity schema version should be consistent across entities.\
                     Multiple versions of same concrete entity schema is found:\
                      {schema_url} and {existing_schema_url}')
-
-    def _append_row_to_worksheet(self, row, worksheet):
-        rows = worksheet.get('values')
-        rows.append(row)
-        return rows
 
     def _update_headers(self, row, worksheet):
         headers = worksheet.get('headers')
@@ -103,7 +171,7 @@ class Flattener:
         if self._is_list_of_ontology_objects(object):
             self._flatten_to_include_object_list_to_main_entity_worksheet(object, flattened_object, parent_key)
         elif self._is_project(parent_key):
-            self.flatten(object, parent_key)
+            self._flatten_module_list(object, parent_key)
         else:
             self._flatten_to_include_object_list_to_main_entity_worksheet(object, flattened_object, parent_key)
 
@@ -134,9 +202,6 @@ class Flattener:
     def _get_keys_of_a_list_of_object(self, object: dict):
         first_elem = object[0] if object else {}
         return list(first_elem.keys())
-
-    def _get_concrete_entity(self, content: dict):
-        return content.get('describedBy').rsplit('/', 1)[-1]
 
     def _is_project(self, parent_key: str):
         entity_type = parent_key.split('.')[0]
