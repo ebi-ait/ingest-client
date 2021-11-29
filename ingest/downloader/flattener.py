@@ -17,6 +17,7 @@ class Flattener:
 
     def flatten(self, entity_list: List[Entity]):
         for entity in entity_list:
+            # if entity.concrete_type != 'process':
             self._flatten_entity(entity)
         self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
         return self.workbook

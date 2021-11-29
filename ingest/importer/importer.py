@@ -1,5 +1,5 @@
 import logging
-from typing import Tuple
+from typing import Tuple, List
 
 from requests import HTTPError
 
@@ -141,11 +141,23 @@ class _ImportRegistry:
                 self.project_id = metadata.object_id
             else:
                 raise MultipleProjectsFound()
-        type_map[metadata.object_id] = metadata
 
-    def add_submittables(self, metadata_entities):
+        if metadata.is_linking_reference:
+            existing_metadata = type_map.get(metadata.object_id)
+            if existing_metadata and existing_metadata.is_reference:
+                existing_metadata.is_linking_reference = True
+            else:
+                type_map[metadata.object_id] = metadata
+        else:
+            type_map[metadata.object_id] = metadata
+
+    def add_submittables(self, metadata_entities: List[MetadataEntity], is_update: bool = False):
         for entity in metadata_entities:
-            self.add_submittable(entity)
+            if is_update and entity.is_linking_reference:
+                # TODO Do nothing for now until we implement importing of linking updates
+                pass
+            else:
+                self.add_submittable(entity)
 
     def add_module(self, metadata: MetadataEntity):
         if metadata.domain_type.lower() == 'project':
@@ -216,7 +228,7 @@ class WorkbookImporter:
                     removed_data = registry.add_modules(module_field_name, metadata_entities)
                     workbook_errors.extend(self.list_data_removal_errors(worksheet.title, removed_data))
                 else:
-                    registry.add_submittables(metadata_entities)
+                    registry.add_submittables(metadata_entities, is_update)
             except Exception as e:
                 workbook_errors.append(
                     {"location": f'sheet={worksheet.title}', "type": e.__class__.__name__, "detail": str(e)})
