@@ -17,15 +17,16 @@ class Flattener:
 
     def flatten(self, entity_list: List[Entity]):
         for entity in entity_list:
-            self._flatten_entity(entity)
+            if entity.concrete_type != 'process':
+                self._flatten_entity(entity)
+            self._extract_schema_url(entity.content, entity.concrete_type)
+
         self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
         return self.workbook
 
     def _flatten_entity(self, entity: Entity):
         worksheet_name = entity.concrete_type
         row = {f'{worksheet_name}.uuid': entity.uuid}
-
-        self._extract_schema_url(entity.content, entity.concrete_type)
 
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
