@@ -352,10 +352,6 @@ class EntityMapTest(TestCase):
         protocol1 = entity_map.get_entity('protocol', 'protocol_id_1')
         self.assertEqual({'key': 'protocol_1'}, protocol1.content)
 
-        # and:
-        biomaterial3 = entity_map.get_entity('biomaterial', 'biomaterial_uuid')
-        self.assertTrue(biomaterial3.is_linking_reference)
-
     def test_load__is_linking_reference(self):
         # given:
         spreadsheet_json = {
@@ -382,10 +378,6 @@ class EntityMapTest(TestCase):
         # then:
         self.assertEqual(['biomaterial'], list(entity_map.get_entity_types()))
 
-        # and:
-        biomaterial = entity_map.get_entity('biomaterial', 'biomaterial_uuid')
-        self.assertTrue(biomaterial.is_linking_reference)
-
     def test_load__is_reference(self):
         # given:
         spreadsheet_json = {
@@ -404,10 +396,6 @@ class EntityMapTest(TestCase):
 
         # then:
         self.assertEqual(['biomaterial'], list(entity_map.get_entity_types()))
-
-        # and:
-        biomaterial = entity_map.get_entity('biomaterial', 'biomaterial_uuid')
-        self.assertTrue(biomaterial.is_reference)
 
     def _assert_correct_entity(self, entity, entity_id='', content={}, entity_type='', links={}):
         self.assertTrue(entity)
