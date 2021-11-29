@@ -265,139 +265,25 @@ class FlattenerTest(BaseFlattenerTest):
 
     def test_flatten__entities_has_input(self):
         # given
-        metadata_entity = Entity.from_json({
-            'content': {
-                "describedBy": "https://schema.humancellatlas.org/type/biomaterial/14.2.0/specimen_from_organism",
-                "schema_type": "biomaterial",
-                "field": "value",
-                'biomaterial_core': {
-                    'biomaterial_id': 'specimen_id'
-                }
-            },
-            'uuid': {
-                'uuid': 'specimen-uuid'
-            }
-        })
+        with open(self.script_dir + '/entities-with-inputs-specimen.json') as file:
+            metadata_entity = Entity.from_json(json.load(file))
 
-        input_entity = Entity.from_json({
-            'content': {
-                "describedBy": "https://schema.humancellatlas.org/type/biomaterial/14.2.0/donor_organism",
-                "schema_type": "biomaterial",
-                "field": "value",
-                'biomaterial_core': {
-                    'biomaterial_id': 'donor_id'
-                }
-            },
-            'uuid': {
-                'uuid': 'donor-uuid'
-            }
-        })
+        with open(self.script_dir + '/entities-with-inputs-donor.json') as file:
+            input_entity = Entity.from_json(json.load(file))
 
-        process = Entity.from_json({
-            'content': {
-                "describedBy": "https://schema.humancellatlas.org/type/process/14.2.0/process",
-                "schema_type": "process",
-                "field": "value",
-                'process_core': {
-                    'process_id': 'process_id'
-                }
-            },
-            'uuid': {
-                'uuid': 'process-uuid'
-            }
-        })
+        with open(self.script_dir + '/entities-with-input-process.json') as file:
+            process = Entity.from_json(Entity.from_json(json.load(file)))
 
-        protocols = Entity.from_json_list([{
-            'content': {
-                "describedBy": "https://schema.humancellatlas.org/type/protocol/14.2.0/sequencing_protocol",
-                "schema_type": "protocol",
-                "field": "value",
-                'protocol_core': {
-                    'protocol_id': 'protocol_id1'
-                }
-            },
-            'uuid': {
-                'uuid': 'protocol-uuid1'
-            }
-
-        }, {
-            'content': {
-                "describedBy": "https://schema.humancellatlas.org/type/protocol/14.2.0/library_preparation_protocol",
-                "schema_type": "protocol",
-                "field": "value",
-                'protocol_core': {
-                    'protocol_id': 'protocol_id2'
-                }
-            },
-            'uuid': {
-                'uuid': 'protocol-uuid2'
-            }
-        }])
+        with open(self.script_dir + '/entities-with-inputs-protocols.json') as file:
+            protocols = Entity.from_json(json.load(file))
 
         metadata_entity.set_input([input_entity], process, protocols)
+
         # when
         flattener = Flattener()
         actual = flattener.flatten([metadata_entity, process] + protocols)
 
-        expected = {
+        with open(self.script_dir + '/entities-with-inputs-flattened.json') as file:
+            expected = json.load(file)
 
-            'Library preparation protocol':
-                {
-                    'headers': [
-                        'library_preparation_protocol.uuid',
-                        'library_preparation_protocol.field',
-                        'library_preparation_protocol.protocol_core.protocol_id'
-                    ],
-                    'values': [
-                        {'library_preparation_protocol.field': 'value',
-                         'library_preparation_protocol.protocol_core.protocol_id': 'protocol_id2',
-                         'library_preparation_protocol.uuid': 'protocol-uuid2'}
-                    ]},
-            'Schemas': [
-                'https://schema.humancellatlas.org/type/biomaterial/14.2.0/specimen_from_organism',
-                'https://schema.humancellatlas.org/type/process/14.2.0/process',
-                'https://schema.humancellatlas.org/type/protocol/14.2.0/sequencing_protocol',
-                'https://schema.humancellatlas.org/type/protocol/14.2.0/library_preparation_protocol'
-            ],
-            'Sequencing protocol': {
-                'headers': [
-                    'sequencing_protocol.uuid',
-                    'sequencing_protocol.field',
-                    'sequencing_protocol.protocol_core.protocol_id'
-                ],
-                'values': [
-                    {'sequencing_protocol.field': 'value',
-                     'sequencing_protocol.protocol_core.protocol_id': 'protocol_id1',
-                     'sequencing_protocol.uuid': 'protocol-uuid1'}
-                ]},
-            'Specimen from organism': {
-                'headers': [
-                    'specimen_from_organism.uuid',
-                    'specimen_from_organism.field',
-                    'specimen_from_organism.biomaterial_core.biomaterial_id',
-                    'process.field',
-                    'process.process_core.process_id',
-                    'sequencing_protocol.protocol_core.protocol_id',
-                    'sequencing_protocol.uuid',
-                    'library_preparation_protocol.protocol_core.protocol_id',
-                    'library_preparation_protocol.uuid',
-                    'donor_organism.biomaterial_core.biomaterial_id',
-                    'donor_organism.uuid'
-                ],
-                'values': [
-                    {'specimen_from_organism.biomaterial_core.biomaterial_id': 'specimen_id',
-                     'donor_organism.biomaterial_core.biomaterial_id': 'donor_id',
-                     'donor_organism.uuid': 'donor-uuid',
-                     'specimen_from_organism.field': 'value',
-                     'library_preparation_protocol.protocol_core.protocol_id': 'protocol_id2',
-                     'library_preparation_protocol.uuid': 'protocol-uuid2',
-                     'process.field': 'value',
-                     'process.process_core.process_id': 'process_id',
-                     'sequencing_protocol.protocol_core.protocol_id': 'protocol_id1',
-                     'sequencing_protocol.uuid': 'protocol-uuid1',
-                     'specimen_from_organism.uuid': 'specimen-uuid'
-                     }
-                ]
-            }
-        }
         self.assertEqual(actual, expected)

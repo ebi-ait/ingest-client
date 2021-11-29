@@ -1,0 +1,28 @@
+[
+  {
+    "content": {
+      "describedBy": "https://schema.humancellatlas.org/type/protocol/14.2.0/sequencing_protocol",
+      "schema_type": "protocol",
+      "field": "value",
+      "protocol_core": {
+        "protocol_id": "protocol_id1"
+      }
+    },
+    "uuid": {
+      "uuid": "protocol-uuid1"
+    }
+  },
+  {
+    "content": {
+      "describedBy": "https://schema.humancellatlas.org/type/protocol/14.2.0/library_preparation_protocol",
+      "schema_type": "protocol",
+      "field": "value",
+      "protocol_core": {
+        "protocol_id": "protocol_id2"
+      }
+    },
+    "uuid": {
+      "uuid": "protocol-uuid2"
+    }
+  }
+]
