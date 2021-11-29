@@ -18,12 +18,10 @@ class EntityMap(object):
 
         for entity_type, entities_dict in entity_json.items():
             for entity_id, entity_body in entities_dict.items():
-
-                EntityMap._load_external_links(entity_body, entity_map)
-
                 entity = Entity(entity_type=entity_type,
                                 entity_id=entity_id,
                                 content=entity_body.get('content'),
+                                external_links = entity_body.get('external_links_by_entity'),
                                 links_by_entity=entity_body.get('links_by_entity', {}),
                                 is_reference=entity_body.get('is_reference', False),
                                 is_linking_reference=entity_body.get('is_linking_reference', False),
@@ -31,35 +29,22 @@ class EntityMap(object):
                                 concrete_type=entity_body.get('concrete_type'),
                                 spreadsheet_location=entity_body.get(
                                     'spreadsheet_location'))
-
                 entity_map.add_entity(entity)
+                entity_map._load_external_links(entity)
 
         return entity_map
 
-    @staticmethod
-    def _load_external_links(entity_body, entity_map):
-        external_links = entity_body.get('external_links_by_entity')
-
-        if not external_links:
-            external_links = {}
-
+    def _load_external_links(self, entity: Entity):
+        external_links = entity.external_links
         for external_link_type, external_link_uuids in external_links.items():
             for entity_uuid in external_link_uuids:
                 external_link_entity = Entity(entity_type=external_link_type,
                                               entity_id=entity_uuid,
                                               content=None,
-                                              spreadsheet_location=entity_body.get('spreadsheet_location'),
+                                              spreadsheet_location=entity.spreadsheet_location,
                                               is_linking_reference=True)
-
-                entity_map.add_entity(external_link_entity)
-
-                if not entity_body.get('links_by_entity'):
-                    entity_body['links_by_entity'] = {}
-
-                if not entity_body['links_by_entity'].get(external_link_type):
-                    entity_body['links_by_entity'][external_link_type] = []
-
-                entity_body['links_by_entity'][external_link_type].append(entity_uuid)
+                external_link_entity.add_link(external_link_type, entity_uuid)
+                self.add_entity(external_link_entity)
 
     def get_entity_types(self):
         return list(self.entities_dict_by_type.keys())
@@ -92,7 +77,12 @@ class EntityMap(object):
         if not entities_of_type:
             self.entities_dict_by_type[entity.type] = {}
             entities_of_type = self.entities_dict_by_type.get(entity.type)
-        entities_of_type[entity.id] = entity
+
+        existing_entity = self.get_entity(entity.type, entity.id)
+        if existing_entity and entity.is_linking_reference:
+            existing_entity.is_linking_reference = True
+        else:
+            entities_of_type[entity.id] = entity
 
     def get_entities(self) -> List[Entity]:
         all_entities = []
