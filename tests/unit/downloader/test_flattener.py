@@ -271,11 +271,11 @@ class FlattenerTest(BaseFlattenerTest):
         with open(self.script_dir + '/entities-with-inputs-donor.json') as file:
             input_entity = Entity.from_json(json.load(file))
 
-        with open(self.script_dir + '/entities-with-input-process.json') as file:
-            process = Entity.from_json(Entity.from_json(json.load(file)))
+        with open(self.script_dir + '/entities-with-inputs-process.json') as file:
+            process = Entity.from_json(json.load(file))
 
         with open(self.script_dir + '/entities-with-inputs-protocols.json') as file:
-            protocols = Entity.from_json(json.load(file))
+            protocols = Entity.from_json_list(json.load(file))
 
         metadata_entity.set_input([input_entity], process, protocols)
 
