@@ -38,6 +38,7 @@
       "specimen_from_organism.uuid",
       "specimen_from_organism.field",
       "specimen_from_organism.biomaterial_core.biomaterial_id",
+      "process.uuid",
       "process.field",
       "process.process_core.process_id",
       "sequencing_protocol.protocol_core.protocol_id",

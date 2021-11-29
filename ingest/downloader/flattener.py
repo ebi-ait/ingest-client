@@ -74,8 +74,11 @@ class Flattener:
 
     def _embed_process(self, entity: Entity, embedded_content):
         embed_process = {
-            'process': entity.process.content
+            'process': {
+                'uuid': entity.process.uuid
+            }
         }
+        embed_process['process'].update(entity.process.content)
         embedded_content.update(embed_process)
 
     def _embed_protocol_ids(self, entity: Entity, embedded_content):
