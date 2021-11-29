@@ -55,6 +55,7 @@
         "specimen_from_organism.field": "value",
         "library_preparation_protocol.protocol_core.protocol_id": "protocol_id2",
         "library_preparation_protocol.uuid": "protocol-uuid2",
+        "process.uuid": "process-uuid",
         "process.field": "value",
         "process.process_core.process_id": "process_id",
         "sequencing_protocol.protocol_core.protocol_id": "protocol_id1",
