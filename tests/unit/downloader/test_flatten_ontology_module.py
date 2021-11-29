@@ -1,9 +1,9 @@
 from ingest.downloader.entity import Entity
 from ingest.downloader.flattener import Flattener
-from tests.unit.downloader.test_flattener import FlattenerTest
+from tests.unit.downloader.test_flattener import BaseFlattenerTest
 
 
-class FlattenOntologyModuleTest(FlattenerTest):
+class FlattenOntologyModuleTest(BaseFlattenerTest):
     def test_flatten__has_ontology_property_with_multiple_elements(self):
         # given
         self.content.update({

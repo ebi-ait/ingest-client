@@ -1,9 +1,9 @@
 from ingest.downloader.entity import Entity
 from ingest.downloader.flattener import Flattener
-from tests.unit.downloader.test_flattener import FlattenerTest
+from tests.unit.downloader.test_flattener import BaseFlattenerTest
 
 
-class FlattenProjectModuleTest(FlattenerTest):
+class FlattenProjectModuleTest(BaseFlattenerTest):
     def test_flatten__has_project_modules(self):
         # given
         self.content.update({

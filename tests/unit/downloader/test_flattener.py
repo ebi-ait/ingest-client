@@ -6,7 +6,7 @@ from ingest.downloader.entity import Entity
 from ingest.downloader.flattener import Flattener
 
 
-class FlattenerTest(TestCase):
+class BaseFlattenerTest(TestCase):
     def setUp(self) -> None:
         self.script_dir = os.path.dirname(__file__)
 
@@ -20,6 +20,8 @@ class FlattenerTest(TestCase):
         with open(self.script_dir + '/content-flattened.json') as file:
             self.flattened_metadata_entity = json.load(file)
 
+
+class FlattenerTest(BaseFlattenerTest):
     def test_flatten__has_no_modules(self):
         # given
         metadata_entity = {
