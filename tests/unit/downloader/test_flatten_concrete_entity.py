@@ -2,10 +2,10 @@ import json
 
 from ingest.downloader.entity import Entity
 from ingest.downloader.flattener import Flattener
-from tests.unit.downloader.test_flattener import FlattenerTest
+from tests.unit.downloader.test_flattener import BaseFlattenerTest
 
 
-class FlattenConcreteEntityTest(FlattenerTest):
+class FlattenConcreteEntityTest(BaseFlattenerTest):
     def test_flatten__project_metadata(self):
         # given
         with open(self.script_dir + '/project-list.json') as file:

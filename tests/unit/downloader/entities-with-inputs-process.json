@@ -1,0 +1,13 @@
+{
+  "content": {
+    "describedBy": "https://schema.humancellatlas.org/type/process/14.2.0/process",
+    "schema_type": "process",
+    "field": "value",
+    "process_core": {
+      "process_id": "process_id"
+    }
+  },
+  "uuid": {
+    "uuid": "process-uuid"
+  }
+}

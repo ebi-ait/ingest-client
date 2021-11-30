@@ -1,0 +1,13 @@
+{
+  "content": {
+    "describedBy": "https://schema.humancellatlas.org/type/biomaterial/14.2.0/specimen_from_organism",
+    "schema_type": "biomaterial",
+    "field": "value",
+    "biomaterial_core": {
+      "biomaterial_id": "specimen_id"
+    }
+  },
+  "uuid": {
+    "uuid": "specimen-uuid"
+  }
+}
