@@ -53,7 +53,8 @@ class XlsImporter:
             return None, errors
 
         entity_map = EntityMap.load(spreadsheet_json)
-        self._handle_links_from_spreadsheet(template_mgr, entity_map)
+        entity_linker = EntityLinker(template_mgr, entity_map)
+        entity_linker.handle_links_from_spreadsheet()
 
         return entity_map, []
 
@@ -63,6 +64,9 @@ class XlsImporter:
             template_mgr = None
             spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid=project_uuid)
             entity_map = EntityMap.load(spreadsheet_json)
+            entity_linker = EntityLinker(template_mgr, entity_map)
+            entity_linker.handle_links_from_spreadsheet()
+
             self.ingest_api.delete_submission_errors(submission_url)
 
             if errors:
@@ -70,7 +74,6 @@ class XlsImporter:
             elif is_update:
                 self.submitter.update_entities(entity_map)
             else:
-                self._handle_links_from_spreadsheet(template_mgr, entity_map)
                 submission = self.submitter.add_entities(entity_map, submission_url)
                 self.submitter.link_submission_to_project(entity_map, submission, submission_url)
                 self.submitter.link_entities(entity_map, submission)
@@ -96,11 +99,6 @@ class XlsImporter:
                 submission_url,
                 ParserError(error["location"], error["type"], error["detail"]).getJSON()
             )
-
-    @staticmethod
-    def _handle_links_from_spreadsheet(template_mgr: TemplateManager, entity_map: EntityMap):
-        entity_linker = EntityLinker(template_mgr, entity_map)
-        entity_linker.handle_links_from_spreadsheet()
 
     @staticmethod
     def update_spreadsheet_with_uuids(submission: Submission, template_mgr: TemplateManager, file_path):
