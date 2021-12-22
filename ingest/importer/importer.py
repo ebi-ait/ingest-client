@@ -59,10 +59,8 @@ class XlsImporter:
 
         return entity_map, []
 
-    def import_file(self, file_path, submission_url, is_update=False, project_uuid=None, update_project=False) -> Tuple[
-        Submission, TemplateManager]:
+    def import_file(self, file_path, submission_url, is_update=False, project_uuid=None, update_project=False) -> Tuple[Submission, TemplateManager]:
         try:
-            submission = None
             template_mgr = None
             spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid=project_uuid, update_project=update_project)
             entity_map = EntityMap.load(spreadsheet_json)
@@ -76,15 +74,9 @@ class XlsImporter:
             elif is_update:
                 self.submitter.update_entities(entity_map)
             else:
-                if project_uuid and update_project:
-                    project = entity_map.get_project()
-                    self.submitter.update_entity(project)
-                    self.logger.info(f'Updating the project: {project_uuid}, {json.dumps(project.content)}')
-
-                submission = self.submitter.add_entities(entity_map, submission_url)
-                self.submitter.link_submission_to_project(entity_map, submission, submission_url)
-                self.submitter.link_entities(entity_map, submission)
-
+                project = entity_map.get_project()
+                project and project_uuid and update_project and self.submitter.update_entity(project)
+                submission = self._submit_new_entities(entity_map, submission_url)
                 return submission, template_mgr
 
         except HTTPError as httpError:
@@ -100,6 +92,12 @@ class XlsImporter:
         finally:
             self.logger.info(f'Submission in {submission_url} is done!')
             return submission, template_mgr
+
+    def _submit_new_entities(self, entity_map, submission_url):
+        submission = self.submitter.add_entities(entity_map, submission_url)
+        self.submitter.link_submission_to_project(entity_map, submission, submission_url)
+        self.submitter.link_entities(entity_map, submission)
+        return submission
 
     def report_errors(self, submission_url, errors):
         self.logger.info(f'Logged {len(errors)} ParsingErrors.', exc_info=False)
