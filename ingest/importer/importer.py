@@ -202,35 +202,7 @@ class WorkbookImporter:
 
         for worksheet in importable_worksheets:
             try:
-                self.sheet_in_schemas(worksheet)
-                metadata_entities, worksheet_errors = self.worksheet_importer.do_import(worksheet)
-                module_field_name = worksheet.get_module_field_name()
-                workbook_errors.extend(worksheet_errors)
-
-                if project_uuid and _PROJECT_TYPE in worksheet.title.lower() and worksheet.is_module_tab():
-                    if not update_project:
-                        continue
-                    else:
-                        removed_data = registry.add_modules(module_field_name, metadata_entities)
-                        workbook_errors.extend(self.list_data_removal_errors(worksheet.title, removed_data))
-
-                elif project_uuid and _PROJECT_TYPE == worksheet.title.lower():
-                    if len(metadata_entities) > 1:
-                        raise MultipleProjectsFound()
-
-                    if metadata_entities:
-                        project = metadata_entities[0]
-                        project.object_id = project_uuid
-                        project.is_linking_reference = True
-                        project.is_reference = True
-                        registry.add_submittable(project)
-
-                elif worksheet.is_module_tab():
-                    removed_data = registry.add_modules(module_field_name, metadata_entities)
-                    workbook_errors.extend(self.list_data_removal_errors(worksheet.title, removed_data))
-                else:
-                    registry.add_submittables(metadata_entities)
-
+                self._import_worksheet(project_uuid, registry, update_project, workbook_errors, worksheet)
             except Exception as e:
                 workbook_errors.append(
                     {"location": f'sheet={worksheet.title}', "type": e.__class__.__name__, "detail": str(e)})
@@ -238,6 +210,43 @@ class WorkbookImporter:
         self._import_modules(registry, workbook_errors)
 
         return registry.flatten(), workbook_errors
+
+    def _import_worksheet(self, project_uuid, registry, update_project, workbook_errors, worksheet):
+        self.sheet_in_schemas(worksheet)
+        metadata_entities, worksheet_errors = self.worksheet_importer.do_import(worksheet)
+        module_field_name = worksheet.get_module_field_name()
+        workbook_errors.extend(worksheet_errors)
+
+        if project_uuid and self._is_project_module_worksheet(worksheet) and update_project:
+            self._register_module(metadata_entities, module_field_name, registry, workbook_errors, worksheet)
+
+        elif project_uuid and self._is_project_worksheet(worksheet) and metadata_entities:
+            if len(metadata_entities) > 1:
+                raise MultipleProjectsFound()
+
+            self._register_project_reference(metadata_entities[0], project_uuid, registry)
+
+        elif worksheet.is_module_tab():
+            self._register_module(metadata_entities, module_field_name, registry, workbook_errors, worksheet)
+
+        else:
+            registry.add_submittables(metadata_entities)
+
+    def _register_project_reference(self, project, project_uuid, registry):
+        project.object_id = project_uuid
+        project.is_linking_reference = True
+        project.is_reference = True
+        registry.add_submittable(project)
+
+    def _is_project_worksheet(self, worksheet):
+        return _PROJECT_TYPE == worksheet.title.lower()
+
+    def _register_module(self, metadata_entities, module_field_name, registry, workbook_errors, worksheet):
+        removed_data = registry.add_modules(module_field_name, metadata_entities)
+        workbook_errors.extend(self.list_data_removal_errors(worksheet.title, removed_data))
+
+    def _is_project_module_worksheet(self, worksheet):
+        return _PROJECT_TYPE in worksheet.title.lower() and worksheet.is_module_tab()
 
     def _import_modules(self, registry, workbook_errors):
         try:
