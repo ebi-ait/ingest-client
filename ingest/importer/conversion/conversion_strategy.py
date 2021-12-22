@@ -100,7 +100,7 @@ class IdentityCellConversion(CellConversion):
 class ExternalReferenceCellConversion(CellConversion):
     def apply(self, metadata: MetadataEntity, cell_data):
         value = self.converter.convert(cell_data)
-        metadata._is_reference = True
+        metadata.is_reference = True
         metadata.object_id = value
 
 

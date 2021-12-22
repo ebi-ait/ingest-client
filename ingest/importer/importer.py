@@ -81,7 +81,6 @@ class XlsImporter:
                     self.submitter.update_entity(project)
                     self.logger.info(f'Updating the project: {project_uuid}, {json.dumps(project.content)}')
 
-                self._handle_links_from_spreadsheet(template_mgr, entity_map)
                 submission = self.submitter.add_entities(entity_map, submission_url)
                 self.submitter.link_submission_to_project(entity_map, submission, submission_url)
                 self.submitter.link_entities(entity_map, submission)
@@ -185,6 +184,10 @@ class _ImportRegistry:
             flat_map[domain_type] = flat_type_map
         return flat_map
 
+    def has_project(self):
+        project_registry = self._submittable_registry.get(_PROJECT_TYPE)
+        return project_registry and project_registry.get(self.project_id)
+
 
 class WorkbookImporter:
     def __init__(self, template_mgr):
@@ -205,6 +208,10 @@ class WorkbookImporter:
             except Exception as e:
                 workbook_errors.append(
                     {"location": f'sheet={worksheet.title}', "type": e.__class__.__name__, "detail": str(e)})
+
+        if not registry.has_project() and not project_uuid:
+            e = NoProjectFound()
+            workbook_errors.append({"location": "File", "type": e.__class__.__name__, "detail": str(e)})
 
         self._import_modules(registry, workbook_errors)
 
