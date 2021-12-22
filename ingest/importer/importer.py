@@ -1,3 +1,4 @@
+import json
 import logging
 from typing import Tuple
 
@@ -32,7 +33,7 @@ class XlsImporter:
         self.logger = logging.getLogger(__name__)
         self.submitter = IngestSubmitter(self.ingest_api)
 
-    def generate_json(self, file_path, is_update, project_uuid=None):
+    def generate_json(self, file_path, is_update, project_uuid=None, update_project=False):
         ingest_workbook = IngestWorkbook.from_file(file_path)
 
         try:
@@ -42,7 +43,7 @@ class XlsImporter:
                 f'There was an error retrieving the schema information to process the spreadsheet. {str(e)}')
 
         workbook_importer = WorkbookImporter(template_mgr)
-        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook, is_update, project_uuid)
+        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook, is_update, project_uuid, update_project)
 
         return spreadsheet_json, template_mgr, errors
 
@@ -57,11 +58,12 @@ class XlsImporter:
 
         return entity_map, []
 
-    def import_file(self, file_path, submission_url, is_update=False, project_uuid=None) -> Tuple[Submission, TemplateManager]:
+    def import_file(self, file_path, submission_url, is_update=False, project_uuid=None, update_project=False) -> Tuple[
+        Submission, TemplateManager]:
         try:
             submission = None
             template_mgr = None
-            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid=project_uuid)
+            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid=project_uuid, update_project=update_project)
             entity_map = EntityMap.load(spreadsheet_json)
             self.ingest_api.delete_submission_errors(submission_url)
 
@@ -70,11 +72,18 @@ class XlsImporter:
             elif is_update:
                 self.submitter.update_entities(entity_map)
             else:
+                if project_uuid and update_project:
+                    project = entity_map.get_project()
+                    self.submitter.update_entity(project)
+                    self.logger.info(f'Updating the project: {project_uuid}, {json.dumps(project.content)}')
+
                 self._handle_links_from_spreadsheet(template_mgr, entity_map)
                 submission = self.submitter.add_entities(entity_map, submission_url)
                 self.submitter.link_submission_to_project(entity_map, submission, submission_url)
                 self.submitter.link_entities(entity_map, submission)
+
                 return submission, template_mgr
+
         except HTTPError as httpError:
             status = httpError.response.status_code
             text = httpError.response.text
@@ -162,13 +171,12 @@ class _ImportRegistry:
 
     def import_modules(self):
         for module_entity in self._module_list:
-            type_map = self._submittable_registry.get(module_entity.domain_type)
+            type_map = self._submittable_registry.get(module_entity.domain_type, {})
             submittable_entity = type_map.get(module_entity.object_id)
             if submittable_entity:
                 submittable_entity.add_module_entity(module_entity)
             else:
                 raise LinkToConcreteEntityNotFound(module_entity)
-
 
     def flatten(self):
         flat_map = {}
@@ -178,10 +186,6 @@ class _ImportRegistry:
             flat_map[domain_type] = flat_type_map
         return flat_map
 
-    def has_project(self):
-        project_registry = self._submittable_registry.get(_PROJECT_TYPE)
-        return project_registry and project_registry.get(self.project_id)
-
 
 class WorkbookImporter:
     def __init__(self, template_mgr):
@@ -189,21 +193,12 @@ class WorkbookImporter:
         self.template_mgr = template_mgr
         self.logger = logging.getLogger(__name__)
 
-    def do_import(self, workbook: IngestWorkbook, is_update, project_uuid=None):
+    def do_import(self, workbook: IngestWorkbook, is_update, project_uuid=None, update_project=False):
         registry = _ImportRegistry(self.template_mgr)
         importable_worksheets = workbook.importable_worksheets()
         workbook_errors = self.validate_worksheets(is_update, importable_worksheets)
 
-        if project_uuid:
-            project_metadata = MetadataEntity(domain_type=_PROJECT_TYPE,
-                                              concrete_type=_PROJECT_TYPE,
-                                              object_id=project_uuid,
-                                              is_linking_reference=True,
-                                              content={})
-            registry.add_submittable(project_metadata)
-
-            importable_worksheets = [ws for ws in importable_worksheets
-                                     if _PROJECT_TYPE not in ws.title.lower()]
+        importable_worksheets = [ws for ws in importable_worksheets]
 
         for worksheet in importable_worksheets:
             try:
@@ -212,20 +207,36 @@ class WorkbookImporter:
                 module_field_name = worksheet.get_module_field_name()
                 workbook_errors.extend(worksheet_errors)
 
-                if worksheet.is_module_tab():
+                if project_uuid and _PROJECT_TYPE in worksheet.title.lower() and worksheet.is_module_tab():
+                    if not update_project:
+                        continue
+                    else:
+                        removed_data = registry.add_modules(module_field_name, metadata_entities)
+                        workbook_errors.extend(self.list_data_removal_errors(worksheet.title, removed_data))
+
+                elif project_uuid and _PROJECT_TYPE == worksheet.title.lower():
+                    if len(metadata_entities) > 1:
+                        raise MultipleProjectsFound()
+
+                    if metadata_entities:
+                        project = metadata_entities[0]
+                        project.object_id = project_uuid
+                        project.is_linking_reference = True
+                        project.is_reference = True
+                        registry.add_submittable(project)
+
+                elif worksheet.is_module_tab():
                     removed_data = registry.add_modules(module_field_name, metadata_entities)
                     workbook_errors.extend(self.list_data_removal_errors(worksheet.title, removed_data))
                 else:
                     registry.add_submittables(metadata_entities)
+
             except Exception as e:
                 workbook_errors.append(
                     {"location": f'sheet={worksheet.title}', "type": e.__class__.__name__, "detail": str(e)})
 
-        if registry.has_project():
-            self._import_modules(registry, workbook_errors)
-        else:
-            e = NoProjectFound()
-            workbook_errors.append({"location": "File", "type": e.__class__.__name__, "detail": str(e)})
+        self._import_modules(registry, workbook_errors)
+
         return registry.flatten(), workbook_errors
 
     def _import_modules(self, registry, workbook_errors):
@@ -371,6 +382,7 @@ class MissingEntityUUIDFound(Exception):
         message = f'The {sheet_name} entities in the spreadsheet should have UUIDs.'
         super(MissingEntityUUIDFound, self).__init__(message)
         self.sheet_name = sheet_name
+
 
 class LinkToConcreteEntityNotFound(Exception):
     def __init__(self, module_entity: MetadataEntity):
