@@ -15,12 +15,22 @@ class EntityLinker(object):
 
     def handle_links_from_spreadsheet(self):
         for entity in self.entity_map.get_entities():
-            if entity.is_reference:
-                continue
+            self._load_external_links(entity)
             self._validate_entity_links(entity)
             self._generate_direct_links(entity)
-
         return self.entity_map
+
+    def _load_external_links(self, entity: Entity):
+        external_links = entity.external_links
+        for external_link_type, external_link_uuids in external_links.items():
+            for entity_uuid in external_link_uuids:
+                external_link_entity = Entity(entity_type=external_link_type,
+                                              entity_id=entity_uuid,
+                                              content=None,
+                                              spreadsheet_location=entity.spreadsheet_location,
+                                              is_linking_reference=True)
+                external_link_entity.add_link(external_link_type, entity_uuid)
+                self.entity_map.add_entity(external_link_entity)
 
     def _generate_direct_links(self, entity: Entity):
         project = self.entity_map.get_project()
@@ -28,20 +38,24 @@ class EntityLinker(object):
         self._link_entity_to_project(entity, project)
         self._link_supplementary_file_to_project(entity, project)
 
+        external_links_by_entity = entity.external_links
         links_by_entity = entity.links_by_entity
-        linked_biomaterial_ids = links_by_entity.get('biomaterial', [])
-        linked_file_ids = links_by_entity.get('file', [])
 
-        if linked_biomaterial_ids or linked_file_ids:
-            linking_process = self.create_or_get_process(entity)
-            self._link_process_to_project(linking_process, project)
+        if external_links_by_entity or links_by_entity:
+            linking_process = self._create_or_get_process(entity)
             self.entity_map.add_entity(linking_process)
 
-            self._link_entity_as_output_to_process(entity, linking_process)
-            self._link_protocols_to_process(entity, linking_process)
+            self._link_process_to_project(linking_process, project)
 
-            self._link_input_biomaterials_to_entity(linked_biomaterial_ids, linking_process)
-            self._link_input_files_to_entity(linked_file_ids, linking_process)
+        if not external_links_by_entity:
+            linked_biomaterial_ids = links_by_entity.get('biomaterial', [])
+            linked_file_ids = links_by_entity.get('file', [])
+
+            if linked_biomaterial_ids or linked_file_ids:
+                self._link_entity_as_output_to_process(entity, linking_process)
+                self._link_protocols_to_process(entity, linking_process)
+                self._link_input_biomaterials_to_entity(linked_biomaterial_ids, linking_process)
+                self._link_input_files_to_entity(linked_file_ids, linking_process)
 
     def _link_entity_as_output_to_process(self, entity: Entity, linking_process: Entity):
         entity.direct_links.append({
@@ -118,6 +132,9 @@ class EntityLinker(object):
                 })
 
     def _validate_entity_links(self, entity: Entity):
+        if entity.is_reference:
+            return
+
         links_by_entity = entity.links_by_entity
 
         for link_entity_type, link_entity_ids in links_by_entity.items():
@@ -134,18 +151,31 @@ class EntityLinker(object):
                 if link_entity_type == 'process' and not len(link_entity_ids) == 1:
                     raise MultipleProcessesFound(entity, link_entity_ids)
 
-    def create_or_get_process(self, entity: Entity) -> Entity:
+    def _create_or_get_process(self, entity: Entity) -> Entity:
+        external_links = entity.external_links
+        processes = external_links.get('process', [])
+        external_process_id = processes[0] if len(processes) > 0 else None
+
         links_by_entity = entity.links_by_entity
         process_id = links_by_entity['process'][0] if links_by_entity.get('process') else None
-        linking_details = entity.linking_details
 
         if not process_id:
             process_id = self._generate_empty_process_id()
 
+        linking_details = entity.linking_details
+
         process = self.entity_map.get_entity('process', process_id)
 
         if not process:
-            process = self.create_process(process_id, linking_details)
+            process_json = self._create_process_json(process_id, linking_details)
+            process = Entity(
+                entity_type='process',
+                entity_id=external_process_id or process_id,
+                content=process_json,
+                is_linking_reference=bool(external_process_id),
+                is_reference=bool(external_process_id)
+            )
+
 
         return process
 
@@ -164,7 +194,7 @@ class EntityLinker(object):
 
         return link_key in VALID_ENTITY_LINKS_MAP
 
-    def create_process(self, process_id: str, linking_details: dict):
+    def _create_process_json(self, process_id: str, linking_details: dict):
         schema_type = 'process'
         described_by = self.template_manager.get_schema_url(schema_type)
 
@@ -183,15 +213,8 @@ class EntityLinker(object):
                 "describedBy": described_by
             }
 
-        process = Entity(
-            entity_type='process',
-            entity_id=process_id,
-            content=linking_details
-        )
-
-        return process
+        return linking_details
 
     def _generate_empty_process_id(self):
         self.process_id_ctr += 1
-
         return 'process_id_' + str(self.process_id_ctr)

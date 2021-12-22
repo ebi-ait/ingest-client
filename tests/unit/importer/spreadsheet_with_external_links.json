@@ -1,0 +1,111 @@
+{
+  "project": {
+    "project-uuid": {
+      "is_reference": true,
+      "is_linking_reference": false,
+      "concrete_type": "project",
+      "content": {
+        "dummy": "content"
+      }
+    }
+  },
+  "biomaterial": {
+    "cell-suspension-uuid": {
+      "is_reference": true,
+      "is_linking_reference": false,
+      "concrete_type": "cell_suspension",
+      "content":{
+        "dummy": "cell-suspension"
+      }
+    }
+  },
+  "protocol": {
+    "librep-protocol-uuid": {
+      "is_reference": true,
+      "is_linking_reference": false,
+      "concrete_type": "library_preparation_protocol",
+      "content": {
+        "dummy": "libprep-protocol"
+      }
+    },
+    "seq-protocol-uuid": {
+      "is_reference": true,
+      "is_linking_reference": false,
+      "concrete_type": "sequencing_protocol",
+      "content":{
+        "dummy": "sequencing-protocol"
+      }
+    }
+  },
+  "file": {
+    "seq-file-uuid-1": {
+      "is_reference": true,
+      "is_linking_reference": false,
+      "concrete_type": "sequence_file",
+      "content": {
+        "dummy": "seq-file1"
+      },
+      "links_by_entity": {
+        "process": [
+          "assay_process"
+        ],
+        "protocol": [
+          "lib_prep_1",
+          "sequencing_protocol_1"
+        ],
+        "biomaterial": [
+          "cell_ID_1"
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [
+          "assay_process-uuid"
+        ],
+        "protocol": [
+          "librep-protocol-uuid",
+          "seq-protocol-uuid"
+        ],
+        "biomaterial": [
+          "cell-suspension-uuid"
+        ]
+      },
+      "linking_details" : {
+        "process_core": {
+          "process_description": "desc"
+        }
+      }
+    },
+    "seq-file-uuid-2": {
+      "is_reference": true,
+      "is_linking_reference": false,
+      "concrete_type": "sequence_file",
+      "content": {
+        "dummy": "seq-file2"
+      },
+      "links_by_entity": {
+        "process": [
+          "assay_process_id_1"
+        ],
+        "protocol": [
+          "lib_prep_1",
+          "sequencing_protocol_1"
+        ],
+        "biomaterial": [
+          "cell_ID_1"
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [
+          "assay_process-uuid"
+        ],
+        "protocol": [
+          "librep-protocol-uuid",
+          "seq-protocol-uuid"
+        ],
+        "biomaterial": [
+          "cell-suspension-uuid"
+        ]
+      }
+    }
+  }
+}
