@@ -1,4 +1,5 @@
 from unittest import TestCase
+from unittest.mock import Mock
 
 import ingest.utils.spreadsheet as spreadsheet_utils
 from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
@@ -240,3 +241,43 @@ class IngestWorksheetTest(TestCase):
 
         # then:
         self.assertFalse(result)
+
+    def test_is_project__returns_true(self):
+        # given
+        worksheet = spreadsheet_utils.create_worksheet('Project', [])
+        ingest_worksheet = IngestWorksheet(worksheet)
+
+        # when and then
+        self.assertTrue(ingest_worksheet.is_project())
+
+    def test_is_project__returns_true__when_case_is_lower(self):
+        # given
+        worksheet = spreadsheet_utils.create_worksheet('project', [])
+        ingest_worksheet = IngestWorksheet(worksheet)
+
+        # when and then
+        self.assertTrue(ingest_worksheet.is_project())
+
+    def test_is_project__returns_false(self):
+        # given
+        worksheet = spreadsheet_utils.create_worksheet('not a Project', [])
+        ingest_worksheet = IngestWorksheet(worksheet)
+
+        # when and then
+        self.assertFalse(ingest_worksheet.is_project())
+
+    def test_is_project_module__returns_true(self):
+        # given
+        worksheet = spreadsheet_utils.create_worksheet('Project - Contributors', [])
+        ingest_worksheet = IngestWorksheet(worksheet)
+
+        # when and then
+        self.assertTrue(ingest_worksheet.is_project_module())
+
+    def test_is_project_module__returns_false(self):
+        # given
+        worksheet = spreadsheet_utils.create_worksheet('Not A Project module', [])
+        ingest_worksheet = IngestWorksheet(worksheet)
+
+        # when and then
+        self.assertFalse(ingest_worksheet.is_project_module())

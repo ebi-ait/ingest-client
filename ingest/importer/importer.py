@@ -61,6 +61,7 @@ class XlsImporter:
 
     def import_file(self, file_path, submission_url, is_update=False, project_uuid=None, update_project=False) -> Tuple[Submission, TemplateManager]:
         try:
+            submission = None
             template_mgr = None
             spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid=project_uuid, update_project=update_project)
             entity_map = EntityMap.load(spreadsheet_json)
@@ -221,10 +222,10 @@ class WorkbookImporter:
         module_field_name = worksheet.get_module_field_name()
         workbook_errors.extend(worksheet_errors)
 
-        if project_uuid and self._is_project_module_worksheet(worksheet) and update_project:
+        if project_uuid and worksheet.is_project_module() and update_project:
             self._register_module(metadata_entities, module_field_name, registry, workbook_errors, worksheet)
 
-        elif project_uuid and self._is_project_worksheet(worksheet) and metadata_entities:
+        elif project_uuid and worksheet.is_project() and metadata_entities:
             if len(metadata_entities) > 1:
                 raise MultipleProjectsFound()
 
@@ -242,15 +243,9 @@ class WorkbookImporter:
         project.is_reference = True
         registry.add_submittable(project)
 
-    def _is_project_worksheet(self, worksheet):
-        return _PROJECT_TYPE == worksheet.title.lower()
-
     def _register_module(self, metadata_entities, module_field_name, registry, workbook_errors, worksheet):
         removed_data = registry.add_modules(module_field_name, metadata_entities)
         workbook_errors.extend(self.list_data_removal_errors(worksheet.title, removed_data))
-
-    def _is_project_module_worksheet(self, worksheet):
-        return _PROJECT_TYPE in worksheet.title.lower() and worksheet.is_module_tab()
 
     def _import_modules(self, registry, workbook_errors):
         try:

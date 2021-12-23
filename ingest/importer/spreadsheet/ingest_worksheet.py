@@ -8,6 +8,7 @@ HEADER_ROW_IDX = 4
 START_DATA_ROW = 6
 MAX_ROW_LIMIT = 50000
 
+PROJECT_WORKSHEET_TITLE_LC = 'project'
 
 class IngestWorksheet(object):
 
@@ -78,6 +79,12 @@ class IngestWorksheet(object):
 
     def cell(self, row, column):
         return self._worksheet.cell(row=row, column=column)
+
+    def is_project_module(self):
+        return PROJECT_WORKSHEET_TITLE_LC in self.title.lower() and self.is_module_tab()
+
+    def is_project(self):
+        return PROJECT_WORKSHEET_TITLE_LC == self.title.lower()
 
 
 class IngestRow(object):
