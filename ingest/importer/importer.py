@@ -153,6 +153,12 @@ class _ImportRegistry:
         for entity in metadata_entities:
             self.add_submittable(entity)
 
+    def add_project_reference(self, project: MetadataEntity, project_uuid):
+        project.object_id = project_uuid
+        project.is_linking_reference = True
+        project.is_reference = True
+        self.add_submittable(project)
+
     def add_module(self, metadata: MetadataEntity):
         if metadata.domain_type.lower() == 'project':
             metadata.object_id = self.project_id
@@ -229,19 +235,13 @@ class WorkbookImporter:
             if len(metadata_entities) > 1:
                 raise MultipleProjectsFound()
 
-            self._register_project_reference(metadata_entities[0], project_uuid, registry)
+            registry.add_project_reference(metadata_entities[0], project_uuid)
 
         elif worksheet.is_module_tab():
             self._register_module(metadata_entities, module_field_name, registry, workbook_errors, worksheet)
 
         else:
             registry.add_submittables(metadata_entities)
-
-    def _register_project_reference(self, project, project_uuid, registry):
-        project.object_id = project_uuid
-        project.is_linking_reference = True
-        project.is_reference = True
-        registry.add_submittable(project)
 
     def _register_module(self, metadata_entities, module_field_name, registry, workbook_errors, worksheet):
         removed_data = registry.add_modules(module_field_name, metadata_entities)
