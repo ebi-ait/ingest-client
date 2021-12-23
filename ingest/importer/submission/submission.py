@@ -22,7 +22,6 @@ class Submission(object):
     def __init__(self, ingest_api: IngestApi, submission_url: str):
         self.ingest_api = ingest_api
         self.submission_url = submission_url
-        self.metadata_dict = {}
         self.manifest = None
         self.logger = logging.getLogger(__name__)
 
@@ -49,13 +48,8 @@ class Submission(object):
                                                      {"content": entity.content},
                                                      link_name)
         entity.ingest_json = response
-        self.metadata_dict[entity.type + '.' + entity.id] = entity
 
         return entity
-
-    def get_entity(self, entity_type: str, id: str):
-        key = entity_type + '.' + id
-        return self.metadata_dict[key]
 
     def link_entity(self, from_entity: Entity, to_entity: Entity, relationship: str, is_collection=True):
         if from_entity.is_linking_reference and not from_entity.ingest_json:
@@ -86,5 +80,3 @@ class Submission(object):
         self.manifest = self.ingest_api.create_submission_manifest(self.submission_url, manifest_json)
         return self.manifest
 
-    def get_entities(self) -> List[Entity]:
-        return self.metadata_dict.values()

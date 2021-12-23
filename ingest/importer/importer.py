@@ -78,6 +78,7 @@ class XlsImporter:
                 self.submitter.link_submission_to_project(entity_map, submission, submission_url)
                 self.submitter.link_entities(entity_map, submission)
                 return submission, template_mgr
+
         except HTTPError as httpError:
             status = httpError.response.status_code
             text = httpError.response.text
@@ -99,15 +100,6 @@ class XlsImporter:
                 submission_url,
                 ParserError(error["location"], error["type"], error["detail"]).getJSON()
             )
-
-    @staticmethod
-    def update_spreadsheet_with_uuids(submission: Submission, template_mgr: TemplateManager, file_path):
-        if not submission:
-            return
-        wb = IngestWorkbook.from_file(file_path, read_only=False)
-        wb.add_entity_uuids(submission)
-        wb.add_schemas_worksheet(template_mgr.get_schemas())
-        return wb.save(file_path)
 
 
 _PROJECT_ID = 'project_0'

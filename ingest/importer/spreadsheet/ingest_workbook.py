@@ -1,7 +1,6 @@
 from openpyxl import Workbook, load_workbook
 
 from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
-from ingest.importer.submission.submission import Submission
 
 SCHEMAS_WORKSHEET = 'Schemas'
 SPECIAL_TABS = [SCHEMAS_WORKSHEET]
@@ -48,27 +47,6 @@ class IngestWorkbook:
     def importable_worksheets(self):
         return [IngestWorksheet(worksheet) for worksheet in self.workbook.worksheets
                 if worksheet.title not in SPECIAL_TABS]
-
-    def add_entity_uuids(self, submission: Submission):
-        worksheets = {}
-        col_idx = 1
-        entities = [entity for entity in submission.get_entities() if entity.spreadsheet_location]
-        for entity in entities:
-            worksheet_title = entity.spreadsheet_location.get('worksheet_title')
-            row_index = entity.spreadsheet_location.get('row_index')
-
-            if not worksheets.get(worksheet_title):
-                worksheet = self.workbook[worksheet_title]
-                ingest_worksheet = IngestWorksheet(worksheet=worksheet)
-                worksheets[worksheet_title] = ingest_worksheet
-
-            column_header = f'{entity.concrete_type}.uuid'
-
-            if column_header not in ingest_worksheet.get_column_headers():
-                ingest_worksheet.insert_column_with_header(column_header, col_idx)
-
-            ingest_worksheet = worksheets.get(worksheet_title)
-            ingest_worksheet.cell(row=row_index, column=col_idx).value = entity.uuid
 
     def add_schemas_worksheet(self, schemas):
         if SCHEMAS_WORKSHEET not in self.workbook.sheetnames:
