@@ -24,8 +24,8 @@ class MetadataEntity:
             'row_index': row.index,
             'worksheet_title': row.worksheet_title,
         } if row else None
-        self._is_reference = is_reference
-        self._is_linking_reference = is_linking_reference
+        self.is_reference = is_reference
+        self.is_linking_reference = is_linking_reference
         self._is_module = is_module
 
     @property
@@ -65,14 +65,6 @@ class MetadataEntity:
 
     def add_links(self, link_entity_type, new_links):
         self._do_add_links(self._links, link_entity_type, new_links)
-
-    @property
-    def is_reference(self):
-        return self._is_reference
-
-    @property
-    def is_linking_reference(self):
-        return self._is_linking_reference
 
     @property
     def is_module(self):
@@ -118,7 +110,7 @@ class MetadataEntity:
     def map_for_submission(self):
         return {
             'is_reference': self.is_reference,
-            'is_linking_reference': self._is_linking_reference,
+            'is_linking_reference': self.is_linking_reference,
             'concrete_type': self.concrete_type,
             'content': self._content.as_dict(),
             'links_by_entity': self.links,
