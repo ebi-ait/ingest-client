@@ -1,15 +1,23 @@
 import copy
 import json
 import logging
-from typing import List
 
 from ingest.api.ingestapi import IngestApi
 from ingest.importer.submission.entity import Entity
 from ingest.importer.submission.entity_map import EntityMap
-from ingest.importer.submission.submission import Submission, ENTITY_LINK
+from ingest.importer.submission.submission import Submission
+
+ENTITY_LINK = {
+    'biomaterial': 'biomaterials',
+    'process': 'processes',
+    'file': 'files',
+    'protocol': 'protocols',
+    'project': 'projects',
+    'submission_envelope': 'submissionEnvelopes'
+}
 
 
-def json_equals(json1:dict, json2: dict):
+def json_equals(json1: dict, json2: dict):
     return json.dumps(json1, sort_keys=True) == json.dumps(json2, sort_keys=True)
 
 
@@ -20,10 +28,30 @@ class IngestSubmitter(object):
         self.PROGRESS_CTR = 50
         self.logger = logging.getLogger(__name__)
 
+    def add_entity(self, entity: Entity, submission_url: str):
+        link_name = ENTITY_LINK[entity.type]
+
+        if entity.type == 'file':
+            file_name = entity.content['file_core']['file_name']
+            response = self.ingest_api.create_file(submission_url,
+                                                   file_name,
+                                                   entity.content)
+        elif entity.type == 'project':
+            response = self.ingest_api.create_project(submission_url,
+                                                      entity.content)
+        else:
+            response = self.ingest_api.create_entity(submission_url,
+                                                     {"content": entity.content},
+                                                     link_name)
+        entity.ingest_json = response
+
+        return entity
+
     def add_entities(self, entity_map: EntityMap, submission_url: str) -> Submission:
         submission = Submission(self.ingest_api, submission_url)
         submission.define_manifest(entity_map)
         for e in entity_map.get_new_entities():
+            self.add_entity(e, submission_url)
             submission.add_entity(e)
 
         return submission
@@ -74,7 +102,7 @@ class IngestSubmitter(object):
                 to_entity = entity_map.get_entity(link['entity'], link['id'])
                 try:
                     self.link_entity(entity, to_entity, relationship=link['relationship'],
-                                           is_collection=link.get('is_collection', True))
+                                     is_collection=link.get('is_collection', True))
                     progress = progress + 1
                     expected_links = int(submission.manifest.get('expectedLinks', 0))
                     if progress % self.PROGRESS_CTR == 0 or (progress == expected_links):
