@@ -325,6 +325,8 @@ class WorkbookImporterTest(TestCase):
     def test_do_import_do_not_update_project_but_has_project_worksheets(self, worksheet_importer_constructor):
         # given:
         ingest_workbook = self.setup_workbook_with_project_worksheets(worksheet_importer_constructor)
+
+        # when:
         spreadsheet_json, errors = self.workbook_importer.do_import(ingest_workbook,
                                                                     project_uuid='project-uuid',
                                                                     update_project=False,
