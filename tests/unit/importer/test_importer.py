@@ -81,7 +81,7 @@ class XlsImporterTest(TestCase):
         # then:
         self.mock_ingest_api.create_submission_error.assert_called_once_with(None, exception_json)
 
-    @patch('ingest.importer.submission.submission.Submission.link_entity')
+    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_entity')
     def test_import_file__link_supplementary_files_to_project(self, mock_link_entity):
         # given:
         spreadsheet_json = self._create_spreadsheet_json_with_supplementary_file()

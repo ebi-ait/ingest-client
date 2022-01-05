@@ -57,19 +57,6 @@ class Submission(object):
         key = entity_type + '.' + id
         return self.metadata_dict[key]
 
-    def link_entity(self, from_entity: Entity, to_entity: Entity, relationship: str, is_collection=True):
-        if from_entity.is_linking_reference and not from_entity.ingest_json:
-            from_entity.ingest_json = self.ingest_api.get_entity_by_uuid(ENTITY_LINK[from_entity.type],
-                                                                         from_entity.id)
-
-        if to_entity.is_linking_reference and not to_entity.ingest_json:
-            to_entity.ingest_json = self.ingest_api.get_entity_by_uuid(ENTITY_LINK[to_entity.type], to_entity.id)
-
-        from_entity_ingest = from_entity.ingest_json
-        to_entity_ingest = to_entity.ingest_json
-
-        self.ingest_api.link_entity(from_entity_ingest, to_entity_ingest, relationship, is_collection)
-
     def define_manifest(self, entity_map: EntityMap):
         # TODO provide a better way to serialize
         manifest_json = {
