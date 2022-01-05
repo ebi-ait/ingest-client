@@ -119,26 +119,7 @@ class WorkbookImporterTest(TestCase):
     @patch('ingest.importer.importer.WorksheetImporter')
     def test_do_import_project_worksheet(self, worksheet_importer_constructor):
         # given:
-        self.template_mgr.get_concrete_type = MagicMock(return_value='project')
-
-        worksheet_importer = WorkbookImporter(self.template_mgr)
-        worksheet_importer_constructor.return_value = worksheet_importer
-        no_errors = []
-
-        # and:
-        project = MetadataEntity(domain_type='project', concrete_type='project',
-                                 content={'description': 'test project'})
-        jsmith = MetadataEntity(domain_type='project', concrete_type='contact',
-                                content={'contributors': {'name': 'John',
-                                                          'email': 'jsmith@email.com'}})
-        ppan = MetadataEntity(domain_type='project', concrete_type='contact',
-                              content={'contributors': {'name': 'Peter',
-                                                        'email': 'peterpan@email.com'}})
-        worksheet_importer.do_import = MagicMock(side_effect=[([project], no_errors), ([jsmith, ppan], no_errors)])
-
-        # and:
-        workbook = create_test_workbook('Project', 'Project - Contributors')
-        ingest_workbook = IngestWorkbook(workbook)
+        ingest_workbook = self.setup_workbook_with_project_worksheets(worksheet_importer_constructor)
         workbook_importer = WorkbookImporter(self.template_mgr)
 
         # when:
@@ -156,6 +137,26 @@ class WorkbookImporterTest(TestCase):
         self.assertEqual(2, len(contributors))
         self.assertIn({'name': 'John', 'email': 'jsmith@email.com'}, contributors)
         self.assertIn({'name': 'Peter', 'email': 'peterpan@email.com'}, contributors)
+
+    def setup_workbook_with_project_worksheets(self, worksheet_importer_constructor):
+        self.template_mgr.get_concrete_type = MagicMock(return_value='project')
+        worksheet_importer = WorkbookImporter(self.template_mgr)
+        worksheet_importer_constructor.return_value = worksheet_importer
+        no_errors = []
+        # and:
+        project = MetadataEntity(domain_type='project', concrete_type='project',
+                                 content={'description': 'test project'})
+        jsmith = MetadataEntity(domain_type='project', concrete_type='contact',
+                                content={'contributors': {'name': 'John',
+                                                          'email': 'jsmith@email.com'}})
+        ppan = MetadataEntity(domain_type='project', concrete_type='contact',
+                              content={'contributors': {'name': 'Peter',
+                                                        'email': 'peterpan@email.com'}})
+        worksheet_importer.do_import = MagicMock(side_effect=[([project], no_errors), ([jsmith, ppan], no_errors)])
+        # and:
+        workbook = create_test_workbook('Project', 'Project - Contributors')
+        ingest_workbook = IngestWorkbook(workbook)
+        return ingest_workbook
 
     @patch('ingest.importer.importer.WorksheetImporter')
     def test_do_import_multiple_projects(self, worksheet_importer_constructor):
@@ -254,19 +255,18 @@ class WorkbookImporterTest(TestCase):
     @patch('ingest.importer.importer.WorksheetImporter')
     def test_do_import_with_update_spreadsheet(self, worksheet_importer_constructor):
         # given:
-        template_mgr = MagicMock(name='template_manager')
-        template_mgr.template.json_schemas = self.mock_json_schemas
         concrete_type_map = {'project': 'project', 'users': 'users'}
-        template_mgr.get_concrete_type = lambda key: concrete_type_map.get(key)
+        self.template_mgr.get_concrete_type = lambda key: concrete_type_map.get(key)
         sheet_names = ['project', 'users']
 
         workbook = create_ingest_workbook(sheet_names, ['uuid', 'description'])
-        workbook_importer = WorkbookImporter(template_mgr)
+        workbook_importer = WorkbookImporter(self.template_mgr)
 
         # and
-        worksheet_importer = WorksheetImporter(template_mgr)
+        worksheet_importer = WorksheetImporter(self.template_mgr)
         worksheet_importer_constructor.return_value = worksheet_importer
         no_errors = []
+
         expected_errors = []
         for sheet_name in sheet_names:
             expected_errors.append({
@@ -324,25 +324,11 @@ class WorkbookImporterTest(TestCase):
     @patch('ingest.importer.importer.WorksheetImporter')
     def test_do_import_do_not_update_project_but_has_project_worksheets(self, worksheet_importer_constructor):
         # given:
-        self.template_mgr.get_concrete_type = MagicMock(return_value='project')
-
-        worksheet_importer = WorkbookImporter(self.template_mgr)
-        worksheet_importer_constructor.return_value = worksheet_importer
-        project = MetadataEntity(domain_type='project', concrete_type='project',
-                                 content={'description': 'test project'})
-        contributor = MetadataEntity(domain_type='project', concrete_type='contact',
-                                     content={'contributors': {'name': 'Peter',
-                                                               'email': 'peterpan@email.com'}})
-
-        # when:
-        workbook = create_test_workbook('Project', 'Project - Contributors')
-
-        worksheet_importer.do_import = MagicMock(side_effect=[([project], []), ([contributor], [])])
-        workbook_importer = WorkbookImporter(self.template_mgr)
-        spreadsheet_json, errors = workbook_importer.do_import(IngestWorkbook(workbook),
-                                                               project_uuid='project-uuid',
-                                                               update_project=False,
-                                                               is_update=False)
+        ingest_workbook = self.setup_workbook_with_project_worksheets(worksheet_importer_constructor)
+        spreadsheet_json, errors = self.workbook_importer.do_import(ingest_workbook,
+                                                                    project_uuid='project-uuid',
+                                                                    update_project=False,
+                                                                    is_update=False)
 
         # then:
         self.assertEqual([], errors)
