@@ -8,6 +8,7 @@ from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
 
 from tests.utils import create_test_workbook, create_ingest_workbook
 
+
 class WorkbookImporterTest(TestCase):
     mock_json_schemas = [
         {'name': 'project', 'properties': ['contributors']},
@@ -15,33 +16,30 @@ class WorkbookImporterTest(TestCase):
     ]
 
     @patch('ingest.importer.importer.WorksheetImporter')
-    def test_do_import(self, worksheet_importer_constructor):
-        # given:
-        template_mgr = MagicMock(name='template_manager')
-        template_mgr.template.json_schemas = self.mock_json_schemas
-        concrete_type_map = {'Project': 'project', 'Users': 'users'}
-        template_mgr.get_concrete_type = lambda key: concrete_type_map.get(key)
+    def setUp(self, worksheet_importer_constructor) -> None:
+        self.template_mgr = MagicMock(name='template_manager')
+        self.template_mgr.template.json_schemas = self.mock_json_schemas
+        self.concrete_type_map = {'Project': 'project', 'Users': 'users'}
+        self.template_mgr.get_concrete_type = lambda key: self.concrete_type_map.get(key)
+        self.worksheet_importer = WorksheetImporter(self.template_mgr)
+        worksheet_importer_constructor.return_value = self.worksheet_importer
+        self.workbook_importer = WorkbookImporter(self.template_mgr)
+        self.workbook = create_test_workbook('Project', 'Users')
+        self.ingest_workbook = IngestWorkbook(self.workbook)
 
-        worksheet_importer = WorksheetImporter(template_mgr)
-        worksheet_importer_constructor.return_value = worksheet_importer
-        no_errors = []
-        # and:
+    def test_do_import(self, ):
+        # given:
         project = MetadataEntity(concrete_type='project', domain_type='project')
         jdelacruz = MetadataEntity(concrete_type='user', domain_type='user', object_id=1,
                                    content={'user_name': 'jdelacruz'})
         setsuna_f_seiei = MetadataEntity(concrete_type='user', domain_type='user', object_id=96,
                                          content={'user_name': 'sayyeah'})
-        worksheet_importer.do_import = MagicMock(
+        no_errors = []
+        self.worksheet_importer.do_import = MagicMock(
             side_effect=[([project], no_errors), ([jdelacruz, setsuna_f_seiei], no_errors)])
 
-        # and:
-        workbook = create_test_workbook('Project', 'Users')
-        ingest_workbook = IngestWorkbook(workbook)
-        workbook_importer = WorkbookImporter(template_mgr)
-
         # when:
-        is_update = False
-        workbook_json, errors = workbook_importer.do_import(ingest_workbook, is_update)
+        workbook_json, errors = self.workbook_importer.do_import(self.ingest_workbook, is_update=False)
 
         # then:
         self.assertIsNotNone(workbook_json)
@@ -60,15 +58,9 @@ class WorkbookImporterTest(TestCase):
     @patch('ingest.importer.importer.WorksheetImporter')
     def test_do_import_with_module_tab(self, worksheet_importer_constructor):
         # given:
-        template_mgr = MagicMock(name='template_manager')
-        template_mgr.template.json_schemas = self.mock_json_schemas
         concrete_type_map = {'Project': 'project', 'User': 'users', 'User - SN Profiles': 'users'}
-        template_mgr.get_concrete_type = lambda key: concrete_type_map.get(key)
+        self.template_mgr.get_concrete_type = lambda key: concrete_type_map.get(key)
 
-        worksheet_importer = WorksheetImporter(template_mgr)
-        worksheet_importer_constructor.return_value = worksheet_importer
-        no_errors = []
-        # and: stub worksheet importer
         project = MetadataEntity(concrete_type='Project', domain_type='Project')
         user = MetadataEntity(concrete_type='user', domain_type='user', object_id=773,
                               content={'user_name': 'janedoe'})
@@ -78,28 +70,27 @@ class WorkbookImporterTest(TestCase):
         ig_profile = MetadataEntity(concrete_type='sn_profile', domain_type='user', object_id=773,
                                     content={'sn_profiles': {'name': 'instagram', 'id': 'a92'},
                                              'description': 'extra ig field'})
+
+        no_errors = []
+        self.worksheet_importer.do_import = MagicMock(side_effect=[
+            ([project], no_errors),
+            ([user], no_errors),
+            ([fb_profile, ig_profile], no_errors)])
+
+        self.workbook = create_test_workbook('Project', 'User', 'User - SN Profiles')
+        self.ingest_workbook = IngestWorkbook(self.workbook)
+
+        # when:
+        spreadsheet_json, errors = self.workbook_importer.do_import(self.ingest_workbook, is_update=False)
+
+        # then:
         expected_errors = [
             {'key': 'description', 'value': 'extra fb field'},
             {'key': 'description', 'value': 'extra ig field'}
         ]
 
-        worksheet_importer.do_import = MagicMock(side_effect=[
-            ([project], no_errors),
-            ([user], no_errors),
-            ([fb_profile, ig_profile], no_errors)])
-
-        # and: create test workbook
-        workbook = create_test_workbook('Project', 'User', 'User - SN Profiles')
-        ingest_workbook = IngestWorkbook(workbook)
-        workbook_importer = WorkbookImporter(template_mgr)
-
-        # when:
-        is_update = False
-        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook, is_update)
-
-        # then:
         self.assertIsNotNone(spreadsheet_json)
-        self.assertEqual(errors, workbook_importer.list_data_removal_errors('User - SN Profiles', expected_errors))
+        self.assertEqual(errors, self.workbook_importer.list_data_removal_errors('User - SN Profiles', expected_errors))
         self.assertEqual(2, len(spreadsheet_json))
 
         # and:
@@ -128,33 +119,11 @@ class WorkbookImporterTest(TestCase):
     @patch('ingest.importer.importer.WorksheetImporter')
     def test_do_import_project_worksheet(self, worksheet_importer_constructor):
         # given:
-        template_mgr = MagicMock(name='template_manager')
-        template_mgr.template.json_schemas = self.mock_json_schemas
-        template_mgr.get_concrete_type = MagicMock(return_value='project')
-
-        worksheet_importer = WorkbookImporter(template_mgr)
-        worksheet_importer_constructor.return_value = worksheet_importer
-        no_errors = []
-
-        # and:
-        project = MetadataEntity(domain_type='project', concrete_type='project',
-                                 content={'description': 'test project'})
-        jsmith = MetadataEntity(domain_type='project', concrete_type='contact',
-                                content={'contributors': {'name': 'John',
-                                                          'email': 'jsmith@email.com'}})
-        ppan = MetadataEntity(domain_type='project', concrete_type='contact',
-                              content={'contributors': {'name': 'Peter',
-                                                        'email': 'peterpan@email.com'}})
-        worksheet_importer.do_import = MagicMock(side_effect=[([project], no_errors), ([jsmith, ppan], no_errors)])
-
-        # and:
-        workbook = create_test_workbook('Project', 'Project - Contributors')
-        ingest_workbook = IngestWorkbook(workbook)
-        workbook_importer = WorkbookImporter(template_mgr)
+        ingest_workbook = self.setup_workbook_with_project_worksheets(worksheet_importer_constructor)
+        workbook_importer = WorkbookImporter(self.template_mgr)
 
         # when:
-        is_update = False
-        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook, is_update)
+        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook, is_update=False)
 
         # then:
         project_map = spreadsheet_json.get('project')
@@ -168,6 +137,26 @@ class WorkbookImporterTest(TestCase):
         self.assertEqual(2, len(contributors))
         self.assertIn({'name': 'John', 'email': 'jsmith@email.com'}, contributors)
         self.assertIn({'name': 'Peter', 'email': 'peterpan@email.com'}, contributors)
+
+    def setup_workbook_with_project_worksheets(self, worksheet_importer_constructor):
+        self.template_mgr.get_concrete_type = MagicMock(return_value='project')
+        worksheet_importer = WorkbookImporter(self.template_mgr)
+        worksheet_importer_constructor.return_value = worksheet_importer
+        no_errors = []
+        # and:
+        project = MetadataEntity(domain_type='project', concrete_type='project',
+                                 content={'description': 'test project'})
+        jsmith = MetadataEntity(domain_type='project', concrete_type='contact',
+                                content={'contributors': {'name': 'John',
+                                                          'email': 'jsmith@email.com'}})
+        ppan = MetadataEntity(domain_type='project', concrete_type='contact',
+                              content={'contributors': {'name': 'Peter',
+                                                        'email': 'peterpan@email.com'}})
+        worksheet_importer.do_import = MagicMock(side_effect=[([project], no_errors), ([jsmith, ppan], no_errors)])
+        # and:
+        workbook = create_test_workbook('Project', 'Project - Contributors')
+        ingest_workbook = IngestWorkbook(workbook)
+        return ingest_workbook
 
     @patch('ingest.importer.importer.WorksheetImporter')
     def test_do_import_multiple_projects(self, worksheet_importer_constructor):
@@ -195,14 +184,13 @@ class WorkbookImporterTest(TestCase):
         workbook_importer = WorkbookImporter(template_mgr)
 
         # when:
-        is_update = False
-        spreadsheet_json, errors = workbook_importer.do_import(IngestWorkbook(workbook), is_update)
+        spreadsheet_json, errors = workbook_importer.do_import(IngestWorkbook(workbook), is_update=False)
 
         # then:
         self.assertIn(expected_error, errors, f'Errors expected to contain {MultipleProjectsFound.__name__}.')
 
     @patch('ingest.importer.importer.WorksheetImporter')
-    def test_do_import_no_projects(self, worksheet_importer_constructor):
+    def test_do_import_no_project(self, worksheet_importer_constructor):
         # given:
         template_mgr = MagicMock(name='template_manager')
         worksheet_importer = WorksheetImporter(template_mgr)
@@ -223,8 +211,7 @@ class WorkbookImporterTest(TestCase):
         workbook_importer = WorkbookImporter(template_mgr)
 
         # when:
-        is_update = False
-        spreadsheet_json, errors = workbook_importer.do_import(IngestWorkbook(workbook), is_update)
+        spreadsheet_json, errors = workbook_importer.do_import(IngestWorkbook(workbook), is_update=False)
 
         # then:
         self.assertIn(expected_error, errors, f'Errors expected to contain {NoProjectFound.__name__}.')
@@ -237,6 +224,7 @@ class WorkbookImporterTest(TestCase):
         concrete_type_map = {'project': 'project', 'users': 'users'}
         template_mgr.get_concrete_type = lambda key: concrete_type_map.get(key)
         sheet_names = ['project', 'users']
+
         workbook = create_ingest_workbook(sheet_names, ['name', 'address'])
         workbook_importer = WorkbookImporter(template_mgr)
 
@@ -257,8 +245,7 @@ class WorkbookImporterTest(TestCase):
         worksheet_importer.do_import = MagicMock(side_effect=[([item], no_errors)])
 
         # when:
-        is_update = True
-        spreadsheet_json, errors = workbook_importer.do_import(workbook, is_update)
+        spreadsheet_json, errors = workbook_importer.do_import(workbook, is_update=True)
 
         # then:
         self.assertTrue(
@@ -268,18 +255,18 @@ class WorkbookImporterTest(TestCase):
     @patch('ingest.importer.importer.WorksheetImporter')
     def test_do_import_with_update_spreadsheet(self, worksheet_importer_constructor):
         # given:
-        template_mgr = MagicMock(name='template_manager')
-        template_mgr.template.json_schemas = self.mock_json_schemas
         concrete_type_map = {'project': 'project', 'users': 'users'}
-        template_mgr.get_concrete_type = lambda key: concrete_type_map.get(key)
+        self.template_mgr.get_concrete_type = lambda key: concrete_type_map.get(key)
         sheet_names = ['project', 'users']
+
         workbook = create_ingest_workbook(sheet_names, ['uuid', 'description'])
-        workbook_importer = WorkbookImporter(template_mgr)
+        workbook_importer = WorkbookImporter(self.template_mgr)
 
         # and
-        worksheet_importer = WorksheetImporter(template_mgr)
+        worksheet_importer = WorksheetImporter(self.template_mgr)
         worksheet_importer_constructor.return_value = worksheet_importer
         no_errors = []
+
         expected_errors = []
         for sheet_name in sheet_names:
             expected_errors.append({
@@ -297,11 +284,55 @@ class WorkbookImporterTest(TestCase):
             MagicMock(side_effect=[([project], no_errors), ([user1], no_errors)])
 
         # when:
-        is_update = False
-        spreadsheet_json, errors = workbook_importer.do_import(workbook, is_update)
+        spreadsheet_json, errors = workbook_importer.do_import(workbook, is_update=False)
 
         # then:
         self.assertTrue(
             all(elem in errors for elem in expected_errors),
             f'Errors expected to contain {UnexpectedEntityUUIDFound.__name__}.')
 
+    def test_do_import_update_project_but_no_project_worksheet(self):
+        # given:
+        workbook = create_test_workbook('Users')
+
+        # when:
+        spreadsheet_json, errors = self.workbook_importer.do_import(IngestWorkbook(workbook),
+                                                                    project_uuid='project-uuid',
+                                                                    update_project=True,
+                                                                    is_update=False)
+
+        # then:
+        self.assertEqual(len(errors), 1)
+        self.assertEqual('NoProjectWorksheet', errors[0].get('type'))
+
+    def test_do_import_do_not_update_project_and_no_project_worksheet(self):
+        # given:
+        workbook = create_test_workbook('Users')
+
+        # when:
+        spreadsheet_json, errors = self.workbook_importer.do_import(IngestWorkbook(workbook),
+                                                                    project_uuid='project-uuid',
+                                                                    update_project=False,
+                                                                    is_update=False)
+
+        # then:
+        self.assertEqual(len(errors), 0)
+        self.assertEqual(len(spreadsheet_json.get('project', {}).keys()), 1)
+        self.assertFalse(spreadsheet_json['project']['project-uuid']['is_reference'])
+        self.assertTrue(spreadsheet_json['project']['project-uuid']['is_linking_reference'])
+
+    @patch('ingest.importer.importer.WorksheetImporter')
+    def test_do_import_do_not_update_project_but_has_project_worksheets(self, worksheet_importer_constructor):
+        # given:
+        ingest_workbook = self.setup_workbook_with_project_worksheets(worksheet_importer_constructor)
+
+        # when:
+        spreadsheet_json, errors = self.workbook_importer.do_import(ingest_workbook,
+                                                                    project_uuid='project-uuid',
+                                                                    update_project=False,
+                                                                    is_update=False)
+
+        # then:
+        self.assertEqual([], errors)
+        self.assertEqual(len(spreadsheet_json.get('project', {}).keys()), 1)
+        self.assertTrue(spreadsheet_json['project']['project-uuid']['is_linking_reference'])

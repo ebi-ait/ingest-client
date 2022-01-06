@@ -89,8 +89,8 @@ class EntityMap(object):
         return all_entities
 
     def get_project(self) -> Entity:
-        project_id = list(self.entities_dict_by_type.get('project').keys())[0]
-        return self.get_entity('project', project_id)
+        project_ids = list(self.entities_dict_by_type.get('project', {}).keys())
+        return self.get_entity('project', project_ids[0]) if project_ids else None
 
     def count_total(self) -> int:
         return len(self.get_entities())

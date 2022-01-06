@@ -26,43 +26,11 @@ class SubmissionTest(TestCase):
         self.assertEqual('submission_url', submission_url)
 
     def test_add_metadata(self):
-        new_entity_mock_response = {
-            'content': {},
-            'submissionDate': '2018-05-08T10:17:49.476Z',
-            'updateDate': '2018-05-08T10:17:57.254Z',
-            'user': 'anonymousUser',
-            'lastModifiedUser': 'anonymousUser',
-            'uuid': {
-                'uuid': '5a36689b-302b-40e4-bef1-837b47f0cb51'
-            },
-            'validationState': 'Draft',
-            '_links': {
-                'self': {
-                    'href': 'http://api.ingest.dev.data.humancellatlas.org/protocols/5af1794d6a65a50007755b6a'
-                },
-                'protocol': {
-                    'href': 'http://api.ingest.dev.data.humancellatlas.org/protocols/5af1794d6a65a50007755b6a',
-                    'title': 'A single protocol'
-                },
-                'submissionEnvelope': {
-                    'href': 'http://api.ingest.dev.data.humancellatlas.org/protocols/5af1794d6a65a50007755b6a'
-                            '/submissionEnvelope',
-                    'title': 'Access or create new submission envelopes'
-                }
-            }
-        }
-
-        ingest.api.ingestapi.requests.get = MagicMock()
         mock_ingest_api = MagicMock(name='mock_ingest_api')
-        mock_ingest_api.load_root = MagicMock()
-        mock_ingest_api.create_entity = MagicMock(return_value=new_entity_mock_response)
-
         submission = Submission(mock_ingest_api, submission_url='url')
-
         entity = Entity(entity_id='id', entity_type='biomaterial', content={})
         entity = submission.add_entity(entity)
-
-        self.assertEqual(new_entity_mock_response, entity.ingest_json)
+        self.assertEqual(entity, submission.get_entity('biomaterial', 'id'))
 
     def test_define_manifest(self):
         # expect:
@@ -204,12 +172,35 @@ class IngestSubmitterTest(TestCase):
 
         # when:
         submitter = IngestSubmitter(self.ingest_api)
+        submitter.add_entity = MagicMock()
         submitter.add_entities(entity_map, submission_url='url')
 
         # then:
         submission_constructor.assert_called_with(self.ingest_api, 'url')
         submission.define_manifest.assert_called_with(entity_map)
         submission.add_entity.assert_has_calls([call(product), call(user)], any_order=True)
+
+    def test_add_entity(self):
+        new_entity_mock_response = {
+            'content': {},
+            'submissionDate': '2018-05-08T10:17:49.476Z',
+            'updateDate': '2018-05-08T10:17:57.254Z',
+            'uuid': {
+                'uuid': '5a36689b-302b-40e4-bef1-837b47f0cb51'
+            },
+            'validationState': 'Draft'
+        }
+
+        ingest.api.ingestapi.requests.get = MagicMock()
+        mock_ingest_api = MagicMock(name='mock_ingest_api')
+        mock_ingest_api.load_root = MagicMock()
+        mock_ingest_api.create_entity = MagicMock(return_value=new_entity_mock_response)
+
+        submitter = IngestSubmitter(mock_ingest_api)
+        entity = Entity(entity_id='id', entity_type='biomaterial', content={})
+        entity = submitter.add_entity(entity, 'url')
+
+        self.assertEqual(new_entity_mock_response, entity.ingest_json)
 
     def test_update_entities(self):
         # given:
@@ -259,6 +250,7 @@ class IngestSubmitterTest(TestCase):
 
         # when:
         submitter = IngestSubmitter(self.ingest_api)
+        submitter.add_entity = MagicMock()
         submitter.link_submission_to_project = MagicMock()
         submitter.PROGRESS_CTR = 1
         submitter.add_entities(entity_map, submission_url='url')
@@ -440,6 +432,28 @@ class EntityMapTest(TestCase):
         # has many element with links
         entity_map.add_entity(Entity('product', 'product_2', {}, direct_links=[{}, {}, {}, {}]))
         self.assertEqual(entity_map.count_links(), 7)
+
+    def test_get_project__returns_project(self):
+        # given
+        entity_map = EntityMap()
+        project_entity = Entity('project', 'project_0', {})
+        entity_map.add_entity(project_entity)
+
+        # when
+        output = entity_map.get_project()
+
+        # then
+        self.assertEqual(output, project_entity)
+
+    def test_get_project__returns_none(self):
+        # given
+        entity_map = EntityMap()
+
+        # when
+        output = entity_map.get_project()
+
+        # then
+        self.assertEqual(output, None)
 
 
 class EntityLinkerTest(TestCase):

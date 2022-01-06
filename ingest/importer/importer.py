@@ -59,23 +59,26 @@ class XlsImporter:
 
         return entity_map, []
 
-    def import_file(self, file_path, submission_url, is_update=False, project_uuid=None, update_project=False) -> Tuple[Submission, TemplateManager]:
+    def import_file(self, file_path, submission_url, is_update=False, project_uuid=None, update_project=False) -> Tuple[
+        Submission, TemplateManager]:
         try:
             submission = None
             template_mgr = None
-            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid=project_uuid, update_project=update_project)
-            entity_map = EntityMap.load(spreadsheet_json)
-            entity_linker = EntityLinker(template_mgr, entity_map)
-            entity_linker.handle_links_from_spreadsheet()
+            spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid=project_uuid,
+                                                                        update_project=update_project)
 
+            entity_map = EntityMap.load(spreadsheet_json)
             self.ingest_api.delete_submission_errors(submission_url)
+            project = entity_map.get_project()
+            project and self.submitter.link_submission_to_project(project, submission_url)
 
             if errors:
                 self.report_errors(submission_url, errors)
             elif is_update:
                 self.submitter.update_entities(entity_map)
             else:
-                project = entity_map.get_project()
+                entity_linker = EntityLinker(template_mgr, entity_map)
+                entity_linker.handle_links_from_spreadsheet()
                 project and project_uuid and update_project and self.submitter.update_entity(project)
                 submission = self._submit_new_entities(entity_map, submission_url)
                 return submission, template_mgr
@@ -96,7 +99,6 @@ class XlsImporter:
 
     def _submit_new_entities(self, entity_map, submission_url):
         submission = self.submitter.add_entities(entity_map, submission_url)
-        self.submitter.link_submission_to_project(entity_map, submission, submission_url)
         self.submitter.link_entities(entity_map, submission)
         return submission
 
@@ -153,10 +155,16 @@ class _ImportRegistry:
         for entity in metadata_entities:
             self.add_submittable(entity)
 
-    def add_project_reference(self, project: MetadataEntity, project_uuid):
-        project.object_id = project_uuid
-        project.is_linking_reference = True
-        project.is_reference = True
+    def add_project_reference(self, project_uuid, project: MetadataEntity = None):
+        if project:
+            project.object_id = project_uuid
+            project.is_linking_reference = True
+            project.is_reference = True
+        else:
+            project = MetadataEntity(domain_type=_PROJECT_TYPE,
+                                     concrete_type=_PROJECT_TYPE,
+                                     object_id=project_uuid,
+                                     is_linking_reference=True)
         self.add_submittable(project)
 
     def add_module(self, metadata: MetadataEntity):
@@ -218,6 +226,14 @@ class WorkbookImporter:
             e = NoProjectFound()
             workbook_errors.append({"location": "File", "type": e.__class__.__name__, "detail": str(e)})
 
+        if project_uuid and update_project and not registry.has_project():
+            workbook_errors.append({"location": "File", "type": "NoProjectWorksheet",
+                                    "detail": "The option to update the project was specified but there is no project "
+                                              "worksheet found."})
+
+        if project_uuid and not registry.has_project():
+            registry.add_project_reference(project_uuid)
+
         self._import_modules(registry, workbook_errors)
 
         return registry.flatten(), workbook_errors
@@ -235,7 +251,7 @@ class WorkbookImporter:
             if len(metadata_entities) > 1:
                 raise MultipleProjectsFound()
 
-            registry.add_project_reference(metadata_entities[0], project_uuid)
+            registry.add_project_reference(project_uuid, metadata_entities[0])
 
         elif worksheet.is_module_tab():
             self._register_module(metadata_entities, module_field_name, registry, workbook_errors, worksheet)
