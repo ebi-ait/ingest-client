@@ -71,8 +71,7 @@ class IngestSubmitter(object):
 
         return entity
 
-    def link_submission_to_project(self, entity_map: EntityMap, submission_url: str):
-        project = entity_map.get_project()
+    def link_submission_to_project(self, project: Entity, submission_url: str):
         submission_envelope = self.ingest_api.get_submission(submission_url)
         submission_entity = Entity('submission_envelope',
                                    submission_envelope['uuid']['uuid'],

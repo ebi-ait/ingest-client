@@ -433,6 +433,28 @@ class EntityMapTest(TestCase):
         entity_map.add_entity(Entity('product', 'product_2', {}, direct_links=[{}, {}, {}, {}]))
         self.assertEqual(entity_map.count_links(), 7)
 
+    def test_get_project__returns_project(self):
+        # given
+        entity_map = EntityMap()
+        project_entity = Entity('project', 'project_0', {})
+        entity_map.add_entity(project_entity)
+
+        # when
+        output = entity_map.get_project()
+
+        # then
+        self.assertEqual(output, project_entity)
+
+    def test_get_project__returns_none(self):
+        # given
+        entity_map = EntityMap()
+
+        # when
+        output = entity_map.get_project()
+
+        # then
+        self.assertEqual(output, None)
+
 
 class EntityLinkerTest(TestCase):
 
