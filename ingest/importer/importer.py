@@ -76,7 +76,7 @@ class XlsImporter:
             else:
                 entity_linker = EntityLinker(template_mgr, entity_map)
                 entity_linker.handle_links_from_spreadsheet()
-                submission = self._submit_new_entities(entity_map, submission_url, project_uuid)
+                submission = self._submit_new_entities(entity_map, submission_url)
 
             project = entity_map.get_project()
 
