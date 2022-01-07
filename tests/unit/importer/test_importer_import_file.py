@@ -186,11 +186,11 @@ class ImporterImportFileTest(XlsImporterBaseTest):
 
         # then:
         self.assertIn('submissionEnvelopes', relationships,
-                      'The submission envelope should be linked as project\'s submission envelopes.')
+                      'The submission envelope should be linked to project\'s submission envelopes.')
         self.assertIn('supplementaryFiles', relationships,
-                      'The files should be the linked to project\'s supplementary files.')
+                      'The files should be linked to project\'s supplementary files.')
         self.assertIn('project', relationships,
-                      'The supplementary file should have a linked to the project')
+                      'The supplementary file should have a link to the project')
 
     def _create_spreadsheet_json_with_supplementary_file(self):
         return {
