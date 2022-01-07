@@ -100,7 +100,7 @@ class XlsImporter:
             self.logger.info(f'Submission in {submission_url} is done!')
             return submission, template_mgr
 
-    def _submit_new_entities(self, entity_map, submission_url, project_uuid):
+    def _submit_new_entities(self, entity_map, submission_url):
         submission = self.submitter.add_entities(entity_map, submission_url)
         self.submitter.link_entities(entity_map, submission)
         return submission
