@@ -147,7 +147,7 @@ class XlsImporterTest(TestCase):
         self.assertEqual(self.mock_ingest_api.create_submission_error.call_count, 2)
 
     @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
-    def test_import_file__when_spreadsheet_has_no_project_reference__then_do_not_link_to_project(self, mock_link_to_project):
+    def test_import_file__when_no_project_reference__then_dont_link_to_project(self, mock_link_to_project):
         # given:
         self.importer.generate_json = Mock(return_value=({}, self.mock_template_mgr, []))
 
