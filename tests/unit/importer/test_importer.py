@@ -19,6 +19,13 @@ class XlsImporterTest(TestCase):
         self.importer = XlsImporter(self.mock_ingest_api)
         self.mock_template_mgr = Mock()
         self.mock_template_mgr.get_schema_url = Mock(return_value='')
+        self.spreadsheet_json_with_project = {
+            'project': {
+                'project-uuid': {
+                    'is_linking_reference': True,
+                }
+            }
+        }
 
     @patch('ingest.importer.importer.IngestWorkbook')
     @patch('ingest.importer.importer.WorkbookImporter')
@@ -102,8 +109,10 @@ class XlsImporterTest(TestCase):
         submission, _ = self.importer.import_file(file_path='path', submission_url='url')
 
         # then:
-        self.assertEqual([args.kwargs.get('relationship') for args in mock_link_entity.call_args_list],
-                         ['submissionEnvelopes', 'supplementaryFiles', 'project'])
+        # assertCountEqual also asserts elements are the same,
+        # see doc https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
+        self.assertCountEqual([args.kwargs.get('relationship') for args in mock_link_entity.call_args_list],
+                              ['submissionEnvelopes', 'supplementaryFiles', 'project'])
 
     def _create_spreadsheet_json_with_supplementary_file(self):
         return {
@@ -138,33 +147,118 @@ class XlsImporterTest(TestCase):
         self.assertEqual(self.mock_ingest_api.create_submission_error.call_count, 2)
 
     @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
-    def test_import_file__when_generate_json_has_no_project__then__do_not_link_to_project(self, mock_link_submission_to_project):
+    def test_import_file__when_generate_json_has_no_project__then__do_not_link_to_project(self, mock_link_to_project):
         # given:
-        self.importer.generate_json = Mock(return_value=({}, self.mock_template_mgr))
+        self.importer.generate_json = Mock(return_value=({}, self.mock_template_mgr, []))
 
         # when:
         submission, _ = self.importer.import_file(file_path='path', submission_url='url')
 
         # then:
-        mock_link_submission_to_project.assert_not_called()
+        mock_link_to_project.assert_not_called()
+        self.assertTrue(submission)
 
     @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     def test_import_file__when_has_project__then_link_to_project(self, mock_link_submission_to_project):
         # given:
-        spreadsheet_json = {
-            'project': {
-                'project-uuid': {
-                    'is_linking_reference': True,
-                }
-            }
-        }
-        self.importer.generate_json = Mock(return_value=(spreadsheet_json, self.mock_template_mgr, None))
+        self.importer.generate_json = Mock(
+            return_value=(self.spreadsheet_json_with_project, self.mock_template_mgr, None))
 
         # when:
         submission, _ = self.importer.import_file(file_path='path', submission_url='url')
 
         # then:
         mock_link_submission_to_project.assert_called_once()
+        self.assertTrue(submission)
+
+    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    def test_import_file__when_project_and_project_uuid_exists__then__link_to_project(self, mock_link_to_project):
+        # given:
+        self.importer.generate_json = Mock(
+            return_value=(self.spreadsheet_json_with_project, self.mock_template_mgr, []))
+
+        # when:
+        submission, _ = self.importer.import_file(file_path='path', submission_url='url', project_uuid='project_uuid')
+
+        # then:
+        mock_link_to_project.assert_called_once()
+        self.assertTrue(submission)
+
+    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    def test_import_file__when_generate_json_has_project_and_no_project_uuid__then__creates_and_links_to_project(self,
+                                                                                                                 mock_link_to_project):
+        # given:
+        spreadsheet_json_with_project = {
+            'project': {
+                'project-uuid': {
+                    'is_linking_reference': False,
+                    'is_reference': False,
+                    'content': {}
+                }
+            }
+        }
+        self.importer.generate_json = Mock(return_value=(spreadsheet_json_with_project, self.mock_template_mgr, []))
+
+        # when:
+        submission, _ = self.importer.import_file(file_path='path', submission_url='url')
+
+        # then:
+        self.mock_ingest_api.create_project.assert_called_once()
+        mock_link_to_project.assert_called_once()
+
+    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    def test_import_file__when_update_project_true_and_project_and_project_uuid_exists__then__updates_project(self, mock_link_to_project):
+        # given:
+        self.setup_existing_project_in_ingest_and_spreadsheet_with_project()
+
+        # when:
+        submission, _ = self.importer.import_file(file_path='path',
+                                                  submission_url='url',
+                                                  project_uuid='project-uuid',
+                                                  update_project=True)
+
+        # then:
+        self.mock_ingest_api.patch.assert_called_once_with('project-url', {'content': {'key': 'updated'}})
+        mock_link_to_project.assert_called_once()
+
+    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    def test_import_file__when_update_project_false_and_project_and_project_uuid_exists__then__dont_update_project(self, mock_link_to_project):
+        # given:
+        self.setup_existing_project_in_ingest_and_spreadsheet_with_project()
+
+        # when:
+        submission, _ = self.importer.import_file(file_path='path',
+                                                  submission_url='url',
+                                                  project_uuid='project-uuid')
+
+        # then:
+        self.mock_ingest_api.patch.assert_not_called()
+        mock_link_to_project.assert_called_once()
+
+    def setup_existing_project_in_ingest_and_spreadsheet_with_project(self):
+        spreadsheet_json_with_project = {
+            'project': {
+                'project-uuid': {
+                    'is_linking_reference': False,
+                    'is_reference': False,
+                    'content': {
+                        'key': 'updated'
+                    }
+                }
+            }
+        }
+        self.importer.generate_json = Mock(return_value=(spreadsheet_json_with_project, self.mock_template_mgr, []))
+        entity = {
+            'project-uuid': {
+                'content': {'key': 'value'},
+                '_links': {
+                    'self': {
+                        'href': 'project-url'
+                    }
+                }
+            }
+        }
+        self.mock_ingest_api.get_entity_by_uuid = lambda etype, uuid: entity.get(uuid)
 
     @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.update_entities')
     def test_import_file__when_is_update__then_update_entities(self, mock_update_entities):
@@ -189,3 +283,4 @@ class XlsImporterTest(TestCase):
         # then:
         mock_add_entities.assert_called_once()
         mock_link_entities.assert_called_once()
+        self.assertTrue(submission)

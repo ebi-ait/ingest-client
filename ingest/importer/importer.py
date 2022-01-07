@@ -70,7 +70,7 @@ class XlsImporter:
             entity_map = EntityMap.load(spreadsheet_json)
             self.ingest_api.delete_submission_errors(submission_url)
             project = entity_map.get_project()
-            project and self.submitter.link_submission_to_project(project, submission_url)
+            project_uuid and project and self.submitter.link_submission_to_project(project, submission_url)
 
             if errors:
                 self.report_errors(submission_url, errors)
@@ -80,8 +80,7 @@ class XlsImporter:
                 entity_linker = EntityLinker(template_mgr, entity_map)
                 entity_linker.handle_links_from_spreadsheet()
                 project and project_uuid and update_project and self.submitter.update_entity(project)
-                submission = self._submit_new_entities(entity_map, submission_url)
-                return submission, template_mgr
+                submission = self._submit_new_entities(entity_map, submission_url, project_uuid)
 
         except HTTPError as httpError:
             status = httpError.response.status_code
@@ -97,9 +96,12 @@ class XlsImporter:
             self.logger.info(f'Submission in {submission_url} is done!')
             return submission, template_mgr
 
-    def _submit_new_entities(self, entity_map, submission_url):
+    def _submit_new_entities(self, entity_map, submission_url, project_uuid):
         submission = self.submitter.add_entities(entity_map, submission_url)
         self.submitter.link_entities(entity_map, submission)
+        project = entity_map.get_project()
+        not project_uuid and project and self.submitter.link_submission_to_project(project, submission_url)
+
         return submission
 
     def report_errors(self, submission_url, errors):
