@@ -58,7 +58,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
 
     @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     def test_when_spreadsheet_has_project_and_no_project_uuid__then__creates_and_links_to_project(self,
-                                                                                                   mock_link_to_project):
+                                                                                                  mock_link_to_project):
         # given:
         spreadsheet_json_with_project = {
             'project': {
@@ -95,7 +95,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
 
     @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     def test_when_update_project_false_and_spreadsheet_has_project__then_dont_update_project(self,
-                                                                                              mock_link_to_project):
+                                                                                             mock_link_to_project):
         # given:
         self.setup_existing_project_in_ingest_and_spreadsheet_with_project()
 
@@ -182,11 +182,15 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         # when:
         submission, _ = self.importer.import_file(file_path='path', submission_url='url')
 
+        relationships = [args.kwargs.get('relationship') for args in mock_link_entity.call_args_list]
+
         # then:
-        # assertCountEqual also asserts elements are the same,
-        # see doc https://docs.python.org/3.2/library/unittest.html#unittest.TestCase.assertCountEqual
-        self.assertCountEqual([args.kwargs.get('relationship') for args in mock_link_entity.call_args_list],
-                              ['submissionEnvelopes', 'supplementaryFiles', 'project'])
+        self.assertIn('submissionEnvelopes', relationships,
+                      'The submission envelope should be linked as project\'s submission envelopes.')
+        self.assertIn('supplementaryFiles', relationships,
+                      'The files should be the linked to project\'s supplementary files.')
+        self.assertIn('project', relationships,
+                      'The supplementary file should have a linked to the project')
 
     def _create_spreadsheet_json_with_supplementary_file(self):
         return {
