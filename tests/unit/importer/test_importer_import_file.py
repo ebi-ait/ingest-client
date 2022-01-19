@@ -39,7 +39,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
             return_value=(self.spreadsheet_json_with_project_reference, self.mock_template_mgr, None))
 
         # when:
-        submission, _ = self.importer.import_file(file_path='path', submission_url='url')
+        submission, _ = self.importer.import_file(project_uuid='project-uuid', file_path='path', submission_url='url')
 
         # then:
         mock_link_submission_to_project.assert_called_once()
@@ -59,7 +59,8 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         self.assertTrue(submission)
 
     @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
-    def test_when_spreadsheet_has_project_and_no_project_uuid__then__creates_and_links_to_project(self, mock_link_to_project):
+    def test_when_spreadsheet_has_project_and_no_project_uuid__then__creates_and_links_to_project(self,
+                                                                                                  mock_link_to_project):
         # given:
         spreadsheet_json_with_project = {
             'project': {
@@ -175,21 +176,21 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         # then:
         self.mock_ingest_api.create_submission_error.assert_called_once_with(None, exception_json)
 
+    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_entity')
-    def test_link_supplementary_files_to_project(self, mock_link_entity):
+    def test_link_supplementary_files_to_project(self, mock_link_entity, mock_link_to_project):
         # given:
         spreadsheet_json = self._create_spreadsheet_json_with_supplementary_file()
 
         self.importer.generate_json = Mock(return_value=(spreadsheet_json, self.mock_template_mgr, None))
 
         # when:
-        submission, _ = self.importer.import_file(file_path='path', submission_url='url')
+        submission, _ = self.importer.import_file(project_uuid='project_uuid', file_path='path', submission_url='url')
 
         relationships = [args.kwargs.get('relationship') for args in mock_link_entity.call_args_list]
 
         # then:
-        self.assertIn('submissionEnvelopes', relationships,
-                      'The submission envelope should be linked to project\'s submission envelopes.')
+        mock_link_to_project.assert_called_once()
         self.assertIn('supplementaryFiles', relationships,
                       'The files should be linked to project\'s supplementary files.')
         self.assertIn('project', relationships,

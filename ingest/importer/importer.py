@@ -62,6 +62,9 @@ class XlsImporter:
     def import_file(self, file_path, submission_url, is_update=False, project_uuid=None, update_project=False) -> Tuple[
         Submission, TemplateManager]:
         try:
+            if project_uuid:
+                self.submitter.link_submission_to_project(project_uuid, submission_url)
+
             submission = None
             template_mgr = None
             spreadsheet_json, template_mgr, errors = self.generate_json(file_path, is_update, project_uuid=project_uuid,
@@ -79,12 +82,8 @@ class XlsImporter:
                 submission = self._submit_new_entities(entity_map, submission_url)
 
             project = entity_map.get_project()
-
             if project and project_uuid and update_project:
                 self.submitter.update_entity(project)
-
-            if project:
-                self.submitter.link_submission_to_project(project, submission_url)
 
         except HTTPError as httpError:
             status = httpError.response.status_code
@@ -102,6 +101,10 @@ class XlsImporter:
 
     def _submit_new_entities(self, entity_map, submission_url):
         submission = self.submitter.add_entities(entity_map, submission_url)
+        project = entity_map.get_project()
+        if project and project.is_new:
+            self.submitter.link_submission_to_project(project.uuid, submission_url)
+
         self.submitter.link_entities(entity_map, submission)
         return submission
 
