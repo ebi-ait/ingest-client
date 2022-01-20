@@ -71,15 +71,10 @@ class IngestSubmitter(object):
 
         return entity
 
-    def link_submission_to_project(self, project: Entity, submission_url: str):
+    def link_submission_to_project(self, project_uuid: str, submission_url: str):
+        project_entity = self.ingest_api.get_entity_by_uuid('projects', project_uuid)
         submission_envelope = self.ingest_api.get_submission(submission_url)
-        submission_entity = Entity('submission_envelope',
-                                   submission_envelope['uuid']['uuid'],
-                                   None,
-                                   is_linking_reference=True,
-                                   ingest_json=submission_envelope
-                                   )
-        self.link_entity(project, submission_entity, relationship='submissionEnvelopes')
+        self.ingest_api.link_entity(project_entity, submission_envelope, 'submissionEnvelopes')
 
     def link_entity(self, from_entity: Entity, to_entity: Entity, relationship: str, is_collection=True):
         if from_entity.is_linking_reference and not from_entity.ingest_json:
