@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from unittest import TestCase
 
-from ingest.utils.date import parse_date_string
+from ingest.utils.date import parse_date_string, date_to_json_string
 
 
 class TestDateUtils(TestCase):
@@ -35,3 +35,12 @@ class TestDateUtils(TestCase):
         # expect:
         with self.assertRaises(ValueError):
             parse_date_string(unknown)
+
+    def test_utc_date_to_json_string__returns_correct_string_with_z_suffix__given_utc_date_time(self):
+        # given:
+        utc_date_obj = datetime(year=2019, month=6, day=12, hour=9, minute=49, second=25, tzinfo=timezone.utc)
+
+        # expect:
+        expected_string = date_to_json_string(utc_date_obj)
+
+        self.assertEqual('2019-06-12T09:49:25Z', expected_string)
