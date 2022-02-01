@@ -14,3 +14,7 @@ def parse_date_string(date_str: str):
             pass
     raise ValueError(f'unknown date format for [{date_str}]')
 
+
+def date_to_json_string(date: datetime):
+    return date.isoformat().replace("+00:00", "Z")
+
