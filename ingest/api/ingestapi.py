@@ -88,6 +88,15 @@ class IngestApi:
         links = resource.get('_links', {})
         return links.get(link_name, {}).get('href')
 
+    def get_latest_schema_url(self, high_level_entity, domain_entity, concrete_entity):
+        latest_schema = self.get_schemas(
+            latest_only=True,
+            high_level_entity=high_level_entity,
+            domain_entity=domain_entity.split('/')[0],
+            concrete_entity=concrete_entity
+        )
+        return latest_schema[0]['_links']['json-schema']['href'] if latest_schema else None
+
     def get_schemas(self, latest_only=True, high_level_entity=None, domain_entity=None, concrete_entity=None):
         schema_url = self.get_schemas_url()
         all_schemas = []
@@ -309,8 +318,19 @@ class IngestApi:
                 return page.get('totalElements')
             return len(result["_embedded"][entity_type])
 
-    def create_project(self, submission_url, content, uuid=None):
-        return self.create_entity(submission_url, {'content': content}, "projects", uuid)
+    def create_project(self, submission_url: str, content: dict, uuid: str = None, token: str = None):
+        if not submission_url:
+            project = self._create_project_without_submission(content, token)
+        else:
+            project = self.create_entity(submission_url, {'content': content}, "projects", uuid)
+        return project
+
+    def _create_project_without_submission(self, content, token):
+        headers = dict.copy(self.get_headers())
+        if token:
+            headers['Authorization'] = token
+        project = self.session.post(f'{self.url}/projects', json={'content': content}, headers=headers)
+        return project
 
     def create_biomaterial(self, submission_url, content, uuid=None):
         return self.create_entity(submission_url, {'content': content}, "biomaterials", uuid)
@@ -500,4 +520,3 @@ class IngestApi:
     @staticmethod
     def __get_basic_header():
         return {'Content-type': 'application/json'}
-

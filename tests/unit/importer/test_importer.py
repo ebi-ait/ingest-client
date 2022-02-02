@@ -1,7 +1,7 @@
 import os
 from unittest.case import TestCase
 
-from mock import MagicMock, patch, Mock
+from mock import MagicMock, patch, Mock, call
 
 from ingest.api.ingestapi import IngestApi
 from ingest.importer.importer import SchemaRetrievalError
@@ -84,3 +84,35 @@ class XlsImporterTest(XlsImporterBaseTest):
         # then
         self.assertEqual(errors, ['error'])
         self.assertFalse(entity_map)
+
+    @patch('ingest.importer.importer.IngestWorkbook')
+    @patch('ingest.importer.importer.WorkbookImporter')
+    @patch('ingest.importer.importer.template_manager')
+    def test_import_project_from_workbook__no_errors(self, mock_template_manager, mock_wb_importer, mock_workbook):
+        mock_template_manager.build = MagicMock('template_manager', return_value='template_manager')
+        mock_project_metadata = {
+            'content': {
+                'project_title': 'title'
+            }
+        }
+        mock_spreadsheet_json = {
+            'project': {
+                '_unknown_0': mock_project_metadata
+            }
+        }
+
+        mock_wb_importer.return_value.do_import = Mock(return_value=(mock_spreadsheet_json, []))
+
+        self.mock_ingest_api.create_project = Mock(return_value={'uuid': {'uuid': 'project-uuid'}})
+
+        # when
+        workbook = Mock()
+        project_uuid, errors = self.importer.import_project_from_workbook(workbook, 'token')
+
+        # then
+        self.assertEqual(len(errors), 0, 'There should be no errors')
+        self.assertEqual(project_uuid, 'project-uuid')
+        mock_workbook.assert_called_with(workbook)
+        self.mock_ingest_api.create_project.assert_called_once_with(None,
+                                                                    content={'project_title': 'title'},
+                                                                    token='token')
