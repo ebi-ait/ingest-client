@@ -205,3 +205,20 @@ class IngestWorkbookTest(TestCase):
         # then:
         worksheet_errors = workbook_importer.validate_worksheets(is_update, ingest_workbook.importable_worksheets())
         self.assertTrue(len(worksheet_errors) == 0)
+
+    def test_select_importable_worksheets__returns_worksheets_matching_titles(self):
+        # given
+        project_worksheet_titles = ['Project - Contributors', 'Project - Funders', 'Project - Publications']
+        worksheet_titles = ['Donor organism']
+        worksheet_titles.extend(project_worksheet_titles)
+
+        ingest_workbook = create_ingest_workbook(worksheet_titles, ['name', 'organisation'])
+
+        # when
+        project_worksheets = ingest_workbook.select_importable_worksheets(['Project'])
+        project_worksheets_lc = ingest_workbook.select_importable_worksheets(['project'])
+
+        # then
+        self.assertEqual(project_worksheet_titles, [w.title for w in project_worksheets])
+        self.assertEqual(project_worksheet_titles, [w.title for w in project_worksheets_lc])
+
