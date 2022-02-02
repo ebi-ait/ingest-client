@@ -116,3 +116,26 @@ class XlsImporterTest(XlsImporterBaseTest):
         self.mock_ingest_api.create_project.assert_called_once_with(None,
                                                                     content={'project_title': 'title'},
                                                                     token='token')
+
+    @patch('ingest.importer.importer.IngestWorkbook')
+    @patch('ingest.importer.importer.WorkbookImporter')
+    @patch('ingest.importer.importer.template_manager')
+    def test_import_project_from_workbook__has_errors(self, mock_template_manager, mock_wb_importer, mock_workbook):
+        mock_template_manager.build = MagicMock('template_manager', return_value='template_manager')
+        mock_errors = [{
+            'details': 'error details'
+        }]
+
+        mock_wb_importer.return_value.do_import = Mock(return_value=(None, [mock_errors]))
+
+        self.mock_ingest_api.create_project = Mock()
+
+        # when
+        workbook = Mock()
+        project_uuid, errors = self.importer.import_project_from_workbook(workbook, 'token')
+
+        # then
+        mock_workbook.assert_called_with(workbook)
+        self.assertEqual(len(errors), 1, 'There should be 1 error')
+        self.mock_ingest_api.create_project.assert_not_called()
+        self.assertEqual(project_uuid, None)
