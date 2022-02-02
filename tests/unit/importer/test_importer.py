@@ -1,7 +1,7 @@
 import os
 from unittest.case import TestCase
 
-from mock import MagicMock, patch, Mock, call
+from mock import MagicMock, patch, Mock
 
 from ingest.api.ingestapi import IngestApi
 from ingest.importer.importer import SchemaRetrievalError
@@ -89,6 +89,7 @@ class XlsImporterTest(XlsImporterBaseTest):
     @patch('ingest.importer.importer.WorkbookImporter')
     @patch('ingest.importer.importer.template_manager')
     def test_import_project_from_workbook__no_errors(self, mock_template_manager, mock_wb_importer, mock_workbook):
+        # given
         mock_template_manager.build = MagicMock('template_manager', return_value='template_manager')
         mock_project_metadata = {
             'content': {
@@ -121,6 +122,7 @@ class XlsImporterTest(XlsImporterBaseTest):
     @patch('ingest.importer.importer.WorkbookImporter')
     @patch('ingest.importer.importer.template_manager')
     def test_import_project_from_workbook__has_errors(self, mock_template_manager, mock_wb_importer, mock_workbook):
+        # given
         mock_template_manager.build = MagicMock('template_manager', return_value='template_manager')
         mock_errors = [{
             'details': 'error details'
