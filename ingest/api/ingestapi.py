@@ -329,8 +329,10 @@ class IngestApi:
         headers = dict.copy(self.get_headers())
         if token:
             headers['Authorization'] = token
-        project = self.session.post(f'{self.url}/projects', json={'content': content}, headers=headers)
-        return project
+
+        r = self.session.post(f'{self.url}/projects', json={'content': content}, headers=headers)
+        r.raise_for_status()
+        return r.json()
 
     def create_biomaterial(self, submission_url, content, uuid=None):
         return self.create_entity(submission_url, {'content': content}, "biomaterials", uuid)
