@@ -133,7 +133,7 @@ class XlsImporterTest(XlsImporterBaseTest):
             }
         ]
 
-        mock_wb_importer.return_value.do_import = Mock(return_value=(None, [mock_errors]))
+        mock_wb_importer.return_value.do_import = Mock(return_value=(None, mock_errors))
 
         self.mock_ingest_api.create_project = Mock()
 

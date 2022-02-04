@@ -32,8 +32,7 @@ class IngestWorkbook:
         worksheets = []
         for title in worksheet_titles:
             worksheets.extend([IngestWorksheet(worksheet) for worksheet in self.workbook.worksheets
-                               if (title not in SPECIAL_TABS) and (title in worksheet.title or
-                                                                   title.lower() in worksheet.title.lower())])
+                               if (title not in SPECIAL_TABS) and (title.lower() in worksheet.title.lower())])
         return worksheets
 
     def get_schemas(self):
