@@ -111,8 +111,8 @@ class XlsImporterTest(XlsImporterBaseTest):
         project_uuid, errors = self.importer.import_project_from_workbook(workbook, 'token')
 
         # then
-        self.assertEqual(len(errors), 0, 'There should be no errors')
-        self.assertEqual(project_uuid, 'project-uuid')
+        self.assertEqual(len(errors), 0, 'There should be no errors.')
+        self.assertEqual(project_uuid, 'project-uuid', 'The project should have been created.')
         mock_workbook.assert_called_with(workbook)
         self.mock_ingest_api.create_project.assert_called_once_with(None,
                                                                     content={'project_title': 'title'},
@@ -124,9 +124,14 @@ class XlsImporterTest(XlsImporterBaseTest):
     def test_import_project_from_workbook__has_errors(self, mock_template_manager, mock_wb_importer, mock_workbook):
         # given
         mock_template_manager.build = MagicMock('template_manager', return_value='template_manager')
-        mock_errors = [{
-            'details': 'error details'
-        }]
+        mock_errors = [
+            {
+                'details': 'error details'
+            },
+            {
+                'details': 'error details 2'
+            }
+        ]
 
         mock_wb_importer.return_value.do_import = Mock(return_value=(None, [mock_errors]))
 
@@ -138,6 +143,6 @@ class XlsImporterTest(XlsImporterBaseTest):
 
         # then
         mock_workbook.assert_called_with(workbook)
-        self.assertEqual(len(errors), 1, 'There should be 1 error')
+        self.assertEqual(len(errors), 2, 'The errors from importing project from workbook must be returned.')
         self.mock_ingest_api.create_project.assert_not_called()
-        self.assertEqual(project_uuid, None)
+        self.assertEqual(project_uuid, None, 'The project should not have been created.')
