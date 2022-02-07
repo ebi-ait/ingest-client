@@ -205,5 +205,33 @@
         "title": "A single submission envelope"
       }
     }
+  },
+  {
+    "content": {
+      "describedBy": "https://schema.humancellatlas.org/type/file/6.3.0/analysis_file",
+      "schema_type": "file",
+      "file_core": {
+        "file_name": "experiment1_stonly_lowremove_scp_barcodes.tsv",
+        "format": "tsv",
+        "content_description": [
+          {
+            "text": "Molecular property identifier",
+            "ontology": "data:2110",
+            "ontology_label": "Molecular property identifier"
+          }
+        ],
+        "file_source": "SCP"
+      },
+      "matrix_cell_count": 6083
+    },
+    "fileName": "experiment1_stonly_lowremove_scp_barcodes.tsv",
+    "uuid": {
+      "uuid": "6aa7c4df-ca2a-433d-9942-0ed7d6e1f662"
+    },
+    "_links": {
+      "self": {
+        "href": "http://localhost:8080/files/60d9daddc78d1b6cc5ca5cef"
+      }
+    }
   }
 ]

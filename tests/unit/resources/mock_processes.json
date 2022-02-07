@@ -253,5 +253,19 @@
         "title": "A single submission envelope"
       }
     }
+  },
+  {
+    "content": {
+      "process_core": {
+        "process_id": "exp1"
+      },
+      "schema_type": "process",
+      "describedBy": "https://schema.humancellatlas.org/type/process/9.2.0/process"
+    },
+    "_links": {
+      "self": {
+        "href": "http://localhost:8080/processes/60d9dadec78d1b6cc5ca5d2f"
+      }
+    }
   }
 ]
