@@ -33,7 +33,7 @@ class Flattener:
 
         self._flatten_object(entity.content, row, parent_key=worksheet_name)
 
-        if entity.inputs:
+        if entity.input_biomaterials or entity.input_files:
             embedded_content = self.embed_link_columns(entity)
             self._flatten_object(embedded_content, row)
 
@@ -103,15 +103,11 @@ class Flattener:
             embedded_content.update(embedded_protocol_ids)
 
     def _embed_input_ids(self, entity: Entity, embedded_content):
-        # TODO only supports input biomaterials for now
-        # raise an error pls
-        inputs_by_type = {}
-        for i in entity.inputs:
-            i: Entity
-            inputs = inputs_by_type.get(i.concrete_type, [])
-            inputs.append(i)
-            inputs_by_type[i.concrete_type] = inputs
+        self._embed_input_biomaterial_ids(embedded_content, entity)
+        self._embed_input_file_ids(embedded_content, entity)
 
+    def _embed_input_biomaterial_ids(self, embedded_content, entity):
+        inputs_by_type = self._group_entities_by_concrete_type(entity.input_biomaterials)
         for concrete_type, inputs in inputs_by_type.items():
             input_ids_ids = [i.content['biomaterial_core']['biomaterial_id'] for i in inputs]
             input_ids_uuids = [i.uuid for i in inputs]
@@ -124,6 +120,30 @@ class Flattener:
                 }
             }
             embedded_content.update(embedded_input_ids)
+
+    def _embed_input_file_ids(self, embedded_content, entity):
+        inputs_by_type = self._group_entities_by_concrete_type(entity.input_files)
+        for concrete_type, inputs in inputs_by_type.items():
+            input_ids_ids = [i.content['file_core']['file_name'] for i in inputs]
+            input_ids_uuids = [i.uuid for i in inputs]
+            embedded_input_ids = {
+                concrete_type: {
+                    'file_core': {
+                        'file_name': input_ids_ids
+                    },
+                    'uuid': input_ids_uuids
+                }
+            }
+            embedded_content.update(embedded_input_ids)
+
+    def _group_entities_by_concrete_type(self, entities):
+        inputs_by_type = {}
+        for i in entities:
+            i: Entity
+            inputs = inputs_by_type.get(i.concrete_type, [])
+            inputs.append(i)
+            inputs_by_type[i.concrete_type] = inputs
+        return inputs_by_type
 
     def _extract_schema_url(self, content: dict, concrete_entity: str):
         schema_url = content.get('describedBy')

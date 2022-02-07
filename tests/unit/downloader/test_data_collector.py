@@ -47,10 +47,10 @@ class DataCollectorTest(unittest.TestCase):
         process = entity_dict['6197380b2807a377aad3a30c']
         protocols = [entity_dict['6197380b2807a377aad3a307']]
 
-        self.assertEqual(specimen.inputs, [donor])
+        self.assertEqual(specimen.input_biomaterials, [donor])
         self.assertEqual(specimen.process, process)
         self.assertEqual(specimen.protocols, protocols)
-        self.assertCountEqual([input.id for input in specimen.inputs], [donor.id], 'The specimen has no donor input.')
+        self.assertCountEqual([input.id for input in specimen.input_biomaterials], [donor.id], 'The specimen has no donor input.')
         self.assertEqual(specimen.process.id, process.id,
                          'The process which links the specimen to the donor is missing.')
         self.assertEqual([protocol.id for protocol in specimen.protocols], [protocol.id for protocol in protocols],
@@ -61,7 +61,7 @@ class DataCollectorTest(unittest.TestCase):
         assay_process = entity_dict['6197380b2807a377aad3a30e']
         assay_process_protocols = [entity_dict['6197380b2807a377aad3a30a'], entity_dict['6197380b2807a377aad3a30b']]
 
-        self.assertCountEqual([input.id for input in file.inputs], [cell_suspension.id],
+        self.assertCountEqual([input.id for input in file.input_biomaterials], [cell_suspension.id],
                               'The sequencing file has no cell suspension input.')
         self.assertEqual(file.process.id, assay_process.id,
                          'The process which links the file to the cell suspension is missing.')
