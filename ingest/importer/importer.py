@@ -1,7 +1,7 @@
-import json
 import logging
-from typing import Tuple
+from typing import Tuple, List
 
+from openpyxl import Workbook
 from requests import HTTPError
 
 from ingest.api.ingestapi import IngestApi
@@ -125,6 +125,39 @@ class XlsImporter:
         wb.add_schemas_worksheet(template_mgr.get_schemas())
         return wb.save(file_path)
 
+    def import_project_from_workbook(self, workbook: Workbook, token: str) -> (str, List[dict]):
+        project_metadata_json, errors = self._generate_project_json_from_workbook(workbook)
+
+        if errors:
+            return None, errors
+        else:
+            ingest_project = self.ingest_api.create_project(None, content=project_metadata_json, token=token)
+            project_uuid = ingest_project['uuid']['uuid']
+            return project_uuid, []
+
+    def _generate_project_json_from_workbook(self, workbook):
+        ingest_workbook = IngestWorkbook(workbook)
+        template_mgr = self._setup_template_manager_for_project_import()
+        workbook_importer = WorkbookImporter(template_mgr)
+        spreadsheet_json, errors = workbook_importer.do_import(ingest_workbook, False, worksheet_titles=['Project'])
+
+        if errors:
+            return None, errors
+        else:
+            projects = list(spreadsheet_json.get('project').values())
+            project = projects[0] if projects else None
+            project_metadata = project.get('content')
+            return project_metadata, []
+
+    def _setup_template_manager_for_project_import(self):
+        try:
+            project_schema_url = self.ingest_api.get_latest_schema_url('type', 'project', 'project')
+            template_mgr = template_manager.build([project_schema_url], self.ingest_api)
+        except Exception as e:
+            raise SchemaRetrievalError(
+                f'There was an error retrieving the project schema information to import the project. {str(e)}')
+        return template_mgr
+
 
 _PROJECT_ID = 'project_0'
 _PROJECT_TYPE = 'project'
@@ -214,9 +247,15 @@ class WorkbookImporter:
         self.template_mgr = template_mgr
         self.logger = logging.getLogger(__name__)
 
-    def do_import(self, workbook: IngestWorkbook, is_update, project_uuid=None, update_project=False):
+    def do_import(self, workbook: IngestWorkbook, is_update, project_uuid=None, update_project=False,
+                  worksheet_titles: List[str] = None):
         registry = _ImportRegistry(self.template_mgr)
-        importable_worksheets = workbook.importable_worksheets()
+
+        if worksheet_titles:
+            importable_worksheets = workbook.select_importable_worksheets(worksheet_titles)
+        else:
+            importable_worksheets = workbook.importable_worksheets()
+
         workbook_errors = self.validate_worksheets(is_update, importable_worksheets)
 
         importable_worksheets = [ws for ws in importable_worksheets]

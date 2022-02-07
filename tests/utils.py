@@ -25,7 +25,7 @@ def create_mocked_workbook_importer(entity_names):
     return WorkbookImporter(template_manager)
 
 
-def create_ingest_workbook(sheet_names, column_names, include_default_sheet=False):
+def create_ingest_workbook(sheet_names, column_names, include_default_sheet=False) -> IngestWorkbook:
     header_row_idx = 4
 
     workbook = Workbook()

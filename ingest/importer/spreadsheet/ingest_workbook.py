@@ -1,3 +1,5 @@
+from typing import List
+
 from openpyxl import Workbook, load_workbook
 
 from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
@@ -25,6 +27,13 @@ class IngestWorkbook:
             return self.workbook[worksheet_title.lower()]
 
         return None
+
+    def select_importable_worksheets(self, worksheet_titles: List[str]):
+        worksheets = []
+        for title in worksheet_titles:
+            worksheets.extend([IngestWorksheet(worksheet) for worksheet in self.workbook.worksheets
+                               if (title not in SPECIAL_TABS) and (title.lower() in worksheet.title.lower())])
+        return worksheets
 
     def get_schemas(self):
         schemas = []

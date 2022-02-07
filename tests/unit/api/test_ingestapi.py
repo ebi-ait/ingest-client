@@ -284,3 +284,28 @@ class IngestApiTest(TestCase):
         response.json.return_value = mocked_responses.get(url)
         response.raise_for_status = Mock()
         return response
+
+    @patch('ingest.api.ingestapi.create_session_with_retry')
+    def test_get_latest_schema_url(self, mock_session):
+        # given
+        ingest_api = IngestApi(token_manager=self.token_manager)
+        latest_schema_url = 'latest-project-schema-url'
+        ingest_api.get_schemas = MagicMock(return_value=[{'_links': {'json-schema': {'href': latest_schema_url}}}])
+
+        # when
+        result = ingest_api.get_latest_schema_url('type', 'project', 'project')
+
+        # then
+        self.assertEqual(result, latest_schema_url)
+
+    @patch('ingest.api.ingestapi.create_session_with_retry')
+    def test_get_latest_schema_url__empty_result(self, mock_session):
+        # given
+        ingest_api = IngestApi(token_manager=self.token_manager)
+        ingest_api.get_schemas = MagicMock(return_value=[])
+
+        # when
+        result = ingest_api.get_latest_schema_url('type', 'project', 'project')
+
+        # then
+        self.assertEqual(result, None)
