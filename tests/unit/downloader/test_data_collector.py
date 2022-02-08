@@ -84,8 +84,8 @@ class DataCollectorTest(unittest.TestCase):
                          [protocol.id for protocol in assay_process_protocols],
                          'The protocols for the process which links the file to the cell suspension is incorrect.')
 
-        self.assertCountEqual([input.id for input in analysis_file.input_files], [analysis_file.id],
-                              'The analysis file has no sequence file input.')
+        self.assertCountEqual([input.id for input in analysis_file.input_files], [sequence_file1.id, sequence_file2.id],
+                              'The analysis file has no sequence file inputs.')
         self.assertCountEqual([input.id for input in analysis_file.input_biomaterials], [],
                               'The analysis file has no biomaterial input.')
         self.assertEqual(analysis_file.process.id, analysis_process.id,
