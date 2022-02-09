@@ -443,10 +443,8 @@ class IngestApi:
 
         self.logger.info('fromUri ' + from_uri + ' toUri:' + to_uri)
 
-        headers = {
-            'Content-type': 'text/uri-list',
-            'Authorization': self.get_headers()['Authorization']
-        }
+        headers = self.get_headers()
+        headers['Content-type'] = 'text/uri-list'
 
         if is_collection:
             r = self.session.post(from_uri.rsplit("{")[0],
