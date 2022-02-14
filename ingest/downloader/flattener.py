@@ -1,3 +1,4 @@
+from itertools import groupby
 from typing import List
 
 from ingest.downloader.entity import Entity
@@ -107,8 +108,8 @@ class Flattener:
         self._embed_input_file_ids(embedded_content, entity)
 
     def _embed_input_biomaterial_ids(self, embedded_content, entity):
-        inputs_by_type = self._group_entities_by_concrete_type(entity.input_biomaterials)
-        for concrete_type, inputs in inputs_by_type.items():
+        for concrete_type, inputs_iter in groupby(entity.input_biomaterials, lambda e: e.concrete_type):
+            inputs = list(inputs_iter)
             input_ids_ids = [i.content['biomaterial_core']['biomaterial_id'] for i in inputs]
             input_ids_uuids = [i.uuid for i in inputs]
             embedded_input_ids = {
@@ -122,8 +123,8 @@ class Flattener:
             embedded_content.update(embedded_input_ids)
 
     def _embed_input_file_ids(self, embedded_content, entity):
-        inputs_by_type = self._group_entities_by_concrete_type(entity.input_files)
-        for concrete_type, inputs in inputs_by_type.items():
+        for concrete_type, inputs_iter in groupby(entity.input_files, lambda e: e.concrete_type):
+            inputs = list(inputs_iter)
             input_ids_ids = [i.content['file_core']['file_name'] for i in inputs]
             input_ids_uuids = [i.uuid for i in inputs]
             embedded_input_ids = {
@@ -135,15 +136,6 @@ class Flattener:
                 }
             }
             embedded_content.update(embedded_input_ids)
-
-    def _group_entities_by_concrete_type(self, entities):
-        inputs_by_type = {}
-        for i in entities:
-            i: Entity
-            inputs = inputs_by_type.get(i.concrete_type, [])
-            inputs.append(i)
-            inputs_by_type[i.concrete_type] = inputs
-        return inputs_by_type
 
     def _extract_schema_url(self, content: dict, concrete_entity: str):
         schema_url = content.get('describedBy')
