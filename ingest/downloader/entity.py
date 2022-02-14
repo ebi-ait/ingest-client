@@ -6,7 +6,8 @@ class Entity:
         self._content = content
         self._uuid = uuid
         self._id = id
-        self._inputs = None
+        self._input_biomaterials = None
+        self._input_files = None
         self._process = None
         self._protocols = None
 
@@ -37,8 +38,12 @@ class Entity:
         return self._id
 
     @property
-    def inputs(self):
-        return self._inputs
+    def input_biomaterials(self):
+        return self._input_biomaterials
+
+    @property
+    def input_files(self):
+        return self._input_files
 
     @property
     def protocols(self):
@@ -56,10 +61,12 @@ class Entity:
     def domain_type(self):
         return self._content.get('describedBy').split('/')[4]
 
-    def set_input(self, inputs, process, protocols):
+    def set_input(self, input_biomaterials, input_files, process, protocols):
         assert isinstance(process, Entity)
         assert all(isinstance(protocol, Entity) for protocol in protocols)
-        assert all(isinstance(input, Entity) for input in inputs)
-        self._inputs = inputs
+        assert all(isinstance(input, Entity) for input in input_biomaterials)
+        assert all(isinstance(input, Entity) for input in input_files)
+        self._input_files = input_files
+        self._input_biomaterials = input_biomaterials
         self._process = process
         self._protocols = protocols

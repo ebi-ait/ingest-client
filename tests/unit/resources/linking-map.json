@@ -28,6 +28,16 @@
         "6197380b2807a377aad3a302"
       ],
       "inputFiles": []
+    },
+    "60d9dadec78d1b6cc5ca5d2f": {
+      "protocols": [
+        "60d9daddc78d1b6cc5ca5cdc"
+      ],
+      "inputBiomaterials": [],
+      "inputFiles": [
+        "6197380b2807a377aad3a305",
+        "6197380b2807a377aad3a306"
+      ]
     }
   },
   "protocols": {},
@@ -60,11 +70,20 @@
       "derivedByProcesses": [
         "6197380b2807a377aad3a30e"
       ],
-      "inputToProcesses": []
+      "inputToProcesses": [
+        "60d9dadec78d1b6cc5ca5d2f"
+      ]
     },
     "6197380b2807a377aad3a305": {
       "derivedByProcesses": [
         "6197380b2807a377aad3a30e"
+      ],
+      "inputToProcesses": [
+      ]
+    },
+    "60d9daddc78d1b6cc5ca5cef": {
+      "derivedByProcesses": [
+        "60d9dadec78d1b6cc5ca5d2f"
       ],
       "inputToProcesses": []
     }

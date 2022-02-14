@@ -326,5 +326,31 @@
         "title": "A single submission envelope"
       }
     }
+  },
+  {
+    "content": {
+      "describedBy": "https://schema.humancellatlas.org/type/protocol/analysis/9.2.0/analysis_protocol",
+      "schema_type": "protocol",
+      "protocol_core": {
+        "protocol_id": "PCA_analysis",
+        "protocol_name": "PCA_analysis",
+        "protocol_description": "We then normalized and transformed the filtered count matrix. We performed dimensionality reduction, clustering and visualization on the log-transformed matrix using a standard procedure. We identified cluster-specific gene expression by differential expression analyses between nuclei within the cluster and outside of the cluster16 using Welch’s t test and Fisher’s exact test; controlled false discovery rates (FDR) at 5% using the Benjamini–Hochberg procedure21, and annotated putative cell types based on legacy signatures of human and mouse brain cells."
+      },
+      "type": {
+        "text": "analysis of matrices",
+        "ontology": "EFO:0030024",
+        "ontology_label": "analysis of matrices"
+      },
+      "matrix": {
+        "data_normalization_methods": [
+          "TPM (transcripts per kilobase million)"
+        ]
+      }
+    },
+    "_links": {
+      "self": {
+        "href": "http://localhost:8080/protocols/60d9daddc78d1b6cc5ca5cdc"
+      }
+    }
   }
 ]

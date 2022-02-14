@@ -47,32 +47,57 @@ class DataCollectorTest(unittest.TestCase):
         process = entity_dict['6197380b2807a377aad3a30c']
         protocols = [entity_dict['6197380b2807a377aad3a307']]
 
-        self.assertEqual(specimen.inputs, [donor])
+        self.assertEqual(specimen.input_biomaterials, [donor])
         self.assertEqual(specimen.process, process)
         self.assertEqual(specimen.protocols, protocols)
-        self.assertCountEqual([input.id for input in specimen.inputs], [donor.id], 'The specimen has no donor input.')
+        self.assertCountEqual([input.id for input in specimen.input_biomaterials], [donor.id],
+                              'The specimen has no donor input.')
         self.assertEqual(specimen.process.id, process.id,
                          'The process which links the specimen to the donor is missing.')
         self.assertEqual([protocol.id for protocol in specimen.protocols], [protocol.id for protocol in protocols],
                          'The protocols for the process which links the specimen to the donor are incorrect.')
 
         cell_suspension = entity_dict['6197380b2807a377aad3a304']
-        file = entity_dict['6197380b2807a377aad3a306']
+        sequence_file1 = entity_dict['6197380b2807a377aad3a305']
+        sequence_file2 = entity_dict['6197380b2807a377aad3a306']
         assay_process = entity_dict['6197380b2807a377aad3a30e']
         assay_process_protocols = [entity_dict['6197380b2807a377aad3a30a'], entity_dict['6197380b2807a377aad3a30b']]
+        analysis_process = entity_dict['60d9dadec78d1b6cc5ca5d2f']
+        analysis_process_protocols = [entity_dict['60d9daddc78d1b6cc5ca5cdc']]
+        analysis_file = entity_dict['60d9daddc78d1b6cc5ca5cef']
 
-        self.assertCountEqual([input.id for input in file.inputs], [cell_suspension.id],
+        self.assertCountEqual([input.id for input in sequence_file1.input_biomaterials], [cell_suspension.id],
                               'The sequencing file has no cell suspension input.')
-        self.assertEqual(file.process.id, assay_process.id,
+        self.assertCountEqual([input.id for input in sequence_file2.input_biomaterials], [cell_suspension.id],
+                              'The sequencing file has no cell suspension input.')
+        self.assertCountEqual([input.id for input in sequence_file1.input_files], [],
+                              'The sequencing file should have no file input.')
+        self.assertCountEqual([input.id for input in sequence_file2.input_files], [],
+                              'The sequencing file should have no file input.')
+
+        self.assertEqual(sequence_file2.process.id, assay_process.id,
                          'The process which links the file to the cell suspension is missing.')
-        self.assertEqual([protocol.id for protocol in file.protocols],
+        self.assertEqual([protocol.id for protocol in sequence_file2.protocols],
                          [protocol.id for protocol in assay_process_protocols],
                          'The protocols for the process which links the file to the cell suspension is incorrect.')
+        self.assertEqual([protocol.id for protocol in sequence_file1.protocols],
+                         [protocol.id for protocol in assay_process_protocols],
+                         'The protocols for the process which links the file to the cell suspension is incorrect.')
+
+        self.assertCountEqual([input.id for input in analysis_file.input_files], [sequence_file1.id, sequence_file2.id],
+                              'The analysis file has no sequence file inputs.')
+        self.assertCountEqual([input.id for input in analysis_file.input_biomaterials], [],
+                              'The analysis file has no biomaterial input.')
+        self.assertEqual(analysis_file.process.id, analysis_process.id,
+                         'The process which links the sequence file to the analysis is missing.')
+        self.assertEqual([protocol.id for protocol in analysis_file.protocols],
+                         [protocol.id for protocol in analysis_process_protocols],
+                         'The protocols for the process which links the sequence file to the analysis file is incorrect.')
 
     def _mock_ingest_api(self, project):
         self.mock_ingest_api.get_submission_by_uuid.return_value = project['submission']
         self.mock_ingest_api.get_related_project.return_value = project['project']
-        response =  MagicMock()
+        response = MagicMock()
         response.json.return_value = project['linking_map']
         self.mock_ingest_api.get.return_value = response
         self.mock_ingest_api.get_related_entities.side_effect = \

@@ -71,9 +71,10 @@ class DataCollector:
 
                 process = entity_dict[process_id]
                 protocols = [entity_dict[protocol_id] for protocol_id in protocol_ids]
-                inputs = [entity_dict[id] for id in input_biomaterial_ids + input_files_ids]
+                input_biomaterials = [entity_dict[id] for id in input_biomaterial_ids]
+                input_files = [entity_dict[id] for id in input_files_ids]
 
-                entity.set_input(inputs, process, protocols)
+                entity.set_input(input_biomaterials, input_files, process, protocols)
 
     def __get_entities_by_submission_and_type(self, data_by_submission, submission, entity_type):
         entity_json = \
