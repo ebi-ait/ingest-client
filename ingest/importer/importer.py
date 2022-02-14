@@ -86,6 +86,7 @@ class XlsImporter:
                 self.submitter.update_entity(project)
 
         except HTTPError as httpError:
+            self.logger.exception(httpError)
             status = httpError.response.status_code
             text = httpError.response.text
             importer_error = ImporterError(f'Received an HTTP {status} from  {httpError.request.url}: {text}')
