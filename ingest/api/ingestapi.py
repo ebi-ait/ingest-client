@@ -108,7 +108,7 @@ class IngestApi:
                 response_j = json.loads(r.text)
                 all_schemas = list(self.get_related_entities("latestSchemas", response_j, "schemas"))
         else:
-            all_schemas = list(self.get_entities(schema_url, "schemas"))
+            all_schemas = list(self.get_all(schema_url, "schemas"))
 
         if high_level_entity:
             all_schemas = list(filter(lambda schema: schema.get('highLevelEntity') == high_level_entity, all_schemas))
