@@ -1,0 +1,28 @@
+{
+  "project": {
+    "dummy-project-id": {
+      "content": {
+        "key": "project_1"
+      }
+    }
+  },
+  "biomaterial": {
+    "biomaterial_id_1": {
+      "content": {
+        "key": "biomaterial_1"
+      },
+      "links_by_entity": {
+        "file": [
+          "file_id_1"
+        ]
+      }
+    }
+  },
+  "file": {
+    "file_id_1": {
+      "content": {
+        "key": "file_1"
+      }
+    }
+  }
+}

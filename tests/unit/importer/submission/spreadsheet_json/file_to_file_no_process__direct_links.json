@@ -1,0 +1,110 @@
+{
+  "project": {
+    "dummy-project-id": {
+      "content": {
+        "key": "project_1"
+      }
+    }
+  },
+  "file": {
+    "file_id_1": {
+      "content": {
+        "key": "file_1"
+      },
+      "direct_links": [
+        {
+          "entity": "process",
+          "id": "process_id_1",
+          "relationship": "inputToProcesses"
+        },
+        {
+          "entity": "project",
+          "id": "dummy-project-id",
+          "relationship": "project",
+          "is_collection": false
+        }
+      ]
+    },
+    "file_id_2": {
+      "content": {
+        "key": "file_2"
+      },
+      "links_by_entity": {
+        "file": [
+          "file_id_1"
+        ]
+      },
+      "direct_links": [
+        {
+          "entity": "process",
+          "id": "process_id_1",
+          "relationship": "derivedByProcesses"
+        },
+        {
+          "entity": "project",
+          "id": "dummy-project-id",
+          "relationship": "project",
+          "is_collection": false
+        }
+      ]
+    }
+  },
+  "process": {
+    "process_id_1": {
+      "content": {
+        "key": "process_1"
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "dummy-project-id",
+          "relationship": "projects"
+        },
+        {
+          "entity": "project",
+          "id": "dummy-project-id",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "protocol",
+          "id": "protocol_id_1",
+          "relationship": "protocols"
+        },
+        {
+          "entity": "protocol",
+          "id": "protocol_id_2",
+          "relationship": "protocols"
+        }
+      ]
+    }
+  },
+  "protocol": {
+    "protocol_id_1": {
+      "content": {
+        "key": "protocol_1"
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "dummy-project-id",
+          "relationship": "project",
+          "is_collection": false
+        }
+      ]
+    },
+    "protocol_id_2": {
+      "content": {
+        "key": "protocol_2"
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "dummy-project-id",
+          "relationship": "project",
+          "is_collection": false
+        }
+      ]
+    }
+  }
+        }

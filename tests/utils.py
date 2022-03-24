@@ -1,4 +1,6 @@
 import os
+import json
+
 from openpyxl import Workbook
 from mock import Mock, MagicMock
 from ingest.importer.importer import WorkbookImporter
@@ -50,3 +52,8 @@ def delete_file(file):
         print(f'Deleting file {file}')
         os.remove(file)
         print(f'File {file} deleted')
+
+def load_json(filepath):
+    with open(filepath, encoding='utf-8') as fh:
+        data = json.loads(fh.read())
+    return data
