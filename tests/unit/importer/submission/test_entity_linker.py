@@ -72,44 +72,16 @@ class EntityLinkerTest(TestCase):
 
     def test_generate_direct_links_multiple_process_links(self):
         # given
-        spreadsheet_json = {
-            'project': {
-                'dummy-project-id': {
-                    'content': {
-                        'key': 'project_1'
-                    }
-                }
-            },
-            'biomaterial': {
-                'biomaterial_id_1': {
-                    'content': {
-                        'key': 'biomaterial_1'
-                    },
-                    'links_by_entity': {
-                        'process': ['process_id_1', 'process_id_2']
-                    }
-                }
-            },
-            'process': {
-                'process_id_1': {
-                    'content': {
-                        'key': 'process_1'
-                    }
-                },
-                'process_id_2': {
-                    'content': {
-                        'key': 'process_2'
-                    }
-                }
-            }
-        }
+        spreadsheet_json = load_json(f'{self.json_dir}/multiple_process_links.json')
 
         entity_map = EntityMap.load(spreadsheet_json)
         entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
 
+        # when
         with self.assertRaises(MultipleProcessesFound) as context:
             entity_linker.handle_links_from_spreadsheet()
 
+        # then
         self.assertEqual('biomaterial', context.exception.from_entity.type)
         self.assertEqual(['process_id_1', 'process_id_2'], context.exception.process_ids)
 
