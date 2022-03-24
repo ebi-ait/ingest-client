@@ -2,7 +2,6 @@ from unittest import TestCase
 
 from ingest.importer.submission.entity import Entity
 from ingest.importer.submission.entity_map import EntityMap
-from tests.unit.importer.submission.test_submission import _create_spreadsheet_json
 
 
 class EntityMapTest(TestCase):
@@ -145,3 +144,74 @@ class EntityMapTest(TestCase):
 
         # then
         self.assertEqual(output, None)
+
+
+def _create_spreadsheet_json():
+    spreadsheet_json = {
+        'project': {
+            'dummy-project-id': {
+                'content': {
+                    'key': 'project_1'
+                }
+            }
+        },
+        'biomaterial': {
+            'biomaterial_id_1': {
+                'content': {
+                    'key': 'biomaterial_1'
+                }
+            },
+            'biomaterial_id_2': {
+                'content': {
+                    'key': 'biomaterial_2'
+                },
+                'links_by_entity': {
+                    'biomaterial': ['biomaterial_id_1'],
+                    'process': ['process_id_1']
+                }
+            },
+            'biomaterial_id_3': {
+                'content': {
+                    'key': 'biomaterial_3'
+                },
+                'links_by_entity': {
+                    'biomaterial': ['biomaterial_id_2'],
+                    'process': ['process_id_2']
+                }
+            },
+            'biomaterial_id_4': {
+                'content': {
+                    'key': 'biomaterial_3'
+                },
+                'links_by_entity': {
+                    'biomaterial': ['biomaterial_id_2'],
+                    'process': ['process_id_2']
+                },
+                'external_links_by_entity': {
+                    'biomaterial': ['biomaterial_uuid']
+                },
+
+            },
+        },
+        'file': {
+            'file_id_1': {
+                'content': {
+                    'file_core': {
+                        'file_name': 'file_name'
+                    }
+                },
+                'links_by_entity': {
+                    'biomaterial': ['biomaterial_id_3']
+                }
+            }
+        },
+        'protocol': {
+            'protocol_id_1': {
+                'content': {
+                    'key': 'protocol_1'
+                }
+            }
+        }
+    }
+
+    return spreadsheet_json
