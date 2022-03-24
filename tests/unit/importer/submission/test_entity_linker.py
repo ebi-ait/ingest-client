@@ -114,7 +114,7 @@ class EntityLinkerTest(TestCase):
 
     def test_handle_links_from_spreadsheet__with_external_links(self):
         # given
-        spreadsheet_json = load_json(os.path.dirname(__file__) + '/spreadsheet_with_external_links.json')
+        spreadsheet_json = load_json(f'{self.json_dir}/external_links.json')
         mocked_template_manager = MagicMock(name='template_manager')
         mocked_template_manager.get_schema_url = MagicMock(return_value='url')
         self.mocked_template_manager = mocked_template_manager
