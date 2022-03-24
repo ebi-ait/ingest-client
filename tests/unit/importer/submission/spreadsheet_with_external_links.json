@@ -17,6 +17,14 @@
       "content":{
         "dummy": "cell-suspension"
       }
+    },
+    "cell_ID_1": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "cell_suspension",
+      "content":{
+        "dummy": "cell-suspension"
+      }
     }
   },
   "protocol": {

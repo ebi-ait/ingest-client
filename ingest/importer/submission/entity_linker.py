@@ -43,19 +43,25 @@ class EntityLinker(object):
 
         if external_links_by_entity or links_by_entity:
             linking_process = self._create_or_get_process(entity)
-            self.entity_map.add_entity(linking_process)
 
+            self.entity_map.add_entity(linking_process)
             self._link_process_to_project(linking_process, project)
 
-        if not external_links_by_entity:
-            linked_biomaterial_ids = links_by_entity.get('biomaterial', [])
-            linked_file_ids = links_by_entity.get('file', [])
+            linked_input_biomaterial_ids = []
+            linked_input_file_ids = []
 
-            if linked_biomaterial_ids or linked_file_ids:
+            if links_by_entity.get('biomaterial') or links_by_entity.get('file'):
+                linked_input_biomaterial_ids = links_by_entity.get('biomaterial', [])
+                linked_input_file_ids = links_by_entity.get('file', [])
+            elif external_links_by_entity.get('biomaterial') or external_links_by_entity.get('file'):
+                linked_input_biomaterial_ids = external_links_by_entity.get('biomaterial', [])
+                linked_input_file_ids = links_by_entity.get('file', [])
+
+            if linked_input_biomaterial_ids or linked_input_file_ids:
                 self._link_entity_as_output_to_process(entity, linking_process)
                 self._link_protocols_to_process(entity, linking_process)
-                self._link_input_biomaterials_to_entity(linked_biomaterial_ids, linking_process)
-                self._link_input_files_to_entity(linked_file_ids, linking_process)
+                self._link_input_biomaterials_to_entity(linked_input_biomaterial_ids, linking_process)
+                self._link_input_files_to_entity(linked_input_file_ids, linking_process)
 
     def _link_entity_as_output_to_process(self, entity: Entity, linking_process: Entity):
         entity.direct_links.append({
@@ -84,7 +90,14 @@ class EntityLinker(object):
 
     def _link_protocols_to_process(self, entity: Entity, linking_process: Entity):
         links_by_entity = entity.links_by_entity
-        linked_protocol_ids = links_by_entity.get('protocol', [])
+        external_links_by_entity = entity.external_links
+
+        linked_protocol_ids = []
+        if links_by_entity.get('protocol'):
+            linked_protocol_ids = links_by_entity.get('protocol', [])
+        elif external_links_by_entity.get('protocol'):
+            linked_protocol_ids = external_links_by_entity.get('protocol', [])
+
         for linked_protocol_id in linked_protocol_ids:
             linking_process.direct_links.append({
                 'entity': 'protocol',
