@@ -18,28 +18,28 @@ class EntityLinkerTest(TestCase):
         self.json_dir = os.path.join(self.script_dir, 'spreadsheet_json')
 
     def test_convert_links__biomaterial_to_biomaterial_has_process(self):
-        self._test_convert_links('biomaterial_to_biomaterial_has_process.json',
-                                 'biomaterial_to_biomaterial_has_process__direct_links.json')
+        self._test_convert_links('biomaterial_to_biomaterial_has_process__before_convert.json',
+                                 'biomaterial_to_biomaterial_has_process__after_convert.json')
 
     def test_convert_links__biomaterial_to_biomaterial_no_process(self):
-        self._test_convert_links('biomaterial_to_biomaterial_no_process.json',
-                                 'biomaterial_to_biomaterial_no_process__direct_links.json')
+        self._test_convert_links('biomaterial_to_biomaterial_no_process__before_convert.json',
+                                 'biomaterial_to_biomaterial_no_process__after_convert.json')
 
     def test_convert_links__file_to_file_no_process(self):
-        self._test_convert_links('file_to_file_no_process.json',
-                                 'file_to_file_no_process__direct_links.json')
+        self._test_convert_links('file_to_file_no_process__before_convert.json',
+                                 'file_to_file_no_process__after_convert.json')
 
     def test_convert_links__file_to_file_has_process(self):
-        self._test_convert_links('file_to_file_has_process.json',
-                                 'file_to_file_has_process__direct_links.json')
+        self._test_convert_links('file_to_file_has_process__before_convert.json',
+                                 'file_to_file_has_process__after_convert.json')
 
     def test_convert_links__file_to_biomaterial_has_process(self):
-        self._test_convert_links('file_to_biomaterial_has_process.json',
-                                 'file_to_biomaterial_has_process__direct_links.json')
+        self._test_convert_links('file_to_biomaterial_has_process__before_convert.json',
+                                 'file_to_biomaterial_has_process__after_convert.json')
 
     def test_convert_links__external_links(self):
-        self._test_convert_links('external_links.json',
-                                 'external_links__direct_links.json')
+        self._test_convert_links('external_links__before_convert.json',
+                                 'external_links__after_convert.json')
 
     def test_convert_links__link_not_found_error(self):
         # given
