@@ -150,4 +150,70 @@ class EntityMapTest(TestCase):
         # then
         self.assertEqual(output, None)
 
+    def test_add_entity(self):
+        # given
+        entity_map = EntityMap()
+        content = {'key': 'val'}
+        entity = Entity(entity_type='protocol',
+                        entity_id='protocol-uuid',
+                        content=content,
+                        spreadsheet_location={})
+        # when
+        entity_map.add_entity(entity)
 
+        # then
+        saved_entity = entity_map.get_entity('protocol', 'protocol-uuid')
+        self.assertFalse(saved_entity.is_reference)
+        self.assertFalse(saved_entity.is_linking_reference)
+        self.assertEqual(saved_entity.content, content)
+
+    def test_add_entity__when_added_as_reference_entity_first__then_set_entity_as_linking_reference(self):
+        # given
+        entity_map = EntityMap()
+        content = {'key': 'val'}
+        entity = Entity(entity_type='protocol',
+                        entity_id='protocol-uuid',
+                        content=content,
+                        is_reference=True,
+                        spreadsheet_location={})
+        entity_map.add_entity(entity)
+
+        # when
+        new_entity = Entity(entity_type='protocol',
+                            entity_id='protocol-uuid',
+                            content=content,
+                            is_linking_reference=True,
+                            spreadsheet_location={})
+        entity_map.add_entity(new_entity)
+
+        # then
+        saved_entity = entity_map.get_entity('protocol', 'protocol-uuid')
+        self.assertTrue(saved_entity.is_reference, 'The entity must be set as reference entity')
+        self.assertTrue(saved_entity.is_linking_reference, 'The entity must be also set as a linking reference entity')
+        self.assertEqual(saved_entity.content, content, 'The content must not be touched')
+
+    def test_add_entity__when_added_as_linking_reference_entity_first__then_set_as_reference_and_copy_new_content(self):
+        # given
+        entity_map = EntityMap()
+        content = {'key': 'val'}
+        entity = Entity(entity_type='protocol',
+                        entity_id='protocol-uuid',
+                        content=content,
+                        is_linking_reference=True,
+                        spreadsheet_location={})
+        entity_map.add_entity(entity)
+
+        # when
+        new_content = {'key': 'val2'}
+        new_entity = Entity(entity_type='protocol',
+                            entity_id='protocol-uuid',
+                            content=new_content,
+                            is_reference=True,
+                            spreadsheet_location={})
+        entity_map.add_entity(new_entity)
+
+        # then
+        saved_entity = entity_map.get_entity('protocol', 'protocol-uuid')
+        self.assertTrue(saved_entity.is_linking_reference, 'The entity must be set as a linking reference entity')
+        self.assertTrue(saved_entity.is_reference, 'The entity must be set as reference entity')
+        self.assertEqual(saved_entity.content, new_content, 'The content must be updated')
