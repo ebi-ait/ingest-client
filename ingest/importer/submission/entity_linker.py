@@ -40,21 +40,20 @@ class EntityLinker(object):
         self._link_entity_to_project(entity, project)
         self._link_supplementary_file_to_project(entity, project)
 
-        external_links_by_entity = entity.external_links or {}
+        external_links = entity.external_links or {}
         links_by_entity = entity.links_by_entity or {}
 
-        linked_input_biomaterial_ids = external_links_by_entity.get('biomaterial') or links_by_entity.get(
-            'biomaterial', [])
-        linked_input_file_ids = external_links_by_entity.get('file') or links_by_entity.get('file', [])
+        input_biomaterial_ids = external_links.get('biomaterial') or links_by_entity.get('biomaterial', [])
+        input_file_ids = external_links.get('file') or links_by_entity.get('file', [])
 
-        if linked_input_biomaterial_ids or linked_input_file_ids:
-            linking_process = self._create_or_get_process(entity)
-            self.entity_map.add_entity(linking_process)
-            self._link_process_to_project(linking_process, project)
-            self._link_entity_as_output_to_process(entity, linking_process)
-            self._link_protocols_to_process(entity, linking_process)
-            self._link_input_biomaterials_to_entity(linked_input_biomaterial_ids, linking_process)
-            self._link_input_files_to_entity(linked_input_file_ids, linking_process)
+        if input_biomaterial_ids or input_file_ids:
+            process = self._create_or_get_process(entity)
+            self.entity_map.add_entity(process)
+            self._link_process_to_project(process, project)
+            self._link_entity_as_output_to_process(entity, process)
+            self._link_protocols_to_process(entity, process)
+            self._link_input_biomaterials_to_entity(input_biomaterial_ids, process)
+            self._link_input_files_to_entity(input_file_ids, process)
 
     def _link_entity_as_output_to_process(self, entity: Entity, linking_process: Entity):
         entity.direct_links.append({
@@ -81,16 +80,16 @@ class EntityLinker(object):
                 'relationship': 'inputToProcesses'
             })
 
-    def _link_protocols_to_process(self, entity: Entity, linking_process: Entity):
+    def _link_protocols_to_process(self, entity: Entity, process: Entity):
         links_by_entity = entity.links_by_entity
-        external_links_by_entity = entity.external_links
+        external_links = entity.external_links
 
-        linked_protocol_ids = external_links_by_entity.get('protocol', []) or links_by_entity.get('protocol', [])
+        protocol_ids = external_links.get('protocol', []) or links_by_entity.get('protocol', [])
 
-        for linked_protocol_id in linked_protocol_ids:
-            linking_process.direct_links.append({
+        for protocol_id in protocol_ids:
+            process.direct_links.append({
                 'entity': 'protocol',
-                'id': linked_protocol_id,
+                'id': protocol_id,
                 'relationship': 'protocols'
             })
 
