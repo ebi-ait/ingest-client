@@ -17,27 +17,27 @@ class EntityLinkerTest(TestCase):
         self.script_dir = os.path.dirname(__file__)
         self.json_dir = os.path.join(self.script_dir, 'spreadsheet_json')
 
-    def test_generate_direct_links_biomaterial_to_biomaterial_has_process(self):
-        self._test_generate_direct_links('biomaterial_to_biomaterial_has_process.json',
+    def test_handle_links__biomaterial_to_biomaterial_has_process(self):
+        self._test_handle_links('biomaterial_to_biomaterial_has_process.json',
                                          'biomaterial_to_biomaterial_has_process__direct_links.json')
 
-    def test_generate_direct_links_biomaterial_to_biomaterial_no_process(self):
-        self._test_generate_direct_links('biomaterial_to_biomaterial_no_process.json',
+    def test_handle_links__biomaterial_to_biomaterial_no_process(self):
+        self._test_handle_links('biomaterial_to_biomaterial_no_process.json',
                                          'biomaterial_to_biomaterial_no_process__direct_links.json')
 
-    def test_generate_direct_links_file_to_file_no_process(self):
-        self._test_generate_direct_links('file_to_file_no_process.json',
+    def test_handle_links__file_to_file_no_process(self):
+        self._test_handle_links('file_to_file_no_process.json',
                                          'file_to_file_no_process__direct_links.json')
 
-    def test_generate_direct_links_file_to_file_has_process(self):
-        self._test_generate_direct_links('file_to_file_has_process.json',
+    def test_handle_links__file_to_file_has_process(self):
+        self._test_handle_links('file_to_file_has_process.json',
                                          'file_to_file_has_process__direct_links.json')
 
-    def test_generate_direct_links_file_to_biomaterial_has_process(self):
-        self._test_generate_direct_links('file_to_biomaterial_has_process.json',
+    def test_handle_links__file_to_biomaterial_has_process(self):
+        self._test_handle_links('file_to_biomaterial_has_process.json',
                                          'file_to_biomaterial_has_process__direct_links.json')
 
-    def test_generate_direct_links_link_not_found_error(self):
+    def test_handle_links__link_not_found_error(self):
         # given
         spreadsheet_json = load_json(f'{self.json_dir}/link_not_found.json')
 
@@ -52,7 +52,7 @@ class EntityLinkerTest(TestCase):
         self.assertEqual('biomaterial', context.exception.entity)
         self.assertEqual('biomaterial_id_1', context.exception.id)
 
-    def test_generate_direct_links_invalid_spreadsheet_link(self):
+    def test_handle_links__invalid_spreadsheet_link(self):
         # given
         spreadsheet_json = load_json(f'{self.json_dir}/invalid_spreadsheet_links.json')
 
@@ -70,7 +70,7 @@ class EntityLinkerTest(TestCase):
         self.assertEqual('biomaterial_id_1', context.exception.from_entity.id)
         self.assertEqual('file_id_1', context.exception.link_entity_id)
 
-    def test_generate_direct_links_multiple_process_links(self):
+    def test_handle_links__multiple_process_links(self):
         # given
         spreadsheet_json = load_json(f'{self.json_dir}/multiple_process_links.json')
 
@@ -85,7 +85,7 @@ class EntityLinkerTest(TestCase):
         self.assertEqual('biomaterial', context.exception.from_entity.type)
         self.assertEqual(['process_id_1', 'process_id_2'], context.exception.process_ids)
 
-    def _test_generate_direct_links(self, input_file, expected_output_file):
+    def _test_handle_links(self, input_file, expected_output_file):
         # given
         spreadsheet_json = load_json(f'{self.json_dir}/{input_file}')
 
@@ -111,49 +111,3 @@ class EntityLinkerTest(TestCase):
                 for link in expected_links:
                     self.assertTrue(link in entity.direct_links, f'{json.dumps(link)} is not in direct links for '
                                                                  f'entity type {entity_type} and id {entity_id}')
-
-    def test_handle_links_from_spreadsheet__with_external_links(self):
-        # given
-        spreadsheet_json = load_json(f'{self.json_dir}/external_links.json')
-        mocked_template_manager = MagicMock(name='template_manager')
-        mocked_template_manager.get_schema_url = MagicMock(return_value='url')
-        self.mocked_template_manager = mocked_template_manager
-
-        entity_map = EntityMap.load(spreadsheet_json)
-        entity_linker = EntityLinker(self.mocked_template_manager, entity_map)
-
-        # when
-        output = entity_linker.handle_links_from_spreadsheet()
-
-        # then
-        lib_prep_protocol = output.get_entity('protocol', 'librep-protocol-uuid')
-        self.assertTrue(lib_prep_protocol.is_linking_reference)
-        self.assertTrue(lib_prep_protocol.is_reference)
-
-        seq_protocol = output.get_entity('protocol', 'seq-protocol-uuid')
-        self.assertTrue(seq_protocol.is_linking_reference)
-        self.assertTrue(seq_protocol.is_reference)
-
-        cell_suspension = output.get_entity('biomaterial', 'cell-suspension-uuid')
-        self.assertTrue(cell_suspension.is_linking_reference)
-        self.assertTrue(cell_suspension.is_reference)
-
-        file1 = output.get_entity('file', 'seq-file-uuid-1')
-        self.assertFalse(file1.is_linking_reference)
-        self.assertTrue(file1.is_reference)
-
-        file2 = output.get_entity('file', 'seq-file-uuid-2')
-        self.assertFalse(file2.is_linking_reference)
-        self.assertTrue(file2.is_reference)
-
-        assay_process = output.get_entity('process', 'assay_process-uuid')
-        self.assertTrue(assay_process.is_linking_reference)
-        self.assertTrue(assay_process.is_reference)
-        assay_process_content = {
-            'process_core': {
-                'process_description': 'desc', 'process_id': 'assay_process'
-            },
-            'schema_type': 'process',
-            'describedBy': 'url'
-        }
-        self.assertEqual(assay_process.content, assay_process_content)
