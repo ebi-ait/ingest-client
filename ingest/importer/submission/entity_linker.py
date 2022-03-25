@@ -13,15 +13,14 @@ class EntityLinker(object):
         self.process_id_ctr = 0
         self.entity_map = entity_map
 
-    def handle_links_from_spreadsheet(self):
+    def convert_spreadsheet_links_to_ingest_links(self):
         for entity in self.entity_map.get_entities():
-            self._load_external_links(entity)
+            self._load_external_links_to_entity_map(entity)
             self._validate_entity_links(entity)
             self._generate_direct_links(entity)
         return self.entity_map
 
-    # load external links as entities in the entity map
-    def _load_external_links(self, entity: Entity):
+    def _load_external_links_to_entity_map(self, entity: Entity):
         external_links = entity.external_links
         for external_link_type, external_link_uuids in external_links.items():
             for entity_uuid in external_link_uuids:
@@ -33,7 +32,7 @@ class EntityLinker(object):
                 external_link_entity.add_link(external_link_type, entity_uuid)
                 self.entity_map.add_entity(external_link_entity)
 
-    # map to how ingest models linking
+    # direct links maps to how ingest db model
     def _generate_direct_links(self, entity: Entity):
         project = self.entity_map.get_project()
 
