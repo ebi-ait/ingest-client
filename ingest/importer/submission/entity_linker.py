@@ -20,6 +20,7 @@ class EntityLinker(object):
             self._generate_direct_links(entity)
         return self.entity_map
 
+    # load external links as entities in the entity map
     def _load_external_links(self, entity: Entity):
         external_links = entity.external_links
         for external_link_type, external_link_uuids in external_links.items():
@@ -32,6 +33,7 @@ class EntityLinker(object):
                 external_link_entity.add_link(external_link_type, entity_uuid)
                 self.entity_map.add_entity(external_link_entity)
 
+    # map to how ingest models linking
     def _generate_direct_links(self, entity: Entity):
         project = self.entity_map.get_project()
 
