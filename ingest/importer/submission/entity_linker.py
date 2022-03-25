@@ -5,6 +5,10 @@ from ingest.importer.submission.entity import Entity
 from ingest.importer.submission.entity_map import EntityMap
 from ingest.importer.submission.errors import LinkedEntityNotFound, InvalidLinkInSpreadsheet, MultipleProcessesFound
 
+"""
+EntityLinker is responsible for converting linking info from spreadsheet to how linking is done in Ingest Core
+"""
+
 
 class EntityLinker(object):
 
