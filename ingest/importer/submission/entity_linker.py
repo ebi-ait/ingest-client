@@ -36,7 +36,7 @@ class EntityLinker(object):
                 external_link_entity.add_link(external_link_type, entity_uuid)
                 self.entity_map.add_entity(external_link_entity)
 
-    # direct links maps to ingest db model
+    # direct_links maps to ingest db model
     def _generate_direct_links(self, entity: Entity):
         project = self.entity_map.get_project()
 
