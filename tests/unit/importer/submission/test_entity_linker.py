@@ -19,23 +19,27 @@ class EntityLinkerTest(TestCase):
 
     def test_handle_links__biomaterial_to_biomaterial_has_process(self):
         self._test_handle_links('biomaterial_to_biomaterial_has_process.json',
-                                         'biomaterial_to_biomaterial_has_process__direct_links.json')
+                                'biomaterial_to_biomaterial_has_process__direct_links.json')
 
     def test_handle_links__biomaterial_to_biomaterial_no_process(self):
         self._test_handle_links('biomaterial_to_biomaterial_no_process.json',
-                                         'biomaterial_to_biomaterial_no_process__direct_links.json')
+                                'biomaterial_to_biomaterial_no_process__direct_links.json')
 
     def test_handle_links__file_to_file_no_process(self):
         self._test_handle_links('file_to_file_no_process.json',
-                                         'file_to_file_no_process__direct_links.json')
+                                'file_to_file_no_process__direct_links.json')
 
     def test_handle_links__file_to_file_has_process(self):
         self._test_handle_links('file_to_file_has_process.json',
-                                         'file_to_file_has_process__direct_links.json')
+                                'file_to_file_has_process__direct_links.json')
 
     def test_handle_links__file_to_biomaterial_has_process(self):
         self._test_handle_links('file_to_biomaterial_has_process.json',
-                                         'file_to_biomaterial_has_process__direct_links.json')
+                                'file_to_biomaterial_has_process__direct_links.json')
+
+    def test_handle_links__external_links(self):
+        self._test_handle_links('external_links.json',
+                                'external_links__direct_links.json')
 
     def test_handle_links__link_not_found_error(self):
         # given
@@ -106,7 +110,7 @@ class EntityLinkerTest(TestCase):
                 expected_links = entities_dict[entity_id].get('direct_links')
                 expected_links = expected_links if expected_links else []
                 entity = output.get_entity(entity_type, entity_id)
-                self.assertTrue(entity)
+                self.assertTrue(entity, f'The {entity_type} entity with id {entity_id} is missing in the entity map.')
 
                 for link in expected_links:
                     self.assertTrue(link in entity.direct_links, f'{json.dumps(link)} is not in direct links for '
