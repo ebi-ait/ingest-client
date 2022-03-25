@@ -40,30 +40,21 @@ class EntityLinker(object):
         self._link_entity_to_project(entity, project)
         self._link_supplementary_file_to_project(entity, project)
 
-        external_links_by_entity = entity.external_links
-        links_by_entity = entity.links_by_entity
+        external_links_by_entity = entity.external_links or {}
+        links_by_entity = entity.links_by_entity or {}
 
-        if external_links_by_entity or links_by_entity:
+        linked_input_biomaterial_ids = external_links_by_entity.get('biomaterial') or links_by_entity.get(
+            'biomaterial', [])
+        linked_input_file_ids = external_links_by_entity.get('file') or links_by_entity.get('file', [])
+
+        if linked_input_biomaterial_ids or linked_input_file_ids:
             linking_process = self._create_or_get_process(entity)
-
             self.entity_map.add_entity(linking_process)
             self._link_process_to_project(linking_process, project)
-
-            linked_input_biomaterial_ids = []
-            linked_input_file_ids = []
-
-            if links_by_entity.get('biomaterial') or links_by_entity.get('file'):
-                linked_input_biomaterial_ids = links_by_entity.get('biomaterial', [])
-                linked_input_file_ids = links_by_entity.get('file', [])
-            elif external_links_by_entity.get('biomaterial') or external_links_by_entity.get('file'):
-                linked_input_biomaterial_ids = external_links_by_entity.get('biomaterial', [])
-                linked_input_file_ids = links_by_entity.get('file', [])
-
-            if linked_input_biomaterial_ids or linked_input_file_ids:
-                self._link_entity_as_output_to_process(entity, linking_process)
-                self._link_protocols_to_process(entity, linking_process)
-                self._link_input_biomaterials_to_entity(linked_input_biomaterial_ids, linking_process)
-                self._link_input_files_to_entity(linked_input_file_ids, linking_process)
+            self._link_entity_as_output_to_process(entity, linking_process)
+            self._link_protocols_to_process(entity, linking_process)
+            self._link_input_biomaterials_to_entity(linked_input_biomaterial_ids, linking_process)
+            self._link_input_files_to_entity(linked_input_file_ids, linking_process)
 
     def _link_entity_as_output_to_process(self, entity: Entity, linking_process: Entity):
         entity.direct_links.append({
@@ -94,11 +85,7 @@ class EntityLinker(object):
         links_by_entity = entity.links_by_entity
         external_links_by_entity = entity.external_links
 
-        linked_protocol_ids = []
-        if links_by_entity.get('protocol'):
-            linked_protocol_ids = links_by_entity.get('protocol', [])
-        elif external_links_by_entity.get('protocol'):
-            linked_protocol_ids = external_links_by_entity.get('protocol', [])
+        linked_protocol_ids = external_links_by_entity.get('protocol', []) or links_by_entity.get('protocol', [])
 
         for linked_protocol_id in linked_protocol_ids:
             linking_process.direct_links.append({
@@ -114,7 +101,7 @@ class EntityLinker(object):
             'relationship': 'project',
             'is_collection': False
         })
-        # TODO: Remove when process.projects is deprectated
+        # TODO: Remove when process.projects is deprecated
         linking_process.direct_links.append({
             'entity': 'project',
             'id': project.id,
@@ -190,7 +177,6 @@ class EntityLinker(object):
                 is_linking_reference=bool(external_process_id),
                 is_reference=bool(external_process_id)
             )
-
 
         return process
 
