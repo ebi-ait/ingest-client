@@ -55,7 +55,7 @@ class XlsImporter:
 
         entity_map = EntityMap.load(spreadsheet_json)
         entity_linker = EntityLinker(template_mgr, entity_map)
-        entity_linker.handle_links_from_spreadsheet()
+        entity_linker.convert_spreadsheet_links_to_ingest_links()
 
         return entity_map, []
 
@@ -78,7 +78,7 @@ class XlsImporter:
                 self.submitter.update_entities(entity_map)
             else:
                 entity_linker = EntityLinker(template_mgr, entity_map)
-                entity_linker.handle_links_from_spreadsheet()
+                entity_linker.convert_spreadsheet_links_to_ingest_links()
                 submission = self._submit_new_entities(entity_map, submission_url)
 
             project = entity_map.get_project()

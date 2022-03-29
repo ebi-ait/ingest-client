@@ -5,6 +5,10 @@ from ingest.importer.submission.entity import Entity
 from ingest.importer.submission.entity_map import EntityMap
 from ingest.importer.submission.errors import LinkedEntityNotFound, InvalidLinkInSpreadsheet, MultipleProcessesFound
 
+"""
+EntityLinker is responsible for converting linking info from spreadsheet to linking in Ingest Core
+"""
+
 
 class EntityLinker(object):
 
@@ -13,14 +17,14 @@ class EntityLinker(object):
         self.process_id_ctr = 0
         self.entity_map = entity_map
 
-    def handle_links_from_spreadsheet(self):
+    def convert_spreadsheet_links_to_ingest_links(self):
         for entity in self.entity_map.get_entities():
-            self._load_external_links(entity)
+            self._load_external_links_to_entity_map(entity)
             self._validate_entity_links(entity)
             self._generate_direct_links(entity)
         return self.entity_map
 
-    def _load_external_links(self, entity: Entity):
+    def _load_external_links_to_entity_map(self, entity: Entity):
         external_links = entity.external_links
         for external_link_type, external_link_uuids in external_links.items():
             for entity_uuid in external_link_uuids:
@@ -32,30 +36,27 @@ class EntityLinker(object):
                 external_link_entity.add_link(external_link_type, entity_uuid)
                 self.entity_map.add_entity(external_link_entity)
 
+    # direct_links maps to ingest db model
     def _generate_direct_links(self, entity: Entity):
         project = self.entity_map.get_project()
 
         self._link_entity_to_project(entity, project)
         self._link_supplementary_file_to_project(entity, project)
 
-        external_links_by_entity = entity.external_links
-        links_by_entity = entity.links_by_entity
+        external_links = entity.external_links or {}
+        links_by_entity = entity.links_by_entity or {}
 
-        if external_links_by_entity or links_by_entity:
-            linking_process = self._create_or_get_process(entity)
-            self.entity_map.add_entity(linking_process)
+        input_biomaterial_ids = external_links.get('biomaterial') or links_by_entity.get('biomaterial', [])
+        input_file_ids = external_links.get('file') or links_by_entity.get('file', [])
 
-            self._link_process_to_project(linking_process, project)
-
-        if not external_links_by_entity:
-            linked_biomaterial_ids = links_by_entity.get('biomaterial', [])
-            linked_file_ids = links_by_entity.get('file', [])
-
-            if linked_biomaterial_ids or linked_file_ids:
-                self._link_entity_as_output_to_process(entity, linking_process)
-                self._link_protocols_to_process(entity, linking_process)
-                self._link_input_biomaterials_to_entity(linked_biomaterial_ids, linking_process)
-                self._link_input_files_to_entity(linked_file_ids, linking_process)
+        if input_biomaterial_ids or input_file_ids:
+            process = self._create_or_get_process(entity)
+            self.entity_map.add_entity(process)
+            self._link_process_to_project(process, project)
+            self._link_entity_as_output_to_process(entity, process)
+            self._link_protocols_to_process(entity, process)
+            self._link_input_biomaterials_to_entity(input_biomaterial_ids, process)
+            self._link_input_files_to_entity(input_file_ids, process)
 
     def _link_entity_as_output_to_process(self, entity: Entity, linking_process: Entity):
         entity.direct_links.append({
@@ -82,13 +83,16 @@ class EntityLinker(object):
                 'relationship': 'inputToProcesses'
             })
 
-    def _link_protocols_to_process(self, entity: Entity, linking_process: Entity):
+    def _link_protocols_to_process(self, entity: Entity, process: Entity):
         links_by_entity = entity.links_by_entity
-        linked_protocol_ids = links_by_entity.get('protocol', [])
-        for linked_protocol_id in linked_protocol_ids:
-            linking_process.direct_links.append({
+        external_links = entity.external_links
+
+        protocol_ids = external_links.get('protocol', []) or links_by_entity.get('protocol', [])
+
+        for protocol_id in protocol_ids:
+            process.direct_links.append({
                 'entity': 'protocol',
-                'id': linked_protocol_id,
+                'id': protocol_id,
                 'relationship': 'protocols'
             })
 
@@ -99,7 +103,7 @@ class EntityLinker(object):
             'relationship': 'project',
             'is_collection': False
         })
-        # TODO: Remove when process.projects is deprectated
+        # TODO: Remove when process.projects is deprecated
         linking_process.direct_links.append({
             'entity': 'project',
             'id': project.id,
@@ -175,7 +179,6 @@ class EntityLinker(object):
                 is_linking_reference=bool(external_process_id),
                 is_reference=bool(external_process_id)
             )
-
 
         return process
 

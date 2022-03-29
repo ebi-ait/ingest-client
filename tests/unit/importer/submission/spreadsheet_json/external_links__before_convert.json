@@ -1,0 +1,79 @@
+{
+  "project": {
+    "project-uuid": {
+      "is_reference": true,
+      "is_linking_reference": false,
+      "concrete_type": "project",
+      "content": {
+        "dummy": "content"
+      }
+    }
+  },
+  "biomaterial": {
+    "cell_ID_1": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "cell_suspension",
+      "content": {
+        "dummy": "cell_suspension"
+      }
+    }
+  },
+  "file": {
+    "seq_file1": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "sequence_file",
+      "content": {
+        "dummy": "seq_file1"
+      },
+      "links_by_entity": {
+        "process": [
+          "assay_process"
+        ],
+        "protocol": [],
+        "biomaterial": [
+          "cell_ID_1"
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [],
+        "protocol": [
+          "libprep-protocol-uuid",
+          "seq-protocol-uuid"
+        ],
+        "biomaterial": []
+      },
+      "linking_details": {
+        "process_core": {
+          "process_description": "desc"
+        }
+      }
+    },
+    "seq_file2": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "sequence_file",
+      "content": {
+        "dummy": "seq_file2"
+      },
+      "links_by_entity": {
+        "process": [
+          "assay_process"
+        ],
+        "protocol": [],
+        "biomaterial": [
+          "cell_ID_1"
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [],
+        "protocol": [
+          "librep-protocol-uuid",
+          "seq-protocol-uuid"
+        ],
+        "biomaterial": []
+      }
+    }
+  }
+}

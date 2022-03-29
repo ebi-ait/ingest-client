@@ -1,5 +1,6 @@
 from typing import List
 
+
 from ingest.importer.submission.entity import Entity
 
 

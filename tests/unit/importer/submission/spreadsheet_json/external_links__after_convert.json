@@ -1,0 +1,197 @@
+{
+  "project": {
+    "project-uuid": {
+      "is_reference": true,
+      "is_linking_reference": false,
+      "concrete_type": "project",
+      "content": {
+        "dummy": "content"
+      },
+      "direct_links": []
+    }
+  },
+  "biomaterial": {
+    "cell_ID_1": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "cell_suspension",
+      "content": {
+        "dummy": "cell_suspension"
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "projects"
+        },
+        {
+          "entity": "process",
+          "id": "assay_process",
+          "relationship": "inputToProcesses"
+        }
+      ]
+    }
+  },
+  "process": {
+    "assay_process": {
+      "content": {
+        "process_core": {
+          "process_description": "desc",
+          "process_id": "assay_process"
+        },
+        "schema_type": "process",
+        "describedBy": "url"
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "projects"
+        },
+        {
+          "entity": "protocol",
+          "id": "librep-protocol-uuid",
+          "relationship": "protocols"
+        },
+        {
+          "entity": "protocol",
+          "id": "seq-protocol-uuid",
+          "relationship": "protocols"
+        }
+      ]
+    }
+  },
+  "protocol": {
+    "libprep-protocol-uuid": {
+      "type": "protocol",
+      "id": "librep-protocol-uuid",
+      "content": null,
+      "links_by_entity": {
+        "protocol": [
+          "librep-protocol-uuid"
+        ]
+      },
+      "direct_links": [],
+      "linking_details": {},
+      "external_links": {},
+      "ingest_json": null,
+      "is_reference": false,
+      "is_linking_reference": true,
+      "concrete_type": null,
+      "spreadsheet_location": null
+    },
+    "seq-protocol-uuid": {
+      "type": "protocol",
+      "id": "librep-protocol-uuid",
+      "content": null,
+      "links_by_entity": {
+        "protocol": [
+          "librep-protocol-uuid"
+        ]
+      },
+      "direct_links": [],
+      "linking_details": {},
+      "external_links": {},
+      "ingest_json": null,
+      "is_reference": false,
+      "is_linking_reference": true,
+      "concrete_type": null,
+      "spreadsheet_location": null
+    }
+  },
+  "file": {
+    "seq_file1": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "sequence_file",
+      "content": {
+        "dummy": "seq_file1"
+      },
+      "links_by_entity": {
+        "process": [
+          "assay_process"
+        ],
+        "protocol": [],
+        "biomaterial": [
+          "cell_ID_1"
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [],
+        "protocol": [
+          "librep-protocol-uuid",
+          "seq-protocol-uuid"
+        ],
+        "biomaterial": []
+      },
+      "linking_details": {
+        "process_core": {
+          "process_description": "desc"
+        }
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "process",
+          "id": "assay_process",
+          "relationship": "derivedByProcesses"
+        }
+      ]
+    },
+    "seq_file2": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "sequence_file",
+      "content": {
+        "dummy": "seq_file2"
+      },
+      "links_by_entity": {
+        "process": [
+          "assay_process"
+        ],
+        "protocol": [],
+        "biomaterial": [
+          "cell_ID_1"
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [],
+        "protocol": [
+          "librep-protocol-uuid",
+          "seq-protocol-uuid"
+        ],
+        "biomaterial": []
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "process",
+          "id": "assay_process",
+          "relationship": "derivedByProcesses"
+        }
+      ]
+    }
+  }
+}
