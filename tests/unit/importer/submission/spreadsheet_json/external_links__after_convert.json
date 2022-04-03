@@ -11,6 +11,99 @@
     }
   },
   "biomaterial": {
+    "specimen_ID_1": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "specimen_from_organism",
+      "content": {
+        "dummy": "specimen_from_organism"
+      },
+      "links_by_entity": {
+        "process": [
+          "collection_process1"
+        ],
+        "protocol": [
+        ],
+        "biomaterial": [
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [],
+        "protocol": [
+          "collection-protocol-uuid"
+        ],
+        "biomaterial": [
+          "donor-uuid"
+        ]
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "projects"
+        },
+        {
+          "entity": "process",
+          "id": "collection_process1",
+          "relationship": "derivedByProcesses"
+        },
+        {
+          "entity": "process",
+          "id": "dissociation-process",
+          "relationship": "inputToProcesses"
+        }
+      ]
+    },
+    "specimen_ID_2": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "specimen_from_organism",
+      "content": {
+        "dummy": "specimen_from_organism2"
+      },
+      "links_by_entity": {
+        "process": [
+          "collection_process2"
+        ],
+        "protocol": [
+        ],
+        "biomaterial": [
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [],
+        "protocol": [
+          "collection-protocol-uuid"
+        ],
+        "biomaterial": [
+          "donor-uuid"
+        ]
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "projects"
+        },
+        {
+          "entity": "process",
+          "id": "collection_process2",
+          "relationship": "derivedByProcesses"
+        }
+      ]
+    },
     "cell_ID_1": {
       "is_reference": false,
       "is_linking_reference": false,
@@ -36,9 +129,118 @@
           "relationship": "inputToProcesses"
         }
       ]
+    },
+    "donor-uuid": {
+      "is_reference": false,
+      "is_linking_reference": true,
+      "content": null,
+      "direct_links": [
+        {
+          "entity": "process",
+          "id": "collection_process1",
+          "relationship": "inputToProcesses"
+        },
+        {
+          "entity": "process",
+          "id": "collection_process2",
+          "relationship": "inputToProcesses"
+        }
+      ]
     }
   },
   "process": {
+    "collection_process1": {
+      "id": "collection_process1",
+      "is_new": true,
+      "is_linking_reference": false,
+      "is_reference": false,
+      "content": {
+        "process_core": {
+          "process_id": "collection_process1"
+        },
+        "schema_type": "process",
+        "describedBy": "url"
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "projects"
+        },
+        {
+          "entity": "protocol",
+          "id": "collection-protocol-uuid",
+          "relationship": "protocols"
+        }
+      ]
+    },
+    "collection_process2": {
+      "id": "collection_process2",
+      "is_new": true,
+      "is_linking_reference": false,
+      "is_reference": false,
+      "content": {
+        "process_core": {
+          "process_id": "collection_process2"
+        },
+        "schema_type": "process",
+        "describedBy": "url"
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "projects"
+        },
+        {
+          "entity": "protocol",
+          "id": "collection-protocol-uuid",
+          "relationship": "protocols"
+        }
+      ]
+    },
+    "dissociation-process": {
+      "is_new": true,
+      "is_linking_reference": false,
+      "is_reference": false,
+      "content": {
+        "process_core": {
+          "process_id": "dissociation-process"
+        },
+        "schema_type": "process",
+        "describedBy": "url"
+      },
+      "direct_links": [
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "project",
+          "is_collection": false
+        },
+        {
+          "entity": "project",
+          "id": "project-uuid",
+          "relationship": "projects"
+        },
+        {
+          "entity": "protocol",
+          "id": "dissociation-protocol-uuid",
+          "relationship": "protocols"
+        }
+      ]
+    },
     "assay_process": {
       "content": {
         "process_core": {
