@@ -72,6 +72,8 @@ class EntityMap(object):
         elif existing_entity and existing_entity.is_linking_reference and entity.is_reference:
             existing_entity.is_reference = entity.is_reference
             existing_entity.content = entity.content
+        elif existing_entity:
+            entities_of_type[entity.id] = existing_entity
         else:
             entities_of_type[entity.id] = entity
 
