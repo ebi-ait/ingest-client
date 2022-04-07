@@ -41,6 +41,14 @@ class EntityLinkerTest(TestCase):
         self._test_convert_links('external_links__before_convert.json',
                                  'external_links__after_convert.json')
 
+    def test_convert_links__external_links__multiple_inputs(self):
+        self._test_convert_links('external_links__multiple_inputs__before_convert.json',
+                                 'external_links__multiple_inputs__after_convert.json')
+
+    def test_convert_links__external_and_local_ids__multiple_inputs(self):
+        self._test_convert_links('external_and_local_links__before_convert.json',
+                                 'external_and_local_links__after_convert.json')
+
     def test_convert_links__link_not_found_error(self):
         # given
         spreadsheet_json = load_json(f'{self.json_dir}/link_not_found.json')

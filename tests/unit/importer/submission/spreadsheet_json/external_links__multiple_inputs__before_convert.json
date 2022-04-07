@@ -10,12 +10,80 @@
     }
   },
   "biomaterial": {
+    "specimen_ID_1": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "specimen_from_organism",
+      "content": {
+        "dummy": "specimen_from_organism"
+      },
+      "links_by_entity": {
+        "process": [
+          "collection_process1"
+        ],
+        "protocol": [
+        ],
+        "biomaterial": [
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [],
+        "protocol": [
+          "collection-protocol-uuid"
+        ],
+        "biomaterial": [
+           "donor-uuid"
+        ]
+      }
+    },
+    "specimen_ID_2": {
+      "is_reference": false,
+      "is_linking_reference": false,
+      "concrete_type": "specimen_from_organism",
+      "content": {
+        "dummy": "specimen_from_organism2"
+      },
+      "links_by_entity": {
+        "process": [
+          "collection_process2"
+        ],
+        "protocol": [
+        ],
+        "biomaterial": [
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [],
+        "protocol": [
+          "collection-protocol-uuid"
+        ],
+        "biomaterial": [
+           "donor-uuid"
+        ]
+      }
+    },
     "cell_ID_1": {
       "is_reference": false,
       "is_linking_reference": false,
       "concrete_type": "cell_suspension",
       "content": {
         "dummy": "cell_suspension"
+      },
+      "links_by_entity": {
+        "process": [
+          "dissociation-process"
+        ],
+        "protocol": [],
+        "biomaterial": [
+          "specimen_ID_1"
+        ]
+      },
+      "external_links_by_entity": {
+        "process": [],
+        "protocol": [
+          "dissociation-protocol-uuid"
+        ],
+        "biomaterial": []
       }
     }
   },
