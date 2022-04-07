@@ -263,9 +263,8 @@
       "id": "librep-protocol-uuid",
       "content": null,
       "direct_links": [],
-      "ingest_json": null,
       "is_reference": false,
-      "is_linking_reference": true,
+      "is_linking_reference": true
     },
     "seq-protocol-uuid": {
       "type": "protocol",
@@ -273,7 +272,7 @@
       "content": null,
       "direct_links": [],
       "is_reference": false,
-      "is_linking_reference": true,
+      "is_linking_reference": true
     }
   },
   "file": {

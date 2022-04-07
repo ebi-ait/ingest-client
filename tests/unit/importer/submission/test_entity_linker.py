@@ -41,11 +41,11 @@ class EntityLinkerTest(TestCase):
         self._test_convert_links('external_links__before_convert.json',
                                  'external_links__after_convert.json')
 
-    def test_convert_links__external_links__multiple_inputs(self):
-        self._test_convert_links('external_links__multiple_inputs__before_convert.json',
-                                 'external_links__multiple_inputs__after_convert.json')
+    def test_convert_links__external_links__input_in_many_rows(self):
+        self._test_convert_links('external_links__input_in_many_rows__before_convert.json',
+                                 'external_links__input_in_many_rows__after_convert.json')
 
-    def test_convert_links__external_and_local_ids__multiple_inputs(self):
+    def test_convert_links__external_and_local_id_inputs_in_same_row(self):
         self._test_convert_links('external_and_local_links__before_convert.json',
                                  'external_and_local_links__after_convert.json')
 
