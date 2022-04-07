@@ -49,6 +49,7 @@ class EntityLinker(object):
         input_biomaterial_ids = []
         input_biomaterial_ids.extend(external_links.get('biomaterial', []))
         input_biomaterial_ids.extend(links_by_entity.get('biomaterial', []))
+
         input_file_ids = []
         input_file_ids.extend(external_links.get('file', []))
         input_file_ids.extend(links_by_entity.get('file', []))
