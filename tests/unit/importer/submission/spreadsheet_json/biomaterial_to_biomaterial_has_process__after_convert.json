@@ -34,11 +34,6 @@
       "content": {
         "key": "biomaterial_2"
       },
-      "links_by_entity": {
-        "biomaterial": [
-          "biomaterial_id_1"
-        ]
-      },
       "direct_links": [
         {
           "entity": "project",

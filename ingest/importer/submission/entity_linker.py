@@ -46,8 +46,13 @@ class EntityLinker(object):
         external_links = entity.external_links or {}
         links_by_entity = entity.links_by_entity or {}
 
-        input_biomaterial_ids = external_links.get('biomaterial') or links_by_entity.get('biomaterial', [])
-        input_file_ids = external_links.get('file') or links_by_entity.get('file', [])
+        input_biomaterial_ids = []
+        input_biomaterial_ids.extend(external_links.get('biomaterial', []))
+        input_biomaterial_ids.extend(links_by_entity.get('biomaterial', []))
+
+        input_file_ids = []
+        input_file_ids.extend(external_links.get('file', []))
+        input_file_ids.extend(links_by_entity.get('file', []))
 
         if input_biomaterial_ids or input_file_ids:
             process = self._create_or_get_process(entity)
@@ -87,7 +92,9 @@ class EntityLinker(object):
         links_by_entity = entity.links_by_entity
         external_links = entity.external_links
 
-        protocol_ids = external_links.get('protocol', []) or links_by_entity.get('protocol', [])
+        protocol_ids = []
+        protocol_ids.extend(external_links.get('protocol', []))
+        protocol_ids.extend(links_by_entity.get('protocol', []))
 
         for protocol_id in protocol_ids:
             process.direct_links.append({
