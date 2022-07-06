@@ -93,9 +93,9 @@ See more options in the pip-compile [documentation](https://github.com/jazzband/
 
 ### Running the Tests
 
-To run all the tests, use `nose` package:
+To run all the tests, use `unittest` package:
 
-    nosetests
+    python -m unittest 
     
 ### Developing Code in Editable Mode
 
