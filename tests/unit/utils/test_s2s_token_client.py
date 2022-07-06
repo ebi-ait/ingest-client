@@ -1,12 +1,12 @@
 from unittest import TestCase
 from unittest.mock import patch, Mock
 
-from ingest.utils.s2s_token_client import S2STokenClient, Error as S2STokenClientError, ServiceCredential
+from hca_ingest.utils.s2s_token_client import S2STokenClient, Error as S2STokenClientError, ServiceCredential
 
 
 class TestS2STokenClient(TestCase):
 
-    @patch('ingest.utils.dcp_auth_client.DCPAuthClient.get_service_jwt')
+    @patch('hca_ingest.utils.dcp_auth_client.DCPAuthClient.get_service_jwt')
     def test__retrieve_token__returns_token__with_creds_and_audience(self, mock_retrieve_token):
         mock_retrieve_token.return_value = 'token'
         token_client = S2STokenClient(credential=ServiceCredential({}), audience='audience')

@@ -4,10 +4,10 @@ from unittest.mock import patch, Mock
 import yaml
 from sortedcontainers import SortedDict
 
-from ingest.template.descriptor import SimplePropertyDescriptor
-from ingest.template.exceptions import UnknownKeySchemaException
-from ingest.template.schema_parser import SchemaParser
-from ingest.template.schema_template import SchemaTemplate
+from hca_ingest.template.descriptor import SimplePropertyDescriptor
+from hca_ingest.template.exceptions import UnknownKeySchemaException
+from hca_ingest.template.schema_parser import SchemaParser
+from hca_ingest.template.schema_template import SchemaTemplate
 
 
 class TestSchemaTemplate(unittest.TestCase):

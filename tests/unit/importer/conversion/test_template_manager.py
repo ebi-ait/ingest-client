@@ -3,11 +3,11 @@ from unittest import TestCase
 from mock import MagicMock, patch
 from openpyxl import Workbook
 
-from ingest.importer.conversion import conversion_strategy
-from ingest.importer.conversion.conversion_strategy import CellConversion
-from ingest.importer.conversion.template_manager import TemplateManager, RowTemplate, InvalidTabName
-from ingest.importer.data_node import DataNode
-from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet, \
+from hca_ingest.importer.conversion import conversion_strategy
+from hca_ingest.importer.conversion.conversion_strategy import CellConversion
+from hca_ingest.importer.conversion.template_manager import TemplateManager, RowTemplate, InvalidTabName
+from hca_ingest.importer.data_node import DataNode
+from hca_ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet, \
     IngestRow
 from tests.utils import create_test_workbook
 

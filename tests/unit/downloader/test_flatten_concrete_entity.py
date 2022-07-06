@@ -1,7 +1,7 @@
 import json
 
-from ingest.downloader.entity import Entity
-from ingest.downloader.flattener import Flattener
+from hca_ingest.downloader.entity import Entity
+from hca_ingest.downloader.flattener import Flattener
 from tests.unit.downloader.test_flattener import BaseFlattenerTest
 
 

@@ -3,9 +3,9 @@ from unittest.case import TestCase
 
 from mock import MagicMock, patch, Mock
 
-from ingest.api.ingestapi import IngestApi
-from ingest.importer.importer import SchemaRetrievalError
-from ingest.importer.importer import XlsImporter
+from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.importer.importer import SchemaRetrievalError
+from hca_ingest.importer.importer import XlsImporter
 
 BASE_PATH = os.path.dirname(__file__)
 
@@ -28,9 +28,9 @@ class XlsImporterBaseTest(TestCase):
 
 
 class XlsImporterTest(XlsImporterBaseTest):
-    @patch('ingest.importer.importer.IngestWorkbook')
-    @patch('ingest.importer.importer.WorkbookImporter')
-    @patch('ingest.importer.importer.template_manager')
+    @patch('hca_ingest.importer.importer.IngestWorkbook')
+    @patch('hca_ingest.importer.importer.WorkbookImporter')
+    @patch('hca_ingest.importer.importer.template_manager')
     def test_generate_json_success(self, mock_template_manager, mock_wb_importer, mock_wb):
         # given
         mock_template_manager.build = MagicMock('template_manager', return_value='template_manager')
@@ -44,18 +44,18 @@ class XlsImporterTest(XlsImporterBaseTest):
         self.assertEqual(errors, ['errors'])
         self.assertEqual(template_manager, 'template_manager')
 
-    @patch('ingest.importer.importer.IngestWorkbook')
-    @patch('ingest.importer.importer.WorkbookImporter')
-    @patch('ingest.importer.importer.template_manager')
+    @patch('hca_ingest.importer.importer.IngestWorkbook')
+    @patch('hca_ingest.importer.importer.WorkbookImporter')
+    @patch('hca_ingest.importer.importer.template_manager')
     def test_generate_json_error(self, mock_template_manager, mock_wb_importer, mock_wb):
         mock_template_manager.build = MagicMock('template_manager', side_effect=Exception('test error'))
 
         with self.assertRaises(SchemaRetrievalError):
             self.importer.generate_json('file_path', is_update=False)
 
-    @patch('ingest.importer.submission.entity_linker.EntityLinker.convert_spreadsheet_links_to_ingest_links')
-    @patch('ingest.importer.submission.entity_map.EntityMap.load')
-    @patch('ingest.importer.importer.XlsImporter.generate_json')
+    @patch('hca_ingest.importer.submission.entity_linker.EntityLinker.convert_spreadsheet_links_to_ingest_links')
+    @patch('hca_ingest.importer.submission.entity_map.EntityMap.load')
+    @patch('hca_ingest.importer.importer.XlsImporter.generate_json')
     def test_dry_run_import_file_success(self, mock_generate_json, mock_load, mock_convert_links):
         # given
         mock_entity_map = Mock('entity_map_w_links')
@@ -69,9 +69,9 @@ class XlsImporterTest(XlsImporterBaseTest):
         self.assertEqual(entity_map, mock_entity_map)
         self.assertFalse(errors)
 
-    @patch('ingest.importer.submission.entity_map.EntityMap.load')
-    @patch('ingest.importer.submission.entity_linker.EntityLinker.convert_spreadsheet_links_to_ingest_links')
-    @patch('ingest.importer.importer.XlsImporter.generate_json')
+    @patch('hca_ingest.importer.submission.entity_map.EntityMap.load')
+    @patch('hca_ingest.importer.submission.entity_linker.EntityLinker.convert_spreadsheet_links_to_ingest_links')
+    @patch('hca_ingest.importer.importer.XlsImporter.generate_json')
     def test_dry_run_import_file_error(self, mock_generate_json, mock_entity_linker, mock_entity_map):
         # given
         mock_entity_map.return_value = MagicMock()
@@ -85,9 +85,9 @@ class XlsImporterTest(XlsImporterBaseTest):
         self.assertEqual(errors, ['error'])
         self.assertFalse(entity_map)
 
-    @patch('ingest.importer.importer.IngestWorkbook')
-    @patch('ingest.importer.importer.WorkbookImporter')
-    @patch('ingest.importer.importer.template_manager')
+    @patch('hca_ingest.importer.importer.IngestWorkbook')
+    @patch('hca_ingest.importer.importer.WorkbookImporter')
+    @patch('hca_ingest.importer.importer.template_manager')
     def test_import_project_from_workbook__no_errors(self, mock_template_manager, mock_wb_importer, mock_workbook):
         # given
         mock_template_manager.build = MagicMock('template_manager', return_value='template_manager')
@@ -118,9 +118,9 @@ class XlsImporterTest(XlsImporterBaseTest):
                                                                     content={'project_title': 'title'},
                                                                     token='token')
 
-    @patch('ingest.importer.importer.IngestWorkbook')
-    @patch('ingest.importer.importer.WorkbookImporter')
-    @patch('ingest.importer.importer.template_manager')
+    @patch('hca_ingest.importer.importer.IngestWorkbook')
+    @patch('hca_ingest.importer.importer.WorkbookImporter')
+    @patch('hca_ingest.importer.importer.template_manager')
     def test_import_project_from_workbook__has_errors(self, mock_template_manager, mock_wb_importer, mock_workbook):
         # given
         mock_template_manager.build = MagicMock('template_manager', return_value='template_manager')

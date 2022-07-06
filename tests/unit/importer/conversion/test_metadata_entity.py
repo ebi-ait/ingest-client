@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from ingest.importer.conversion.metadata_entity import MetadataEntity
+from hca_ingest.importer.conversion.metadata_entity import MetadataEntity
 
 
 class MetadataEntityTest(TestCase):

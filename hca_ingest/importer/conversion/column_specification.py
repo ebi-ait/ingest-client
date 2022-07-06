@@ -1,10 +1,10 @@
 import logging
 from enum import Enum
 
-from ingest.importer.conversion import utils, data_converter
-from ingest.importer.conversion.data_converter import DataType, CONVERTER_MAP, ListConverter
-from ingest.template.exceptions import UnknownKeySchemaException
-from ingest.template.schema_template import SchemaTemplate
+from hca_ingest.importer.conversion import utils, data_converter
+from hca_ingest.importer.conversion.data_converter import DataType, CONVERTER_MAP, ListConverter
+from hca_ingest.template.exceptions import UnknownKeySchemaException
+from hca_ingest.template.schema_template import SchemaTemplate
 
 _LOGGER = logging.getLogger(__name__)
 

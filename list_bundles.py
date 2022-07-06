@@ -10,9 +10,9 @@ import json
 import logging
 import sys
 
-from ingest.api.ingestapi import IngestApi
+from hca_ingest.api.ingestapi import IngestApi
 
-logging.getLogger('ingest').setLevel(logging.DEBUG)
+logging.getLogger('hca_ingest').setLevel(logging.DEBUG)
 format = ' %(asctime)s  - %(name)s - %(levelname)s in %(filename)s:' \
          '%(lineno)s %(funcName)s(): %(message)s'
 logging.basicConfig(stream=sys.stdout, level=logging.WARNING, format=format)

@@ -3,9 +3,9 @@ import os
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from ingest.importer.submission.entity_linker import EntityLinker
-from ingest.importer.submission.entity_map import EntityMap
-from ingest.importer.submission.errors import MultipleProcessesFound, InvalidLinkInSpreadsheet, LinkedEntityNotFound
+from hca_ingest.importer.submission.entity_linker import EntityLinker
+from hca_ingest.importer.submission.entity_map import EntityMap
+from hca_ingest.importer.submission.errors import MultipleProcessesFound, InvalidLinkInSpreadsheet, LinkedEntityNotFound
 from tests.utils import load_json
 
 

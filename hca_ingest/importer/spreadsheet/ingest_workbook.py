@@ -2,8 +2,8 @@ from typing import List
 
 from openpyxl import Workbook, load_workbook
 
-from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
-from ingest.importer.submission.submission import Submission
+from hca_ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
+from hca_ingest.importer.submission.submission import Submission
 
 SCHEMAS_WORKSHEET = 'Schemas'
 SPECIAL_TABS = [SCHEMAS_WORKSHEET]

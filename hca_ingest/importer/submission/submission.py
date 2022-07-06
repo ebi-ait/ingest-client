@@ -1,9 +1,9 @@
 import logging
 from typing import List
 
-from ingest.api.ingestapi import IngestApi
-from ingest.importer.submission.entity import Entity
-from ingest.importer.submission.entity_map import EntityMap
+from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.importer.submission.entity import Entity
+from hca_ingest.importer.submission.entity_map import EntityMap
 
 format = '[%(filename)s:%(lineno)s - %(funcName)20s() ] %(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=format)

@@ -8,9 +8,8 @@ spreadsheet.
 Use the `SpreadsheetBuilder` class to generate a generic empty spreadsheet. This will  read the latest version of the HCA metadata schema
 and save the spreadsheet template to the filename provided.
 
-
 ```python
-from ingest.template.spreadsheet_builder import SpreadsheetBuilder
+from hca_ingest.template.spreadsheet_builder import SpreadsheetBuilder
 
 spreadsheet_builder = SpreadsheetBuilder("generic.xlsx")
 spreadsheet_builder.generate_workbook()
@@ -32,7 +31,7 @@ supply these as a parameter. Note, you can only give `type` schemas to the Sprea
 To build a template from a specific set of schemas or from the latest `develop` schemas, you can pass in a list of schema URLs to `SpreadsheetBuilder` as follows
 
 ```python
-from ingest.template.spreadsheet_builder import SpreadsheetBuilder
+from hca_ingest.template.spreadsheet_builder import SpreadsheetBuilder
 
 schemas = [
     "http://schema.dev.data.humancellatlas.org/type/project/latest/project",
@@ -219,7 +218,7 @@ tabs:
 Save your YAML config to a file and load into `SpreadsheetBuilder` with the `tabs_config` parameter.
 
 ```python
-from ingest.template.spreadsheet_builder import SpreadsheetBuilder
+from hca_ingest.template.spreadsheet_builder import SpreadsheetBuilder
 
 # build a spreadsheet given new dev schemas and a YAML config
 

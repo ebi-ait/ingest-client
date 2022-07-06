@@ -1,7 +1,7 @@
 import unittest
 from collections import OrderedDict
 
-from ingest.template.migration_parser import MigrationParser
+from hca_ingest.template.migration_parser import MigrationParser
 
 
 class TestMigrationParser(unittest.TestCase):

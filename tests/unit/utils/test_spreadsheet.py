@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-import ingest.utils.spreadsheet as spreadsheet_utils
+import hca_ingest.utils.spreadsheet as spreadsheet_utils
 
 
 class SpreadsheetTest(TestCase):

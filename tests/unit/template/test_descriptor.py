@@ -1,6 +1,6 @@
 import unittest
 
-from ingest.template.descriptor import ComplexPropertyDescriptor, SchemaTypeDescriptor, SimplePropertyDescriptor
+from hca_ingest.template.descriptor import ComplexPropertyDescriptor, SchemaTypeDescriptor, SimplePropertyDescriptor
 
 class TestDescriptor(unittest.TestCase):
     """ Testing class for the Descriptor class. """

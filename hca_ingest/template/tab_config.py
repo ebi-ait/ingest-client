@@ -8,8 +8,8 @@ __date__ = "04/05/2018"
 
 from yaml import load as yaml_load
 
-from ingest.utils import doctict
-from ingest.utils.doctict import DotDict
+from hca_ingest.utils import doctict
+from hca_ingest.utils.doctict import DotDict
 
 
 class TabConfig:

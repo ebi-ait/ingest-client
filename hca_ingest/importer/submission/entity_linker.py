@@ -1,9 +1,9 @@
 from typing import List
 
-from ingest.importer.conversion.template_manager import TemplateManager
-from ingest.importer.submission.entity import Entity
-from ingest.importer.submission.entity_map import EntityMap
-from ingest.importer.submission.errors import LinkedEntityNotFound, InvalidLinkInSpreadsheet, MultipleProcessesFound
+from hca_ingest.importer.conversion.template_manager import TemplateManager
+from hca_ingest.importer.submission.entity import Entity
+from hca_ingest.importer.submission.entity_map import EntityMap
+from hca_ingest.importer.submission.errors import LinkedEntityNotFound, InvalidLinkInSpreadsheet, MultipleProcessesFound
 
 """
 EntityLinker is responsible for converting linking info from spreadsheet to linking in Ingest Core

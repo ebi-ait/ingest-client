@@ -7,8 +7,8 @@ __license__ = "Apache 2.0"
 __date__ = "11/01/2019"
 
 
-from ingest.template.schema_template import SchemaTemplate
-from ingest.template.schema_template import SchemaParser
+from hca_ingest.template.schema_template import SchemaTemplate
+from hca_ingest.template.schema_template import SchemaParser
 from yaml import dump as yaml_dump
 from yaml import load as yaml_load
 

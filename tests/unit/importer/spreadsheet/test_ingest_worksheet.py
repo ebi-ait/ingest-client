@@ -1,8 +1,8 @@
 from unittest import TestCase
 from unittest.mock import Mock
 
-import ingest.utils.spreadsheet as spreadsheet_utils
-from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
+import hca_ingest.utils.spreadsheet as spreadsheet_utils
+from hca_ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
 from tests.utils import create_test_workbook
 
 

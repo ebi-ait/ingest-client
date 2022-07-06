@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from unittest import TestCase
 
-from ingest.utils.date import parse_date_string, date_to_json_string
+from hca_ingest.utils.date import parse_date_string, date_to_json_string
 
 
 class TestDateUtils(TestCase):

@@ -1,8 +1,8 @@
 import os
 from unittest import TestCase
 
-from ingest.importer.submission.entity import Entity
-from ingest.importer.submission.entity_map import EntityMap
+from hca_ingest.importer.submission.entity import Entity
+from hca_ingest.importer.submission.entity_map import EntityMap
 from tests.utils import load_json
 
 

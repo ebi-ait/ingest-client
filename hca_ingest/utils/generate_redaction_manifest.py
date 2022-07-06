@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from ingest.api.ingestapi import IngestApi
+from hca_ingest.api.ingestapi import IngestApi
 from dataclasses import dataclass
 import json
 import datetime

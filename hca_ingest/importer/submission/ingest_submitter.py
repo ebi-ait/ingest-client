@@ -2,10 +2,10 @@ import copy
 import json
 import logging
 
-from ingest.api.ingestapi import IngestApi
-from ingest.importer.submission.entity import Entity
-from ingest.importer.submission.entity_map import EntityMap
-from ingest.importer.submission.submission import Submission
+from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.importer.submission.entity import Entity
+from hca_ingest.importer.submission.entity_map import EntityMap
+from hca_ingest.importer.submission.submission import Submission
 
 ENTITY_LINK = {
     'biomaterial': 'biomaterials',

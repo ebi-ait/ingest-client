@@ -3,8 +3,8 @@ import os
 import unittest
 from unittest.mock import MagicMock
 
-from ingest.api.ingestapi import IngestApi
-from ingest.downloader.data_collector import DataCollector
+from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.downloader.data_collector import DataCollector
 
 
 class DataCollectorTest(unittest.TestCase):

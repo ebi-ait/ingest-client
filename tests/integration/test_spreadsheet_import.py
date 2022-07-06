@@ -5,10 +5,10 @@ import requests
 from unittest import TestCase
 from tests.utils import delete_file
 
-from ingest.api.ingestapi import IngestApi
-from ingest.importer.importer import XlsImporter
-from ingest.utils.s2s_token_client import S2STokenClient, ServiceCredential
-from ingest.utils.token_manager import TokenManager
+from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.importer.importer import XlsImporter
+from hca_ingest.utils.s2s_token_client import S2STokenClient, ServiceCredential
+from hca_ingest.utils.token_manager import TokenManager
 
 INGEST_API = os.environ.get('INGEST_API', 'https://api.ingest.dev.archive.data.humancellatlas.org/')
 DEPLOYMENT = 'develop'

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from ingest.importer.conversion import utils
+from hca_ingest.importer.conversion import utils
 
 
 class ModuleTest(TestCase):
