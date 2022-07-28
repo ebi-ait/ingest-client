@@ -5,8 +5,8 @@ A generic executor class to generate empty spreadsheets based on a set of metada
 
 from argparse import ArgumentParser
 
-from ingest.template.linked_spreadsheet_builder import LinkedSpreadsheetBuilder
-from ingest.template.vanilla_spreadsheet_builder import VanillaSpreadsheetBuilder
+from hca_ingest.template.linked_spreadsheet_builder import LinkedSpreadsheetBuilder
+from hca_ingest.template.vanilla_spreadsheet_builder import VanillaSpreadsheetBuilder
 from .spreadsheet_builder_constants import DEFAULT_AUTOFILL_SCALE, DEFAULT_LINK_CONFIG, DEFAULT_SCHEMA_LIST
 
 

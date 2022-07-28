@@ -1,6 +1,6 @@
 import xlsxwriter
 
-from ingest.template.tab_config import TabConfig
+from hca_ingest.template.tab_config import TabConfig
 from .schema_template import SchemaTemplate
 
 DEFAULT_INGEST_URL = "http://api.ingest.data.humancellatlas.org"

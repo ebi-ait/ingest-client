@@ -2,8 +2,8 @@ import json
 import os
 from unittest import TestCase
 
-from ingest.downloader.entity import Entity
-from ingest.downloader.flattener import Flattener
+from hca_ingest.downloader.entity import Entity
+from hca_ingest.downloader.flattener import Flattener
 
 
 class BaseFlattenerTest(TestCase):

@@ -1,7 +1,7 @@
 import copy
 
-from ingest.importer.data_node import DataNode
-from ingest.importer.spreadsheet.ingest_worksheet import IngestRow
+from hca_ingest.importer.data_node import DataNode
+from hca_ingest.importer.spreadsheet.ingest_worksheet import IngestRow
 
 TYPE_UNDEFINED = 'undefined'
 

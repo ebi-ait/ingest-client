@@ -5,8 +5,8 @@ from openpyxl import Workbook
 from openpyxl import load_workbook as Reader
 from unittest import TestCase
 
-from ingest.template.schema_template import SchemaTemplate
-from ingest.template.vanilla_spreadsheet_builder import VanillaSpreadsheetBuilder
+from hca_ingest.template.schema_template import SchemaTemplate
+from hca_ingest.template.vanilla_spreadsheet_builder import VanillaSpreadsheetBuilder
 from tests.utils import delete_file
 
 

@@ -1,10 +1,10 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from ingest.importer.conversion.metadata_entity import MetadataEntity
-from ingest.importer.importer import WorksheetImporter, WorkbookImporter, UnexpectedEntityUUIDFound, \
+from hca_ingest.importer.conversion.metadata_entity import MetadataEntity
+from hca_ingest.importer.importer import WorksheetImporter, WorkbookImporter, UnexpectedEntityUUIDFound, \
     MissingEntityUUIDFound, MultipleProjectsFound, NoProjectFound
-from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
+from hca_ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
 
 from tests.utils import create_test_workbook, create_ingest_workbook
 
@@ -15,7 +15,7 @@ class WorkbookImporterTest(TestCase):
         {'name': 'users', 'properties': ['sn_profiles']}
     ]
 
-    @patch('ingest.importer.importer.WorksheetImporter')
+    @patch('hca_ingest.importer.importer.WorksheetImporter')
     def setUp(self, worksheet_importer_constructor) -> None:
         self.template_mgr = MagicMock(name='template_manager')
         self.template_mgr.template.json_schemas = self.mock_json_schemas
@@ -55,7 +55,7 @@ class WorkbookImporterTest(TestCase):
         self.assertEqual({'user_name': 'jdelacruz'}, user_map.get(1)['content'])
         self.assertEqual({'user_name': 'sayyeah'}, user_map.get(96)['content'])
 
-    @patch('ingest.importer.importer.WorksheetImporter')
+    @patch('hca_ingest.importer.importer.WorksheetImporter')
     def test_do_import_with_module_tab(self, worksheet_importer_constructor):
         # given:
         concrete_type_map = {'Project': 'project', 'User': 'users', 'User - SN Profiles': 'users'}
@@ -116,7 +116,7 @@ class WorkbookImporterTest(TestCase):
     # NOTE: this is added because the team chose not to define an identity label for Project schema
     # This breaks the schema agnosticism of the importer framework.
     # The assumption is that there's only one Project per submission
-    @patch('ingest.importer.importer.WorksheetImporter')
+    @patch('hca_ingest.importer.importer.WorksheetImporter')
     def test_do_import_project_worksheet(self, worksheet_importer_constructor):
         # given:
         ingest_workbook = self.setup_workbook_with_project_worksheets(worksheet_importer_constructor)
@@ -158,7 +158,7 @@ class WorkbookImporterTest(TestCase):
         ingest_workbook = IngestWorkbook(workbook)
         return ingest_workbook
 
-    @patch('ingest.importer.importer.WorksheetImporter')
+    @patch('hca_ingest.importer.importer.WorksheetImporter')
     def test_do_import_multiple_projects(self, worksheet_importer_constructor):
         # given:
         template_mgr = MagicMock(name='template_manager')
@@ -189,7 +189,7 @@ class WorkbookImporterTest(TestCase):
         # then:
         self.assertIn(expected_error, errors, f'Errors expected to contain {MultipleProjectsFound.__name__}.')
 
-    @patch('ingest.importer.importer.WorksheetImporter')
+    @patch('hca_ingest.importer.importer.WorksheetImporter')
     def test_do_import_no_project(self, worksheet_importer_constructor):
         # given:
         template_mgr = MagicMock(name='template_manager')
@@ -216,7 +216,7 @@ class WorkbookImporterTest(TestCase):
         # then:
         self.assertIn(expected_error, errors, f'Errors expected to contain {NoProjectFound.__name__}.')
 
-    @patch('ingest.importer.importer.WorksheetImporter')
+    @patch('hca_ingest.importer.importer.WorksheetImporter')
     def test_do_import_with_create_spreadsheet(self, worksheet_importer_constructor):
         # given:
         template_mgr = MagicMock(name='template_manager')
@@ -252,7 +252,7 @@ class WorkbookImporterTest(TestCase):
             all(elem in errors for elem in expected_errors),
             f'Errors expected to contain {MissingEntityUUIDFound.__name__}.')
 
-    @patch('ingest.importer.importer.WorksheetImporter')
+    @patch('hca_ingest.importer.importer.WorksheetImporter')
     def test_do_import_with_update_spreadsheet(self, worksheet_importer_constructor):
         # given:
         concrete_type_map = {'project': 'project', 'users': 'users'}
@@ -321,7 +321,7 @@ class WorkbookImporterTest(TestCase):
         self.assertFalse(spreadsheet_json['project']['project-uuid']['is_reference'])
         self.assertTrue(spreadsheet_json['project']['project-uuid']['is_linking_reference'])
 
-    @patch('ingest.importer.importer.WorksheetImporter')
+    @patch('hca_ingest.importer.importer.WorksheetImporter')
     def test_do_import_do_not_update_project_but_has_project_worksheets(self, worksheet_importer_constructor):
         # given:
         ingest_workbook = self.setup_workbook_with_project_worksheets(worksheet_importer_constructor)

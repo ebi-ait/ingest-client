@@ -17,7 +17,7 @@ This repository contains the hca-ingest Python package library which can be shar
 
 To use the Ingest API interface in your python script 
 
-    from ingest.api.ingestapi import IngestApi
+    from hca_ingest.api.ingestapi import IngestApi
 
 Configure the ingest url to be used by setting the environment variable for INGEST_API
     
@@ -93,9 +93,9 @@ See more options in the pip-compile [documentation](https://github.com/jazzband/
 
 ### Running the Tests
 
-To run all the tests, use `nose` package:
+To run all the tests, use `unittest` package:
 
-    nosetests
+    python -m unittest 
     
 ### Developing Code in Editable Mode
 
@@ -124,10 +124,7 @@ support documentation](https://pip.pypa.io/en/stable/reference/pip_install/#vcs-
  
         python setup.py sdist
         
-    Take note that `setup.py` is configured to build a distribution with name `hca_ingest`.
-    This PyPI project is currently owned privately and may require access rights to change. 
-    Alternatively, the project name in `setup.py` can be changed so that it can be built and
-    uploaded to a different PyPI entry.
+    Take note that `setup.py` is configured to build a distribution with name `hca-ingest`.
     
 3. Install [Twine](https://pypi.org/project/twine/)
 

@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from enum import Enum
 
-from ingest.importer.conversion.exceptions import InvalidBooleanValue
+from hca_ingest.importer.conversion.exceptions import InvalidBooleanValue
 
 
 class DataType(Enum):

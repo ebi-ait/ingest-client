@@ -1,7 +1,7 @@
 from typing import Dict
 
-from ingest.api.ingestapi import IngestApi
-from ingest.downloader.entity import Entity
+from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.downloader.entity import Entity
 
 
 class DataCollector:

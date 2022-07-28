@@ -3,9 +3,9 @@ from unittest.mock import MagicMock
 
 from openpyxl import Workbook
 
-from ingest.importer.conversion.metadata_entity import MetadataEntity
-from ingest.importer.importer import WorksheetImporter
-from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
+from hca_ingest.importer.conversion.metadata_entity import MetadataEntity
+from hca_ingest.importer.importer import WorksheetImporter
+from hca_ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
 
 
 class WorksheetImporterTest(TestCase):

@@ -5,7 +5,7 @@ import requests
 from mock import MagicMock, Mock
 from requests import HTTPError
 
-from ingest.api.ingestapi import IngestApi
+from hca_ingest.api.ingestapi import IngestApi
 
 mock_ingest_api_url = "http://mockingestapi.com"
 mock_submission_envelope_id = "mock-envelope-id"
@@ -16,9 +16,9 @@ class IngestApiTest(TestCase):
         self.token_manager = MagicMock()
         self.token_manager.get_token = Mock(return_value='token')
 
-    @patch('ingest.api.ingestapi.IngestApi.get_link_in_submission')
-    @patch('ingest.api.ingestapi.create_session_with_retry')
-    @patch('ingest.api.ingestapi.requests.post')
+    @patch('hca_ingest.api.ingestapi.IngestApi.get_link_in_submission')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.requests.post')
     def test_create_file(self, mock_requests_post, mock_create_session, mock_get_link):
         ingest_api = IngestApi(token_manager=self.token_manager)
         mock_get_link.return_value = 'url/sub/id/files'
@@ -37,10 +37,10 @@ class IngestApiTest(TestCase):
                                               json={'fileName': 'mock-filename', 'content': {}},
                                               params={})
 
-    @patch('ingest.api.ingestapi.IngestApi.get_file_by_submission_url_and_filename')
-    @patch('ingest.api.ingestapi.IngestApi.get_link_in_submission')
-    @patch('ingest.api.ingestapi.create_session_with_retry')
-    @patch('ingest.api.ingestapi.requests.post')
+    @patch('hca_ingest.api.ingestapi.IngestApi.get_file_by_submission_url_and_filename')
+    @patch('hca_ingest.api.ingestapi.IngestApi.get_link_in_submission')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.requests.post')
     def test_create_file_conflict(self, mock_requests_post, mock_create_session, mock_get_link, mock_get_file):
         ingest_api = IngestApi(token_manager=self.token_manager)
         mock_get_file.return_value = {
@@ -70,10 +70,10 @@ class IngestApiTest(TestCase):
                                 headers={'Content-type': 'application/json', 'Authorization': 'Bearer token'},
                                 json={'content': {'attr': 'value', 'attr2': 'value2'}})
 
-    @patch('ingest.api.ingestapi.IngestApi.get_file_by_submission_url_and_filename')
-    @patch('ingest.api.ingestapi.IngestApi.get_link_in_submission')
-    @patch('ingest.api.ingestapi.create_session_with_retry')
-    @patch('ingest.api.ingestapi.requests.post')
+    @patch('hca_ingest.api.ingestapi.IngestApi.get_file_by_submission_url_and_filename')
+    @patch('hca_ingest.api.ingestapi.IngestApi.get_link_in_submission')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.requests.post')
     def test_create_file_internal_server_error(self, mock_requests_post, mock_create_session, mock_get_link,
                                                mock_get_file):
         ingest_api = IngestApi(token_manager=self.token_manager)
@@ -106,8 +106,8 @@ class IngestApiTest(TestCase):
                                 json={'content': {'attr': 'value',
                                                   'attr2': 'value2'}})
 
-    @patch('ingest.api.ingestapi.IngestApi.get_link_from_resource_url')
-    @patch('ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.IngestApi.get_link_from_resource_url')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
     def test_get_submission_by_uuid(self, mock_create_session, mock_get_link):
         mock_get_link.return_value = 'url/{?uuid}'
         ingest_api = IngestApi(token_manager=self.token_manager)
@@ -115,7 +115,7 @@ class IngestApiTest(TestCase):
         submission = ingest_api.get_submission_by_uuid('uuid')
         self.assertEqual(submission, {'uuid': 'submission-uuid'})
 
-    @patch('ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
     def test_get_all(self, mock_create_session):
         # given
         ingest_api = IngestApi(token_manager=self.token_manager)
@@ -165,7 +165,7 @@ class IngestApiTest(TestCase):
         entities = ingest_api.get_all('url?page=0&size=3', "bundleManifests")
         self.assertEqual(len(list(entities)), 5)
 
-    @patch('ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
     def test_get_related_entities_count(self, mock_create_session):
         # given
         ingest_api = IngestApi(token_manager=self.token_manager)
@@ -210,7 +210,7 @@ class IngestApiTest(TestCase):
         count = ingest_api.get_related_entities_count('files', mock_entity, 'files')
         self.assertEqual(count, 5)
 
-    @patch('ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
     def test_get_related_entities_count_no_pagination(self, mock_create_session):
         # given
         ingest_api = IngestApi(token_manager=self.token_manager)
@@ -248,8 +248,8 @@ class IngestApiTest(TestCase):
         count = ingest_api.get_related_entities_count('files', mock_entity, 'files')
         self.assertEqual(count, 4)
 
-    @patch('ingest.api.ingestapi.create_session_with_retry')
-    @patch('ingest.api.ingestapi.requests.post')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.requests.post')
     def test_create_staging_job_success(self, mock_post, mock_session):
         # given
         ingest_api = IngestApi(token_manager=self.token_manager)
@@ -263,8 +263,8 @@ class IngestApiTest(TestCase):
 
         self.assertEqual(staging_job, {'staging-area-uuid': 'uuid'})
 
-    @patch('ingest.api.ingestapi.create_session_with_retry')
-    @patch('ingest.api.ingestapi.requests.post')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.requests.post')
     def test_create_staging_job_failure(self, mock_post, mock_session):
         # given
         ingest_api = IngestApi(token_manager=self.token_manager)
@@ -285,7 +285,7 @@ class IngestApiTest(TestCase):
         response.raise_for_status = Mock()
         return response
 
-    @patch('ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
     def test_get_latest_schema_url(self, mock_session):
         # given
         ingest_api = IngestApi(token_manager=self.token_manager)
@@ -298,7 +298,7 @@ class IngestApiTest(TestCase):
         # then
         self.assertEqual(result, latest_schema_url)
 
-    @patch('ingest.api.ingestapi.create_session_with_retry')
+    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
     def test_get_latest_schema_url__empty_result(self, mock_session):
         # given
         ingest_api = IngestApi(token_manager=self.token_manager)

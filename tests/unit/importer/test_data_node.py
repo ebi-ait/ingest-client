@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from ingest.importer.data_node import DataNode
+from hca_ingest.importer.data_node import DataNode
 
 
 class DataNodeTest(TestCase):

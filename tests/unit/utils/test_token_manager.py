@@ -2,7 +2,7 @@ import time
 from unittest import TestCase
 from mock import MagicMock
 
-from ingest.utils.token_manager import TokenManager, Token
+from hca_ingest.utils.token_manager import TokenManager, Token
 
 
 class TestTokenManager(TestCase):

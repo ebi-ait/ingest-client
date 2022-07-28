@@ -3,9 +3,9 @@ from typing import List
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
-from ingest.downloader.flattener import Flattener
-from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
-from ingest.importer.spreadsheet.ingest_worksheet import START_DATA_ROW
+from hca_ingest.downloader.flattener import Flattener
+from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
+from hca_ingest.importer.spreadsheet.ingest_worksheet import START_DATA_ROW
 
 HEADER_ROW_NO = 4
 

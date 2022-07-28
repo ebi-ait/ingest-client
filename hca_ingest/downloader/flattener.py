@@ -1,8 +1,8 @@
 from itertools import groupby
 from typing import List
 
-from ingest.downloader.entity import Entity
-from ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
+from hca_ingest.downloader.entity import Entity
+from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
 SCALAR_LIST_DELIMETER = '||'

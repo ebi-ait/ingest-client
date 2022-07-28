@@ -3,8 +3,8 @@ from datetime import datetime
 import requests
 import yaml
 
-from ingest.api.ingestapi import IngestApi
-from ingest.template.descriptor import SimplePropertyDescriptor
+from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.template.descriptor import SimplePropertyDescriptor
 from .exceptions import RootSchemaException, UnknownKeySchemaException
 from .migration_parser import MigrationParser
 from .schema_parser import SchemaParser

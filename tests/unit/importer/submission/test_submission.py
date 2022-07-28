@@ -2,16 +2,16 @@ from unittest import TestCase
 
 from mock import MagicMock
 
-import ingest.api.ingestapi
-from ingest.importer.submission.entity import Entity
-from ingest.importer.submission.submission import Submission
+import hca_ingest.api.ingestapi
+from hca_ingest.importer.submission.entity import Entity
+from hca_ingest.importer.submission.submission import Submission
 
 
 class SubmissionTest(TestCase):
 
     def test_new_submission(self):
         # given
-        ingest.api.ingestapi.requests.get = MagicMock()
+        hca_ingest.api.ingestapi.requests.get = MagicMock()
         mock_ingest_api = MagicMock(name='mock_ingest_api')
 
         submission = Submission(mock_ingest_api, submission_url='submission_url')

@@ -1,10 +1,10 @@
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
-from ingest.importer.conversion.column_specification import ColumnSpecification, ConversionType
-from ingest.importer.conversion.data_converter import BooleanConverter, DataType, DefaultConverter, IntegerConverter, \
+from hca_ingest.importer.conversion.column_specification import ColumnSpecification, ConversionType
+from hca_ingest.importer.conversion.data_converter import BooleanConverter, DataType, DefaultConverter, IntegerConverter, \
     ListConverter, StringConverter
-from ingest.template.schema_template import SchemaTemplate
+from hca_ingest.template.schema_template import SchemaTemplate
 
 
 class ColumnSpecificationTest(TestCase):

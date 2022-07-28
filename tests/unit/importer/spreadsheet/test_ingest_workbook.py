@@ -3,8 +3,8 @@ from unittest import TestCase
 from mock import Mock
 from openpyxl import Workbook
 
-from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
-from ingest.importer.submission.entity import Entity
+from hca_ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
+from hca_ingest.importer.submission.entity import Entity
 from tests.utils import create_ingest_workbook, create_test_workbook, \
     create_mocked_workbook_importer
 

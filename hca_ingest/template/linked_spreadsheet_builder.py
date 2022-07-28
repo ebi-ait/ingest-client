@@ -8,7 +8,7 @@ __date__ = "31/01/2019"
 
 import sys
 
-from ingest.template.spreadsheet_builder import SpreadsheetBuilder
+from hca_ingest.template.spreadsheet_builder import SpreadsheetBuilder
 
 DEFAULT_INGEST_URL = "http://api.ingest.data.humancellatlas.org"
 DEFAULT_SCHEMAS_ENDPOINT = "/schemas/search/latestSchemas"

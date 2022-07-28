@@ -1,10 +1,10 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch, call, Mock
 
-import ingest
-from ingest.importer.submission.entity import Entity
-from ingest.importer.submission.entity_map import EntityMap
-from ingest.importer.submission.ingest_submitter import IngestSubmitter
+import hca_ingest
+from hca_ingest.importer.submission.entity import Entity
+from hca_ingest.importer.submission.entity_map import EntityMap
+from hca_ingest.importer.submission.ingest_submitter import IngestSubmitter
 
 
 class IngestSubmitterTest(TestCase):
@@ -16,7 +16,7 @@ class IngestSubmitterTest(TestCase):
         self.ingest_api.patch = MagicMock()
         self.ingest_api.get_link_from_resource = MagicMock()
 
-    @patch('ingest.importer.submission.ingest_submitter.Submission')
+    @patch('hca_ingest.importer.submission.ingest_submitter.Submission')
     def test_submit(self, submission_constructor):
         # given:
         submission = self._mock_submission(submission_constructor)
@@ -48,7 +48,7 @@ class IngestSubmitterTest(TestCase):
             'validationState': 'Draft'
         }
 
-        ingest.api.ingestapi.requests.get = MagicMock()
+        hca_ingest.api.ingestapi.requests.get = MagicMock()
         mock_ingest_api = MagicMock(name='mock_ingest_api')
         mock_ingest_api.load_root = MagicMock()
         mock_ingest_api.create_entity = MagicMock(return_value=new_entity_mock_response)
@@ -84,7 +84,7 @@ class IngestSubmitterTest(TestCase):
         entity_map = EntityMap(product, user1, user2, user3, project)
         return entity_map
 
-    @patch('ingest.importer.submission.ingest_submitter.Submission')
+    @patch('hca_ingest.importer.submission.ingest_submitter.Submission')
     def test_submit_linked_entity(self, submission_constructor):
         # given:
         submission = self._mock_submission(submission_constructor)

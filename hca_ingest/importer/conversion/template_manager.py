@@ -3,16 +3,16 @@ import logging
 
 from openpyxl.worksheet.worksheet import Worksheet
 
-from ingest.api.ingestapi import IngestApi
-from ingest.importer.conversion import conversion_strategy
-from ingest.importer.conversion.column_specification import ColumnSpecification
-from ingest.importer.conversion.conversion_strategy import CellConversion
-from ingest.importer.conversion.metadata_entity import MetadataEntity
-from ingest.importer.data_node import DataNode
-from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet, \
+from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.importer.conversion import conversion_strategy
+from hca_ingest.importer.conversion.column_specification import ColumnSpecification
+from hca_ingest.importer.conversion.conversion_strategy import CellConversion
+from hca_ingest.importer.conversion.metadata_entity import MetadataEntity
+from hca_ingest.importer.data_node import DataNode
+from hca_ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet, \
     MODULE_TITLE_PATTERN, IngestRow
-from ingest.template.exceptions import UnknownKeySchemaException
-from ingest.template.schema_template import SchemaTemplate
+from hca_ingest.template.exceptions import UnknownKeySchemaException
+from hca_ingest.template.schema_template import SchemaTemplate
 
 
 class TemplateManager:

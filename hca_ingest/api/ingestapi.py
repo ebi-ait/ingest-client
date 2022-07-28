@@ -10,7 +10,7 @@ from urllib.parse import urljoin, quote
 
 import requests
 
-from ingest.api.requests_utils import create_session_with_retry
+from hca_ingest.api.requests_utils import create_session_with_retry
 
 
 class IngestApi:

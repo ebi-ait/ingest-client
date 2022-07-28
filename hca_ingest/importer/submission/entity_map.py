@@ -1,7 +1,7 @@
 from typing import List
 
 
-from ingest.importer.submission.entity import Entity
+from hca_ingest.importer.submission.entity import Entity
 
 
 class EntityMap(object):

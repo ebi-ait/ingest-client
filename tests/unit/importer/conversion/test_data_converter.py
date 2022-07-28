@@ -1,9 +1,9 @@
 from unittest import TestCase
 
-from ingest.importer.conversion.data_converter import (
+from hca_ingest.importer.conversion.data_converter import (
     BooleanConverter, ListConverter, DataType, IntegerConverter,
     StringConverter, NumberConverter)
-from ingest.importer.conversion.exceptions import InvalidBooleanValue
+from hca_ingest.importer.conversion.exceptions import InvalidBooleanValue
 
 
 class DataTypeTest(TestCase):

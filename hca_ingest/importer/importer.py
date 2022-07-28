@@ -4,18 +4,18 @@ from typing import Tuple, List
 from openpyxl import Workbook
 from requests import HTTPError
 
-from ingest.api.ingestapi import IngestApi
-from ingest.importer.conversion import template_manager
-from ingest.importer.conversion.metadata_entity import MetadataEntity
-from ingest.importer.conversion.template_manager import TemplateManager
-from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
-from ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
-from ingest.importer.submission.entity_linker import EntityLinker
-from ingest.importer.submission.entity_map import EntityMap
-from ingest.importer.submission.ingest_submitter import IngestSubmitter
-from ingest.importer.submission.submission import Submission
-from ingest.template.exceptions import UnknownKeySchemaException
-from ingest.utils.IngestError import ImporterError, ParserError
+from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.importer.conversion import template_manager
+from hca_ingest.importer.conversion.metadata_entity import MetadataEntity
+from hca_ingest.importer.conversion.template_manager import TemplateManager
+from hca_ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
+from hca_ingest.importer.spreadsheet.ingest_worksheet import IngestWorksheet
+from hca_ingest.importer.submission.entity_linker import EntityLinker
+from hca_ingest.importer.submission.entity_map import EntityMap
+from hca_ingest.importer.submission.ingest_submitter import IngestSubmitter
+from hca_ingest.importer.submission.submission import Submission
+from hca_ingest.template.exceptions import UnknownKeySchemaException
+from hca_ingest.utils.IngestError import ImporterError, ParserError
 
 format = '[%(filename)s:%(lineno)s - %(funcName)20s() ] %(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=format)

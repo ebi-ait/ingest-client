@@ -1,6 +1,6 @@
 from unittest.mock import Mock, patch, MagicMock
 
-from ingest.utils.IngestError import ImporterError
+from hca_ingest.utils.IngestError import ImporterError
 from tests.unit.importer.test_importer import XlsImporterBaseTest
 
 
@@ -20,7 +20,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         self.assertEqual(expected_error_count, self.mock_ingest_api.create_submission_error.call_count,
                          f'There should  be {expected_error_count} errors')
 
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     def test_when_no_project_reference__then_dont_link_to_project(self, mock_link_to_project):
         # given:
         self.importer.generate_json = Mock(return_value=({}, self.mock_template_mgr, []))
@@ -32,7 +32,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         mock_link_to_project.assert_not_called()
         self.assertTrue(submission)
 
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     def test_when_has_project_reference__then_link_to_project(self, mock_link_submission_to_project):
         # given:
         self.importer.generate_json = Mock(
@@ -45,7 +45,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         mock_link_submission_to_project.assert_called_once()
         self.assertTrue(submission)
 
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     def test_when_spreadsheet_has_project_and_given_project_uuid__then__link_to_project(self, mock_link_to_project):
         # given:
         self.importer.generate_json = Mock(
@@ -58,7 +58,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         mock_link_to_project.assert_called_once()
         self.assertTrue(submission)
 
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     def test_when_spreadsheet_has_project_and_no_project_uuid__then__creates_and_links_to_project(self,
                                                                                                   mock_link_to_project):
         # given:
@@ -80,7 +80,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         self.mock_ingest_api.create_project.assert_called_once()
         mock_link_to_project.assert_called_once()
 
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     def test_when_update_project_true__and_spreadsheet_has_project__then_updates_project(self, mock_link_to_project):
         # given:
         project_uuid = 'project-uuid'
@@ -96,7 +96,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         self.mock_ingest_api.patch.assert_called_once_with('project-url', {'content': {'key': 'updated'}})
         mock_link_to_project.assert_called_once()
 
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
     def test_when_update_project_false_and_spreadsheet_has_project__then_dont_update_project(self,
                                                                                              mock_link_to_project):
         # given:
@@ -137,7 +137,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         }
         self.mock_ingest_api.get_entity_by_uuid = lambda etype, uuid: entity.get(uuid)
 
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.update_entities')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.update_entities')
     def test_when_is_update__then_update_entities(self, mock_update_entities):
         # given:
         self.importer.generate_json = Mock(return_value=({}, self.mock_template_mgr, None))
@@ -148,8 +148,8 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         # then:
         mock_update_entities.assert_called_once()
 
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_entities')
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.add_entities')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_entities')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.add_entities')
     def test_when_is_update_false__then_add_and_link_entities(self, mock_add_entities, mock_link_entities):
         # given:
         self.importer.generate_json = Mock(return_value=({}, self.mock_template_mgr, None))
@@ -176,8 +176,8 @@ class ImporterImportFileTest(XlsImporterBaseTest):
         # then:
         self.mock_ingest_api.create_submission_error.assert_called_once_with(None, exception_json)
 
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
-    @patch('ingest.importer.submission.ingest_submitter.IngestSubmitter.link_entity')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
+    @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_entity')
     def test_link_supplementary_files_to_project(self, mock_link_entity, mock_link_to_project):
         # given:
         spreadsheet_json = self._create_spreadsheet_json_with_supplementary_file()

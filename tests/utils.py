@@ -3,8 +3,8 @@ import json
 
 from openpyxl import Workbook
 from mock import Mock, MagicMock
-from ingest.importer.importer import WorkbookImporter
-from ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
+from hca_ingest.importer.importer import WorkbookImporter
+from hca_ingest.importer.spreadsheet.ingest_workbook import IngestWorkbook
 
 
 def create_test_workbook(*worksheet_titles, include_default_sheet=False):
