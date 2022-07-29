@@ -29,6 +29,10 @@ class IngestApi:
         self._submission_links = {}
         self.logger.info(f"using {self.url} for ingest API")
         self._ingest_links = self._get_ingest_links()
+        self.page_size = 100
+
+    def set_page_size(self, page_size):
+        self.page_size = page_size
 
     def get_headers(self):
         # refresh token
@@ -259,13 +263,15 @@ class IngestApi:
     def get_process(self, process_url):
         return self.get(process_url).json()
 
-    def get_entities(self, submission_url, entity_type):
-        submission = self.get(submission_url).json()
-        if entity_type in submission["_links"]:
-            yield from self.get_all(submission["_links"][entity_type]["href"], entity_type)
+    def get_entities(self, entity_url, entity_type, relation=None):
+        entity = self.get(entity_url).json()
+        if not relation:
+            relation = entity_type
+        return self.get_related_entities(relation, entity, entity_type)
 
     def get_all(self, url, entity_type):
-        result = self.get(url).json()
+        params = {'size': self.page_size}
+        result = self.get(url, params).json()
 
         entities = result["_embedded"][entity_type] if '_embedded' in result else []
         yield from entities
@@ -280,9 +286,8 @@ class IngestApi:
     def get_related_entities(self, relation, entity, entity_type):
         # get the self link from entity
         if relation in entity["_links"]:
-            entity_uri = entity["_links"][relation]["href"]
-            for entity in self.get_all(entity_uri, entity_type):
-                yield entity
+            entity_url = entity["_links"][relation]["href"]
+            yield from self.get_all(entity_url, entity_type)
 
     def get_related_entities_count(self, relation, entity, entity_type):
         if relation in entity["_links"]:
