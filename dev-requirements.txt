@@ -56,7 +56,9 @@ rfc3986==2.0.0
 rich==12.5.1
     # via twine
 six==1.16.0
-    # via bleach
+    # via
+    #   -c requirements.txt
+    #   bleach
 sortedcontainers==2.4.0
     # via
     #   -c requirements.txt
