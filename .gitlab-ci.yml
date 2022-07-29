@@ -3,7 +3,12 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-Unit Test:
+stages:
+  - unittest
+  - testpypi
+  - pypi
+
+default:
   image: quay.io/ebi-ait/ingest-base-images:python_3.10-slim
   before_script:
     - python -m venv ./venv
@@ -11,5 +16,29 @@ Unit Test:
     - pip install --upgrade pip
     - pip install pip-tools
     - pip-sync requirements.txt dev-requirements.txt
+
+Unit Tests:
+  stage: unittest
   script:
     - python -m unittest
+
+Test PyPI Deployment:
+  stage: testpypi
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - python setup.py sdist
+    - TWINE_PASSWORD=$PYPI_TEST_API_TOKEN TWINE_USERNAME=__token__ python3 -m twine upload --repository testpypi dist/*
+  artifacts:
+    paths:
+      - dist/
+
+PyPI Deployment:
+  stage: pypi
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - when: manual
+  dependencies:
+    - Test PyPI Deployment
+  script:
+    - TWINE_PASSWORD=$PYPI_API_TOKEN TWINE_USERNAME=__token__ python3 -m twine upload dist/*

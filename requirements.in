@@ -5,7 +5,6 @@ openpyxl
 polling
 PyYAML>=5.3.1
 requests[security]
-urllib3~=1.25.0
 xlsxwriter
 sortedcontainers
 mergedeep
