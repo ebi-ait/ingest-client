@@ -6,7 +6,7 @@ import json
 import logging
 import os
 import time
-from urllib.parse import urljoin, quote
+from urllib.parse import urljoin
 
 import requests
 
@@ -28,22 +28,19 @@ class IngestApi:
         self.token = None
         self._submission_links = {}
         self.logger.info(f"using {self.url} for ingest API")
-
         self._ingest_links = self._get_ingest_links()
 
-    def get(self, url, **kwargs):
-        if 'headers' not in kwargs:
-            kwargs['headers'] = {'Content-type': 'application/json'}
-        return self.session.get(url, **kwargs)
+    def get_headers(self):
+        # refresh token
+        if self.token and not self.headers.get('Authorization'):
+            self.set_token(f'Bearer {self.token}')
+            print(f'Bearer {self.token}')
 
-    def patch(self, url, patch):
-        r = self.session.patch(url, json=patch, headers=self.get_headers())
-        r.raise_for_status()
-        return r
+        if self.token_manager:
+            self.set_token(f'Bearer {self.token_manager.get_token()}')
+            self.logger.debug(f'Token refreshed!')
 
-    def put(self, url, data):
-        r = self.session.put(url, json=data, headers=self.get_headers())
-        return r
+        return self.headers
 
     def set_token(self, token):
         self.token = token
@@ -59,32 +56,57 @@ class IngestApi:
         self.logger.debug(f'Token unset!')
         return self.headers
 
-    def get_headers(self):
-        # refresh token
-        if self.token and not self.headers.get('Authorization'):
-            self.set_token(f'Bearer {self.token}')
-            print(f'Bearer {self.token}')
+    def get(self, url, **kwargs):
+        if 'headers' not in kwargs:
+            kwargs['headers'] = self.get_headers()
+        r = self.session.get(url, **kwargs)
+        r.raise_for_status()
+        return r
 
-        if self.token_manager:
-            self.set_token(f'Bearer {self.token_manager.get_token()}')
-            self.logger.debug(f'Token refreshed!')
+    def patch(self, url, patch, **kwargs):
+        if 'headers' not in kwargs:
+            kwargs['headers'] = self.get_headers()
+        r = self.session.patch(url, json=patch, **kwargs)
+        self.session.cache.delete_url(url)
+        r.raise_for_status()
+        return r
 
-        return self.headers
+    def put(self, url, data, **kwargs):
+        if 'headers' not in kwargs:
+            kwargs['headers'] = self.get_headers()
+
+        r = self.session.put(url, json=data, **kwargs)
+        self.session.cache.delete_url(url)
+        r.raise_for_status()
+        return r
+
+    def post(self, url, data, **kwargs):
+        if 'headers' not in kwargs:
+            kwargs['headers'] = self.get_headers()
+
+        r = self.session.post(url, json=data, **kwargs)
+        self.session.cache.delete_url(url)
+        r.raise_for_status()
+        return r
+
+    def delete(self, url, **kwargs):
+        if 'headers' not in kwargs:
+            kwargs['headers'] = self.get_headers()
+
+        r = self.session.delete(url, **kwargs)
+        self.session.cache.delete_url(url)
+        r.raise_for_status()
+        return r
 
     def _get_ingest_links(self):
-        r = self.get(self.url, headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()["_links"]
+        return self.get(self.url).json()["_links"]
 
     def get_link_from_resource_url(self, resource_url, link_name, headers=None):
-        if not headers:
-            headers = self.get_headers()
-        r = self.get(resource_url, headers=headers)
-        r.raise_for_status()
-        links = r.json().get('_links', {})
+        links = self.get(resource_url, headers=headers).json().get('_links', {})
         return links.get(link_name, {}).get('href')
 
-    def get_link_from_resource(self, resource, link_name):
+    @staticmethod
+    def get_link_from_resource(resource, link_name):
         links = resource.get('_links', {})
         return links.get(link_name, {}).get('href')
 
@@ -99,14 +121,10 @@ class IngestApi:
 
     def get_schemas(self, latest_only=True, high_level_entity=None, domain_entity=None, concrete_entity=None):
         schema_url = self.get_schemas_url()
-        all_schemas = []
-
         if latest_only:
             search_url = self.get_link_from_resource_url(schema_url, "search")
-            r = self.get(search_url, headers=self.get_headers())
-            if r.status_code == requests.codes.ok:
-                response_j = json.loads(r.text)
-                all_schemas = list(self.get_related_entities("latestSchemas", response_j, "schemas"))
+            response_j = self.get(search_url).json()
+            all_schemas = list(self.get_related_entities("latestSchemas", response_j, "schemas"))
         else:
             all_schemas = list(self.get_entities(schema_url, "schemas"))
 
@@ -132,12 +150,12 @@ class IngestApi:
             return self._ingest_links[repository_name]["href"].rsplit("{")[0]
         return None
 
-    def getSubmissions(self):
+    def get_submissions(self):
         params = {'sort': 'submissionDate,desc'}
-        r = self.get(self._ingest_links["submissionEnvelopes"]["href"].rsplit("{")[0], params=params,
-                     headers=self.get_headers())
-        if r.status_code == requests.codes.ok:
-            return json.loads(r.text)["_embedded"]["submissionEnvelopes"]
+        return self.get(
+            self._ingest_links["submissionEnvelopes"]["href"].rsplit("{")[0],
+            params=params
+        ).json()["_embedded"]["submissionEnvelopes"]
 
     def get_projects(self, submission_id):
         return self.__get_projects_by_submission_id_and_type(submission_id, 'projects')
@@ -148,20 +166,11 @@ class IngestApi:
 
     def __get_projects_by_submission_id_and_type(self, submission_id, project_type):
         submission_url = f'{self.url}/submissionEnvelopes/{submission_id}/{project_type}'
-        r = self.get(submission_url, headers=self.get_headers())
-        projects = {}
-        if r.status_code == requests.codes.ok:
-            projects = json.loads(r.text)
-        return projects.get('_embedded', {}).get('projects', [])
+        return self.get(submission_url).json().get('_embedded', {}).get('projects', [])
 
-    def get_project_by_id(self, id):
-        submission_url = self.url + '/projects/' + id
-        r = self.get(submission_url, headers=self.get_headers())
-        if r.status_code == requests.codes.ok:
-            project = json.loads(r.text)
-            return project
-        else:
-            raise ValueError("Project " + id + " could not be retrieved")
+    def get_project_by_id(self, project_id):
+        project_url = self.url + '/projects/' + project_id
+        return self.get(project_url).json()
 
     def get_project_by_uuid(self, uuid):
         return self.get_entity_by_uuid('projects', uuid)
@@ -173,49 +182,35 @@ class IngestApi:
         if entity_type == 'submissionEnvelopes':
             url = self.url + f'/{entity_type}/search/findByUuidUuid?uuid=' + uuid
 
-        r = self.get(url, headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()
+        return self.get(url).json()
 
     def get_entity_by_callback_link(self, callback_link):
         url = f'{self.url}{callback_link}'
-        r = self.get(url, headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()
+        return self.get(url).json()
 
     def get_file_by_submission_url_and_filename(self, submission_url, filename):
         search_url = self.get_link_from_resource_url(self.url + '/files/search',
                                                      'findBySubmissionEnvelopeAndFileName')
         search_url = search_url.replace('{?submissionEnvelope,fileName}', '')
-        r = self.get(search_url, params={'submissionEnvelope': submission_url, 'fileName': filename})
-        if r.status_code == requests.codes.ok:
-            return r.json()
-        return None
+        params = {'submissionEnvelope': submission_url, 'fileName': filename}
+        return self.get(search_url, params=params).json()
 
     def get_submission(self, submission_url):
-        r = self.get(submission_url, headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()
+        return self.get(submission_url).json()
 
     def get_submission_by_uuid(self, submission_uuid):
         headers = self.__get_basic_header()
         search_link = self.get_link_from_resource_url(self.url + '/submissionEnvelopes/search', 'findByUuid', headers)
         search_link = search_link.replace('{?uuid}', '')  # TODO: use a REST traverser instead of requests?
-        r = self.get(search_link, params={'uuid': submission_uuid})
-        r.raise_for_status()
-        return r.json()
+        return self.get(search_link, params={'uuid': submission_uuid}).json()
 
-    def get_files(self, id):
-        submission_url = self.url + '/submissionEnvelopes/' + id + '/files'
-        r = self.get(submission_url, headers=self.get_headers())
-        files = []
-        if r.status_code == requests.codes.ok:
-            files = json.loads(r.text)
-        return files
+    def get_files(self, submission_id):
+        submission_url = self.get_submission_url(submission_id)
+        return self.get_entities(submission_url, 'files')
 
-    def get_bundle_manifests(self, id):
-        submission_url = self.url + '/submissionEnvelopes/' + id
-        return self.get_entities(submission_url, "bundleManifests", 500)
+    def get_bundle_manifests(self, submission_id):
+        submission_url = self.get_submission_url(submission_id)
+        return self.get_entities(submission_url, "bundleManifests")
 
     def create_submission(self, update_submission=False):
         try:
@@ -224,10 +219,7 @@ class IngestApi:
             if update_submission:
                 create_submission_url = f'{create_submission_url}/updateSubmissions'
 
-            r = self.session.post(create_submission_url, data="{}",
-                                  headers=self.get_headers())
-            r.raise_for_status()
-            submission = r.json()
+            submission = self.post(create_submission_url, {}).json()
             submission_url = submission["_links"]["self"]["href"].rsplit("{")[0]
             self._submission_links[submission_url] = submission["_links"]
             return submission
@@ -237,9 +229,7 @@ class IngestApi:
 
     def get_submission_links(self, submission_url):
         if not self._submission_links.get(submission_url):
-            r = self.get(submission_url, headers=self.get_headers())
-            r.raise_for_status()
-            self._submission_links[submission_url] = r.json()["_links"]
+            self._submission_links[submission_url] = self.get(submission_url).json()["_links"]
 
         return self._submission_links.get(submission_url)
 
@@ -254,16 +244,11 @@ class IngestApi:
 
     def update_submission_state(self, submission_id, state):
         state_url = self.get_submission_state_url(submission_id, state)
-        r = self.session.put(state_url, headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()
+        return self.put(state_url, data=None).json()
 
     def get_submission_state_url(self, submission_id, state):
         submission_url = self.get_submission_url(submission_id)
         return self.get_link_in_submission(submission_url, state)
-
-    def getSubmissionUri(self, submission_id):
-        return self._ingest_links["submissionEnvelopes"]["href"].rsplit("{")[0] + "/" + submission_id
 
     def get_submission_url(self, submission_id):
         return self._ingest_links["submissionEnvelopes"]["href"].rsplit("{")[0] + "/" + submission_id
@@ -272,30 +257,22 @@ class IngestApi:
         return urljoin(self.url, callback_link)
 
     def get_process(self, process_url):
-        r = self.get(process_url, headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()
+        return self.get(process_url).json()
 
     def get_entities(self, submission_url, entity_type):
-        r = self.get(submission_url, headers=self.get_headers())
-        r.raise_for_status()
-        if r.status_code == requests.codes.ok:
-            if entity_type in json.loads(r.text)["_links"]:
-                yield from self.get_all(json.loads(r.text)["_links"][entity_type]["href"], entity_type)
+        submission = self.get(submission_url).json()
+        if entity_type in submission["_links"]:
+            yield from self.get_all(submission["_links"][entity_type]["href"], entity_type)
 
     def get_all(self, url, entity_type):
-        r = self.get(url, headers=self.get_headers())
-        r.raise_for_status()
-        result = r.json()
+        result = self.get(url).json()
 
         entities = result["_embedded"][entity_type] if '_embedded' in result else []
         yield from entities
 
         while "next" in result["_links"]:
             next_url = result["_links"]["next"]["href"]
-            r = self.get(next_url, headers=self.get_headers())
-            r.raise_for_status()
-            result = r.json()
+            result = self.get(next_url).json()
             entities = result["_embedded"][entity_type]
             yield from entities
             self.logger.info(f"GET {entity_type} {json.dumps(result['page'])}")
@@ -310,12 +287,9 @@ class IngestApi:
     def get_related_entities_count(self, relation, entity, entity_type):
         if relation in entity["_links"]:
             entity_uri = entity["_links"][relation]["href"]
-            r = self.get(entity_uri)
-            r.raise_for_status()
-            result = r.json()
-            page = result.get('page')
-            if page:
-                return page.get('totalElements')
+            result = self.get(entity_uri).json()
+            if 'page' in result:
+                return result.get('page').get('totalElements')
             return len(result["_embedded"][entity_type])
 
     def create_project(self, submission_url: str, content: dict, uuid: str = None, token: str = None):
@@ -325,14 +299,11 @@ class IngestApi:
             project = self.create_entity(submission_url, {'content': content}, "projects", uuid)
         return project
 
-    def _create_project_without_submission(self, content, token):
+    def _create_project_without_submission(self, content, token=None):
         headers = dict.copy(self.get_headers())
         if token:
             headers['Authorization'] = token
-
-        r = self.session.post(f'{self.url}/projects', json={'content': content}, headers=headers)
-        r.raise_for_status()
-        return r.json()
+        return self.post(f'{self.url}/projects', {'content': content}, headers=headers).json()
 
     def create_biomaterial(self, submission_url, content, uuid=None):
         return self.create_entity(submission_url, {'content': content}, "biomaterials", uuid)
@@ -359,8 +330,12 @@ class IngestApi:
 
         # Do not use session retries here as it will throw requests.exceptions.RetryError for http 409 error
         # We want to retry that error when creating files by doing a subsequent PATCH requests to update the metadata
-        r = requests.post(submission_files_url, json=file_to_create_object,
-                          headers=self.get_headers(), params=params)
+        r = requests.post(
+            submission_files_url,
+            json=file_to_create_object,
+            params=params,
+            headers=self.get_headers()
+        )
 
         # TODO Investigate why core is returning internal server error
         if r.status_code == requests.codes.conflict or r.status_code == requests.codes.internal_server_error:
@@ -378,7 +353,7 @@ class IngestApi:
 
                 file_url = file_in_ingest['_links']['self']['href']
                 time.sleep(0.001)
-                r = self.session.patch(file_url, json={'content': new_content}, headers=self.get_headers())
+                r = self.patch(file_url, {'content': new_content})
                 self.logger.debug(f'Updating existing content of file {file_url}.')
 
         r.raise_for_status()
@@ -392,8 +367,7 @@ class IngestApi:
         return self.create_entity(submission_url, data, 'submissionEnvelopeErrors')
 
     def delete_submission_errors(self, submission_url: str):
-        r = self.session.delete(f'{submission_url}/submissionErrors')
-        r.raise_for_status()
+        self.delete(f'{submission_url}/submissionErrors')
 
     def create_entity(self, submission_url, data, entity_type, uuid=None):
         params = {}
@@ -403,14 +377,10 @@ class IngestApi:
         submission_url = self.get_link_in_submission(submission_url, entity_type)
         self.logger.debug(f"POST {submission_url} {json.dumps(data)}")
 
-        r = self.session.post(submission_url, json=data, headers=self.get_headers(), params=params)
-        r.raise_for_status()
-        return r.json()
+        return self.post(submission_url, data, params=params).json()
 
     def get_object_uuid(self, entity_uri):
-        r = self.get(entity_uri, headers=self.get_headers())
-        if r.status_code == requests.codes.ok:
-            return json.loads(r.text)["uuid"]["uuid"]
+        return self.get(entity_uri).json()["uuid"]["uuid"]
 
     def link_entity(self, from_entity, to_entity, relationship, is_collection=True):
         if not from_entity:
@@ -447,21 +417,20 @@ class IngestApi:
         headers['Content-type'] = 'text/uri-list'
 
         if is_collection:
-            r = self.session.post(from_uri.rsplit("{")[0],
-                                  data=to_uri.rsplit("{")[0], headers=headers)
-        else:
-            r = self.session.put(from_uri.rsplit("{")[0],
-                                 data=to_uri.rsplit("{")[0], headers=headers)
+            return self.post(
+                from_uri.rsplit("{")[0],
+                to_uri.rsplit("{")[0],
+                headers=headers
+            )
+        return self.put(
+            from_uri.rsplit("{")[0],
+            to_uri.rsplit("{")[0],
+            headers=headers
+        )
 
-        r.raise_for_status()
-
-        return r
-
-    def create_bundle_manifest(self, bundleManifest):
+    def create_bundle_manifest(self, bundle_manifest):
         url = self._ingest_links["bundleManifests"]["href"].rsplit("{")[0]
-        r = self.session.post(url, json=bundleManifest.__dict__, headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()
+        return self.post(url, bundle_manifest.__dict__).json()
 
     def update_staging_details(self, submission_url, uuid, staging_area_location):
         staging_details = {
@@ -474,20 +443,15 @@ class IngestApi:
                 }
             }
         }
-        r = self.session.patch(submission_url, data=json.dumps(staging_details))
-        r.raise_for_status()
+        self.patch(submission_url, staging_details)
 
     def delete_staging_jobs(self, staging_area_uuid):
         delete_jobs_url = f'{self.get_staging_jobs_url()}/delete'
-        r = self.session.delete(delete_jobs_url, params={"stagingAreaUuid": staging_area_uuid},
-                                headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()
+        params = {"stagingAreaUuid": staging_area_uuid}
+        return self.delete(delete_jobs_url, params=params).json()
 
     def delete_staging_job(self, staging_job_url):
-        r = self.session.delete(staging_job_url, headers=self.get_headers())
-        r.raise_for_status()
-        return r
+        return self.delete(staging_job_url)
 
     def create_staging_job(self, staging_area_uuid, file_name, metadata_uuid):
         staging_info = {
@@ -495,27 +459,22 @@ class IngestApi:
             "stagingAreaFileName": file_name,
             "metadataUuid": metadata_uuid
         }
-        r = requests.post(self.get_staging_jobs_url(), json=staging_info, headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()
+        return self.post(self.get_staging_jobs_url(), staging_info).json()
 
     def complete_staging_job(self, complete_url, upload_file_uri):
         staging_info = {
             "stagingAreaFileUri": upload_file_uri
         }
-        r = self.session.patch(complete_url, json=staging_info, headers=self.get_headers())
-        r.raise_for_status()
-        return r.json()
+        return self.patch(complete_url, staging_info).json()
 
     def find_staging_job(self, upload_area_uuid, filename):
         search_params = {
             "stagingAreaUuid": upload_area_uuid,
             "stagingAreaFileName": filename
         }
-        find_staging_job_url = f'{self.get_staging_jobs_url()}/search/findByStagingAreaUuidAndStagingAreaFileName'
-        r = self.session.get(find_staging_job_url, params=search_params)
-        r.raise_for_status()
-        return r.json()
+        find_staging_job_suffix = '/search/findByStagingAreaUuidAndStagingAreaFileName'
+        find_staging_job_url = self.get_staging_jobs_url() + find_staging_job_suffix
+        return self.get(find_staging_job_url, params=search_params).json()
 
     @staticmethod
     def __get_basic_header():
