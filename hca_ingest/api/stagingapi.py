@@ -15,7 +15,7 @@ from time import time
 from urllib.parse import urljoin
 
 import requests
-import requests.packages.urllib3.util.retry as retry
+import urllib3.util.retry as retry
 
 DEFAULT_STAGING_URL = os.environ.get('STAGING_API', 'https://upload.dev.data.humancellatlas.org')
 DEFAULT_STAGING_VERSION = os.environ.get('STAGING_API_VERSION', 'v1')
