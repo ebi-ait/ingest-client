@@ -63,44 +63,44 @@ class IngestApi:
     def get(self, url, **kwargs):
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
-        r = self.session.get(url, **kwargs)
-        r.raise_for_status()
-        return r
+        response = self.session.get(url, **kwargs)
+        response.raise_for_status()
+        return response
 
     def patch(self, url, patch, **kwargs):
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
-        r = self.session.patch(url, json=patch, **kwargs)
+        response = self.session.patch(url, json=patch, **kwargs)
         self.session.cache.delete_url(url)
-        r.raise_for_status()
-        return r
+        response.raise_for_status()
+        return response
 
     def put(self, url, data, **kwargs):
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
 
-        r = self.session.put(url, json=data, **kwargs)
+        response = self.session.put(url, json=data, **kwargs)
         self.session.cache.delete_url(url)
-        r.raise_for_status()
-        return r
+        response.raise_for_status()
+        return response
 
     def post(self, url, data, **kwargs):
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
 
-        r = self.session.post(url, json=data, **kwargs)
+        response = self.session.post(url, json=data, **kwargs)
         self.session.cache.delete_url(url)
-        r.raise_for_status()
-        return r
+        response.raise_for_status()
+        return response
 
     def delete(self, url, **kwargs):
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
 
-        r = self.session.delete(url, **kwargs)
+        response = self.session.delete(url, **kwargs)
         self.session.cache.delete_url(url)
-        r.raise_for_status()
-        return r
+        response.raise_for_status()
+        return response
 
     def _get_ingest_links(self):
         return self.get(self.url).json()["_links"]
@@ -335,7 +335,7 @@ class IngestApi:
 
         # Do not use session retries here as it will throw requests.exceptions.RetryError for http 409 error
         # We want to retry that error when creating files by doing a subsequent PATCH requests to update the metadata
-        r = requests.post(
+        response = requests.post(
             submission_files_url,
             json=file_to_create_object,
             params=params,
@@ -343,7 +343,7 @@ class IngestApi:
         )
 
         # TODO Investigate why core is returning internal server error
-        if r.status_code == requests.codes.conflict or r.status_code == requests.codes.internal_server_error:
+        if response.status_code == requests.codes.conflict or response.status_code == requests.codes.internal_server_error:
             search_files = self.get_file_by_submission_url_and_filename(submission_url, filename)
 
             if search_files and search_files.get('_embedded') and search_files['_embedded'].get('files'):
@@ -358,12 +358,12 @@ class IngestApi:
 
                 file_url = file_in_ingest['_links']['self']['href']
                 time.sleep(0.001)
-                r = self.patch(file_url, {'content': new_content})
+                response = self.patch(file_url, {'content': new_content})
                 self.logger.debug(f'Updating existing content of file {file_url}.')
 
-        r.raise_for_status()
+        response.raise_for_status()
 
-        return r.json()
+        return response.json()
 
     def create_submission_manifest(self, submission_url, data):
         return self.create_entity(submission_url, data, 'submissionManifest')
