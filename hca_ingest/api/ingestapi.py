@@ -127,8 +127,8 @@ class IngestApi:
         schema_url = self.get_schemas_url()
         if latest_only:
             search_url = self.get_link_from_resource_url(schema_url, "search")
-            response_j = self.get(search_url).json()
-            all_schemas = list(self.get_related_entities("latestSchemas", response_j, "schemas"))
+            response_json = self.get(search_url).json()
+            all_schemas = list(self.get_related_entities("latestSchemas", response_json, "schemas"))
         else:
             all_schemas = list(self.get_entities(schema_url, "schemas"))
 
