@@ -75,20 +75,20 @@ class IngestApi:
         response.raise_for_status()
         return response
 
-    def put(self, url, data, **kwargs):
+    def put(self, url, **kwargs):
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
 
-        response = self.session.put(url, json=data, **kwargs)
+        response = self.session.put(url, **kwargs)
         self.session.cache.delete_url(url)
         response.raise_for_status()
         return response
 
-    def post(self, url, data, **kwargs):
+    def post(self, url, **kwargs):
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
 
-        response = self.session.post(url, json=data, **kwargs)
+        response = self.session.post(url, **kwargs)
         self.session.cache.delete_url(url)
         response.raise_for_status()
         return response
@@ -223,7 +223,7 @@ class IngestApi:
             if update_submission:
                 create_submission_url = f'{create_submission_url}/updateSubmissions'
 
-            submission = self.post(create_submission_url, {}).json()
+            submission = self.post(create_submission_url, json={}).json()
             submission_url = submission["_links"]["self"]["href"].rsplit("{")[0]
             self._submission_links[submission_url] = submission["_links"]
             return submission
@@ -248,7 +248,7 @@ class IngestApi:
 
     def update_submission_state(self, submission_id, state):
         state_url = self.get_submission_state_url(submission_id, state)
-        return self.put(state_url, data=None).json()
+        return self.put(state_url).json()
 
     def get_submission_state_url(self, submission_id, state):
         submission_url = self.get_submission_url(submission_id)
@@ -271,7 +271,7 @@ class IngestApi:
 
     def get_all(self, url, entity_type):
         params = {'size': self.page_size}
-        result = self.get(url, params).json()
+        result = self.get(url, params=params).json()
 
         entities = result["_embedded"][entity_type] if '_embedded' in result else []
         yield from entities
@@ -308,7 +308,7 @@ class IngestApi:
         headers = dict.copy(self.get_headers())
         if token:
             headers['Authorization'] = token
-        return self.post(f'{self.url}/projects', {'content': content}, headers=headers).json()
+        return self.post(f'{self.url}/projects', json={'content': content}, headers=headers).json()
 
     def create_biomaterial(self, submission_url, content, uuid=None):
         return self.create_entity(submission_url, {'content': content}, "biomaterials", uuid)
@@ -382,7 +382,7 @@ class IngestApi:
         submission_url = self.get_link_in_submission(submission_url, entity_type)
         self.logger.debug(f"POST {submission_url} {json.dumps(data)}")
 
-        return self.post(submission_url, data, params=params).json()
+        return self.post(submission_url, json=data, params=params).json()
 
     def get_object_uuid(self, entity_uri):
         return self.get(entity_uri).json()["uuid"]["uuid"]
@@ -413,8 +413,8 @@ class IngestApi:
             raise ValueError(
                 "Error: from_entity_links_relationship for relationship {0} has no href".format(relationship))
 
-        from_uri = from_entity["_links"][relationship]["href"]
-        to_uri = self.get_link_from_resource(to_entity, 'self')
+        from_uri = from_entity["_links"][relationship]["href"].rsplit("{")[0]
+        to_uri = self.get_link_from_resource(to_entity, 'self').rsplit("{")[0]
 
         self.logger.info('fromUri ' + from_uri + ' toUri:' + to_uri)
 
@@ -422,20 +422,12 @@ class IngestApi:
         headers['Content-type'] = 'text/uri-list'
 
         if is_collection:
-            return self.post(
-                from_uri.rsplit("{")[0],
-                to_uri.rsplit("{")[0],
-                headers=headers
-            )
-        return self.put(
-            from_uri.rsplit("{")[0],
-            to_uri.rsplit("{")[0],
-            headers=headers
-        )
+            return self.post(from_uri, data=to_uri, headers=headers)
+        return self.put(from_uri, data=to_uri, headers=headers)
 
     def create_bundle_manifest(self, bundle_manifest):
         url = self._ingest_links["bundleManifests"]["href"].rsplit("{")[0]
-        return self.post(url, bundle_manifest.__dict__).json()
+        return self.post(url, json=bundle_manifest.__dict__).json()
 
     def update_staging_details(self, submission_url, uuid, staging_area_location):
         staging_details = {
@@ -464,7 +456,7 @@ class IngestApi:
             "stagingAreaFileName": file_name,
             "metadataUuid": metadata_uuid
         }
-        return self.post(self.get_staging_jobs_url(), staging_info).json()
+        return self.post(self.get_staging_jobs_url(), json=staging_info).json()
 
     def complete_staging_job(self, complete_url, upload_file_uri):
         staging_info = {
