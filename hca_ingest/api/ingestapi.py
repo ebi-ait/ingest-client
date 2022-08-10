@@ -71,7 +71,7 @@ class IngestApi:
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
         response = self.session.patch(url, json=patch, **kwargs)
-        self.session.cache.delete_url(url)
+        self.session.cache.clear()
         response.raise_for_status()
         return response
 
@@ -80,7 +80,7 @@ class IngestApi:
             kwargs['headers'] = self.get_headers()
 
         response = self.session.put(url, **kwargs)
-        self.session.cache.delete_url(url)
+        self.session.cache.clear()
         response.raise_for_status()
         return response
 
@@ -89,7 +89,7 @@ class IngestApi:
             kwargs['headers'] = self.get_headers()
 
         response = self.session.post(url, **kwargs)
-        self.session.cache.delete_url(url)
+        self.session.cache.clear()
         response.raise_for_status()
         return response
 
@@ -98,7 +98,7 @@ class IngestApi:
             kwargs['headers'] = self.get_headers()
 
         response = self.session.delete(url, **kwargs)
-        self.session.cache.delete_url(url)
+        self.session.cache.clear()
         response.raise_for_status()
         return response
 
