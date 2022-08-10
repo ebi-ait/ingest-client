@@ -49,8 +49,11 @@ readme-renderer==36.0
 requests[security]==2.28.1
     # via
     #   -c requirements.txt
+    #   requests-mock
     #   requests-toolbelt
     #   twine
+requests-mock==1.9.3
+    # via -r dev-requirements.in
 requests-toolbelt==0.9.1
     # via twine
 rfc3986==2.0.0
@@ -61,6 +64,7 @@ six==1.16.0
     # via
     #   -c requirements.txt
     #   bleach
+    #   requests-mock
 sortedcontainers==2.4.0
     # via
     #   -c requirements.txt

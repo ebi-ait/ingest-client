@@ -4,3 +4,4 @@ mock
 coverage
 sortedcontainers
 twine
+requests-mock
