@@ -106,7 +106,8 @@ class IngestApi:
         return self.get(self.url).json()["_links"]
 
     def get_link_from_resource_url(self, resource_url, link_name):
-        links = self.get(resource_url).json().get('_links', {})
+        params = {'size': 1}
+        links = self.get(resource_url, params=params).json().get('_links', {})
         return links.get(link_name, {}).get('href')
 
     @staticmethod
