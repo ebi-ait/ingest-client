@@ -105,8 +105,8 @@ class IngestApi:
     def _get_ingest_links(self):
         return self.get(self.url).json()["_links"]
 
-    def get_link_from_resource_url(self, resource_url, link_name, headers=None):
-        links = self.get(resource_url, headers=headers).json().get('_links', {})
+    def get_link_from_resource_url(self, resource_url, link_name):
+        links = self.get(resource_url).json().get('_links', {})
         return links.get(link_name, {}).get('href')
 
     @staticmethod
@@ -203,8 +203,7 @@ class IngestApi:
         return self.get(submission_url).json()
 
     def get_submission_by_uuid(self, submission_uuid):
-        headers = self.__get_basic_header()
-        search_link = self.get_link_from_resource_url(self.url + '/submissionEnvelopes/search', 'findByUuid', headers)
+        search_link = self.get_link_from_resource_url(self.url + '/submissionEnvelopes/search', 'findByUuid')
         search_link = search_link.replace('{?uuid}', '')  # TODO: use a REST traverser instead of requests?
         return self.get(search_link, params={'uuid': submission_uuid}).json()
 
