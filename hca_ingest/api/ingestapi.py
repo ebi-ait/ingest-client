@@ -14,9 +14,9 @@ from hca_ingest.api.requests_utils import create_session_with_retry
 
 
 class IngestApi:
-    def __init__(self, url=None, token_manager=None):
+    def __init__(self, url=None, token_manager=None, session=None):
         self.logger = logging.getLogger(__name__)
-        self.session = create_session_with_retry()
+        self.session = session if session else create_session_with_retry()
         self.token_manager = token_manager
 
         if not url and 'INGEST_API' in os.environ:
