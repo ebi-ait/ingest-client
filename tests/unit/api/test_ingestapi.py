@@ -4,8 +4,10 @@ from unittest.mock import patch
 import requests
 from mock import MagicMock, Mock
 from requests import HTTPError
+from requests_mock import Adapter
 
 from hca_ingest.api.ingestapi import IngestApi
+from tests.unit.api.utils_ingestapi import mock_cached_session, register_mock_response
 
 mock_ingest_api_url = "http://mockingestapi.com"
 mock_submission_envelope_id = "mock-envelope-id"
@@ -115,13 +117,20 @@ class IngestApiTest(TestCase):
         submission = ingest_api.get_submission_by_uuid('uuid')
         self.assertEqual(submission, {'uuid': 'submission-uuid'})
 
-    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
-    def test_get_all(self, mock_create_session):
+    def test_get_all(self):
         # given
-        ingest_api = IngestApi(token_manager=self.token_manager)
-
-        mocked_responses = {
-            'url?page=0&size=3': {
+        adapter = Adapter()
+        api_url = 'http://test.api.get_all'
+        session = mock_cached_session(adapter, 'http://', 'https://')
+        register_mock_response(
+            adapter,
+            api_url,
+            {'_links': {}}
+        )
+        register_mock_response(
+            adapter,
+            f'{api_url}?page=0&size=3',
+            {
                 "page": {
                     "size": 3,
                     "totalElements": 5,
@@ -137,11 +146,15 @@ class IngestApiTest(TestCase):
                 },
                 "_links": {
                     "next": {
-                        'href': 'url?page=1&size=3'
+                        'href': f'{api_url}?page=1&size=3'
                     }
                 }
-            },
-            'url?page=1&size=3': {
+            }
+        )
+        register_mock_response(
+            adapter,
+            f'{api_url}?page=1&size=3',
+            {
                 "page": {
                     "size": 3,
                     "totalElements": 5,
@@ -157,21 +170,27 @@ class IngestApiTest(TestCase):
                 "_links": {
                 }
             }
-        }
-
-        mock_create_session.return_value.get = lambda url, headers: self._create_mock_response(url, mocked_responses)
+        )
+        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
 
         # when
-        entities = ingest_api.get_all('url?page=0&size=3', "bundleManifests")
+        entities = ingest_api.get_all(f'{api_url}?page=0&size=3', "bundleManifests")
         self.assertEqual(len(list(entities)), 5)
 
-    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
-    def test_get_related_entities_count(self, mock_create_session):
+    def test_get_related_entities_count(self):
         # given
-        ingest_api = IngestApi(token_manager=self.token_manager)
-
-        mocked_responses = {
-            'https://url/project/files': {
+        adapter = Adapter()
+        api_url = 'http://test.api.get_related_entities_count'
+        session = mock_cached_session(adapter, 'http://', 'https://')
+        register_mock_response(
+            adapter,
+            api_url,
+            {'_links': {}}
+        )
+        register_mock_response(
+            adapter,
+            f'{api_url}/project/files',
+            {
                 "page": {
                     "size": 3,
                     "totalElements": 5,
@@ -190,33 +209,42 @@ class IngestApiTest(TestCase):
                 "_links": {
                 }
             }
-        }
+        )
+        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
 
         mock_entity = {
             "_links": {
                 "self": {
-                    "href": "https://url/project/1"
+                    "href": f'{api_url}/project/1'
                 },
                 "files": {
-                    "href": "https://url/project/files",
+                    "href": f'{api_url}/project/files',
                 }
             }
         }
 
-        mock_create_session.return_value.get = lambda url, headers: self._create_mock_response(
-            url, mocked_responses)
-
         # when
         count = ingest_api.get_related_entities_count('files', mock_entity, 'files')
+
+        # then
         self.assertEqual(count, 5)
 
-    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
-    def test_get_related_entities_count_no_pagination(self, mock_create_session):
+    def test_get_related_entities_count_no_pagination(self):
         # given
-        ingest_api = IngestApi(token_manager=self.token_manager)
+        adapter = Adapter()
+        api_url = 'http://test.api.get_related_entities_count_no_pagination'
+        session = mock_cached_session(adapter, 'http://', 'https://')
+        register_mock_response(
+            adapter,
+            api_url,
+            {'_links': {}}
+        )
+        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
 
-        mocked_responses = {
-            'https://url/project/files': {
+        register_mock_response(
+            adapter,
+            f'{api_url}/project/files',
+            {
                 "_embedded": {
                     "files": [
                         {"attr": "value"},
@@ -225,38 +253,48 @@ class IngestApiTest(TestCase):
                         {"attr": "value"}
                     ]
                 },
-                "_links": {
-                }
+                "_links": {}
             }
-        }
+        )
 
         mock_entity = {
             "_links": {
                 "self": {
-                    "href": "https://url/project/1"
+                    "href": f'{api_url}/project/1'
                 },
                 "files": {
-                    "href": "https://url/project/files",
+                    "href": f'{api_url}/project/files',
                 }
             }
         }
-
-        mock_create_session.return_value.get = lambda url, headers: self._create_mock_response(
-            url, mocked_responses)
 
         # when
         count = ingest_api.get_related_entities_count('files', mock_entity, 'files')
         self.assertEqual(count, 4)
 
-    @patch('hca_ingest.api.ingestapi.create_session_with_retry')
-    @patch('hca_ingest.api.ingestapi.requests.post')
-    def test_create_staging_job_success(self, mock_post, mock_session):
+    def test_create_staging_job_success(self):
         # given
-        ingest_api = IngestApi(token_manager=self.token_manager)
-        ingest_api.get_staging_jobs_url = MagicMock(return_value='url')
-
-        mock_post.return_value.json.return_value = {'staging-area-uuid': 'uuid'}
-        mock_post.return_value.status_code = requests.codes.ok
+        adapter = Adapter()
+        api_url = 'http://test.api.create_staging_job_success'
+        session = mock_cached_session(adapter, 'http://', 'https://')
+        register_mock_response(
+            adapter,
+            api_url,
+            {
+                '_links': {
+                    'stagingJobs': {
+                        'href': f'{api_url}/stagingJobs'
+                    }
+                }
+            }
+        )
+        register_mock_response(
+            adapter,
+            f'{api_url}/stagingJobs',
+            {'staging-area-uuid': 'uuid'},
+            method='POST'
+        )
+        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
 
         # when
         staging_job = ingest_api.create_staging_job('uuid', 'filename', 'metadata-uuid')
@@ -267,23 +305,34 @@ class IngestApiTest(TestCase):
     @patch('hca_ingest.api.ingestapi.requests.post')
     def test_create_staging_job_failure(self, mock_post, mock_session):
         # given
-        ingest_api = IngestApi(token_manager=self.token_manager)
-        ingest_api.get_staging_jobs_url = MagicMock(return_value='url')
+        adapter = Adapter()
+        api_url = 'http://test.api.create_staging_job_failure'
+        session = mock_cached_session(adapter, 'http://', 'https://')
+        register_mock_response(
+            adapter,
+            api_url,
+            {
+                '_links': {
+                    'stagingJobs': {
+                        'href': f'{api_url}/stagingJobs'
+                    }
+                }
+            }
+        )
+        register_mock_response(
+            adapter,
+            f'{api_url}/stagingJobs',
+            {'staging-area-uuid': 'uuid'},
+            method='POST',
+            status_code=500
+        )
+        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
 
-        mock_post.return_value.json.return_value = {'staging-area-uuid': 'uuid'}
-        mock_post.return_value.status_code = requests.codes.ok
-
-        mock_post.return_value.raise_for_status = MagicMock(side_effect=HTTPError())
-        # when
+        # then
         with self.assertRaises(HTTPError):
+            # when
             ingest_api.create_staging_job('uuid', 'filename', 'metadata_uuid')
 
-    @staticmethod
-    def _create_mock_response(url, mocked_responses):
-        response = MagicMock()
-        response.json.return_value = mocked_responses.get(url)
-        response.raise_for_status = Mock()
-        return response
 
     @patch('hca_ingest.api.ingestapi.create_session_with_retry')
     def test_get_latest_schema_url(self, mock_session):
