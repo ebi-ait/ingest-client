@@ -1,4 +1,3 @@
-coverage
 dataclasses
 jsonref
 openpyxl
@@ -10,3 +9,4 @@ sortedcontainers
 mergedeep
 cryptography
 PyJWT
+requests-cache

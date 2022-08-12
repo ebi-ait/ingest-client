@@ -1,9 +1,10 @@
-from requests import Session
+from datetime import timedelta
 from requests.adapters import HTTPAdapter
 from urllib3.util import retry
+from requests_cache import CachedSession
 
 
-def create_session_with_retry(retry_policy=None) -> Session:
+def create_session_with_retry(retry_policy=None) -> CachedSession:
     retry_policy = retry_policy or retry.Retry(
         total=50,
         # seems that this has a default value of 10,
@@ -18,7 +19,7 @@ def create_session_with_retry(retry_policy=None) -> Session:
         method_whitelist=frozenset(
             ['HEAD', 'GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'TRACE'])
     )
-    session = Session()
+    session = CachedSession(expire_after=timedelta(hours=2))
     adapter = HTTPAdapter(max_retries=retry_policy)
     session.mount('http://', adapter)
     session.mount('https://', adapter)

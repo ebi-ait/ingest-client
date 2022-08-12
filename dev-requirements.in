@@ -1,5 +1,7 @@
 -c requirements.txt
 flake8==3.5.0
 mock
+coverage
 sortedcontainers
 twine
+requests-mock

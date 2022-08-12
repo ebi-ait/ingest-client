@@ -1,6 +1,6 @@
 workflow:
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_PIPELINE_SOURCE == "external_pull_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 stages:
@@ -24,8 +24,8 @@ Unit Tests:
 
 Test PyPI Deployment:
   stage: testpypi
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  except:
+   - external_pull_request_event
   script:
     - python setup.py sdist
     - TWINE_PASSWORD=$PYPI_TEST_API_TOKEN TWINE_USERNAME=__token__ python3 -m twine upload --repository testpypi dist/*
@@ -36,6 +36,9 @@ Test PyPI Deployment:
 PyPI Deployment:
   stage: pypi
   when: manual
+  except:
+   - external_pull_request_event
+  allow_failure: false
   dependencies:
     - Test PyPI Deployment
   script:

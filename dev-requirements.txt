@@ -16,6 +16,8 @@ charset-normalizer==2.1.0
     #   requests
 commonmark==0.9.1
     # via rich
+coverage==6.4.3
+    # via -r dev-requirements.in
 docutils==0.19
     # via readme-renderer
 flake8==3.5.0
@@ -26,7 +28,7 @@ idna==3.3
     #   requests
 importlib-metadata==4.12.0
     # via twine
-keyring==23.7.0
+keyring==23.8.2
     # via twine
 mccabe==0.6.1
     # via flake8
@@ -42,13 +44,16 @@ pygments==2.12.0
     # via
     #   readme-renderer
     #   rich
-readme-renderer==35.0
+readme-renderer==36.0
     # via twine
 requests[security]==2.28.1
     # via
     #   -c requirements.txt
+    #   requests-mock
     #   requests-toolbelt
     #   twine
+requests-mock==1.9.3
+    # via -r dev-requirements.in
 requests-toolbelt==0.9.1
     # via twine
 rfc3986==2.0.0
@@ -56,7 +61,10 @@ rfc3986==2.0.0
 rich==12.5.1
     # via twine
 six==1.16.0
-    # via bleach
+    # via
+    #   -c requirements.txt
+    #   bleach
+    #   requests-mock
 sortedcontainers==2.4.0
     # via
     #   -c requirements.txt
