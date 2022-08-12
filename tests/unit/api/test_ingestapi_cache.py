@@ -6,11 +6,11 @@ from requests_mock import Adapter
 from unittest import TestCase
 
 from hca_ingest.api.ingestapi import IngestApi
-
+from tests.unit.api.utils_ingestapi import register_mock_response, mock_cached_session
 
 API_URL = "http://test.caching.ingest"
 SCHEMAS_URL = f'{API_URL}/schemas'
-SCHEMAS_RESPONSE = {
+API_RESPONSE = {
     '_links': {
         'schemas': {
             'href': SCHEMAS_URL
@@ -24,29 +24,12 @@ class IngestApiCacheTest(TestCase):
         self.token_manager = MagicMock()
         self.token_manager.get_token = Mock(return_value='token')
         self.adapter = Adapter()
-        self.register_mock_response('http://test.caching.ingest', SCHEMAS_RESPONSE)
-        session = self.mock_session(self.adapter)
+        register_mock_response(self.adapter, API_URL, API_RESPONSE)
+        session = mock_cached_session(self.adapter, 'http://', 'https://')
         self.api = IngestApi(url=API_URL, token_manager=self.token_manager, session=session)
 
     def tearDown(self):
         self.api.session.cache.clear()
-
-    @staticmethod
-    def mock_session(adapter):
-        # session will make mock requests where it would normally make real requests
-        session = CachedSession(backend='memory')
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
-        return session
-
-    def register_mock_response(self, uri, response, method='GET', status_code=200):
-        self.adapter.register_uri(
-            method,
-            uri,
-            headers={'Content-Type': 'application/json'},
-            json=response,
-            status_code=status_code,
-        )
 
     def test_init_adds_to_cache(self):
         self.assertTrue(self.api.session.cache.has_url(API_URL))
@@ -101,7 +84,7 @@ class IngestApiCacheTest(TestCase):
             }
         }
         folder_url, item_url, search_url, search_all_url = self.register_item_responses()
-        self.register_mock_response(folder_url, new_item, method='POST', status_code=200)
+        register_mock_response(self.adapter, folder_url, new_item, method='POST', status_code=200)
         self.prime_cache(folder_url, item_url, search_url, search_all_url)
 
         # when
@@ -147,14 +130,14 @@ class IngestApiCacheTest(TestCase):
                 ]
             }
         }
-        self.register_mock_response(item_url, item)
-        self.register_mock_response(item_url, item, method='PUT', status_code=200)
-        self.register_mock_response(item_url, item, method='PATCH', status_code=200)
-        self.register_mock_response(item_url, item, method='POST', status_code=200)
-        self.register_mock_response(item_url, {}, method='DELETE', status_code=204)
-        self.register_mock_response(search_url, item)
-        self.register_mock_response(folder_url, folder)
-        self.register_mock_response(search_all_url, folder)
+        register_mock_response(self.adapter, item_url, item)
+        register_mock_response(self.adapter, item_url, item, method='PUT', status_code=200)
+        register_mock_response(self.adapter, item_url, item, method='PATCH', status_code=200)
+        register_mock_response(self.adapter, item_url, item, method='POST', status_code=200)
+        register_mock_response(self.adapter, item_url, {}, method='DELETE', status_code=204)
+        register_mock_response(self.adapter, search_url, item)
+        register_mock_response(self.adapter, folder_url, folder)
+        register_mock_response(self.adapter, search_all_url, folder)
         return folder_url, item_url, search_url, search_all_url
 
     def prime_cache(self, *urls):
@@ -167,21 +150,21 @@ class IngestApiCacheTest(TestCase):
         latest_url = f'{search_url}/latestSchemas'
         latest_get_url = f'{latest_url}?size={self.api.page_size}'
 
-        self.register_mock_response(schemas_get_url, {
+        register_mock_response(self.adapter, schemas_get_url, {
             '_links': {
                 'search': {
                     'href': search_url
                 }
             }
         })
-        self.register_mock_response(search_url, {
+        register_mock_response(self.adapter, search_url, {
             '_links': {
                 'latestSchemas': {
                     'href': latest_url
                 }
             }
         })
-        self.register_mock_response(latest_get_url, {
+        register_mock_response(self.adapter, latest_get_url, {
             '_embedded': {
                 'schemas': [
                     {
