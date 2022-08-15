@@ -1,9 +1,9 @@
 import os
 import unittest
+from unittest import TestCase
 
 from openpyxl import Workbook
 from openpyxl import load_workbook as Reader
-from unittest import TestCase
 
 from hca_ingest.template.schema_template import SchemaTemplate
 from hca_ingest.template.vanilla_spreadsheet_builder import VanillaSpreadsheetBuilder
@@ -65,7 +65,7 @@ class TestSpreadsheetBuilder(TestCase):
         }
 
         file = "uf_test.xlsx"
-        template = SchemaTemplate()
+        template = SchemaTemplate(ingest_api_url="http://api.ingest.archive.data.humancellatlas.org")
         builder = VanillaSpreadsheetBuilder(file)
         for key in user_friendly_dict.keys():
             uf = builder.get_user_friendly_column_name(template, key)
@@ -97,7 +97,7 @@ class TestSpreadsheetBuilder(TestCase):
 
     def test_correct_description_used(self):
         file = "uf_test.xlsx"
-        template = SchemaTemplate()
+        template = SchemaTemplate(ingest_api_url="http://api.ingest.archive.data.humancellatlas.org")
         builder = VanillaSpreadsheetBuilder(file)
         test_field = "enrichment_protocol.method.text"
         returned_description = builder.get_value_for_column(template=template, column_name=test_field,
