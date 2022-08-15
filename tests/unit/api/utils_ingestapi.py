@@ -1,4 +1,31 @@
 from requests_cache import CachedSession
+from requests_mock import Adapter
+
+from api.ingestapi import IngestApi
+
+
+def get_ingest_api_with_mocked_responses(api_url='http://localhost:8080', token_manager=None):
+    adapter = Adapter()
+    session = mock_cached_session(adapter, 'http://', 'https://')
+    register_mock_response(
+        adapter,
+        api_url,
+        get_api_root(api_url)
+    )
+    return adapter, IngestApi(url=api_url, token_manager=token_manager, session=session)
+
+
+def get_api_root(api_url):
+    return {
+        '_links': {
+            'schemas': {
+                'href': f'{api_url}/schemas'
+            },
+            'stagingJobs': {
+                'href': f'{api_url}/stagingJobs'
+            }
+        }
+    }
 
 
 def mock_cached_session(adapter, *prefixes) -> CachedSession:

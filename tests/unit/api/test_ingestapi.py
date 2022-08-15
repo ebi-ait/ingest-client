@@ -1,13 +1,14 @@
+import uuid
 from unittest import TestCase
 from unittest.mock import patch
 
 import requests
 from mock import MagicMock, Mock
 from requests import HTTPError
-from requests_mock import Adapter
 
 from hca_ingest.api.ingestapi import IngestApi
-from tests.unit.api.utils_ingestapi import mock_cached_session, register_mock_response
+from tests.unit.api.utils_ingestapi import register_mock_response, \
+    get_ingest_api_with_mocked_responses
 
 mock_ingest_api_url = "http://mockingestapi.com"
 mock_submission_envelope_id = "mock-envelope-id"
@@ -119,14 +120,8 @@ class IngestApiTest(TestCase):
 
     def test_get_all(self):
         # given
-        adapter = Adapter()
         api_url = 'http://test.api.get_all'
-        session = mock_cached_session(adapter, 'http://', 'https://')
-        register_mock_response(
-            adapter,
-            api_url,
-            {'_links': {}}
-        )
+        adapter, ingest_api = get_ingest_api_with_mocked_responses(api_url)
         register_mock_response(
             adapter,
             f'{api_url}?page=0&size=3',
@@ -171,22 +166,17 @@ class IngestApiTest(TestCase):
                 }
             }
         )
-        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
 
         # when
         entities = ingest_api.get_all(f'{api_url}?page=0&size=3', "bundleManifests")
+
+        # then
         self.assertEqual(len(list(entities)), 5)
 
     def test_get_related_entities_count(self):
         # given
-        adapter = Adapter()
         api_url = 'http://test.api.get_related_entities_count'
-        session = mock_cached_session(adapter, 'http://', 'https://')
-        register_mock_response(
-            adapter,
-            api_url,
-            {'_links': {}}
-        )
+        adapter, ingest_api = get_ingest_api_with_mocked_responses(api_url)
         register_mock_response(
             adapter,
             f'{api_url}/project/files',
@@ -210,9 +200,9 @@ class IngestApiTest(TestCase):
                 }
             }
         )
-        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
 
-        mock_entity = {
+        # when
+        test_entity = {
             "_links": {
                 "self": {
                     "href": f'{api_url}/project/1'
@@ -222,24 +212,15 @@ class IngestApiTest(TestCase):
                 }
             }
         }
-
-        # when
-        count = ingest_api.get_related_entities_count('files', mock_entity, 'files')
+        count = ingest_api.get_related_entities_count('files', test_entity, 'files')
 
         # then
         self.assertEqual(count, 5)
 
     def test_get_related_entities_count_no_pagination(self):
         # given
-        adapter = Adapter()
         api_url = 'http://test.api.get_related_entities_count_no_pagination'
-        session = mock_cached_session(adapter, 'http://', 'https://')
-        register_mock_response(
-            adapter,
-            api_url,
-            {'_links': {}}
-        )
-        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
+        adapter, ingest_api = get_ingest_api_with_mocked_responses(api_url)
 
         register_mock_response(
             adapter,
@@ -257,7 +238,8 @@ class IngestApiTest(TestCase):
             }
         )
 
-        mock_entity = {
+        # when
+        test_entity = {
             "_links": {
                 "self": {
                     "href": f'{api_url}/project/1'
@@ -267,58 +249,35 @@ class IngestApiTest(TestCase):
                 }
             }
         }
+        count = ingest_api.get_related_entities_count('files', test_entity, 'files')
 
-        # when
-        count = ingest_api.get_related_entities_count('files', mock_entity, 'files')
+        # then
         self.assertEqual(count, 4)
 
     def test_create_staging_job_success(self):
         # given
-        adapter = Adapter()
         api_url = 'http://test.api.create_staging_job_success'
-        session = mock_cached_session(adapter, 'http://', 'https://')
-        register_mock_response(
-            adapter,
-            api_url,
-            {
-                '_links': {
-                    'stagingJobs': {
-                        'href': f'{api_url}/stagingJobs'
-                    }
-                }
-            }
-        )
+        adapter, ingest_api = get_ingest_api_with_mocked_responses(api_url)
+        staging_area_uuid = str(uuid.uuid4())
+        mock_response = {'mock-response': staging_area_uuid}
         register_mock_response(
             adapter,
             f'{api_url}/stagingJobs',
-            {'staging-area-uuid': 'uuid'},
+            mock_response,
             method='POST'
         )
-        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
 
         # when
-        staging_job = ingest_api.create_staging_job('uuid', 'filename', 'metadata-uuid')
+        staging_job = ingest_api.create_staging_job(staging_area_uuid, 'filename', 'metadata-uuid')
 
-        self.assertEqual(staging_job, {'staging-area-uuid': 'uuid'})
+        self.assertDictEqual(staging_job, mock_response)
 
     @patch('hca_ingest.api.ingestapi.create_session_with_retry')
     @patch('hca_ingest.api.ingestapi.requests.post')
     def test_create_staging_job_failure(self, mock_post, mock_session):
         # given
-        adapter = Adapter()
         api_url = 'http://test.api.create_staging_job_failure'
-        session = mock_cached_session(adapter, 'http://', 'https://')
-        register_mock_response(
-            adapter,
-            api_url,
-            {
-                '_links': {
-                    'stagingJobs': {
-                        'href': f'{api_url}/stagingJobs'
-                    }
-                }
-            }
-        )
+        adapter, ingest_api = get_ingest_api_with_mocked_responses(api_url)
         register_mock_response(
             adapter,
             f'{api_url}/stagingJobs',
@@ -326,7 +285,6 @@ class IngestApiTest(TestCase):
             method='POST',
             status_code=500
         )
-        ingest_api = IngestApi(url=api_url, token_manager=self.token_manager, session=session)
 
         # then
         with self.assertRaises(HTTPError):

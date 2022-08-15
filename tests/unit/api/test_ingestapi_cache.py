@@ -1,32 +1,20 @@
 import uuid
-
-from mock import MagicMock, Mock
-from requests_cache import CachedSession
-from requests_mock import Adapter
 from unittest import TestCase
 
-from hca_ingest.api.ingestapi import IngestApi
-from tests.unit.api.utils_ingestapi import register_mock_response, mock_cached_session
+from mock import MagicMock, Mock
+
+from tests.unit.api.utils_ingestapi import register_mock_response, \
+    get_ingest_api_with_mocked_responses
 
 API_URL = "http://test.caching.ingest"
 SCHEMAS_URL = f'{API_URL}/schemas'
-API_RESPONSE = {
-    '_links': {
-        'schemas': {
-            'href': SCHEMAS_URL
-        }
-    }
-}
 
 
 class IngestApiCacheTest(TestCase):
     def setUp(self):
         self.token_manager = MagicMock()
         self.token_manager.get_token = Mock(return_value='token')
-        self.adapter = Adapter()
-        register_mock_response(self.adapter, API_URL, API_RESPONSE)
-        session = mock_cached_session(self.adapter, 'http://', 'https://')
-        self.api = IngestApi(url=API_URL, token_manager=self.token_manager, session=session)
+        self.adapter, self.api = get_ingest_api_with_mocked_responses(API_URL, token_manager=self.token_manager)
 
     def tearDown(self):
         self.api.session.cache.clear()
