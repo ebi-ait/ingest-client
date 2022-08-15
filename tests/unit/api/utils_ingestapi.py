@@ -1,7 +1,7 @@
 from requests_cache import CachedSession
 from requests_mock import Adapter
 
-from api.ingestapi import IngestApi
+from hca_ingest.api.ingestapi import IngestApi
 
 
 def get_ingest_api_with_mocked_responses(api_url='http://localhost:8080', token_manager=None):
