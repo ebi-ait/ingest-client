@@ -1,18 +1,22 @@
+from unittest.mock import MagicMock, Mock
+
+import requests_mock
 from requests_cache import CachedSession
-from requests_mock import Adapter
+from requests_mock import Adapter, Mocker
 
 from hca_ingest.api.ingestapi import IngestApi
 
 
-def get_ingest_api_with_mocked_responses(api_url='http://localhost:8080', token_manager=None):
+@requests_mock.Mocker(kw='mock', case_sensitive=True)
+def mocked_response_ingest_api(api_url='http://localhost:8080', **kwargs):
+    mock = kwargs.get('mock')
     adapter = Adapter()
+    token_manager = mock_token_manager()
     session = mock_cached_session(adapter, 'http://', 'https://')
-    register_mock_response(
-        adapter,
-        api_url,
-        get_api_root(api_url)
-    )
-    return adapter, IngestApi(url=api_url, token_manager=token_manager, session=session)
+    mock.get(api_url, json=get_api_root(api_url))
+    api = IngestApi(url=api_url, token_manager=token_manager, session=session)
+    adapter.reset()
+    return api
 
 
 def get_api_root(api_url):
@@ -40,12 +44,36 @@ def mock_cached_session(adapter, *prefixes) -> CachedSession:
     return session
 
 
-def register_mock_response(adapter, uri, response, method='GET', status_code=200):
-    adapter.register_uri(
-        method,
-        uri,
-        headers={'Content-Type': 'application/json'},
-        json=response,
-        status_code=status_code,
-    )
+def mock_token_manager():
+    token_manager = MagicMock()
+    token_manager.get_token = Mock(return_value='token')
+    return token_manager
 
+
+def register_schema_responses(mock: Mocker, api_url, page_size, schemas):
+    schemas_url = f'{api_url}/schemas'
+    schemas_get_url = f'{schemas_url}?size=1'
+    search_url = f'{schemas_url}/search'
+    latest_url = f'{search_url}/latestSchemas'
+    latest_get_url = f'{latest_url}?size={page_size}'
+    mock.get(schemas_get_url, json={
+        '_links': {
+            'search': {
+                'href': search_url
+            }
+        }
+    })
+    mock.get(search_url, json={
+        '_links': {
+            'latestSchemas': {
+                'href': latest_url
+            }
+        }
+    })
+    mock.get(latest_get_url, json={
+        '_embedded': {
+            'schemas': schemas
+        },
+        '_links': {}
+    })
+    return schemas_get_url, search_url, latest_get_url
