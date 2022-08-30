@@ -180,6 +180,10 @@ class IngestApi:
     def get_project_by_uuid(self, uuid):
         return self.get_entity_by_uuid('projects', uuid)
 
+    def get_user_projects(self):
+        user_project_url = f'{self.url}/user/projects'
+        return self.get_all(user_project_url, 'projects')
+
     def get_entity_by_uuid(self, entity_type, uuid):
         url = self.url + f'/{entity_type}/search/findByUuid?uuid=' + uuid
 
