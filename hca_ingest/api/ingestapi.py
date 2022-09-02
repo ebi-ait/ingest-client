@@ -67,10 +67,10 @@ class IngestApi:
         response.raise_for_status()
         return response
 
-    def patch(self, url, patch, **kwargs):
+    def patch(self, url, **kwargs):
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
-        response = self.session.patch(url, json=patch, **kwargs)
+        response = self.session.patch(url, **kwargs)
         self.session.cache.clear()
         response.raise_for_status()
         return response
@@ -362,7 +362,7 @@ class IngestApi:
 
                 file_url = file_in_ingest['_links']['self']['href']
                 time.sleep(0.001)
-                response = self.patch(file_url, {'content': new_content})
+                response = self.patch(file_url, json={'content': new_content})
                 self.logger.debug(f'Updating existing content of file {file_url}.')
 
         response.raise_for_status()
@@ -444,7 +444,7 @@ class IngestApi:
                 }
             }
         }
-        self.patch(submission_url, staging_details)
+        self.patch(submission_url, json=staging_details)
 
     def delete_staging_jobs(self, staging_area_uuid):
         delete_jobs_url = f'{self.get_staging_jobs_url()}/delete'
@@ -466,7 +466,7 @@ class IngestApi:
         staging_info = {
             "stagingAreaFileUri": upload_file_uri
         }
-        return self.patch(complete_url, staging_info).json()
+        return self.patch(complete_url, json=staging_info).json()
 
     def find_staging_job(self, upload_area_uuid, filename):
         search_params = {

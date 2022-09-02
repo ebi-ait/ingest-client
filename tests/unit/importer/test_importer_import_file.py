@@ -93,7 +93,7 @@ class ImporterImportFileTest(XlsImporterBaseTest):
                                                   update_project=True)
 
         # then:
-        self.mock_ingest_api.patch.assert_called_once_with('project-url', {'content': {'key': 'updated'}})
+        self.mock_ingest_api.patch.assert_called_once_with('project-url', json={'content': {'key': 'updated'}})
         mock_link_to_project.assert_called_once()
 
     @patch('hca_ingest.importer.submission.ingest_submitter.IngestSubmitter.link_submission_to_project')
