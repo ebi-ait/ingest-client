@@ -126,7 +126,7 @@ class IngestSubmitterTest(TestCase):
         submitter.update_entity(user1)
 
         # then:
-        self.ingest_api.patch.assert_called_with('url', {'content': {'k': 'v2', 'k2': 'v2'}})
+        self.ingest_api.patch.assert_called_with('url', json={'content': {'k': 'v2', 'k2': 'v2'}})
 
     def test_update_entity__given_empty_ingest_json__then_fetch_resource(self):
         # given:
@@ -141,7 +141,7 @@ class IngestSubmitterTest(TestCase):
         submitter.update_entity(user1)
 
         # then:
-        self.ingest_api.patch.assert_called_with('url', {'content': {'k': 'v2', 'k2': 'v2'}})
+        self.ingest_api.patch.assert_called_with('url', json={'content': {'k': 'v2', 'k2': 'v2'}})
 
     def test_update_entity__given_content_has_no_update__then_do_not_patch(self):
         # given:

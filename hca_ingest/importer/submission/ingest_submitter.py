@@ -67,7 +67,7 @@ class IngestSubmitter(object):
         patch = copy.deepcopy(entity.ingest_json.get('content'))
         patch.update(entity.content)
         if not json_equals(entity.ingest_json.get('content'), patch):
-            self.ingest_api.patch(entity.url, {'content': patch})
+            self.ingest_api.patch(entity.url, json={'content': patch})
 
         return entity
 
@@ -101,7 +101,7 @@ class IngestSubmitter(object):
                     expected_links = int(submission.manifest.get('expectedLinks', 0))
                     if progress % self.PROGRESS_CTR == 0 or (progress == expected_links):
                         manifest_url = self.ingest_api.get_link_from_resource(submission.manifest, 'self')
-                        self.ingest_api.patch(manifest_url, {'actualLinks': progress})
+                        self.ingest_api.patch(manifest_url, json={'actualLinks': progress})
                         self.logger.info(f"links progress: {progress}/ {submission.manifest.get('expectedLinks')}")
 
                 except Exception as link_error:

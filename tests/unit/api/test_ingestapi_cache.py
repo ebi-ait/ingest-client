@@ -86,7 +86,7 @@ class IngestApiCacheTest(TestCase):
         self.assertEqual(call_count, mock.call_count)
 
     def test_patch_removes_item_from_cache(self, mock):
-        self.removes_item_from_cache(mock, self.api.patch, patch={})
+        self.removes_item_from_cache(mock, self.api.patch, json={})
 
     def test_put_removes_item_from_cache(self, mock):
         self.removes_item_from_cache(mock, self.api.put)
