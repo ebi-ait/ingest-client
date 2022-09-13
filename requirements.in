@@ -1,12 +1,9 @@
-dataclasses
 jsonref
 openpyxl
 polling
 PyYAML>=5.3.1
 requests[security]
 xlsxwriter
-sortedcontainers
 mergedeep
 cryptography
-PyJWT
 requests-cache

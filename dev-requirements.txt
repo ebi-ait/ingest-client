@@ -6,11 +6,11 @@
 #
 bleach==5.0.1
     # via readme-renderer
-certifi==2022.6.15
+certifi==2022.6.15.1
     # via
     #   -c requirements.txt
     #   requests
-charset-normalizer==2.1.0
+charset-normalizer==2.1.1
     # via
     #   -c requirements.txt
     #   requests
@@ -66,9 +66,7 @@ six==1.16.0
     #   bleach
     #   requests-mock
 sortedcontainers==2.4.0
-    # via
-    #   -c requirements.txt
-    #   -r dev-requirements.in
+    # via -r dev-requirements.in
 twine==4.0.1
     # via -r dev-requirements.in
 urllib3==1.26.11
