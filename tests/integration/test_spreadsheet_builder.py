@@ -1,5 +1,4 @@
 import os
-import unittest
 from unittest import TestCase
 
 from openpyxl import Workbook
@@ -109,22 +108,3 @@ class TestSpreadsheetBuilder(TestCase):
         print("returned_example_text: " + returned_example_text)
         expected_example_text = "enzymatic dissociation; blood draw"
         self.assertEqual(expected_description, returned_description)
-
-    # TODO fixme
-    @unittest.skip
-    def test_with_tabs_template(self):
-        pass
-        # spreadsheet_builder.generate_spreadsheet("human_10x.xlsx", tabs_template="tabs_human_10x.yaml",
-        #                                          schema_urls=schemas)
-
-    # TODO fixme
-    @unittest.skip
-    def test_add_columns(self):
-        # spreadsheet_builder.generate_spreadsheet("generic.xlsx", schema_urls=schemas)
-        pass
-
-    # TODO fixme
-    @unittest.skip
-    def test_add_sheets(self):
-        # spreadsheet_builder.generate_spreadsheet("generic.xlsx", schema_urls=schemas)
-        pass
