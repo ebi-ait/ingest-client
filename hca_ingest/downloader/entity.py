@@ -64,8 +64,8 @@ class Entity:
     def set_input(self, input_biomaterials, input_files, process, protocols):
         assert isinstance(process, Entity)
         assert all(isinstance(protocol, Entity) for protocol in protocols)
-        assert all(isinstance(input, Entity) for input in input_biomaterials)
-        assert all(isinstance(input, Entity) for input in input_files)
+        assert all(isinstance(input_biomaterial, Entity) for input_biomaterial in input_biomaterials)
+        assert all(isinstance(input_file, Entity) for input_file in input_files)
         self._input_files = input_files
         self._input_biomaterials = input_biomaterials
         self._process = process
