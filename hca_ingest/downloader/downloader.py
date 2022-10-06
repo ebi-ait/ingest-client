@@ -3,9 +3,10 @@ from typing import List
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
-from hca_ingest.downloader.flattener import Flattener
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 from hca_ingest.importer.spreadsheet.ingest_worksheet import START_DATA_ROW
+from .entity import Entity
+from .flattener import Flattener
 
 HEADER_ROW_NO = 4
 
@@ -14,10 +15,11 @@ class XlsDownloader:
     def __init__(self):
         self.flattener = Flattener()
 
-    def convert_json(self, metadata_list: List[dict]):
+    def convert_json(self, metadata_list: List[Entity]):
         return self.flattener.flatten(metadata_list)
 
-    def create_workbook(self, input_json: dict) -> Workbook:
+    @staticmethod
+    def create_workbook(input_json: dict) -> Workbook:
         workbook = Workbook()
         workbook.remove(workbook.active)
 
@@ -28,14 +30,13 @@ class XlsDownloader:
                 continue
             else:
                 worksheet: Worksheet = workbook.create_sheet(title=ws_title)
+            XlsDownloader.add_worksheet_content(worksheet, ws_elements)
 
-            self.add_worksheet_content(worksheet, ws_elements)
-
-        self.generate_schemas_worksheet(input_json, workbook)
-
+        XlsDownloader.generate_schemas_worksheet(input_json, workbook)
         return workbook
 
-    def generate_schemas_worksheet(self, input_json, workbook):
+    @staticmethod
+    def generate_schemas_worksheet(input_json: dict, workbook: Workbook):
         schemas = input_json.get(SCHEMAS_WORKSHEET)
         if not schemas:
             raise ValueError('The schema urls are missing')
@@ -44,13 +45,14 @@ class XlsDownloader:
         for row_num, schema in enumerate(schemas, start=2):
             schemas_worksheet.cell(row=row_num, column=1, value=schema)
 
-    def add_worksheet_content(self, worksheet, ws_elements: dict):
+    @staticmethod
+    def add_worksheet_content(worksheet: Worksheet, ws_elements: dict):
         headers = ws_elements.get('headers')
-        self.__add_header_row(worksheet, headers)
+        XlsDownloader.__add_header_row(worksheet, headers)
         all_values = ws_elements.get('values')
 
         for row_number, row_values in enumerate(all_values, start=START_DATA_ROW):
-            self.__add_row_content(worksheet, headers, row_number, row_values)
+            XlsDownloader.__add_row_content(worksheet, headers, row_number, row_values)
 
     @staticmethod
     def __add_header_row(worksheet, headers: list):
