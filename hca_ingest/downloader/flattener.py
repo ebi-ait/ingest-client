@@ -5,7 +5,7 @@ from hca_ingest.downloader.entity import Entity
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
-SCALAR_LIST_DELIMETER = '||'
+SCALAR_LIST_DELIMITER = '||'
 
 ONTOLOGY_PROPS = ['ontology', 'ontology_label', 'text']
 EXCLUDE_KEYS = ['describedBy', 'schema_type']
@@ -181,7 +181,7 @@ class Flattener:
 
     def _flatten_scalar_list(self, flattened_object, object, parent_key):
         stringified = [str(e) for e in object]
-        flattened_object[parent_key] = SCALAR_LIST_DELIMETER.join(stringified)
+        flattened_object[parent_key] = SCALAR_LIST_DELIMITER.join(stringified)
 
     def _flatten_object_list(self, flattened_object: dict, object: dict, parent_key: str):
         if self._is_list_of_ontology_objects(object):
@@ -196,7 +196,7 @@ class Flattener:
         keys = self._get_keys_of_a_list_of_object(object)
 
         for key in keys:
-            flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMETER.join(
+            flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMITER.join(
                 [elem.get(key) for elem in object
                  if elem.get(key) is not None and elem.get(key) != ''])
 

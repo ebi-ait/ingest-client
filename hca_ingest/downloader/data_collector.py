@@ -1,11 +1,10 @@
 from typing import Dict
 
 from hca_ingest.api.ingestapi import IngestApi
-from hca_ingest.downloader.entity import Entity
+from .entity import Entity
 
 
 class DataCollector:
-
     def __init__(self, ingest_api: IngestApi):
         self.api = ingest_api
 
@@ -49,8 +48,10 @@ class DataCollector:
         linking_map = r.json()
         return linking_map
 
-    def __set_inputs(self, entity_dict, linking_map):
-        entities_with_inputs = list(linking_map['biomaterials'].keys()) + list(linking_map['files'].keys())
+    @staticmethod
+    def __set_inputs(entity_dict, linking_map):
+        entities_with_inputs = list(linking_map['biomaterials'].keys()) + list(
+            linking_map['files'].keys())
 
         for entity_id in entities_with_inputs:
             entity = entity_dict[entity_id]
