@@ -174,7 +174,7 @@ class IngestApi:
         return self.get(submission_url).json().get('_embedded', {}).get('projects', [])
 
     def get_project_by_id(self, project_id):
-        project_url = self.url + '/projects/' + project_id
+        project_url = f'{self.url}/projects/{project_id}'
         return self.get(project_url).json()
 
     def get_project_by_uuid(self, uuid):
@@ -185,11 +185,11 @@ class IngestApi:
         return self.get_all(user_project_url, 'projects')
 
     def get_entity_by_uuid(self, entity_type, uuid):
-        url = self.url + f'/{entity_type}/search/findByUuid?uuid=' + uuid
+        url = f'{self.url}/{entity_type}/search/findByUuid?uuid=' + uuid
 
         # TODO make the endpoint consistent
         if entity_type == 'submissionEnvelopes':
-            url = self.url + f'/{entity_type}/search/findByUuidUuid?uuid=' + uuid
+            url = f'{self.url}/{entity_type}/search/findByUuidUuid?uuid=' + uuid
 
         return self.get(url).json()
 
