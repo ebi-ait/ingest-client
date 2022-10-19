@@ -202,7 +202,7 @@ class IngestApi:
                                                      'findBySubmissionEnvelopeAndFileName')
         search_url = search_url.replace('{?submissionEnvelope,fileName}', '')
         params = {'submissionEnvelope': submission_url, 'fileName': filename}
-        return self.get(search_url, params=params).json()
+        return self.get(search_url, params=params).json().get('_embedded', {}).get('files', [])
 
     def get_submission(self, submission_url):
         return self.get(submission_url).json()
@@ -350,8 +350,8 @@ class IngestApi:
         if response.status_code == requests.codes.conflict or response.status_code == requests.codes.internal_server_error:
             search_files = self.get_file_by_submission_url_and_filename(submission_url, filename)
 
-            if search_files and search_files.get('_embedded') and search_files['_embedded'].get('files'):
-                file_in_ingest = search_files['_embedded'].get('files')[0]
+            if search_files:
+                file_in_ingest = search_files[0]
                 existing_content = file_in_ingest.get('content')
                 new_content = existing_content
 
