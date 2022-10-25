@@ -185,13 +185,10 @@ class IngestApi:
         return self.get_all(user_project_url, 'projects')
 
     def get_entity_by_uuid(self, entity_type, uuid):
-        url = f'{self.url}/{entity_type}/search/findByUuid?uuid={uuid}'
-
-        # TODO make the endpoint consistent
-        if entity_type == 'submissionEnvelopes':
-            url = f'{self.url}/{entity_type}/search/findByUuidUuid?uuid={uuid}'
-
-        return self.get(url).json()
+        params = {'uuid': uuid}
+        endpoint = 'findByUuidUuid' if entity_type == 'submissionEnvelopes' else 'findByUuid'
+        url = f'{self.url}/{entity_type}/search/{endpoint}'
+        return self.get(url, params=params).json()
 
     def get_entity_by_callback_link(self, callback_link):
         url = f'{self.url}{callback_link}'
@@ -208,9 +205,7 @@ class IngestApi:
         return self.get(submission_url).json()
 
     def get_submission_by_uuid(self, submission_uuid):
-        search_link = self.get_link_from_resource_url(self.url + '/submissionEnvelopes/search', 'findByUuid')
-        search_link = search_link.replace('{?uuid}', '')  # TODO: use a REST traverser instead of requests?
-        return self.get(search_link, params={'uuid': submission_uuid}).json()
+        return self.get_entity_by_uuid('submissionEnvelopes', submission_uuid)
 
     def get_files(self, submission_id):
         submission_url = self.get_submission_url(submission_id)
