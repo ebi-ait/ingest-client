@@ -174,7 +174,7 @@ class IngestApi:
         return self.get(submission_url).json().get('_embedded', {}).get('projects', [])
 
     def get_project_by_id(self, project_id):
-        project_url = self.url + '/projects/' + project_id
+        project_url = f'{self.url}/projects/{project_id}'
         return self.get(project_url).json()
 
     def get_project_by_uuid(self, uuid):
@@ -185,13 +185,10 @@ class IngestApi:
         return self.get_all(user_project_url, 'projects')
 
     def get_entity_by_uuid(self, entity_type, uuid):
-        url = self.url + f'/{entity_type}/search/findByUuid?uuid=' + uuid
-
-        # TODO make the endpoint consistent
-        if entity_type == 'submissionEnvelopes':
-            url = self.url + f'/{entity_type}/search/findByUuidUuid?uuid=' + uuid
-
-        return self.get(url).json()
+        params = {'uuid': uuid}
+        endpoint = 'findByUuidUuid' if entity_type == 'submissionEnvelopes' else 'findByUuid'
+        url = f'{self.url}/{entity_type}/search/{endpoint}'
+        return self.get(url, params=params).json()
 
     def get_entity_by_callback_link(self, callback_link):
         url = f'{self.url}{callback_link}'
@@ -202,15 +199,13 @@ class IngestApi:
                                                      'findBySubmissionEnvelopeAndFileName')
         search_url = search_url.replace('{?submissionEnvelope,fileName}', '')
         params = {'submissionEnvelope': submission_url, 'fileName': filename}
-        return self.get(search_url, params=params).json()
+        return self.get(search_url, params=params).json().get('_embedded', {}).get('files', [])
 
     def get_submission(self, submission_url):
         return self.get(submission_url).json()
 
     def get_submission_by_uuid(self, submission_uuid):
-        search_link = self.get_link_from_resource_url(self.url + '/submissionEnvelopes/search', 'findByUuid')
-        search_link = search_link.replace('{?uuid}', '')  # TODO: use a REST traverser instead of requests?
-        return self.get(search_link, params={'uuid': submission_uuid}).json()
+        return self.get_entity_by_uuid('submissionEnvelopes', submission_uuid)
 
     def get_files(self, submission_id):
         submission_url = self.get_submission_url(submission_id)
@@ -350,8 +345,8 @@ class IngestApi:
         if response.status_code == requests.codes.conflict or response.status_code == requests.codes.internal_server_error:
             search_files = self.get_file_by_submission_url_and_filename(submission_url, filename)
 
-            if search_files and search_files.get('_embedded') and search_files['_embedded'].get('files'):
-                file_in_ingest = search_files['_embedded'].get('files')[0]
+            if search_files:
+                file_in_ingest = search_files[0]
                 existing_content = file_in_ingest.get('content')
                 new_content = existing_content
 

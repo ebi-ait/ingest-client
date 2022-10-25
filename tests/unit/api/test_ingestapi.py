@@ -108,11 +108,23 @@ class IngestApiTest(TestCase):
     def test_get_submission_by_uuid(self, mock):
         # given
         test_uuid = str(uuid.uuid4())
-        target_submission = {'uuid': test_uuid}
-        self.mock_search_link(mock, 'submissionEnvelopes', 'findByUuid', [target_submission])
+        url = f'{API_URL}/submissionEnvelopes/search/findByUuidUuid'
+        results = [{'uuid': test_uuid}]
+        mock.get(url, json=results)
         # when
         self.api.get_submission_by_uuid(test_uuid)
+        # then
+        self.assertEqual(mock.last_request.query, f'uuid={test_uuid}')
+
+    def test_get_entity_by_uuid(self, mock):
         # given
+        test_uuid = str(uuid.uuid4())
+        url = f'{API_URL}/biomaterials/search/findByUuid'
+        results = [{'uuid': test_uuid}]
+        mock.get(url, json=results)
+        # when
+        self.api.get_entity_by_uuid('biomaterials', test_uuid)
+        # then
         self.assertEqual(mock.last_request.query, f'uuid={test_uuid}')
 
     def test_get_all(self, mock):
