@@ -1,6 +1,6 @@
 from openpyxl.workbook import Workbook
 
-from api.ingestapi import IngestApi
+from hca_ingest.api.ingestapi import IngestApi
 from .data_collector import DataCollector
 from .downloader import XlsDownloader
 
