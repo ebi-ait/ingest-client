@@ -1,5 +1,6 @@
-TOOL_NAME := geo_to_hca
-SRC_FILES := $(shell find $(TOOL_NAME) -name \*.py -print)
+TOOL_NAME := hca-ingest
+TOOL_DIR := hca_ingest
+SRC_FILES := $(shell find $(TOOL_DIR) -name \*.py -print)
 
 MODULES=ingest tests
 .PHONY: lint test unit-tests
@@ -15,7 +16,7 @@ unit-tests:
 dist: setup.py $(SRC_FILES)
 	python setup.py sdist
 
-publish: dist
+publish: clean dist
 	twine  upload \
 		--verbose \
 		--comment "release $(TOOL_NAME)" \
