@@ -219,9 +219,12 @@ class Flattener:
         # TODO better check the schema if field is ontology
         return any(result)
 
-    def _get_keys_of_a_list_of_object(self, object: dict):
-        first_elem = object[0] if object else {}
-        return list(first_elem.keys())
+    def _get_keys_of_a_list_of_object(self, objects: list):
+        keys_obj = {}
+        for obj in objects:
+            if obj:
+                keys_obj.update(obj)
+        return list(keys_obj.keys())
 
     def _is_project(self, parent_key: str):
         entity_type = parent_key.split('.')[0]
