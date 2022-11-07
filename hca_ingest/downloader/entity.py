@@ -2,10 +2,10 @@ from typing import List
 
 
 class Entity:
-    def __init__(self, content: dict, uuid: str, id: str = None):
+    def __init__(self, content: dict, uuid: str, entity_id: str = None):
         self._content = content
         self._uuid = uuid
-        self._id = id
+        self._id = entity_id
         self._input_biomaterials = None
         self._input_files = None
         self._process = None
@@ -14,12 +14,12 @@ class Entity:
     @classmethod
     def from_json(cls, entity_json: dict):
         content = entity_json.get('content')
-        uuid = entity_json.get('uuid', {})
+        uuid = entity_json.get('uuid', {}).get('uuid')
         links = entity_json.get('_links', {})
         self_link = links.get('self', {})
         self_href = self_link.get('href')
-        id = self_href.split('/')[-1] if self_href else None;
-        return cls(content, uuid.get('uuid'), id)
+        entity_id = self_href.split('/')[-1] if self_href else None
+        return cls(content, uuid, entity_id)
 
     @classmethod
     def from_json_list(cls, entity_json_list: List[dict]):
