@@ -195,14 +195,14 @@ class Flattener:
         else:
             self._flatten_to_include_object_list_to_main_entity_worksheet(object, flattened_object, parent_key)
 
-    def _flatten_to_include_object_list_to_main_entity_worksheet(self, object: dict, flattened_object: dict,
+    def _flatten_to_include_object_list_to_main_entity_worksheet(self, object, flattened_object: dict,
                                                                  parent_key: str):
         keys = self._get_keys_of_a_list_of_object(object)
 
         for key in keys:
-            flattened_object[f'{parent_key}.{key}'] = SCALAR_LIST_DELIMITER.join(
-                [elem.get(key) for elem in object
-                 if elem.get(key) is not None and elem.get(key) != ''])
+            values = [elem.get(key) for elem in object if elem.get(key)]
+            full_key = f'{parent_key}.{key}' if parent_key else key
+            self._flatten_list(flattened_object, values, full_key)
 
     def _format_worksheet_name(self, worksheet_name):
         names = worksheet_name.split('.')
