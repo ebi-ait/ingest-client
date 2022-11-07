@@ -1,3 +1,4 @@
+import copy
 from itertools import groupby
 from typing import List
 
@@ -17,6 +18,7 @@ class Flattener:
         self.schemas = {}
 
     def flatten(self, entity_list: List[Entity]):
+        self.workbook = {}
         self.schemas = {}
         for entity in entity_list:
             if entity.concrete_type != 'process':
@@ -24,7 +26,8 @@ class Flattener:
             self._extract_schema_url(entity.content, entity.concrete_type)
 
         self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
-        return self.workbook
+        flattened_json = copy.deepcopy(self.workbook)
+        return flattened_json
 
     def _flatten_entity(self, entity: Entity):
         worksheet_name = entity.concrete_type
