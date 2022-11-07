@@ -55,11 +55,13 @@ class Entity:
 
     @property
     def concrete_type(self):
-        return self._content.get('describedBy').rsplit('/', 1)[-1]
+        if self._content and 'describedBy' in self._content:
+            return self._content.get('describedBy').rsplit('/', 1)[-1]
 
     @property
     def domain_type(self):
-        return self._content.get('describedBy').split('/')[4]
+        if self._content and 'describedBy' in self._content:
+            return self._content.get('describedBy').split('/')[4]
 
     def set_input(self, input_biomaterials, input_files, process, protocols):
         assert isinstance(process, Entity)
