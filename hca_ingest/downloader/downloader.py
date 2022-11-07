@@ -1,23 +1,13 @@
-from typing import List
-
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 from hca_ingest.importer.spreadsheet.ingest_worksheet import START_DATA_ROW
-from .entity import Entity
-from .flattener import Flattener
 
 HEADER_ROW_NO = 4
 
 
 class XlsDownloader:
-    def __init__(self):
-        self.flattener = Flattener()
-
-    def convert_json(self, metadata_list: List[Entity]):
-        return self.flattener.flatten(metadata_list)
-
     @staticmethod
     def create_workbook(input_json: dict) -> Workbook:
         workbook = Workbook()
