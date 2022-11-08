@@ -1,7 +1,11 @@
+from collections import namedtuple
+from typing import List
 from unittest import TestCase
 
-from downloader.workbook import WorkbookDownloader
+from hca_ingest.downloader.workbook import WorkbookDownloader
 from hca_ingest.api.ingestapi import IngestApi
+
+Case = namedtuple("Case", 'project_uuid submission_uuid')
 
 
 class TestSpreadsheetExport(TestCase):
@@ -10,23 +14,23 @@ class TestSpreadsheetExport(TestCase):
         self.api = IngestApi(self.url)
 
     def test_one_spreadsheet_export(self):
-        case = self.get_test_cases(1)[0]
+        test_case = self.get_test_cases()[0]
 
         # When
         downloader = WorkbookDownloader(self.api)
-        workbook = downloader.get_workbook_from_submission(case['submission_uuid'])
+        workbook = downloader.get_workbook_from_submission(test_case.submission_uuid)
 
         # Then
-        self.workbook_only_contains_one_project(workbook, case['project_uuid'])
+        self.workbook_only_contains_one_project(workbook, test_case.project_uuid)
 
     def test_multiple_spreadsheet_exports(self):
-        cases = self.get_test_cases(5)
+        test_cases = self.get_test_cases(5)
         # When
         downloader = WorkbookDownloader(self.api)
-        for case in cases:
-            workbook = downloader.get_workbook_from_submission(case['submission_uuid'])
+        for test_case in test_cases:
+            workbook = downloader.get_workbook_from_submission(test_case.submission_uuid)
             # Then
-            self.workbook_only_contains_one_project(workbook, case['project_uuid'])
+            self.workbook_only_contains_one_project(workbook, test_case.project_uuid)
 
     def workbook_only_contains_one_project(self, workbook, project_uuid):
         # Then
@@ -35,7 +39,7 @@ class TestSpreadsheetExport(TestCase):
             workbook_project_uuids.append(row[0].value)
         self.assertListEqual([project_uuid], workbook_project_uuids)
 
-    def get_test_cases(self, number=1):
+    def get_test_cases(self, number=1) -> List[Case]:
         entity_type = 'projects'
         url = f'{self.url}/{entity_type}/search/catalogue'
         last_url = self.api.get_link_from_resource_url(url, 'last', self.api.page_size)
@@ -56,7 +60,7 @@ class TestSpreadsheetExport(TestCase):
             all_test_cases.extend(test_cases)
         return all_test_cases
 
-    def get_uuids_from_projects(self, projects):
+    def get_uuids_from_projects(self, projects) -> List[Case]:
         test_cases = []
         entity_type = 'submissionEnvelopes'
         for project in projects:
@@ -66,9 +70,6 @@ class TestSpreadsheetExport(TestCase):
             for submission in submissions:
                 submission_uuid = submission.get('uuid', {}).get('uuid', '')
                 if submission_uuid:
-                    test_case = {
-                        'project_uuid': project_uuid,
-                        'submission_uuid': submission_uuid
-                    }
+                    test_case = Case(project_uuid, submission_uuid)
                     test_cases.append(test_case)
         return test_cases
