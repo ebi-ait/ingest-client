@@ -70,6 +70,51 @@ class Flattener:
             'values': rows
         }
 
+    def __extract_schema_url(self, content: dict, concrete_entity: str):
+        schema_url = content.get('describedBy')
+        existing_schema_url = self.schemas.get(concrete_entity)
+        self.__validate_no_schema_version_conflicts(existing_schema_url, schema_url)
+
+        if not existing_schema_url:
+            self.schemas[concrete_entity] = schema_url
+
+    def __flatten_object(self, obj: dict, flattened_object: dict, parent_key: str = ''):
+        if isinstance(obj, dict):
+            for key in obj:
+                if key in EXCLUDE_KEYS:
+                    continue
+
+                value = obj[key]
+                full_key = f'{parent_key}.{key}' if parent_key else key
+                if isinstance(value, dict) or isinstance(value, list):
+                    self.__flatten_object(value, flattened_object, parent_key=full_key)
+                else:
+                    flattened_object[full_key] = str(value)
+        elif isinstance(obj, list):
+            self.__flatten_list(flattened_object, obj, parent_key)
+
+    def __flatten_list(self, flattened_object, obj, parent_key):
+        if self.__is_list_of_objects(obj):
+            self.__flatten_object_list(flattened_object, obj, parent_key)
+        else:
+            self.__flatten_scalar_list(flattened_object, obj, parent_key)
+
+    def __flatten_object_list(self, flattened_object: dict, obj: dict, parent_key: str):
+        if self.__is_list_of_ontology_objects(obj):
+            self.__flatten_object_list_to_main_worksheet(obj, flattened_object, parent_key)
+        elif self.__is_project(parent_key):
+            self.__flatten_module_list(obj, parent_key)
+        else:
+            self.__flatten_object_list_to_main_worksheet(obj, flattened_object, parent_key)
+
+    def __flatten_object_list_to_main_worksheet(self, obj, flattened_object: dict, parent_key: str):
+        keys = self.__get_keys_of_a_list_of_object(obj)
+
+        for key in keys:
+            values = [elem.get(key) for elem in obj if elem.get(key)]
+            full_key = f'{parent_key}.{key}' if parent_key else key
+            self.__flatten_list(flattened_object, values, full_key)
+
     @staticmethod
     def __embed_link_columns(entity: Entity):
         embedded_content = {}
@@ -147,14 +192,6 @@ class Flattener:
             }
             embedded_content.update(embedded_input_ids)
 
-    def __extract_schema_url(self, content: dict, concrete_entity: str):
-        schema_url = content.get('describedBy')
-        existing_schema_url = self.schemas.get(concrete_entity)
-        self.__validate_no_schema_version_conflicts(existing_schema_url, schema_url)
-
-        if not existing_schema_url:
-            self.schemas[concrete_entity] = schema_url
-
     @staticmethod
     def __validate_no_schema_version_conflicts(existing_schema_url, schema_url):
         if existing_schema_url and existing_schema_url != schema_url:
@@ -170,47 +207,10 @@ class Flattener:
                 headers.append(key)
         return headers
 
-    def __flatten_object(self, obj: dict, flattened_object: dict, parent_key: str = ''):
-        if isinstance(obj, dict):
-            for key in obj:
-                if key in EXCLUDE_KEYS:
-                    continue
-
-                value = obj[key]
-                full_key = f'{parent_key}.{key}' if parent_key else key
-                if isinstance(value, dict) or isinstance(value, list):
-                    self.__flatten_object(value, flattened_object, parent_key=full_key)
-                else:
-                    flattened_object[full_key] = str(value)
-        elif isinstance(obj, list):
-            self.__flatten_list(flattened_object, obj, parent_key)
-
-    def __flatten_list(self, flattened_object, obj, parent_key):
-        if self.__is_list_of_objects(obj):
-            self.__flatten_object_list(flattened_object, obj, parent_key)
-        else:
-            self.__flatten_scalar_list(flattened_object, obj, parent_key)
-
     @staticmethod
     def __flatten_scalar_list(flattened_object, obj, parent_key):
         stringified = [str(e) for e in obj]
         flattened_object[parent_key] = SCALAR_LIST_DELIMITER.join(stringified)
-
-    def __flatten_object_list(self, flattened_object: dict, obj: dict, parent_key: str):
-        if self.__is_list_of_ontology_objects(obj):
-            self.__flatten_object_list_to_main_worksheet(obj, flattened_object, parent_key)
-        elif self.__is_project(parent_key):
-            self.__flatten_module_list(obj, parent_key)
-        else:
-            self.__flatten_object_list_to_main_worksheet(obj, flattened_object, parent_key)
-
-    def __flatten_object_list_to_main_worksheet(self, obj, flattened_object: dict, parent_key: str):
-        keys = self.__get_keys_of_a_list_of_object(obj)
-
-        for key in keys:
-            values = [elem.get(key) for elem in obj if elem.get(key)]
-            full_key = f'{parent_key}.{key}' if parent_key else key
-            self.__flatten_list(flattened_object, values, full_key)
 
     @staticmethod
     def __format_worksheet_name(worksheet_name):
