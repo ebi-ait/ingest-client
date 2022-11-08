@@ -162,45 +162,45 @@ class Flattener:
                 headers.append(key)
         return headers
 
-    def _flatten_object(self, object: dict, flattened_object: dict, parent_key: str = ''):
-        if isinstance(object, dict):
-            for key in object:
+    def _flatten_object(self, obj: dict, flattened_object: dict, parent_key: str = ''):
+        if isinstance(obj, dict):
+            for key in obj:
                 if key in EXCLUDE_KEYS:
                     continue
 
-                value = object[key]
+                value = obj[key]
                 full_key = f'{parent_key}.{key}' if parent_key else key
                 if isinstance(value, dict) or isinstance(value, list):
                     self._flatten_object(value, flattened_object, parent_key=full_key)
                 else:
                     flattened_object[full_key] = str(value)
-        elif isinstance(object, list):
-            self._flatten_list(flattened_object, object, parent_key)
+        elif isinstance(obj, list):
+            self._flatten_list(flattened_object, obj, parent_key)
 
-    def _flatten_list(self, flattened_object, object, parent_key):
-        if self._is_list_of_objects(object):
-            self._flatten_object_list(flattened_object, object, parent_key)
+    def _flatten_list(self, flattened_object, obj, parent_key):
+        if self._is_list_of_objects(obj):
+            self._flatten_object_list(flattened_object, obj, parent_key)
         else:
-            self._flatten_scalar_list(flattened_object, object, parent_key)
+            self._flatten_scalar_list(flattened_object, obj, parent_key)
 
-    def _flatten_scalar_list(self, flattened_object, object, parent_key):
-        stringified = [str(e) for e in object]
+    def _flatten_scalar_list(self, flattened_object, obj, parent_key):
+        stringified = [str(e) for e in obj]
         flattened_object[parent_key] = SCALAR_LIST_DELIMITER.join(stringified)
 
-    def _flatten_object_list(self, flattened_object: dict, object: dict, parent_key: str):
-        if self._is_list_of_ontology_objects(object):
-            self._flatten_to_include_object_list_to_main_entity_worksheet(object, flattened_object, parent_key)
+    def _flatten_object_list(self, flattened_object: dict, obj: dict, parent_key: str):
+        if self._is_list_of_ontology_objects(obj):
+            self._flatten_to_include_object_list_to_main_entity_worksheet(obj, flattened_object, parent_key)
         elif self._is_project(parent_key):
-            self._flatten_module_list(object, parent_key)
+            self._flatten_module_list(obj, parent_key)
         else:
-            self._flatten_to_include_object_list_to_main_entity_worksheet(object, flattened_object, parent_key)
+            self._flatten_to_include_object_list_to_main_entity_worksheet(obj, flattened_object, parent_key)
 
-    def _flatten_to_include_object_list_to_main_entity_worksheet(self, object, flattened_object: dict,
+    def _flatten_to_include_object_list_to_main_entity_worksheet(self, obj, flattened_object: dict,
                                                                  parent_key: str):
-        keys = self._get_keys_of_a_list_of_object(object)
+        keys = self._get_keys_of_a_list_of_object(obj)
 
         for key in keys:
-            values = [elem.get(key) for elem in object if elem.get(key)]
+            values = [elem.get(key) for elem in obj if elem.get(key)]
             full_key = f'{parent_key}.{key}' if parent_key else key
             self._flatten_list(flattened_object, values, full_key)
 
@@ -213,8 +213,8 @@ class Flattener:
     def _is_list_of_objects(self, content):
         return content and isinstance(content[0], dict)
 
-    def _is_list_of_ontology_objects(self, object: dict):
-        first_elem = object[0] if object else {}
+    def _is_list_of_ontology_objects(self, obj: dict):
+        first_elem = obj[0] if obj else {}
         result = [prop in first_elem for prop in ONTOLOGY_PROPS]
         # TODO better check the schema if field is ontology
         return any(result)
