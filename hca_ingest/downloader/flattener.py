@@ -1,6 +1,6 @@
 import copy
 from itertools import groupby
-from typing import List
+from typing import Iterable
 
 from openpyxl.worksheet.worksheet import Worksheet
 
@@ -19,7 +19,7 @@ class Flattener:
         self.workbook = {}
         self.schemas = {}
 
-    def flatten(self, entity_list: List[Entity]):
+    def flatten(self, entity_list: Iterable[Entity]):
         self.workbook = {}
         self.schemas = {}
         for entity in entity_list:

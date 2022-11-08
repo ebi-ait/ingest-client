@@ -17,5 +17,5 @@ class WorkbookDownloader:
     def get_workbook_from_submission(self, submission_uuid: str) -> Workbook:
         entity_dict = self.collector.collect_data_by_submission_uuid(submission_uuid)
         content_filter = filter(attrgetter('content'), entity_dict.values())
-        flattened_json = self.flattener.flatten(list(content_filter))
+        flattened_json = self.flattener.flatten(content_filter)
         return self.downloader.create_workbook(flattened_json)
