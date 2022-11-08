@@ -35,27 +35,13 @@ class Flattener:
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
 
-        self.__flatten_any(entity.content, row, key=worksheet_name)
+        row.update(self.__flatten_any(entity.content, key=worksheet_name))
 
         if entity.input_biomaterials or entity.input_files:
-            embedded_content = self.__embed_link_columns(entity)
-            self.__flatten_any(embedded_content, row)
+            link_columns = self.__get_link_columns(entity)
+            row.update(self.__flatten_any(link_columns))
 
         self.__add_row_to_worksheet(row, worksheet_name)
-
-    def __flatten_module_list(self, module_list: list, object_key: str):
-        for module in module_list:
-            self.__flatten_module(module, object_key)
-
-    def __flatten_module(self, module: dict, object_key: str):
-        worksheet_name = object_key
-        module_row = {}
-
-        if not worksheet_name:
-            raise ValueError('There should be a worksheet name')
-
-        self.__flatten_any(module, module_row, key=worksheet_name)
-        self.__add_row_to_worksheet(module_row, worksheet_name)
 
     def __add_row_to_worksheet(self, row: dict, worksheet_name: str):
         user_friendly_worksheet_name = self.__format_worksheet_name(worksheet_name)
@@ -76,118 +62,91 @@ class Flattener:
         if not existing_schema_url:
             self.schemas[concrete_entity] = schema_url
 
-    def __flatten_any(self, content: any, flattened_object: dict, key: str = ''):
+    def __flatten_any(self, content: any, key: str = '') -> dict:
         if isinstance(content, dict):
-            self.__flatten_dict(content, flattened_object, key)
-        elif isinstance(content, list):
-            self.__flatten_list(content, flattened_object, key)
-        else:
-            flattened_object[key] = str(content)
+            return self.__flatten_dict(content, key)
+        if isinstance(content, list):
+            return self.__flatten_list(content, key)
+        return {key: str(content)}
 
-    def __flatten_dict(self, content: dict, flattened_object: dict, parent_key: str):
+    def __flatten_dict(self, content: dict, parent_key: str) -> dict:
+        flattened_object = {}
         for child_key, value in content.items():
             if child_key in EXCLUDE_KEYS:
                 continue
             full_key = f'{parent_key}.{child_key}' if parent_key else child_key
-            self.__flatten_any(value, flattened_object, key=full_key)
+            flattened_object.update(self.__flatten_any(value, key=full_key))
+        return flattened_object
 
-    def __flatten_list(self, content: list, flattened_object: dict, key: str):
+    def __flatten_list(self, content: list, key: str) -> dict:
         if self.__is_list_of_objects(content):
-            self.__flatten_object_list(content, flattened_object, key)
-        else:
-            self.__flatten_scalar_list(content, flattened_object, key)
+            return self.__flatten_object_list(content, key)
+        return {key: self.__flatten_scalar_list(content)}
 
-    def __flatten_object_list(self, content: list, flattened_object: dict, key: str):
+    def __flatten_object_list(self, content: list, key: str) -> dict:
         if self.__is_list_of_ontology_objects(content):
-            self.__flatten_object_list_to_main_worksheet(content, flattened_object, key)
-        elif self.__is_project(key):
+            return self.__flatten_object_list_to_main_worksheet(content, key)
+        if self.__is_project(key):
             self.__flatten_module_list(content, key)
-        else:
-            self.__flatten_object_list_to_main_worksheet(content, flattened_object, key)
+            return {}
+        return self.__flatten_object_list_to_main_worksheet(content, key)
 
-    def __flatten_object_list_to_main_worksheet(self, content: list, flattened_object: dict, parent_key: str):
+    def __flatten_object_list_to_main_worksheet(self, content: list, parent_key: str) -> dict:
         keys = self.__get_keys_of_a_list_of_object(content)
+        flattened_object = {}
         for child_key in keys:
             values = [elem.get(child_key) for elem in content if elem.get(child_key)]
             full_key = f'{parent_key}.{child_key}' if parent_key else child_key
-            self.__flatten_list(values, flattened_object, full_key)
+            flattened_object.update(self.__flatten_list(values, full_key))
+        return flattened_object
+
+    def __flatten_module_list(self, module_list: list, object_key: str):
+        for module in module_list:
+            self.__flatten_module(module, object_key)
+
+    def __flatten_module(self, module: dict, object_key: str):
+        worksheet_name = object_key
+        if not worksheet_name:
+            raise ValueError('There should be a worksheet name')
+
+        flat_module = self.__flatten_any(module, key=worksheet_name)
+        self.__add_row_to_worksheet(flat_module, worksheet_name)
 
     @staticmethod
-    def __embed_link_columns(entity: Entity):
-        embedded_content = {}
-        Flattener.__embed_process(entity, embedded_content)
-        Flattener.__embed_protocol_ids(entity, embedded_content)
-        Flattener.__embed_input_ids(entity, embedded_content)
-        return embedded_content
+    def __get_link_columns(entity: Entity) -> dict:
+        link_columns = {}
+        link_columns.update(Flattener.__get_concrete_process(entity))
+        link_columns.update(Flattener.__get_concrete_ids(entity.protocols, 'protocol_core', 'protocol_id'))
+        link_columns.update(Flattener.__get_concrete_ids(entity.input_biomaterials, 'biomaterial_core', 'biomaterial_id'))
+        link_columns.update(Flattener.__get_concrete_ids(entity.input_files, 'file_core', 'file_name'))
+        return link_columns
 
     @staticmethod
-    def __embed_process(entity: Entity, embedded_content: dict):
-        embed_process = {
+    def __get_concrete_process(entity: Entity) -> dict:
+        process = {
             'process': {
                 'uuid': entity.process.uuid
             }
         }
-        embed_process['process'].update(entity.process.content)
-        embedded_content.update(embed_process)
+        process['process'].update(entity.process.content)
+        return process
 
     @staticmethod
-    def __embed_protocol_ids(entity: Entity, embedded_content: dict):
-        protocols_by_type = {}
-        for p in entity.protocols:
-            p: Entity
-            protocols = protocols_by_type.get(p.concrete_type, [])
-            protocols.append(p)
-            protocols_by_type[p.concrete_type] = protocols
-
-        for concrete_type, protocols in protocols_by_type.items():
-            protocol_ids = [p.content['protocol_core']['protocol_id'] for p in protocols]
-            protocol_uuids = [p.uuid for p in protocols]
-            embedded_protocol_ids = {
-                concrete_type: {
-                    'protocol_core': {
-                        'protocol_id': protocol_ids
-                    },
-                    'uuid': protocol_uuids
-                }
-            }
-            embedded_content.update(embedded_protocol_ids)
-
-    @staticmethod
-    def __embed_input_ids(entity: Entity, embedded_content: dict):
-        Flattener.__embed_input_biomaterial_ids(embedded_content, entity)
-        Flattener.__embed_input_file_ids(embedded_content, entity)
-
-    @staticmethod
-    def __embed_input_biomaterial_ids(embedded_content: dict, entity: Entity):
-        for concrete_type, inputs_iter in groupby(entity.input_biomaterials, lambda e: e.concrete_type):
+    def __get_concrete_ids(input_entities: Iterable[Entity], core_name: str, id_name: str):
+        concrete_ids = {}
+        for concrete_type, inputs_iter in groupby(input_entities, lambda e: e.concrete_type):
             inputs = list(inputs_iter)
-            input_ids_ids = [i.content['biomaterial_core']['biomaterial_id'] for i in inputs]
-            input_ids_uuids = [i.uuid for i in inputs]
-            embedded_input_ids = {
+            input_ids = [i.content[core_name][id_name] for i in inputs]
+            input_uuids = [i.uuid for i in inputs]
+            concrete_ids.update({
                 concrete_type: {
-                    'biomaterial_core': {
-                        'biomaterial_id': input_ids_ids
+                    core_name: {
+                        id_name: input_ids
                     },
-                    'uuid': input_ids_uuids
+                    'uuid': input_uuids
                 }
-            }
-            embedded_content.update(embedded_input_ids)
-
-    @staticmethod
-    def __embed_input_file_ids(embedded_content: dict, entity: Entity):
-        for concrete_type, inputs_iter in groupby(entity.input_files, lambda e: e.concrete_type):
-            inputs = list(inputs_iter)
-            input_ids_ids = [i.content['file_core']['file_name'] for i in inputs]
-            input_ids_uuids = [i.uuid for i in inputs]
-            embedded_input_ids = {
-                concrete_type: {
-                    'file_core': {
-                        'file_name': input_ids_ids
-                    },
-                    'uuid': input_ids_uuids
-                }
-            }
-            embedded_content.update(embedded_input_ids)
+            })
+        return concrete_ids
 
     @staticmethod
     def __validate_no_schema_version_conflicts(existing_schema_url: str, schema_url: str):
@@ -205,9 +164,9 @@ class Flattener:
         return headers
 
     @staticmethod
-    def __flatten_scalar_list(scalar_list: list, flattened_object: dict, key: str):
+    def __flatten_scalar_list(scalar_list: list) -> str:
         stringified = [str(scalar_item) for scalar_item in scalar_list]
-        flattened_object[key] = SCALAR_LIST_DELIMITER.join(stringified)
+        return SCALAR_LIST_DELIMITER.join(stringified)
 
     @staticmethod
     def __format_worksheet_name(worksheet_name: str):
