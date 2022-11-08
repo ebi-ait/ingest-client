@@ -2,8 +2,6 @@ import copy
 from itertools import groupby
 from typing import Iterable
 
-from openpyxl.worksheet.worksheet import Worksheet
-
 from hca_ingest.downloader.entity import Entity
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
@@ -199,7 +197,7 @@ class Flattener:
                      {schema_url} and {existing_schema_url}')
 
     @staticmethod
-    def __update_headers(row: dict, worksheet: Worksheet):
+    def __update_headers(row: dict, worksheet: dict):
         headers = worksheet.get('headers')
         for key in row.keys():
             if key not in headers:
@@ -230,7 +228,7 @@ class Flattener:
         return any(result)
 
     @staticmethod
-    def __get_keys_of_a_list_of_object(objects: list):
+    def __get_keys_of_a_list_of_object(objects: list) -> Iterable[str]:
         keys_obj = {}
         for obj in objects:
             if obj:
