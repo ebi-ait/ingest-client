@@ -7,3 +7,4 @@ xlsxwriter
 mergedeep
 cryptography
 requests-cache
+pyjwt
