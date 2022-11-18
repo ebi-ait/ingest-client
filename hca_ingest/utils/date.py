@@ -7,5 +7,5 @@ def parse_date_string(date_str: str) -> datetime:
 
 
 def date_to_json_string(date: datetime) -> str:
-    return date.isoformat().replace("+00:00", "Z")
+    return date.isoformat().removesuffix("+00:00") + 'Z'
 
