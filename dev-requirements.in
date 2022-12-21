@@ -5,3 +5,6 @@ coverage
 sortedcontainers
 twine
 requests-mock
+pytest
+pytest-lazy-fixture
+assertpy
