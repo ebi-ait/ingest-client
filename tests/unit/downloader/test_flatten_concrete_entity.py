@@ -1,52 +1,47 @@
 import json
+import os
+import pytest
+from assertpy import assert_that
 
 from hca_ingest.downloader.entity import Entity
 from hca_ingest.downloader.flattener import Flattener
-from tests.unit.downloader.test_flattener import BaseFlattenerTest
+
+@pytest.fixture
+def script_dir():
+    return os.path.dirname(__file__)
 
 
-class FlattenConcreteEntityTest(BaseFlattenerTest):
-    def test_flatten__project_metadata(self):
-        # given
-        with open(self.script_dir + '/project-list.json') as file:
-            entity_list = json.load(file)
+def get_json_file(filepath: str):
+    with open(filepath) as file:
+        return json.load(file)
 
-        # when
-        flattener = Flattener()
-        actual = flattener.flatten(Entity.from_json_list(entity_list))
 
-        with open(self.script_dir + '/project-list-flattened.json') as file:
-            expected = json.load(file)
+@pytest.fixture
+def flattener():
+    return Flattener()
 
-        # then
-        self.assertEqual(actual, expected)
+@pytest.fixture(params=['entities', 'project-list', 'collection_protocol-list'])
+def test_name(request):
+    return request.param
 
-    def test_flatten__has_different_entities(self):
-        # given
-        with open(self.script_dir + '/entities.json') as file:
-            entity_list = json.load(file)
 
-        # when
-        flattener = Flattener()
-        actual = flattener.flatten(Entity.from_json_list(entity_list))
+@pytest.fixture
+def json_list(script_dir, test_name):
+    return get_json_file(script_dir + f'/{test_name}.json')
 
-        with open(self.script_dir + '/entities-flattened.json') as file:
-            expected = json.load(file)
 
-        # then
-        self.assertEqual(actual, expected)
+@pytest.fixture
+def entity_list(json_list):
+    return Entity.from_json_list(json_list)
 
-    def test_flatten__collection_protocol_metadata(self):
-        # given
-        with open(self.script_dir + '/collection_protocol-list.json') as file:
-            entity_list = json.load(file)
 
-        # when
-        flattener = Flattener()
-        actual = flattener.flatten(Entity.from_json_list(entity_list))
+@pytest.fixture
+def expected(script_dir, test_name):
+    return get_json_file(script_dir + f'/{test_name}-flattened.json')
 
-        with open(self.script_dir + '/collection_protocol-list-flattened.json') as file:
-            expected = json.load(file)
 
-        # then
-        self.assertEqual(actual, expected)
+def test_flatten_concrete_entity(flattener, entity_list, expected):
+    # when
+    actual = flattener.flatten(entity_list)
+    # then
+    assert_that(actual).is_equal_to(expected)
