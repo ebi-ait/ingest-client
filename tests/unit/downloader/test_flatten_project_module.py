@@ -1,36 +1,8 @@
-import json
-import os
-
 import pytest
 from assertpy import assert_that
 
 from hca_ingest.downloader.entity import Entity
-from hca_ingest.downloader.flattener import Flattener
 
-
-@pytest.fixture
-def script_dir():
-    return os.path.dirname(__file__)
-
-
-def get_json_file(filepath: str):
-    with open(filepath) as file:
-        return json.load(file)
-
-
-@pytest.fixture
-def content(script_dir):
-    return get_json_file(script_dir + '/content.json')
-
-
-@pytest.fixture
-def expected(script_dir):
-    return get_json_file(script_dir + '/content-flattened.json')
-
-
-@pytest.fixture
-def flattener():
-    return Flattener()
 
 @pytest.fixture
 def project_content(content):
@@ -84,11 +56,11 @@ def expected_project(expected):
 
 
 @pytest.fixture
-def project_metadata(project_content):
+def project_metadata(project_content, metadata_uuid):
     return {
         'content': project_content,
         'uuid': {
-            'uuid': 'uuid1'
+            'uuid': metadata_uuid
         }
     }
 
@@ -103,6 +75,6 @@ def entity_list(project_entity):
     return [project_entity]
 
 
-def test_flatten__has_project_modules(flattener, entity_list, expected_project):
+def test_flatten_project_modules(flattener, entity_list, expected_project):
     actual = flattener.flatten(entity_list)
     assert_that(actual).is_equal_to(expected_project)

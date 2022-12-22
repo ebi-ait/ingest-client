@@ -1,39 +1,9 @@
-import json
-import os
 import pytest
-
 from assertpy import assert_that
 
 from hca_ingest.downloader.entity import Entity
-from hca_ingest.downloader.flattener import Flattener
 
-
-@pytest.fixture
-def script_dir():
-    return os.path.dirname(__file__)
-
-
-def get_json_file(filepath: str):
-    with open(filepath) as file:
-        return json.load(file)
-
-
-def get_entity_file(filepath: str):
-    return Entity.from_json(get_json_file(filepath))
-
-
-def get_entities_file(filepath: str):
-    return Entity.from_json_list(get_json_file(filepath))
-
-
-@pytest.fixture
-def content(script_dir):
-    return get_json_file(script_dir + '/content.json')
-
-
-@pytest.fixture
-def expected(script_dir):
-    return get_json_file(script_dir + '/content-flattened.json')
+from .conftest import get_json_file, get_entity_file, get_entities_file
 
 
 @pytest.fixture
@@ -62,10 +32,6 @@ def specimen_with_inputs(script_dir, donor, process, protocols):
 def expected_with_inputs(script_dir, expected):
     return get_json_file(script_dir + '/entities-with-inputs-flattened.json')
 
-
-@pytest.fixture
-def flattener():
-    return Flattener()
 
 
 @pytest.fixture
@@ -97,7 +63,7 @@ def with_string_array(content, expected):
 
 
 @pytest.fixture
-def with_list_property(expected):
+def with_list_property(expected, metadata_uuid):
     expected.clear()
     expected.update({
         'Collection protocol': {
@@ -105,7 +71,7 @@ def with_list_property(expected):
                 'collection_protocol.organ_parts.field_1': 'UBERON:0000376',
                 'collection_protocol.organ_parts.field_2': 'hindlimb stylopod',
                 'collection_protocol.organ_parts.field_3': 'hindlimb stylopod',
-                'collection_protocol.uuid': 'uuid1'
+                'collection_protocol.uuid': metadata_uuid
             }],
             'headers': [
                 'collection_protocol.uuid',
@@ -157,7 +123,7 @@ def with_integer(content, expected):
 
 
 @pytest.fixture
-def rows_have_different_columns(expected):
+def with_different_columns(expected, metadata_uuid):
     expected.clear()
     expected.update({
         'Project': {
@@ -169,7 +135,7 @@ def rows_have_different_columns(expected):
             ],
             'values': [
                 {
-                    'project.uuid': 'uuid1',
+                    'project.uuid': metadata_uuid,
                     'project.project_core.project_short_name': 'label1'
                 },
                 {
@@ -214,7 +180,7 @@ def from_content(request):
 
 @pytest.fixture(params=[
     pytest.lazy_fixture('from_content'),
-    pytest.lazy_fixture('rows_have_different_columns')
+    pytest.lazy_fixture('with_different_columns')
 ])
 def entities(request):
     return get_entities_from_content_list(request.param)
@@ -233,7 +199,7 @@ def get_entities_from_content_list(content_list):
 
 
 @pytest.fixture
-def entities_have_inputs(specimen_with_inputs, expected, expected_with_inputs):
+def entities_with_inputs(specimen_with_inputs, expected, expected_with_inputs):
     expected.clear()
     expected.update(expected_with_inputs)
     return specimen_with_inputs
@@ -241,7 +207,7 @@ def entities_have_inputs(specimen_with_inputs, expected, expected_with_inputs):
 
 @pytest.fixture(params=[
     pytest.lazy_fixture('entities'),
-    pytest.lazy_fixture('entities_have_inputs'),
+    pytest.lazy_fixture('entities_with_inputs'),
 ])
 def entity_list(request):
     return request.param

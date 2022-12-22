@@ -1,35 +1,7 @@
-import json
-import os
-
 import pytest
 from assertpy import assert_that
 
 from hca_ingest.downloader.entity import Entity
-from hca_ingest.downloader.flattener import Flattener
-
-@pytest.fixture
-def script_dir():
-    return os.path.dirname(__file__)
-
-
-def get_json_file(filepath: str):
-    with open(filepath) as file:
-        return json.load(file)
-
-
-@pytest.fixture
-def content(script_dir):
-    return get_json_file(script_dir + '/content.json')
-
-
-@pytest.fixture
-def expected(script_dir):
-    return get_json_file(script_dir + '/content-flattened.json')
-
-
-@pytest.fixture
-def flattener():
-    return Flattener()
 
 
 @pytest.fixture
@@ -176,11 +148,11 @@ def with_single_element_but_only_with_text_attr(content, expected):
     pytest.lazy_fixture('with_single_element'),
     pytest.lazy_fixture('with_single_element_but_only_with_text_attr')
 ])
-def from_content(request):
+def from_content(request, metadata_uuid):
     return [{
         'content': request.param,
         'uuid': {
-            'uuid': 'uuid1'
+            'uuid': metadata_uuid
         }
     }]
 
