@@ -67,7 +67,7 @@ def project_metadata(project_content, metadata_uuid):
 
 @pytest.fixture
 def project_entity(project_metadata):
-    return Entity.from_json(project_metadata)
+    return Entity(project_metadata)
 
 
 @pytest.fixture

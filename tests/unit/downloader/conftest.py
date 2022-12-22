@@ -37,7 +37,7 @@ def get_json_file(filepath: str):
 
 
 def get_entity_file(filepath: str) -> Entity:
-    return Entity.from_json(get_json_file(filepath))
+    return Entity(get_json_file(filepath))
 
 
 def get_entities_file(filepath: str) -> list[Entity]:

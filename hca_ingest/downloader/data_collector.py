@@ -17,7 +17,7 @@ class DataCollector:
         data_by_submission = self.__get_submission_data(submission)
         entity_dict = {}
         for entity_json in data_by_submission:
-            entity = Entity.from_json(entity_json)
+            entity = Entity(entity_json)
             entity_dict[entity.id] = entity
         linking_map = self.__get_linking_map(submission)
         self.__set_inputs(entity_dict, linking_map)
