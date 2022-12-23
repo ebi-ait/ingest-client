@@ -1,6 +1,7 @@
 import logging
 from typing import Tuple, List
 
+import polling
 from openpyxl import Workbook
 from requests import HTTPError
 
@@ -82,8 +83,18 @@ class XlsImporter:
                 submission = self._submit_new_entities(entity_map, submission_url)
 
             project = entity_map.get_project()
+
+            def is_readable(entity):
+                """check that the entity is readable"""
+                return entity.ingest_json.editable == 'true'
+
             if project and project_uuid and update_project:
-                self.submitter.update_entity(project)
+                polling.poll(
+                    lambda: self.submitter.update_entity(project),
+                    check_success=is_readable,
+                    step=5,
+                    timeout=90
+                )
 
         except HTTPError as httpError:
             self.logger.exception(httpError)
