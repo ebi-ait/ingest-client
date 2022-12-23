@@ -13,15 +13,16 @@ class Entity:
     process: Entity = field(init=False, default=None)
     protocols: list[Entity] = field(init=False, default_factory=list)
 
-    def __post_init__(self, entity_json: dict):
-        content = entity_json.get('content')
-        if content:
-            self.content = content
-        uuid = entity_json.get('uuid', {}).get('uuid')
-        if uuid:
-            self.uuid = uuid
-        self_href = entity_json.get('_links', {}).get('self', {}).get('href')
-        if self_href:
+    def __post_init__(self, entity_json: dict = None):
+        if not entity_json:
+            entity_json = {}
+        self.content = self.__get_item(entity_json, 'content', {})
+        uuid = self.__get_item(entity_json, 'uuid', {})
+        self.uuid = self.__get_item(uuid, 'uuid', '')
+        links = self.__get_item(entity_json, '_links', {})
+        self_link = self.__get_item(links, 'self', {})
+        self_href = self.__get_item(self_link, 'href', '')
+        if self_href and '/' in self_href:
             self.id = self_href.split('/')[-1]
 
     @classmethod
@@ -30,24 +31,22 @@ class Entity:
 
     @property
     def schema_url(self):
-        return self.content.get('describedBy', '')
+        return self.__get_item(self.content, 'describedBy', '')
 
     @property
     def concrete_type(self):
-        if self.schema_url:
-            return self.schema_url.rsplit('/', 1)[-1]
+        return self.schema_url.split('/')[-1] if self.schema_url else ''
 
     @property
     def domain_type(self):
-        if self.schema_url:
-            return self.schema_url.split('/')[4]
+        return self.schema_url.split('/')[4] if self.schema_url else ''
 
     def set_input(self, input_biomaterials=None, input_files=None, process: Entity = None, protocols: list[Entity] = None):
-        if input_biomaterials is None:
+        if not input_biomaterials:
             input_biomaterials = []
-        if input_files is None:
+        if not input_files:
             input_files = []
-        if protocols is None:
+        if not protocols:
             protocols = []
         assert isinstance(process, Entity)
         assert all(isinstance(protocol, Entity) for protocol in protocols)
@@ -57,3 +56,8 @@ class Entity:
         self.input_biomaterials = input_biomaterials
         self.process = process
         self.protocols = protocols
+
+    @staticmethod
+    def __get_item(item: dict, key: str, default):
+        result = item.get(key)
+        return result if result else default
