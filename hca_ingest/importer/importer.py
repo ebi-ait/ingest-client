@@ -84,17 +84,17 @@ class XlsImporter:
 
             project = entity_map.get_project()
 
-            def is_readable(entity):
-                """check that the entity is readable"""
-                return entity.ingest_json.editable == 'true'
+            def is_editable(entity):
+                return entity['editable'] is True
 
             if project and project_uuid and update_project:
                 polling.poll(
-                    lambda: self.submitter.update_entity(project),
-                    check_success=is_readable,
+                    lambda: self.ingest_api.get(submission_url).json(),
+                    check_success=is_editable,
                     step=5,
                     timeout=90
                 )
+                self.submitter.update_entity(project)
 
         except HTTPError as httpError:
             self.logger.exception(httpError)
