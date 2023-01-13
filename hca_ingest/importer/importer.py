@@ -85,6 +85,7 @@ class XlsImporter:
             project = entity_map.get_project()
 
             def is_editable(entity):
+                """check that the entity is readable"""
                 return entity['editable'] is True
 
             if project and project_uuid and update_project:
