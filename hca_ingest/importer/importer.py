@@ -1,7 +1,6 @@
 import logging
 from typing import Tuple, List
 
-import polling
 from openpyxl import Workbook
 from requests import HTTPError
 
