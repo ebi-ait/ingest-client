@@ -7,6 +7,7 @@ import logging
 import os
 import time
 from urllib.parse import urljoin
+from polling import poll
 
 import requests
 
@@ -30,6 +31,8 @@ class IngestApi:
         self.logger.info(f"using {self.url} for ingest API")
         self._ingest_links = self._get_ingest_links()
         self.page_size = 100
+        self.poll_step = 5
+        self.poll_timeout = 90
 
     def set_page_size(self, page_size):
         self.page_size = page_size
@@ -60,7 +63,9 @@ class IngestApi:
         self.logger.debug(f'Token unset!')
         return self.headers
 
-    def get(self, url, **kwargs):
+    def get(self, url, bypass_cache=False, **kwargs):
+        if bypass_cache:
+            self.session.cache.delete_url(url)
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
         response = self.session.get(url, **kwargs)
@@ -101,6 +106,13 @@ class IngestApi:
         self.session.cache.clear()
         response.raise_for_status()
         return response
+
+    def poll(self, url, **kwargs):
+        if 'step' not in kwargs:
+            kwargs['step'] = self.poll_step
+        if 'timeout' not in kwargs:
+            kwargs['timeout'] = self.poll_timeout
+        poll(lambda: self.get(url, bypass_cache=True), **kwargs)
 
     def _get_ingest_links(self):
         return self.get(self.url).json()["_links"]
@@ -471,6 +483,11 @@ class IngestApi:
         find_staging_job_suffix = '/search/findByStagingAreaUuidAndStagingAreaFileName'
         find_staging_job_url = self.get_staging_jobs_url() + find_staging_job_suffix
         return self.get(find_staging_job_url, params=search_params).json()
+
+    @staticmethod
+    def is_response_editable(response: requests.Response) -> bool:
+        entity = response.json()
+        return entity.get('editable') is True
 
     @staticmethod
     def __get_basic_header():
