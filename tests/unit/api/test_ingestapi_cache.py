@@ -118,19 +118,14 @@ class IngestApiCacheTest(TestCase):
         # given
         test_id = str(uuid.uuid4()).replace('-', '')
         test_url = f'{API_URL}/BypassTest/{test_id}'
-        test_case_responses = [
-            {
-                'json': {
-                    'editable': False,
-                }
-            },
-            {
-                'json': {
-                    'editable': True,
-                }
-            }
-        ]
-        mock.get(test_url, test_case_responses)
+        first_response = {
+            'editable': False,
+        }
+        second_response = {
+            'editable': True,
+        }
+
+        mock.get(test_url, [{'json': first_response}, {'json': second_response}])
 
         # first_response
         self.assertFalse(self.api.is_response_editable(self.api.get(test_url)))
@@ -152,19 +147,15 @@ class IngestApiCacheTest(TestCase):
         # given
         test_id = str(uuid.uuid4()).replace('-', '')
         test_url = f'{API_URL}/BypassTest/{test_id}'
-        test_case_responses = [
-            {
-                'json': {
-                    'editable': False,
-                }
-            },
-            {
-                'json': {
-                    'editable': True,
-                }
-            }
-        ]
-        mock.get(test_url, test_case_responses)
+        first_response = {
+            'editable': False,
+        }
+        second_response = {
+            'editable': True,
+        }
+
+        mock.get(test_url, [{'json': first_response}, {'json': second_response}])
+
 
         # when
         self.api.poll(test_url, step=1, max_tries=2, check_success=self.api.is_response_editable)
