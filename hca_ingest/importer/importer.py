@@ -84,7 +84,12 @@ class XlsImporter:
             project = entity_map.get_project()
 
             if project and project_uuid and update_project:
-                self.ingest_api.poll(submission_url, check_sucess=self.ingest_api.is_response_editable)
+                self.ingest_api.poll(
+                    submission_url,
+                    step=5,
+                    timeout=90,
+                    check_success=self.ingest_api.is_response_editable
+                )
                 self.submitter.update_entity(project)
 
         except HTTPError as httpError:

@@ -7,7 +7,7 @@ import logging
 import os
 import time
 from urllib.parse import urljoin
-from polling import poll
+import polling
 
 import requests
 
@@ -32,7 +32,6 @@ class IngestApi:
         self._ingest_links = self._get_ingest_links()
         self.page_size = 100
         self.poll_step = 5
-        self.poll_timeout = 90
 
     def set_page_size(self, page_size):
         self.page_size = page_size
@@ -110,9 +109,7 @@ class IngestApi:
     def poll(self, url, **kwargs):
         if 'step' not in kwargs:
             kwargs['step'] = self.poll_step
-        if 'timeout' not in kwargs:
-            kwargs['timeout'] = self.poll_timeout
-        poll(lambda: self.get(url, bypass_cache=True), **kwargs)
+        polling.poll(lambda: self.get(url, bypass_cache=True), **kwargs)
 
     def _get_ingest_links(self):
         return self.get(self.url).json()["_links"]

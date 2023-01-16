@@ -116,37 +116,59 @@ class IngestApiCacheTest(TestCase):
 
     def test_bypass_cache_updates_cache(self, mock):
         # given
-        test_uuid = str(uuid.uuid4())
         test_id = str(uuid.uuid4()).replace('-', '')
         test_url = f'{API_URL}/BypassTest/{test_id}'
-        test_case = {
-            'uuid': {
-                'uuid': test_uuid
+        test_case_responses = [
+            {
+                'json': {
+                    'editable': False,
+                }
             },
-            'editable': False,
-            '_links': {
-                'self': {
-                    'href': test_url
+            {
+                'json': {
+                    'editable': True,
                 }
             }
-        }
-        mock.get(test_url, json=test_case)
+        ]
+        mock.get(test_url, test_case_responses)
 
         # first_response
         self.assertFalse(self.api.is_response_editable(self.api.get(test_url)))
-
-        # update source
-        test_case['editable'] = True
-        mock.get(test_url, json=test_case)
+        self.assertEqual(mock.call_count, 1)
 
         # cached_response still false
         self.assertFalse(self.api.is_response_editable(self.api.get(test_url)))
+        self.assertEqual(mock.call_count, 1)
 
         # bypass_cache
         self.assertTrue(self.api.is_response_editable(self.api.get(test_url, bypass_cache=True)))
+        self.assertEqual(mock.call_count, 2)
 
         # then cached result is updated
         self.assertTrue(self.api.is_response_editable(self.api.get(test_url)))
+        self.assertEqual(mock.call_count, 2)
+
+    def test_polling(self, mock):
+        # given
+        test_id = str(uuid.uuid4()).replace('-', '')
+        test_url = f'{API_URL}/BypassTest/{test_id}'
+        test_case_responses = [
+            {
+                'json': {
+                    'editable': False,
+                }
+            },
+            {
+                'json': {
+                    'editable': True,
+                }
+            }
+        ]
+        mock.get(test_url, test_case_responses)
+
+        # when
+        self.api.poll(test_url, step=1, max_tries=2, check_success=self.api.is_response_editable)
+        self.assertEqual(mock.call_count, 2)
 
     def removes_item_from_cache(self, mock: Mocker, action, **kwargs):
         # given
