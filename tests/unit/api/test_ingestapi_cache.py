@@ -114,6 +114,40 @@ class IngestApiCacheTest(TestCase):
         # then
         self.assertFalse(self.api.session.cache.has_url(folder_url))
 
+    def test_bypass_cache_updates_cache(self, mock):
+        # given
+        test_uuid = str(uuid.uuid4())
+        test_id = str(uuid.uuid4()).replace('-', '')
+        test_url = f'{API_URL}/BypassTest/{test_id}'
+        test_case = {
+            'uuid': {
+                'uuid': test_uuid
+            },
+            'editable': False,
+            '_links': {
+                'self': {
+                    'href': test_url
+                }
+            }
+        }
+        mock.get(test_url, json=test_case)
+
+        # first_response
+        self.assertFalse(self.api.is_response_editable(self.api.get(test_url)))
+
+        # update source
+        test_case['editable'] = True
+        mock.get(test_url, json=test_case)
+
+        # cached_response still false
+        self.assertFalse(self.api.is_response_editable(self.api.get(test_url)))
+
+        # bypass_cache
+        self.assertTrue(self.api.is_response_editable(self.api.get(test_url, bypass_cache=True)))
+
+        # then cached result is updated
+        self.assertTrue(self.api.is_response_editable(self.api.get(test_url)))
+
     def removes_item_from_cache(self, mock: Mocker, action, **kwargs):
         # given
         folder_url, item_url, search_url, search_all_url = self.register_item_responses(mock)
