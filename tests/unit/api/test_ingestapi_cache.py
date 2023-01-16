@@ -114,6 +114,53 @@ class IngestApiCacheTest(TestCase):
         # then
         self.assertFalse(self.api.session.cache.has_url(folder_url))
 
+    def test_bypass_cache_updates_cache(self, mock):
+        # given
+        test_id = str(uuid.uuid4()).replace('-', '')
+        test_url = f'{API_URL}/BypassTest/{test_id}'
+        first_response = {
+            'editable': False,
+        }
+        second_response = {
+            'editable': True,
+        }
+
+        mock.get(test_url, [{'json': first_response}, {'json': second_response}])
+
+        # first_response
+        self.assertFalse(self.api.is_response_editable(self.api.get(test_url)))
+        self.assertEqual(mock.call_count, 1)
+
+        # cached_response still false
+        self.assertFalse(self.api.is_response_editable(self.api.get(test_url)))
+        self.assertEqual(mock.call_count, 1)
+
+        # bypass_cache
+        self.assertTrue(self.api.is_response_editable(self.api.get(test_url, bypass_cache=True)))
+        self.assertEqual(mock.call_count, 2)
+
+        # then cached result is updated
+        self.assertTrue(self.api.is_response_editable(self.api.get(test_url)))
+        self.assertEqual(mock.call_count, 2)
+
+    def test_polling(self, mock):
+        # given
+        test_id = str(uuid.uuid4()).replace('-', '')
+        test_url = f'{API_URL}/BypassTest/{test_id}'
+        first_response = {
+            'editable': False,
+        }
+        second_response = {
+            'editable': True,
+        }
+
+        mock.get(test_url, [{'json': first_response}, {'json': second_response}])
+
+
+        # when
+        self.api.poll(test_url, step=1, max_tries=2, check_success=self.api.is_response_editable)
+        self.assertEqual(mock.call_count, 2)
+
     def removes_item_from_cache(self, mock: Mocker, action, **kwargs):
         # given
         folder_url, item_url, search_url, search_all_url = self.register_item_responses(mock)
