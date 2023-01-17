@@ -15,17 +15,21 @@ EXCLUDE_KEYS = ['describedBy', 'schema_type']
 class Flattener:
     def __init__(self):
         self.workbook = {}
-        self.schemas = {}
+        self.schema_url_by_type = {}
+        self.schemas_by_url = {}
 
-    def flatten(self, entity_list: Iterable[Entity]):
+    def flatten(self, entity_list: Iterable[Entity], schemas_by_url=None):
+        if schemas_by_url is None:
+            schemas_by_url = {}
         self.workbook = {}
-        self.schemas = {}
+        self.schema_url_by_type = {}
+        self.schemas_by_url.update(schemas_by_url)
         for entity in entity_list:
             if entity.concrete_type != 'process':
                 self.__flatten_entity(entity)
-            self.__extract_schema_url(entity.content, entity.concrete_type)
+            self.__extract_schema_url(entity.schema_url, entity.concrete_type)
 
-        self.workbook[SCHEMAS_WORKSHEET] = list(self.schemas.values())
+        self.workbook[SCHEMAS_WORKSHEET] = list(self.schema_url_by_type.values())
         flattened_json = copy.deepcopy(self.workbook)
         return flattened_json
 
@@ -54,13 +58,12 @@ class Flattener:
             'values': rows
         }
 
-    def __extract_schema_url(self, content: dict, concrete_entity: str):
-        schema_url = content.get('describedBy')
-        existing_schema_url = self.schemas.get(concrete_entity)
+    def __extract_schema_url(self, schema_url: str, concrete_entity: str):
+        existing_schema_url = self.schema_url_by_type.get(concrete_entity)
         self.__validate_no_schema_version_conflicts(existing_schema_url, schema_url)
 
         if not existing_schema_url:
-            self.schemas[concrete_entity] = schema_url
+            self.schema_url_by_type[concrete_entity] = schema_url
 
     def __flatten_any(self, content: any, key: str = '') -> dict:
         if isinstance(content, dict):
