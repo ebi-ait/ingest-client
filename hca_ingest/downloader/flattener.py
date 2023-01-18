@@ -2,6 +2,7 @@ import copy
 from itertools import groupby
 from typing import Iterable
 
+from downloader.schema_collector import SchemaCollector
 from hca_ingest.downloader.entity import Entity
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
@@ -15,26 +16,25 @@ EXCLUDE_KEYS = ['describedBy', 'schema_type']
 class Flattener:
     def __init__(self):
         self.workbook = {}
-        self.schema_url_by_type = {}
-        self.schemas_by_url = {}
+        self.schemas = {}
 
-    def flatten(self, entity_list: Iterable[Entity], schemas_by_url=None):
-        if schemas_by_url is None:
-            schemas_by_url = {}
+    def flatten(self, entity_list: Iterable[Entity], schemas = None):
+        if not schemas:
+            schemas = {}
         self.workbook = {}
-        self.schema_url_by_type = {}
-        self.schemas_by_url.update(schemas_by_url)
+        self.schemas = schemas
         for entity in entity_list:
-            if entity.concrete_type != 'process':
+            if entity.schema_url.concrete_type != 'process':
                 self.__flatten_entity(entity)
-            self.__extract_schema_url(entity.schema_url, entity.concrete_type)
-
-        self.workbook[SCHEMAS_WORKSHEET] = list(self.schema_url_by_type.values())
+        schema_urls = set(self.schemas.keys())
+        if not schema_urls:
+            schema_urls = set([ schema.url for schema in SchemaCollector.get_schema_urls(entity_list) ])
+        self.workbook[SCHEMAS_WORKSHEET] = list(schema_urls)
         flattened_json = copy.deepcopy(self.workbook)
         return flattened_json
 
     def __flatten_entity(self, entity: Entity):
-        worksheet_name = entity.concrete_type
+        worksheet_name = entity.schema_url.concrete_type
         row = {f'{worksheet_name}.uuid': entity.uuid}
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
@@ -57,13 +57,6 @@ class Flattener:
             'headers': headers,
             'values': rows
         }
-
-    def __extract_schema_url(self, schema_url: str, concrete_entity: str):
-        existing_schema_url = self.schema_url_by_type.get(concrete_entity)
-        self.__validate_no_schema_version_conflicts(existing_schema_url, schema_url)
-
-        if not existing_schema_url:
-            self.schema_url_by_type[concrete_entity] = schema_url
 
     def __flatten_any(self, content: any, key: str = '') -> dict:
         if isinstance(content, dict):
@@ -137,7 +130,7 @@ class Flattener:
     @staticmethod
     def __get_concrete_ids(input_entities: Iterable[Entity], core_name: str, id_name: str):
         concrete_ids = {}
-        for concrete_type, inputs_iter in groupby(input_entities, lambda e: e.concrete_type):
+        for concrete_type, inputs_iter in groupby(input_entities, lambda entity: entity.schema_url.concrete_type):
             inputs = list(inputs_iter)
             input_ids = [i.content[core_name][id_name] for i in inputs]
             input_uuids = [i.uuid for i in inputs]
@@ -150,13 +143,6 @@ class Flattener:
                 }
             })
         return concrete_ids
-
-    @staticmethod
-    def __validate_no_schema_version_conflicts(existing_schema_url: str, schema_url: str):
-        if existing_schema_url and existing_schema_url != schema_url:
-            raise ValueError(f'The concrete entity schema version should be consistent across entities.\
-                    Multiple versions of same concrete entity schema is found:\
-                     {schema_url} and {existing_schema_url}')
 
     @staticmethod
     def __update_headers(row: dict, worksheet: dict):

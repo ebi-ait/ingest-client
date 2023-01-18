@@ -217,26 +217,5 @@ def test_flatten(flattener, entity_list, expected):
     # when
     actual = flattener.flatten(entity_list)
     # then
-    assert_that(actual).is_equal_to(expected)
-
-
-@pytest.fixture
-def multiple_schema_versions_of_same_concrete_entity():
-    return [
-        {
-            "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism",
-            "schema_type": "biomaterial",
-            "field": "value"
-        },{
-            "describedBy": "https://schema.humancellatlas.org/type/project/14.3.0/donor_organism",
-            "schema_type": "biomaterial",
-            "field": "value"
-        }
-    ]
-
-
-def test_flatten_raises_error(multiple_schema_versions_of_same_concrete_entity, flattener):
-    entity_list = get_entities_from_content_list(multiple_schema_versions_of_same_concrete_entity)
-    with pytest.raises(ValueError) as value_error:
-        flattener.flatten(entity_list)
-        assert_that(str(value_error.value)).is_equal_to("Multiple versions of same concrete entity schema")
+    assert_that(actual).is_equal_to(expected, ignore='Schemas')
+    assert_that(set(actual.get('Schemas', []))).is_equal_to(set(expected.get('Schemas', [])))

@@ -3,6 +3,7 @@ import uuid
 import pytest
 from assertpy import assert_that
 
+from downloader.schema_url import SchemaUrl
 from hca_ingest.downloader.entity import Entity
 
 
@@ -17,7 +18,7 @@ def concrete_type():
 
 @pytest.fixture
 def schema_url(domain_type, concrete_type):
-    return f'https://schema.humancellatlas.org/type/{domain_type}/sequencing/10.1.0/{concrete_type}'
+    return SchemaUrl(f'https://schema.humancellatlas.org/type/{domain_type}/sequencing/10.1.0/{concrete_type}')
 
 
 @pytest.fixture
@@ -34,7 +35,7 @@ def metadata_id() -> str:
 def populated_entity(schema_url, metadata_uuid, metadata_id):
     return Entity({
         'content': {
-            'describedBy': schema_url
+            'describedBy': schema_url.url
         },
         'uuid': {'uuid': metadata_uuid},
         "_links" : {
@@ -45,12 +46,10 @@ def populated_entity(schema_url, metadata_uuid, metadata_id):
     })
 
 
-def test_populated_entity(populated_entity, metadata_uuid, metadata_id, schema_url, domain_type, concrete_type):
+def test_populated_entity(populated_entity, metadata_uuid, metadata_id, schema_url):
     assert_that(populated_entity.uuid).is_equal_to(metadata_uuid)
     assert_that(populated_entity.id).is_equal_to(metadata_id)
     assert_that(populated_entity.schema_url).is_equal_to(schema_url)
-    assert_that(populated_entity.domain_type).is_equal_to(domain_type)
-    assert_that(populated_entity.concrete_type).is_equal_to(concrete_type)
 
 
 @pytest.fixture
@@ -99,10 +98,20 @@ def missing_schema_entity(request):
     return Entity(request.param)
 
 
-def test_missing_schema(missing_schema_entity):
-    assert_that(missing_schema_entity.schema_url).is_equal_to('')
-    assert_that(missing_schema_entity.concrete_type).is_equal_to('')
-    assert_that(missing_schema_entity.domain_type).is_equal_to('')
+@pytest.fixture
+def missing_schema(missing_schema_entity: Entity) -> SchemaUrl:
+    return missing_schema_entity.schema_url
+
+
+@pytest.fixture
+def blank_schema() -> SchemaUrl:
+    return SchemaUrl()
+
+
+def test_missing_schema(missing_schema: SchemaUrl, blank_schema: SchemaUrl):
+    assert_that(missing_schema.url).is_equal_to(blank_schema.url)
+    assert_that(missing_schema.concrete_type).is_equal_to(blank_schema.concrete_type)
+    assert_that(missing_schema.domain_type).is_equal_to(blank_schema.domain_type)
 
 
 @pytest.fixture(params=[
