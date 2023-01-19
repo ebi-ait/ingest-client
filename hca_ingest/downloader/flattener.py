@@ -18,20 +18,28 @@ class Flattener:
         self.workbook = {}
         self.schemas = {}
 
-    def flatten(self, entity_list: Iterable[Entity], schemas = None):
+    def flatten(self, entity_list: list[Entity], schemas: dict = None):
+        self.__flatten_init(schemas)
+        self.__flatten_entities(entity_list)
+        self.__flatten_schemas(entity_list)
+        return copy.deepcopy(self.workbook)
+
+    def __flatten_init(self, schemas: dict = None):
         if not schemas:
             schemas = {}
         self.workbook = {}
         self.schemas = schemas
+
+    def __flatten_entities(self, entity_list: list[Entity]):
         for entity in entity_list:
             if entity.schema.concrete_type != 'process':
                 self.__flatten_entity(entity)
+
+    def __flatten_schemas(self, entity_list: list[Entity]):
         schema_urls = set(self.schemas.keys())
         if not schema_urls:
-            schema_urls = set([ schema.url for schema in SchemaCollector.get_schema_urls(entity_list) ])
+            schema_urls = set([schema.url for schema in SchemaCollector.get_schema_urls(entity_list)])
         self.workbook[SCHEMAS_WORKSHEET] = list(schema_urls)
-        flattened_json = copy.deepcopy(self.workbook)
-        return flattened_json
 
     def __flatten_entity(self, entity: Entity):
         worksheet_name = entity.schema.concrete_type
