@@ -38,5 +38,5 @@ def schema_collector():
 
 def test_collection_raises_error(multiple_schema_versions_of_same_concrete_entity, schema_collector):
     with pytest.raises(ValueError) as value_error:
-        schema_collector.get_schemas_from_entities(multiple_schema_versions_of_same_concrete_entity)
+        schema_collector.get_schemas_for_entities(multiple_schema_versions_of_same_concrete_entity)
         assert_that(str(value_error.value)).is_equal_to("Multiple versions of same concrete entity schema")
