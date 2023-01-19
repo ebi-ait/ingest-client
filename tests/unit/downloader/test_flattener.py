@@ -53,12 +53,10 @@ def with_string_array(content, expected):
         'project.insdc_project_accessions': 'SRP180337',
         'project.geo_series_accessions': "GSE124298||GSE124299"
     })
-    expected['Project']['headers'].extend(
-        [
-            'project.insdc_project_accessions',
-            'project.geo_series_accessions'
-        ]
-    )
+    expected['Project']['headers'].update({
+        'project.insdc_project_accessions': {},
+        'project.geo_series_accessions': {}
+    })
     return content
 
 
@@ -73,12 +71,12 @@ def with_list_property(expected, metadata_uuid):
                 'collection_protocol.organ_parts.field_3': 'hindlimb stylopod',
                 'collection_protocol.uuid': metadata_uuid
             }],
-            'headers': [
-                'collection_protocol.uuid',
-                'collection_protocol.organ_parts.field_1',
-                'collection_protocol.organ_parts.field_2',
-                'collection_protocol.organ_parts.field_3'
-            ]
+            'headers': {
+                'collection_protocol.uuid': {},
+                'collection_protocol.organ_parts.field_1': {},
+                'collection_protocol.organ_parts.field_2': {},
+                'collection_protocol.organ_parts.field_3': {}
+            }
         },
         'Schemas': [
             'https://schema.humancellatlas.org/type/project/14.2.0/collection_protocol'
@@ -106,7 +104,7 @@ def with_boolean(content, expected):
     expected['Project']['values'][0].update({
         'project.boolean_field': 'True'
     })
-    expected['Project']['headers'].append('project.boolean_field')
+    expected['Project']['headers']['project.boolean_field'] = {}
     return content
 
 
@@ -118,7 +116,7 @@ def with_integer(content, expected):
     expected['Project']['values'][0].update({
         'project.int_field': '1'
     })
-    expected['Project']['headers'].append('project.int_field')
+    expected['Project']['headers']['project.int_field'] = {}
     return content
 
 
@@ -127,12 +125,12 @@ def with_different_columns(expected, metadata_uuid):
     expected.clear()
     expected.update({
         'Project': {
-            'headers': [
-                'project.uuid',
-                'project.project_core.project_short_name',
-                'project.project_core.project_title',
-                'project.project_core.project_description'
-            ],
+            'headers': {
+                'project.uuid': {},
+                'project.project_core.project_short_name': {},
+                'project.project_core.project_title': {},
+                'project.project_core.project_description': {}
+            },
             'values': [
                 {
                     'project.uuid': metadata_uuid,

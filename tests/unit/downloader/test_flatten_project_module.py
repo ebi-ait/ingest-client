@@ -28,17 +28,17 @@ def project_content(content):
 def expected_project(expected):
     expected.update({
         'Project - Contributors': {
-            'headers': [
-                'project.contributors.name',
-                'project.contributors.email',
-                'project.contributors.institution',
-                'project.contributors.laboratory',
-                'project.contributors.country',
-                'project.contributors.corresponding_contributor',
-                'project.contributors.project_role.text',
-                'project.contributors.project_role.ontology',
-                'project.contributors.project_role.ontology_label'
-            ],
+            'headers': {
+                'project.contributors.name': {},
+                'project.contributors.email': {},
+                'project.contributors.institution': {},
+                'project.contributors.laboratory': {},
+                'project.contributors.country': {},
+                'project.contributors.corresponding_contributor': {},
+                'project.contributors.project_role.text': {},
+                'project.contributors.project_role.ontology': {},
+                'project.contributors.project_role.ontology_label': {}
+            },
             'values': [{
                 'project.contributors.corresponding_contributor': 'True',
                 'project.contributors.country': 'USA',

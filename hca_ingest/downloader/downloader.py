@@ -37,20 +37,21 @@ class XlsDownloader:
 
     @staticmethod
     def add_worksheet_content(worksheet: Worksheet, ws_elements: dict):
-        headers = ws_elements.get('headers')
-        XlsDownloader.__add_header_row(worksheet, headers)
-        all_values = ws_elements.get('values')
+        headers = ws_elements.get('headers', {})
+        XlsDownloader.__add_header_rows(worksheet, headers)
+        all_values = ws_elements.get('values', [])
 
         for row_number, row_values in enumerate(all_values, start=START_DATA_ROW):
             XlsDownloader.__add_row_content(worksheet, headers, row_number, row_values)
 
     @staticmethod
-    def __add_header_row(worksheet, headers: list):
-        for col, header in enumerate(headers, start=1):
+    def __add_header_rows(worksheet, headers: dict):
+        for col, header in enumerate(headers.keys(), start=1):
             worksheet.cell(row=HEADER_ROW_NO, column=col, value=header)
+            # ToDo: add other header info here
 
     @staticmethod
-    def __add_row_content(worksheet, headers: list, row_number: int, values: dict):
-        for header, value in values.items():
-            index = headers.index(header)
-            worksheet.cell(row=row_number, column=index + 1, value=value)
+    def __add_row_content(worksheet, headers: dict, row_number: int, values: dict):
+        for index, header in enumerate(headers.keys(), start=1):
+            if header in values:
+                worksheet.cell(row=row_number, column=index, value=values[header])

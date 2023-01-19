@@ -17,6 +17,7 @@ class Flattener:
     def __init__(self):
         self.workbook = {}
         self.schemas = {}
+        self.current_schema_url = ''
 
     def flatten(self, entity_list: list[Entity], schemas: dict = None):
         self.__flatten_init(schemas)
@@ -29,6 +30,7 @@ class Flattener:
             schemas = {}
         self.workbook = {}
         self.schemas = schemas
+        self.current_schema_url = ''
 
     def __flatten_entities(self, entity_list: list[Entity]):
         for entity in entity_list:
@@ -43,10 +45,10 @@ class Flattener:
 
     def __flatten_entity(self, entity: Entity):
         worksheet_name = entity.schema.concrete_type
-        row = {f'{worksheet_name}.uuid': entity.uuid}
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
-
+        self.current_schema_url = entity.schema.url
+        row = {f'{worksheet_name}.uuid': entity.uuid}
         row.update(self.__flatten_any(entity.content, key=worksheet_name))
 
         if entity.input_biomaterials or entity.input_files:
@@ -57,14 +59,10 @@ class Flattener:
 
     def __add_row_to_worksheet(self, row: dict, worksheet_name: str):
         user_friendly_worksheet_name = self.__format_worksheet_name(worksheet_name)
-        worksheet = self.workbook.get(user_friendly_worksheet_name, {'headers': [], 'values': []})
-        rows = worksheet.get('values')
-        rows.append(row)
-        headers = self.__update_headers(row, worksheet)
-        self.workbook[user_friendly_worksheet_name] = {
-            'headers': headers,
-            'values': rows
-        }
+        worksheet = self.workbook.setdefault(user_friendly_worksheet_name, {})
+        worksheet.setdefault('values', []).append(row)
+        headers = worksheet.setdefault('headers', {})
+        self.__update_headers(row, headers, self.schemas.get(self.current_schema_url, {}))
 
     def __flatten_any(self, content: any, key: str = '') -> dict:
         if isinstance(content, dict):
@@ -153,11 +151,11 @@ class Flattener:
         return concrete_ids
 
     @staticmethod
-    def __update_headers(row: dict, worksheet: dict):
-        headers = worksheet.get('headers')
+    def __update_headers(row: dict, headers: dict, schema: dict):
         for key in row.keys():
             if key not in headers:
-                headers.append(key)
+                # ToDo: add header elements from schema
+                headers[key] = {}
         return headers
 
     @staticmethod

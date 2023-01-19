@@ -26,13 +26,11 @@ def with_multiple_elements(content, expected):
         'project.organ_parts.text': 'dummytext1||dummytext2',
 
     })
-    expected['Project']['headers'].extend(
-        [
-            'project.organ_parts.ontology',
-            'project.organ_parts.ontology_label',
-            'project.organ_parts.text'
-        ]
-    )
+    expected['Project']['headers'].update({
+        'project.organ_parts.ontology': {},
+        'project.organ_parts.ontology_label': {},
+        'project.organ_parts.text': {}
+    })
     return content
 
 
@@ -56,13 +54,11 @@ def with_multiple_elements_but_inconsistent_columns(content, expected):
         'project.diseases.text': 'dummytext1||dummytext2',
 
     })
-    expected['Project']['headers'].extend(
-        [
-            'project.diseases.ontology',
-            'project.diseases.ontology_label',
-            'project.diseases.text'
-        ]
-    )
+    expected['Project']['headers'].update({
+        'project.diseases.ontology': {},
+        'project.diseases.ontology_label': {},
+        'project.diseases.text': {}
+    })
     return content
 
 
@@ -88,13 +84,11 @@ def with_multiple_elements_but_with_empty_ontology_values(content, expected):
         'project.diseases.text': 'dummytext1||dummytext2',
 
     })
-    expected['Project']['headers'].extend(
-        [
-            'project.diseases.ontology',
-            'project.diseases.ontology_label',
-            'project.diseases.text'
-        ]
-    )
+    expected['Project']['headers'].update({
+        'project.diseases.ontology': {},
+        'project.diseases.ontology_label': {},
+        'project.diseases.text': {}
+    })
     return content
 
 
@@ -113,11 +107,11 @@ def with_single_element(content, expected):
         'project.organ_parts.text': 'hindlimb stylopod',
 
     })
-    expected['Project']['headers'].extend([
-        'project.organ_parts.ontology',
-        'project.organ_parts.ontology_label',
-        'project.organ_parts.text'
-    ])
+    expected['Project']['headers'].update({
+        'project.organ_parts.ontology': {},
+        'project.organ_parts.ontology_label': {},
+        'project.organ_parts.text': {}
+    })
     return content
 
 
@@ -133,11 +127,9 @@ def with_single_element_but_only_with_text_attr(content, expected):
     expected['Project']['values'][0].update({
         'project.diseases.text': 'dummytext2'
     })
-    expected['Project']['headers'].extend(
-        [
-            'project.diseases.text'
-        ]
-    )
+    expected['Project']['headers'].update({
+        'project.diseases.text': {}
+    })
     return content
 
 

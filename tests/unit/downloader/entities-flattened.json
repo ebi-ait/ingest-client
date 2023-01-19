@@ -1,11 +1,11 @@
 {
   "Project": {
-    "headers": [
-      "project.uuid",
-      "project.project_core.project_short_name",
-      "project.project_core.project_title",
-      "project.project_core.project_description"
-    ],
+    "headers": {
+      "project.uuid": {},
+      "project.project_core.project_short_name": {},
+      "project.project_core.project_title": {},
+      "project.project_core.project_description": {}
+    },
     "values": [
       {
         "project.uuid": "uuid1",
@@ -16,17 +16,17 @@
     ]
   },
   "Project - Contributors": {
-    "headers": [
-      "project.contributors.name",
-      "project.contributors.email",
-      "project.contributors.institution",
-      "project.contributors.laboratory",
-      "project.contributors.country",
-      "project.contributors.corresponding_contributor",
-      "project.contributors.project_role.text",
-      "project.contributors.project_role.ontology",
-      "project.contributors.project_role.ontology_label"
-    ],
+    "headers": {
+      "project.contributors.name": {},
+      "project.contributors.email": {},
+      "project.contributors.institution": {},
+      "project.contributors.laboratory": {},
+      "project.contributors.country": {},
+      "project.contributors.corresponding_contributor": {},
+      "project.contributors.project_role.text": {},
+      "project.contributors.project_role.ontology": {},
+      "project.contributors.project_role.ontology_label": {}
+    },
     "values": [
       {
         "project.contributors.corresponding_contributor": "True",
@@ -42,11 +42,11 @@
     ]
   },
   "Donor organism": {
-    "headers": [
-      "donor_organism.uuid",
-      "donor_organism.biomaterial_core.biomaterial_id",
-      "donor_organism.biomaterial_core.biomaterial_description"
-    ],
+    "headers": {
+      "donor_organism.uuid": {},
+      "donor_organism.biomaterial_core.biomaterial_id": {},
+      "donor_organism.biomaterial_core.biomaterial_description": {}
+    },
     "values": [
       {
         "donor_organism.uuid": "uuid2",
@@ -62,6 +62,6 @@
   },
   "Schemas": [
     "https://schema.humancellatlas.org/type/project/14.2.0/project",
-    "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism"
+    "https://schema.humancellatlas.org/type/biomaterial/14.2.0/donor_organism"
             ]
         }

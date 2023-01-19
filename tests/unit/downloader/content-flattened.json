@@ -1,11 +1,11 @@
 {
   "Project": {
-    "headers": [
-      "project.uuid",
-      "project.project_core.project_short_name",
-      "project.project_core.project_title",
-      "project.project_core.project_description"
-    ],
+    "headers": {
+      "project.uuid": {},
+      "project.project_core.project_short_name": {},
+      "project.project_core.project_title": {},
+      "project.project_core.project_description": {}
+    },
     "values": [
       {
         "project.uuid": "uuid1",

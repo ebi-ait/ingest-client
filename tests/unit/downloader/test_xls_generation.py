@@ -82,15 +82,15 @@ class XLSGenerationTest(unittest.TestCase):
     def __input_json1(project_sheet_title):
         return {
             project_sheet_title: {
-                "headers": [
-                    "project.uuid",
-                    "project.project_core.project_short_name",
-                    "project.project_core.project_title",
-                    "project.project_core.project_description",
-                    "project.insdc_project_accessions",
-                    "project.geo_series_accessions",
-                    "project.insdc_study_accessions"
-                ],
+                "headers": {
+                    "project.uuid": {},
+                    "project.project_core.project_short_name": {},
+                    "project.project_core.project_title": {},
+                    "project.project_core.project_description": {},
+                    "project.insdc_project_accessions": {},
+                    "project.geo_series_accessions": {},
+                    "project.insdc_study_accessions": {}
+                },
                 "values": [
                     {
                         "project.uuid": "3e329187-a9c4-48ec-90e3-cc45f7c2311c",
@@ -110,19 +110,19 @@ class XLSGenerationTest(unittest.TestCase):
     def __input_json2(contributors_sheet_title):
         return {
             contributors_sheet_title: {
-                'headers': [
-                    "project.contributors.name",
-                    "project.contributors.email",
-                    "project.contributors.institution",
-                    "project.contributors.laboratory",
-                    "project.contributors.address",
-                    "project.contributors.country",
-                    "project.contributors.corresponding_contributor",
-                    "project.contributors.project_role.text",
-                    "project.contributors.project_role.ontology",
-                    "project.contributors.project_role.ontology_label",
-                    "project.contributors.orcid_id"
-                ],
+                'headers': {
+                    "project.contributors.name": {},
+                    "project.contributors.email": {},
+                    "project.contributors.institution": {},
+                    "project.contributors.laboratory": {},
+                    "project.contributors.address": {},
+                    "project.contributors.country": {},
+                    "project.contributors.corresponding_contributor": {},
+                    "project.contributors.project_role.text": {},
+                    "project.contributors.project_role.ontology": {},
+                    "project.contributors.project_role.ontology_label": {},
+                    "project.contributors.orcid_id": {}
+                },
                 'values': [
                     {
                         'project.contributors.name': 'Karel Gott',
