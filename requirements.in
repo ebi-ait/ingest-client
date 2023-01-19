@@ -1,10 +1,10 @@
+cryptography
 jsonref
+mergedeep
 openpyxl
 polling
+pyjwt
 PyYAML>=5.3.1
+requests-cache
 requests[security]
 xlsxwriter
-mergedeep
-cryptography
-requests-cache
-pyjwt
