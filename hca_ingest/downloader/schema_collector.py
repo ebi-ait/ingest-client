@@ -51,7 +51,7 @@ class SchemaCollector:
         for type in distinct_types:
             duplicate_types.remove(type)
         duplicate_types = set(duplicate_types)
-        return set(filter(lambda schema: schema.concrete_type in duplicate_types, schema_urls))
+        return set([schema for schema in schema_urls if schema.concrete_type in duplicate_types])
 
     @staticmethod
     def __get_schema(url: str)-> dict:
