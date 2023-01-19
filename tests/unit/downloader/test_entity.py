@@ -3,7 +3,7 @@ import uuid
 import pytest
 from assertpy import assert_that
 
-from downloader.schema_url import SchemaUrl
+from hca_ingest.downloader.schema_url import SchemaUrl
 from hca_ingest.downloader.entity import Entity
 
 

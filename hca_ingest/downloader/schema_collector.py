@@ -3,7 +3,7 @@ from typing import Iterable
 import requests
 
 from hca_ingest.downloader.entity import Entity
-from downloader.schema_url import SchemaUrl
+from .schema_url import SchemaUrl
 
 
 class SchemaCollector:

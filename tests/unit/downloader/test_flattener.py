@@ -1,9 +1,7 @@
 import pytest
 from assertpy import assert_that
 
-from hca_ingest.downloader.entity import Entity
-
-from .conftest import get_json_file, get_entity_file, get_entities_file
+from .conftest import get_json_file, get_entity_file, get_entities_file, get_entities_from_content_list
 
 
 @pytest.fixture
@@ -183,17 +181,6 @@ def from_content(request):
 def entities(request):
     return get_entities_from_content_list(request.param)
 
-
-def get_entities_from_content_list(content_list):
-    entity_list = []
-    for index, content in enumerate(content_list):
-        entity_list.append({
-            'content': content,
-            'uuid': {
-                'uuid': f'uuid{index+1}'
-            }
-        })
-    return Entity.from_json_list(entity_list)
 
 
 @pytest.fixture

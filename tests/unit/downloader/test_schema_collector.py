@@ -1,19 +1,8 @@
 import pytest
 from assertpy import assert_that
 
-from downloader.entity import Entity
-from downloader.schema_collector import SchemaCollector
-
-def get_entities_from_content_list(content_list):
-    entity_list = []
-    for index, content in enumerate(content_list):
-        entity_list.append({
-            'content': content,
-            'uuid': {
-                'uuid': f'uuid{index+1}'
-            }
-        })
-    return Entity.from_json_list(entity_list)
+from hca_ingest.downloader.schema_collector import SchemaCollector
+from .conftest import get_entities_from_content_list
 
 
 @pytest.fixture

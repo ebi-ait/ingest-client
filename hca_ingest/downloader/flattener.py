@@ -2,9 +2,10 @@ import copy
 from itertools import groupby
 from typing import Iterable
 
-from downloader.schema_collector import SchemaCollector
-from hca_ingest.downloader.entity import Entity
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
+from .schema_collector import SchemaCollector
+from .entity import Entity
+
 
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
 SCALAR_LIST_DELIMITER = '||'

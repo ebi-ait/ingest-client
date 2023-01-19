@@ -1,7 +1,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field, InitVar
 
-from downloader.schema_url import SchemaUrl
+from .schema_url import SchemaUrl
 
 
 @dataclass
