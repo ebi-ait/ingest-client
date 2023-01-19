@@ -18,9 +18,18 @@ class SchemaCollector:
     def __get_schema_from_cache(self, url: str) -> dict:
         if url in self.schema_cache:
             return self.schema_cache[url]
+        return self.__add_schema_to_cache(url)
+
+    def __add_schema_to_cache(self, url: str) -> dict:
         schema = self.__get_schema(url)
+        self.__add_linked_schema(schema)
         self.schema_cache[url] = schema
         return schema
+
+    def __add_linked_schema(self, schema: dict):
+        for key, values in schema.setdefault('properties', {}).items():
+            if '$ref' in values:
+                values.update(self.__add_schema_to_cache(values['$ref']))
 
     @staticmethod
     def get_schema_urls(entity_list: Iterable[Entity]) -> set[SchemaUrl]:
