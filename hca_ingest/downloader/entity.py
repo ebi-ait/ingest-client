@@ -8,7 +8,7 @@ from downloader.schema_url import SchemaUrl
 class Entity:
     entity_json: InitVar[dict]
     content: dict = field(init=False, default_factory=dict)
-    schema_url: SchemaUrl = field(init=False, default_factory=SchemaUrl)
+    schema: SchemaUrl = field(init=False, default_factory=SchemaUrl)
     uuid: str = field(init=False, default='')
     id: str = field(init=False, default='')
     input_biomaterials: list[Entity] = field(init=False, default_factory=list)
@@ -27,7 +27,7 @@ class Entity:
         self_href = self.__get_item(self_link, 'href', '')
         if self_href and '/' in self_href:
             self.id = self_href.split('/')[-1]
-        self.schema_url = SchemaUrl(self.__get_item(self.content, 'describedBy', ''))
+        self.schema = SchemaUrl(self.__get_item(self.content, 'describedBy', ''))
 
     @classmethod
     def from_json_list(cls, entity_json_list: list[dict]) -> list[Entity]:

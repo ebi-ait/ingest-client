@@ -17,7 +17,7 @@ def concrete_type():
     return 'sequencing_protocol'
 
 @pytest.fixture
-def schema_url(domain_type, concrete_type):
+def schema(domain_type, concrete_type):
     return SchemaUrl(f'https://schema.humancellatlas.org/type/{domain_type}/sequencing/10.1.0/{concrete_type}')
 
 
@@ -32,10 +32,10 @@ def metadata_id() -> str:
 
 
 @pytest.fixture
-def populated_entity(schema_url, metadata_uuid, metadata_id):
+def populated_entity(schema, metadata_uuid, metadata_id):
     return Entity({
         'content': {
-            'describedBy': schema_url.url
+            'describedBy': schema.url
         },
         'uuid': {'uuid': metadata_uuid},
         "_links" : {
@@ -46,10 +46,10 @@ def populated_entity(schema_url, metadata_uuid, metadata_id):
     })
 
 
-def test_populated_entity(populated_entity, metadata_uuid, metadata_id, schema_url):
+def test_populated_entity(populated_entity, metadata_uuid, metadata_id, schema):
     assert_that(populated_entity.uuid).is_equal_to(metadata_uuid)
     assert_that(populated_entity.id).is_equal_to(metadata_id)
-    assert_that(populated_entity.schema_url).is_equal_to(schema_url)
+    assert_that(populated_entity.schema).is_equal_to(schema)
 
 
 @pytest.fixture
@@ -100,7 +100,7 @@ def missing_schema_entity(request):
 
 @pytest.fixture
 def missing_schema(missing_schema_entity: Entity) -> SchemaUrl:
-    return missing_schema_entity.schema_url
+    return missing_schema_entity.schema
 
 
 @pytest.fixture

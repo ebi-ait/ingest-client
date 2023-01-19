@@ -24,7 +24,7 @@ class Flattener:
         self.workbook = {}
         self.schemas = schemas
         for entity in entity_list:
-            if entity.schema_url.concrete_type != 'process':
+            if entity.schema.concrete_type != 'process':
                 self.__flatten_entity(entity)
         schema_urls = set(self.schemas.keys())
         if not schema_urls:
@@ -34,7 +34,7 @@ class Flattener:
         return flattened_json
 
     def __flatten_entity(self, entity: Entity):
-        worksheet_name = entity.schema_url.concrete_type
+        worksheet_name = entity.schema.concrete_type
         row = {f'{worksheet_name}.uuid': entity.uuid}
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
@@ -130,7 +130,7 @@ class Flattener:
     @staticmethod
     def __get_concrete_ids(input_entities: Iterable[Entity], core_name: str, id_name: str):
         concrete_ids = {}
-        for concrete_type, inputs_iter in groupby(input_entities, lambda entity: entity.schema_url.concrete_type):
+        for concrete_type, inputs_iter in groupby(input_entities, lambda entity: entity.schema.concrete_type):
             inputs = list(inputs_iter)
             input_ids = [i.content[core_name][id_name] for i in inputs]
             input_uuids = [i.uuid for i in inputs]

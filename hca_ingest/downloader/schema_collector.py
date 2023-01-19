@@ -28,7 +28,7 @@ class SchemaCollector:
 
     @staticmethod
     def get_schema_urls(entity_list: Iterable[Entity]) -> set[SchemaUrl]:
-        return set([entity.schema_url for entity in entity_list])
+        return set([entity.schema for entity in entity_list])
 
     @staticmethod
     def duplicate_schemas_by_concrete_type(schema_urls: set[SchemaUrl]) -> set[SchemaUrl]:
