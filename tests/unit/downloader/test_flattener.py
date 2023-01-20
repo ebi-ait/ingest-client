@@ -38,7 +38,7 @@ def with_no_modules(content, expected):
 
 
 @pytest.fixture
-def with_string_array(content, expected):
+def with_string_array(content, expected, blank_header):
     content.update({
         "insdc_project_accessions": [
             "SRP180337"
@@ -52,14 +52,14 @@ def with_string_array(content, expected):
         'project.geo_series_accessions': "GSE124298||GSE124299"
     })
     expected['Project']['headers'].update({
-        'project.insdc_project_accessions': {},
-        'project.geo_series_accessions': {}
+        'project.insdc_project_accessions': blank_header,
+        'project.geo_series_accessions': blank_header
     })
     return content
 
 
 @pytest.fixture
-def with_list_property(expected, metadata_uuid):
+def with_list_property(expected, metadata_uuid, blank_header):
     expected.clear()
     expected.update({
         'Collection protocol': {
@@ -70,10 +70,10 @@ def with_list_property(expected, metadata_uuid):
                 'collection_protocol.uuid': metadata_uuid
             }],
             'headers': {
-                'collection_protocol.uuid': {},
-                'collection_protocol.organ_parts.field_1': {},
-                'collection_protocol.organ_parts.field_2': {},
-                'collection_protocol.organ_parts.field_3': {}
+                'collection_protocol.uuid': blank_header,
+                'collection_protocol.organ_parts.field_1': blank_header,
+                'collection_protocol.organ_parts.field_2': blank_header,
+                'collection_protocol.organ_parts.field_3': blank_header
             }
         },
         'Schemas': [
@@ -94,7 +94,7 @@ def with_list_property(expected, metadata_uuid):
 
 
 @pytest.fixture()
-def with_boolean(content, expected):
+def with_boolean(content, expected, blank_header):
     content.update({
         'boolean_field': True
         }
@@ -102,32 +102,32 @@ def with_boolean(content, expected):
     expected['Project']['values'][0].update({
         'project.boolean_field': 'True'
     })
-    expected['Project']['headers']['project.boolean_field'] = {}
+    expected['Project']['headers']['project.boolean_field'] = blank_header
     return content
 
 
 @pytest.fixture
-def with_integer(content, expected):
+def with_integer(content, expected, blank_header):
     content.update({
         'int_field': 1
     })
     expected['Project']['values'][0].update({
         'project.int_field': '1'
     })
-    expected['Project']['headers']['project.int_field'] = {}
+    expected['Project']['headers']['project.int_field'] = blank_header
     return content
 
 
 @pytest.fixture
-def with_different_columns(expected, metadata_uuid):
+def with_different_columns(expected, metadata_uuid, blank_header):
     expected.clear()
     expected.update({
         'Project': {
             'headers': {
-                'project.uuid': {},
-                'project.project_core.project_short_name': {},
-                'project.project_core.project_title': {},
-                'project.project_core.project_description': {}
+                'project.uuid': blank_header,
+                'project.project_core.project_short_name': blank_header,
+                'project.project_core.project_title': blank_header,
+                'project.project_core.project_description': blank_header
             },
             'values': [
                 {

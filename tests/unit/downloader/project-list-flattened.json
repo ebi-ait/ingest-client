@@ -1,13 +1,13 @@
 {
   "Project": {
     "headers": {
-      "project.uuid": {},
-      "project.project_core.project_short_name": {},
-      "project.project_core.project_title": {},
-      "project.project_core.project_description": {},
-      "project.insdc_project_accessions": {},
-      "project.geo_series_accessions": {},
-      "project.insdc_study_accessions": {}
+      "project.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_short_name": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_title": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_description": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.insdc_project_accessions": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.geo_series_accessions": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.insdc_study_accessions": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
     },
     "values": [
       {
@@ -23,15 +23,15 @@
   },
   "Project - Contributors": {
     "headers": {
-      "project.contributors.name": {},
-      "project.contributors.email": {},
-      "project.contributors.institution": {},
-      "project.contributors.laboratory": {},
-      "project.contributors.country": {},
-      "project.contributors.corresponding_contributor": {},
-      "project.contributors.project_role.text": {},
-      "project.contributors.project_role.ontology": {},
-      "project.contributors.project_role.ontology_label": {}
+      "project.contributors.name": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.email": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.institution": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.laboratory": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.country": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.corresponding_contributor": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.project_role.text": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.project_role.ontology": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.project_role.ontology_label": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
     },
     "values": [
       {
@@ -71,11 +71,11 @@
   },
   "Project - Publications": {
     "headers": {
-      "project.publications.authors": {},
-      "project.publications.title": {},
-      "project.publications.doi": {},
-      "project.publications.pmid": {},
-      "project.publications.url": {}
+      "project.publications.authors": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.publications.title": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.publications.doi": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.publications.pmid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.publications.url": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
     },
     "values": [
       {
@@ -89,8 +89,8 @@
   },
   "Project - Funders": {
     "headers": {
-      "project.funders.grant_id": {},
-      "project.funders.organization": {}
+      "project.funders.grant_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.funders.organization": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
     },
     "values": [
       {

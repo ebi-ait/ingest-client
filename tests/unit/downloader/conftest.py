@@ -31,6 +31,10 @@ def metadata_uuid() -> str:
     return 'uuid1'
 
 
+@pytest.fixture
+def blank_header() -> dict:
+    return {'description': '', 'example': '', 'guidelines': '', 'required': False, 'user_friendly': ''}
+
 def get_json_file(filepath: str):
     with open(filepath) as file:
         return json.load(file)

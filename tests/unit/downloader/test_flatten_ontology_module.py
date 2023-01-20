@@ -5,7 +5,7 @@ from hca_ingest.downloader.entity import Entity
 
 
 @pytest.fixture
-def with_multiple_elements(content, expected):
+def with_multiple_elements(content, expected, blank_header):
     content.update({
         'organ_parts': [
             {
@@ -27,15 +27,15 @@ def with_multiple_elements(content, expected):
 
     })
     expected['Project']['headers'].update({
-        'project.organ_parts.ontology': {},
-        'project.organ_parts.ontology_label': {},
-        'project.organ_parts.text': {}
+        'project.organ_parts.ontology': blank_header,
+        'project.organ_parts.ontology_label': blank_header,
+        'project.organ_parts.text': blank_header
     })
     return content
 
 
 @pytest.fixture
-def with_multiple_elements_but_inconsistent_columns(content, expected):
+def with_multiple_elements_but_inconsistent_columns(content, expected, blank_header):
     content.update({
         'diseases': [
             {
@@ -55,15 +55,15 @@ def with_multiple_elements_but_inconsistent_columns(content, expected):
 
     })
     expected['Project']['headers'].update({
-        'project.diseases.ontology': {},
-        'project.diseases.ontology_label': {},
-        'project.diseases.text': {}
+        'project.diseases.ontology': blank_header,
+        'project.diseases.ontology_label': blank_header,
+        'project.diseases.text': blank_header
     })
     return content
 
 
 @pytest.fixture
-def with_multiple_elements_but_with_empty_ontology_values(content, expected):
+def with_multiple_elements_but_with_empty_ontology_values(content, expected, blank_header):
     content.update({
         'diseases': [
             {
@@ -85,15 +85,15 @@ def with_multiple_elements_but_with_empty_ontology_values(content, expected):
 
     })
     expected['Project']['headers'].update({
-        'project.diseases.ontology': {},
-        'project.diseases.ontology_label': {},
-        'project.diseases.text': {}
+        'project.diseases.ontology': blank_header,
+        'project.diseases.ontology_label': blank_header,
+        'project.diseases.text': blank_header
     })
     return content
 
 
 @pytest.fixture
-def with_single_element(content, expected):
+def with_single_element(content, expected, blank_header):
     content.update({
         "organ_parts": [{
             "ontology": "UBERON:0000376",
@@ -108,15 +108,15 @@ def with_single_element(content, expected):
 
     })
     expected['Project']['headers'].update({
-        'project.organ_parts.ontology': {},
-        'project.organ_parts.ontology_label': {},
-        'project.organ_parts.text': {}
+        'project.organ_parts.ontology': blank_header,
+        'project.organ_parts.ontology_label': blank_header,
+        'project.organ_parts.text': blank_header
     })
     return content
 
 
 @pytest.fixture
-def with_single_element_but_only_with_text_attr(content, expected):
+def with_single_element_but_only_with_text_attr(content, expected, blank_header):
     content.update({
         'diseases': [
             {
@@ -128,7 +128,7 @@ def with_single_element_but_only_with_text_attr(content, expected):
         'project.diseases.text': 'dummytext2'
     })
     expected['Project']['headers'].update({
-        'project.diseases.text': {}
+        'project.diseases.text': blank_header
     })
     return content
 

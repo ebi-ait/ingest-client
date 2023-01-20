@@ -155,9 +155,33 @@ class Flattener:
     def __update_headers(row: dict, headers: dict, schema: dict):
         for key in row.keys():
             if key not in headers:
-                # ToDo: add header elements from schema
-                headers[key] = {}
+                headers[key] = Flattener.__get_header_from_schema(key, schema)
         return headers
+
+    @staticmethod
+    def __get_header_from_schema(key: str, schema: dict) -> dict:
+        parent_key, _, child_key = key.partition('.')
+        if 'name' in schema and parent_key != schema['name']:
+            raise ValueError('Schema Mismatch')
+        return Flattener.__get_header_from_schema_properties(child_key, schema)
+
+    @staticmethod
+    def __get_header_from_schema_properties(key: str, schema: dict) -> dict:
+        property_key, _, child_keys = key.partition('.')
+        schema_part = schema.get('properties', {}).get(property_key, {})
+        if child_keys:
+            return Flattener.__get_header_from_schema(key, schema_part)
+        is_required = property_key in schema.get('required', [])
+        return Flattener.__create_header(schema_part, is_required)
+
+    @staticmethod
+    def __create_header(schema: dict, is_required = False):
+        header = {
+            'required': is_required
+        }
+        for key in ['description', 'example', 'guidelines', 'user_friendly']:
+            header[key] = schema.get(key, '')
+        return header
 
     @staticmethod
     def __flatten_scalar_list(scalar_list: list) -> str:

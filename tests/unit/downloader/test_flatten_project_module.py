@@ -25,19 +25,19 @@ def project_content(content):
 
 
 @pytest.fixture
-def expected_project(expected):
+def expected_project(expected, blank_header):
     expected.update({
         'Project - Contributors': {
             'headers': {
-                'project.contributors.name': {},
-                'project.contributors.email': {},
-                'project.contributors.institution': {},
-                'project.contributors.laboratory': {},
-                'project.contributors.country': {},
-                'project.contributors.corresponding_contributor': {},
-                'project.contributors.project_role.text': {},
-                'project.contributors.project_role.ontology': {},
-                'project.contributors.project_role.ontology_label': {}
+                'project.contributors.name': blank_header,
+                'project.contributors.email': blank_header,
+                'project.contributors.institution': blank_header,
+                'project.contributors.laboratory': blank_header,
+                'project.contributors.country': blank_header,
+                'project.contributors.corresponding_contributor': blank_header,
+                'project.contributors.project_role.text': blank_header,
+                'project.contributors.project_role.ontology': blank_header,
+                'project.contributors.project_role.ontology_label': blank_header
             },
             'values': [{
                 'project.contributors.corresponding_contributor': 'True',
