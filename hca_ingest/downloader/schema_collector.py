@@ -32,7 +32,7 @@ class SchemaCollector:
     def __add_linked_schema(self, schema: dict):
         for key, values in schema.setdefault('properties', {}).items():
             if '$ref' in values:
-                values.update(self.__add_schema_to_cache(values['$ref']))
+                values.update(self.__get_schema_from_cache(values['$ref']))
 
     @staticmethod
     def get_schema_urls_for_entities(entity_list: Iterable[Entity]) -> set[SchemaUrl]:
@@ -51,8 +51,8 @@ class SchemaCollector:
         concrete_types = [schema.concrete_type for schema in schema_urls]
         distinct_types = set(concrete_types)
         duplicate_types = concrete_types.copy()
-        for type in distinct_types:
-            duplicate_types.remove(type)
+        for concrete_type in distinct_types:
+            duplicate_types.remove(concrete_type)
         duplicate_types = set(duplicate_types)
         return set([schema for schema in schema_urls if schema.concrete_type in duplicate_types])
 
