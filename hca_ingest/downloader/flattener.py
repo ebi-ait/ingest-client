@@ -41,7 +41,7 @@ class Flattener:
     def __flatten_schemas(self, entity_list: list[Entity]):
         schema_urls = set(self.schemas.keys())
         if not schema_urls:
-            schema_urls = set([schema.url for schema in SchemaCollector.get_schema_urls(entity_list)])
+            schema_urls = set([schema.url for schema in SchemaCollector.get_schema_urls_for_entities(entity_list)])
         self.workbook[SCHEMAS_WORKSHEET] = list(schema_urls)
 
     def __flatten_entity(self, entity: Entity):

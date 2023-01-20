@@ -2,7 +2,7 @@ from typing import Iterable
 
 import requests
 
-from hca_ingest.downloader.entity import Entity
+from .entity import Entity
 from .schema_url import SchemaUrl
 
 
@@ -11,9 +11,12 @@ class SchemaCollector:
         self.schema_cache = {}
 
     def get_schemas_for_entities(self, entity_list: Iterable[Entity]) -> dict:
-        schema_urls = self.get_schema_urls(entity_list)
+        schema_urls = self.get_schema_urls_for_entities(entity_list)
+        return self.get_schemas(schema_urls)
+
+    def get_schemas(self, schema_urls: set[SchemaUrl]):
         self.check_for_duplicate_schemas(schema_urls)
-        return { schema.url : self.__get_schema_from_cache(schema.url) for schema in schema_urls }
+        return {schema.url: self.__get_schema_from_cache(schema.url) for schema in schema_urls}
 
     def __get_schema_from_cache(self, url: str) -> dict:
         if url in self.schema_cache:
@@ -32,7 +35,7 @@ class SchemaCollector:
                 values.update(self.__add_schema_to_cache(values['$ref']))
 
     @staticmethod
-    def get_schema_urls(entity_list: Iterable[Entity]) -> set[SchemaUrl]:
+    def get_schema_urls_for_entities(entity_list: Iterable[Entity]) -> set[SchemaUrl]:
         return set([entity.schema for entity in entity_list])
 
     @staticmethod
