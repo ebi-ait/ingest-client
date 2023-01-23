@@ -161,8 +161,6 @@ class Flattener:
     @staticmethod
     def __get_header_from_schema(key: str, schema: dict) -> dict:
         parent_key, _, child_key = key.partition('.')
-        if 'name' in schema and parent_key != schema['name']:
-            raise ValueError('Schema Mismatch')
         return Flattener.__get_header_from_schema_properties(child_key, schema)
 
     @staticmethod

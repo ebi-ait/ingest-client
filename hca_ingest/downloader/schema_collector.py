@@ -30,9 +30,15 @@ class SchemaCollector:
         return schema
 
     def __add_linked_schema(self, schema: dict):
-        for key, values in schema.setdefault('properties', {}).items():
-            if '$ref' in values:
-                values.update(self.__get_schema_from_cache(values['$ref']))
+        for schema_element in schema.setdefault('properties', {}).values():
+            ref_url = ''
+            element_type = schema_element.get('type')
+            if element_type == 'object':
+                ref_url = schema_element.get('$ref')
+            elif element_type == 'array':
+                ref_url = schema_element.get('items', {}).get('$ref')
+            if ref_url:
+                schema_element.update(self.__get_schema_from_cache(ref_url))
 
     @staticmethod
     def get_schema_urls_for_entities(entity_list: Iterable[Entity]) -> set[SchemaUrl]:
