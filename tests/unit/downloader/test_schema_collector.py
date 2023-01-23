@@ -11,7 +11,12 @@ from .conftest import get_json_file
 
 @pytest.fixture
 def schema_cache(script_dir):
-    return get_json_file(script_dir + '/schema_cache.json')
+    return get_json_file(script_dir + '/merged_schemas.json')
+
+
+@pytest.fixture
+def schema_calls(script_dir):
+    return get_json_file(script_dir + '/original_schemas.json')
 
 
 @pytest.fixture
@@ -23,47 +28,47 @@ def schema_collector(schema_cache):
 
 @pytest.fixture
 def url():
-    return 'https://schema.humancellatlas.org/type/protocol/biomaterial_collection/9.2.0/collection_protocol'
+    return 'https://schema.humancellatlas.org/type/project/17.0.0/project'
 
 
 @pytest.fixture
-def schema_url(url):
-    return SchemaUrl(url)
+def schema_urls(url):
+    return {SchemaUrl(url)}
 
 
 @pytest.fixture
-def expected_schemas(schema_cache, url):
-    return {url: schema_cache[url]}
+def expected_schema(schema_cache, url):
+    return schema_cache[url]
 
 
-def test_collector_gets_schema_from_cache(schema_collector, schema_url, expected_schemas):
+def test_collector_gets_schema_from_cache(schema_collector, schema_urls, url, expected_schema):
     with requests_mock.Mocker() as mock:
-        schemas = schema_collector.get_schemas({schema_url})
-        assert_that(schemas).is_equal_to(expected_schemas)
+        schemas = schema_collector.get_schemas(schema_urls)
+        assert_that(schemas[url]).is_equal_to(expected_schema)
         assert_that(mock.call_count).is_zero()
 
 
-def test_collector_gets_schema_from_internet(schema_collector, schema_cache, schema_url, expected_schemas):
+def test_collector_gets_schema_from_internet(schema_collector, schema_urls, url, schema_calls, expected_schema, schema_cache):
     with requests_mock.Mocker() as mock:
         schema_collector.schema_cache.clear()
-        for url, schema in schema_cache.items():
-            mock.get(url, json=schema)
-        schemas = schema_collector.get_schemas({schema_url})
-        assert_that(schemas).is_equal_to(expected_schemas)
+        for mock_url, schema in schema_calls.items():
+            mock.get(mock_url, json=schema)
+        schemas = schema_collector.get_schemas(schema_urls)
+        assert_that(schemas[url]).is_equal_to(expected_schema)
         assert_that(schema_collector.schema_cache).is_equal_to(schema_cache)
-        assert_that(mock.call_count).is_equal_to(len(schema_cache.keys()))
+        assert_that(mock.call_count).is_equal_to(len(schema_calls.keys()))
 
 
-def test_collector_gets_schema_from_cache_and_internet(schema_collector, schema_url, expected_schemas):
+def test_collector_gets_schema_from_cache_and_internet(schema_collector, schema_urls, url, schema_calls, expected_schema):
     with requests_mock.Mocker() as mock:
-        for url, schema in expected_schemas.items():
-            schema_collector.schema_cache.pop(url)
-            mock.get(url, json=schema)
-        schemas = schema_collector.get_schemas({schema_url})
-        assert_that(schemas).is_equal_to(expected_schemas)
+        schema_collector.schema_cache.pop(url)
+        mock.get(url, json=schema_calls[url])
+        schemas = schema_collector.get_schemas(schema_urls)
+        assert_that(schemas[url]).is_equal_to(expected_schema)
         assert_that(mock.call_count).is_equal_to(1)
+        assert_that(schema_collector.schema_cache).contains_key(url)
 
-        schema_collector.get_schemas({schema_url})
+        schema_collector.get_schemas(schema_urls)
         assert_that(mock.call_count).is_equal_to(1)
 
 
