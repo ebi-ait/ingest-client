@@ -4,8 +4,11 @@ from openpyxl.worksheet.worksheet import Worksheet
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 from hca_ingest.importer.spreadsheet.ingest_worksheet import START_DATA_ROW
 
+USER_FRIENDLY_ROW_NO = 1
+DESCRIPTION_ROW_NO = 2
+GUIDELINES_ROW_NO = 3
 HEADER_ROW_NO = 4
-
+BOARDER_ROW_NO = 5
 
 class XlsDownloader:
     @staticmethod
@@ -46,9 +49,24 @@ class XlsDownloader:
 
     @staticmethod
     def __add_header_rows(worksheet, headers: dict):
+        worksheet.cell(row=BOARDER_ROW_NO, column=1, value='FILL OUT INFORMATION BELOW THIS ROW')
         for col, header in enumerate(headers.keys(), start=1):
-            worksheet.cell(row=HEADER_ROW_NO, column=col, value=header)
-            # ToDo: add other header info here
+            XlsDownloader.__add_column_header(worksheet, col, header, headers.get(header, {}))
+
+    @staticmethod
+    def __add_column_header(worksheet, column_number: int, column_key: str, header_info: dict):
+        user_friendly = header_info.get('user_friendly', '')
+        if header_info.get('required', False):
+            user_friendly = f'{user_friendly} (Required)'
+        description = header_info.get('description', '')
+        example = header_info.get('example', '')
+        guidelines = header_info.get('guidelines', '')
+        if example:
+            guidelines = f'{guidelines} For example: {example}'
+        worksheet.cell(row=USER_FRIENDLY_ROW_NO, column=column_number, value=user_friendly)
+        worksheet.cell(row=DESCRIPTION_ROW_NO, column=column_number, value=description)
+        worksheet.cell(row=GUIDELINES_ROW_NO, column=column_number, value=guidelines)
+        worksheet.cell(row=HEADER_ROW_NO, column=column_number, value=column_key)
 
     @staticmethod
     def __add_row_content(worksheet, headers: dict, row_number: int, values: dict):
