@@ -16,14 +16,9 @@ def downloader():
 
 
 @pytest.fixture
-def project_sheet_title():
-    return 'Project'
-
-
-@pytest.fixture
-def project_json(project_sheet_title):
+def project_json():
     return {
-        project_sheet_title : {
+        'Project' : {
             "headers": {
                 "project.uuid": {},
                 "project.project_core.project_short_name": {},
@@ -49,22 +44,10 @@ def project_json(project_sheet_title):
     }
 
 
-def test_given_input_has_only_1_set_of_data_successfully_creates_a_workbook(project_json, downloader, project_sheet_title):
-    # when
-    workbook: Workbook = downloader.create_workbook(project_json)
-    # expect
-    assert_that(workbook.worksheets).is_length(2)
-    assert_sheet(workbook, project_sheet_title, project_json)
-
-
 @pytest.fixture
-def contributors_sheet_title():
-    return 'Project - Contributors'
-
-@pytest.fixture
-def contributors_json(contributors_sheet_title):
+def contributors_json():
     return {
-        contributors_sheet_title: {
+        'Project - Contributors': {
             'headers': {
                 "project.contributors.name": {},
                 "project.contributors.email": {},
@@ -124,40 +107,51 @@ def contributors_json(contributors_sheet_title):
     }
 
 
-def test_given_input_has_many_rows_of_data_successfully_creates_a_workbook(downloader, contributors_json, contributors_sheet_title):
-    # when
-    workbook: Workbook = downloader.create_workbook(contributors_json)
-    # expect
-    assert_that(workbook.worksheets).is_length(2)
-    assert_sheet(workbook, contributors_sheet_title, contributors_json)
+@pytest.fixture
+def multi_line_project(script_dir):
+    return get_json_file(script_dir+ '/project-list-flattened.json')
+
+
+@pytest.fixture(params=[
+    pytest.lazy_fixture('project_json'),
+    pytest.lazy_fixture('contributors_json'),
+    pytest.lazy_fixture('multi_line_project'),
+])
+def without_schema_headers(request):
+    return request.param
 
 
 @pytest.fixture
-def project_list_flattened(script_dir):
-    return get_json_file(script_dir+ '/project-list-flattened.json')
+def with_schema_headers(script_dir):
+    return get_json_file(script_dir + '/small-project-flattened-with-schema.json')
 
-def test_given_input_has_many_rows_and_many_sheets_of_data_successfully_creates_a_workbook(downloader, project_list_flattened):
-    # given
-    sheet_titles = ['Project', 'Project - Contributors', 'Project - Publications', 'Project - Funders']
+
+@pytest.fixture(params=[
+    pytest.lazy_fixture('without_schema_headers'),
+    pytest.lazy_fixture('with_schema_headers'),
+])
+def input_json(request):
+    return request.param
+
+
+def test_xls_downloader(downloader, input_json):
     # when
-    workbook: Workbook = downloader.create_workbook(project_list_flattened)
+    workbook: Workbook = downloader.create_workbook(input_json)
     # expect
-    assert_that(workbook.worksheets).is_length(5)
-    for sheet in sheet_titles:
-        assert_sheet(workbook, sheet, project_list_flattened)
-
-
-def test_given_input_create_workbook_with_schemas_worksheet(downloader, project_list_flattened):
-    # when
-    workbook: Workbook = downloader.create_workbook(project_list_flattened)
-    # expect
-    assert_schema(project_list_flattened, workbook)
+    assert_workbook(workbook, input_json)
 
 
 def test_given_input_raises_error_when_no_schemas_worksheet(downloader):
     with pytest.raises(ValueError) as value_error:
         downloader.create_workbook({})
         assert_that(str(value_error.value)).is_equal_to("The schema urls are missing")
+
+
+def assert_workbook(workbook: Workbook, input_json: dict):
+    assert_schema(workbook, input_json)
+    sheet_names = [sheet_name for sheet_name in input_json.keys() if sheet_name != 'Schemas']
+    for sheet_name in sheet_names:
+        assert_sheet(workbook, sheet_name, input_json)
 
 
 def assert_sheet(workbook, sheet_title, input_json):
@@ -173,13 +167,18 @@ def assert_sheet(workbook, sheet_title, input_json):
     rows.pop(0)
     input_values = input_json[sheet_title]['values']
     for i, row in enumerate(rows):
+        row_input = input_values[i]
         for cell in row:
-            assert_that(input_values[i]).contains_value(cell.value)
+            column_name = header_row[cell.column - 1].value
+            if column_name in row_input:
+                assert_that(cell.value).is_equal_to(row_input[column_name])
+            else:
+                assert_that(cell.value).is_none()
 
 
-def assert_schema(project_list_flattened, workbook):
+def assert_schema(workbook, flat_json):
     assert_that(workbook.sheetnames).contains(SCHEMAS_WORKSHEET)
-    expected_schemas = project_list_flattened.get(SCHEMAS_WORKSHEET)
+    expected_schemas = flat_json.get(SCHEMAS_WORKSHEET)
     sheet: Worksheet = workbook[SCHEMAS_WORKSHEET]
     rows_iter = sheet.iter_rows(min_col=1, min_row=2, max_col=1, max_row=sheet.max_row)
     schemas = []

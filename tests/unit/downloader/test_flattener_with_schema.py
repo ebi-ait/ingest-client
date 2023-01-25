@@ -46,13 +46,16 @@ def schemas(small_project_mock, submission_entities) -> dict:
 def flattener() -> Flattener:
     return Flattener()
 
+
 @pytest.fixture
 def flattened_json(flattener, submission_entities, schemas):
     return flattener.flatten(submission_entities, schemas)
 
+
 @pytest.fixture
 def expected(script_dir):
     return get_json_file(script_dir + '/small-project-flattened-with-schema.json')
+
 
 def test_matches_expected(flattened_json, expected):
     assert_that(flattened_json).is_equal_to(expected, ignore='Schemas')
