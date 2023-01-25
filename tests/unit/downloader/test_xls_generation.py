@@ -3,8 +3,9 @@ import pytest
 from assertpy import assert_that
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
+from openpyxl.cell.cell import Cell
 
-from hca_ingest.downloader.downloader import XlsDownloader
+from hca_ingest.downloader.downloader import XlsDownloader, HEADER_ROW_NO, BORDER_ROW_NO
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 from .conftest import get_json_file
@@ -16,17 +17,17 @@ def downloader():
 
 
 @pytest.fixture
-def project_json():
+def project_json(blank_header):
     return {
         'Project' : {
             "headers": {
-                "project.uuid": {},
-                "project.project_core.project_short_name": {},
-                "project.project_core.project_title": {},
-                "project.project_core.project_description": {},
-                "project.insdc_project_accessions": {},
-                "project.geo_series_accessions": {},
-                "project.insdc_study_accessions": {}
+                "project.uuid": blank_header,
+                "project.project_core.project_short_name": blank_header,
+                "project.project_core.project_title": blank_header,
+                "project.project_core.project_description": blank_header,
+                "project.insdc_project_accessions": blank_header,
+                "project.geo_series_accessions": blank_header,
+                "project.insdc_study_accessions": blank_header
             },
             "values": [
                 {
@@ -45,21 +46,21 @@ def project_json():
 
 
 @pytest.fixture
-def contributors_json():
+def contributors_json(blank_header):
     return {
         'Project - Contributors': {
             'headers': {
-                "project.contributors.name": {},
-                "project.contributors.email": {},
-                "project.contributors.institution": {},
-                "project.contributors.laboratory": {},
-                "project.contributors.address": {},
-                "project.contributors.country": {},
-                "project.contributors.corresponding_contributor": {},
-                "project.contributors.project_role.text": {},
-                "project.contributors.project_role.ontology": {},
-                "project.contributors.project_role.ontology_label": {},
-                "project.contributors.orcid_id": {}
+                "project.contributors.name": blank_header,
+                "project.contributors.email": blank_header,
+                "project.contributors.institution": blank_header,
+                "project.contributors.laboratory": blank_header,
+                "project.contributors.address": blank_header,
+                "project.contributors.country": blank_header,
+                "project.contributors.corresponding_contributor": blank_header,
+                "project.contributors.project_role.text": blank_header,
+                "project.contributors.project_role.ontology": blank_header,
+                "project.contributors.project_role.ontology_label": blank_header,
+                "project.contributors.orcid_id": blank_header
             },
             'values': [
                 {
@@ -154,24 +155,41 @@ def assert_workbook(workbook: Workbook, input_json: dict):
         assert_sheet(workbook, sheet_name, input_json)
 
 
-def assert_sheet(workbook, sheet_title, input_json):
-    sheet: Worksheet = workbook[sheet_title]
-    assert_that(sheet.title).is_equal_to(sheet_title)
+def assert_sheet(workbook: Workbook, sheet_title: str, input_json :dict):
+    sheet = workbook[sheet_title]
+    input_sheet = input_json[sheet_title]
+    input_headers = input_sheet['headers']
+    input_values = input_sheet['values']
 
-    rows = list(sheet.rows)
-    rows = rows[3:]
-    header_row = rows.pop(0)
-    for cell in header_row:
-        assert_that(input_json[sheet_title]['headers']).contains_key(cell.value)
+    assert_headers(sheet, input_headers)
+    assert_values(sheet, input_values)
 
-    rows.pop(0)
-    input_values = input_json[sheet_title]['values']
-    for i, row in enumerate(rows):
-        row_input = input_values[i]
+
+def assert_headers(worksheet: Worksheet, input_headers: dict):
+    border_cell = worksheet[f'A{BORDER_ROW_NO}'].value
+    assert_that(border_cell).is_equal_to('FILL OUT INFORMATION BELOW THIS ROW')
+    for user_friendly, description, guide, key in worksheet.iter_cols(max_row=HEADER_ROW_NO, values_only=True):
+        assert_that(input_headers).contains_key(key)
+        input_header = input_headers[key]
+        if input_header['user_friendly']:
+            assert_that(user_friendly).starts_with(input_header['user_friendly'])
+        if input_header['required']:
+            assert_that(user_friendly).ends_with(' (Required)')
+        assert_that(description).is_equal_to(input_header['description'])
+        if input_header['guidelines']:
+            assert_that(guide).contains(input_header['guidelines'])
+        if input_header['example']:
+            assert_that(guide).contains(f'For example: {input_header["example"]}')
+
+
+def assert_values(worksheet: Worksheet, input_values: list[dict]):
+    for index, row in enumerate(worksheet.iter_rows(min_row=BORDER_ROW_NO + 1)):
+        input_value = input_values[index]
+        cell: Cell
         for cell in row:
-            column_name = header_row[cell.column - 1].value
-            if column_name in row_input:
-                assert_that(cell.value).is_equal_to(row_input[column_name])
+            column_name = worksheet[f'{cell.column_letter}{HEADER_ROW_NO}'].value
+            if column_name in input_value:
+                assert_that(cell.value).is_equal_to(input_value[column_name])
             else:
                 assert_that(cell.value).is_none()
 

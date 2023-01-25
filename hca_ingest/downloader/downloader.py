@@ -8,7 +8,7 @@ USER_FRIENDLY_ROW_NO = 1
 DESCRIPTION_ROW_NO = 2
 GUIDELINES_ROW_NO = 3
 HEADER_ROW_NO = 4
-BOARDER_ROW_NO = 5
+BORDER_ROW_NO = 5
 
 class XlsDownloader:
     @staticmethod
@@ -49,7 +49,7 @@ class XlsDownloader:
 
     @staticmethod
     def __add_header_rows(worksheet, headers: dict):
-        worksheet.cell(row=BOARDER_ROW_NO, column=1, value='FILL OUT INFORMATION BELOW THIS ROW')
+        worksheet.cell(row=BORDER_ROW_NO, column=1, value='FILL OUT INFORMATION BELOW THIS ROW')
         for col, header in enumerate(headers.keys(), start=1):
             XlsDownloader.__add_column_header(worksheet, col, header, headers.get(header, {}))
 
@@ -61,11 +61,15 @@ class XlsDownloader:
         description = header_info.get('description', '')
         example = header_info.get('example', '')
         guidelines = header_info.get('guidelines', '')
+        examples = []
+        if guidelines:
+            examples.append(guidelines)
         if example:
-            guidelines = f'{guidelines} For example: {example}'
+            examples.append(f'For example: {example}')
+
         worksheet.cell(row=USER_FRIENDLY_ROW_NO, column=column_number, value=user_friendly)
         worksheet.cell(row=DESCRIPTION_ROW_NO, column=column_number, value=description)
-        worksheet.cell(row=GUIDELINES_ROW_NO, column=column_number, value=guidelines)
+        worksheet.cell(row=GUIDELINES_ROW_NO, column=column_number, value=' '.join(examples))
         worksheet.cell(row=HEADER_ROW_NO, column=column_number, value=column_key)
 
     @staticmethod
