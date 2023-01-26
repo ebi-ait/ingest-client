@@ -1,7 +1,7 @@
 import pytest
 from assertpy import assert_that
 
-from hca_ingest.downloader.entity import Entity
+from .conftest import get_entities_from_content_list
 
 
 @pytest.fixture
@@ -140,18 +140,8 @@ def with_single_element_but_only_with_text_attr(content, expected, blank_header)
     pytest.lazy_fixture('with_single_element'),
     pytest.lazy_fixture('with_single_element_but_only_with_text_attr')
 ])
-def from_content(request, metadata_uuid):
-    return [{
-        'content': request.param,
-        'uuid': {
-            'uuid': metadata_uuid
-        }
-    }]
-
-
-@pytest.fixture
-def entity_list(from_content):
-    return Entity.from_json_list(from_content)
+def entity_list(request):
+    return get_entities_from_content_list([request.param])
 
 
 def test_flatten_ontology_module(flattener, entity_list, expected):

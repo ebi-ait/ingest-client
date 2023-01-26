@@ -3,7 +3,6 @@ import uuid
 import pytest
 from assertpy import assert_that
 
-from hca_ingest.downloader.schema_url import SchemaUrl
 from hca_ingest.downloader.entity import Entity
 
 
@@ -17,8 +16,8 @@ def concrete_type():
     return 'sequencing_protocol'
 
 @pytest.fixture
-def schema(domain_type, concrete_type):
-    return SchemaUrl(f'https://schema.humancellatlas.org/type/{domain_type}/sequencing/10.1.0/{concrete_type}')
+def schema_url(domain_type, concrete_type):
+    return f'https://schema.humancellatlas.org/type/{domain_type}/sequencing/10.1.0/{concrete_type}'
 
 
 @pytest.fixture
@@ -32,10 +31,10 @@ def metadata_id() -> str:
 
 
 @pytest.fixture
-def populated_entity(schema, metadata_uuid, metadata_id):
+def populated_entity(schema_url, metadata_uuid, metadata_id):
     return Entity({
         'content': {
-            'describedBy': schema.url
+            'describedBy': schema_url
         },
         'uuid': {'uuid': metadata_uuid},
         "_links" : {
@@ -46,10 +45,9 @@ def populated_entity(schema, metadata_uuid, metadata_id):
     })
 
 
-def test_populated_entity(populated_entity, metadata_uuid, metadata_id, schema):
-    assert_that(populated_entity.uuid).is_equal_to(metadata_uuid)
-    assert_that(populated_entity.id).is_equal_to(metadata_id)
-    assert_that(populated_entity.schema).is_equal_to(schema)
+def test_populated_entity(populated_entity, metadata_uuid, metadata_id, schema_url, domain_type, concrete_type):
+    assert_that(populated_entity).has_uuid(metadata_uuid).has_id(metadata_id)
+    assert_that(populated_entity.schema).has_url(schema_url).has_domain_type(domain_type).has_concrete_type(concrete_type)
 
 
 @pytest.fixture
@@ -94,24 +92,12 @@ def content_missing():
     pytest.lazy_fixture('content_none'),
     pytest.lazy_fixture('content_missing')
 ])
-def missing_schema_entity(request):
+def entity_missing_schema(request) -> Entity:
     return Entity(request.param)
 
 
-@pytest.fixture
-def missing_schema(missing_schema_entity: Entity) -> SchemaUrl:
-    return missing_schema_entity.schema
-
-
-@pytest.fixture
-def blank_schema() -> SchemaUrl:
-    return SchemaUrl()
-
-
-def test_missing_schema(missing_schema: SchemaUrl, blank_schema: SchemaUrl):
-    assert_that(missing_schema.url).is_equal_to(blank_schema.url)
-    assert_that(missing_schema.concrete_type).is_equal_to(blank_schema.concrete_type)
-    assert_that(missing_schema.domain_type).is_equal_to(blank_schema.domain_type)
+def test_entity_missing_schema(entity_missing_schema: Entity):
+    assert_that(entity_missing_schema.schema).has_url('').has_domain_type('').has_concrete_type('')
 
 
 @pytest.fixture(params=[
@@ -119,12 +105,12 @@ def test_missing_schema(missing_schema: SchemaUrl, blank_schema: SchemaUrl):
     pytest.lazy_fixture('content_none'),
     pytest.lazy_fixture('content_missing')
 ])
-def missing_content_entity(request):
+def entity_missing_content(request) -> Entity:
     return Entity(request.param)
 
 
-def test_missing_content(missing_content_entity):
-    assert_that(missing_content_entity.content).is_equal_to({})
+def test_entity_missing_content(entity_missing_content: Entity):
+    assert_that(entity_missing_content).has_content({})
 
 
 @pytest.fixture
@@ -166,12 +152,12 @@ def uuid_missing():
     pytest.lazy_fixture('uuid_none'),
     pytest.lazy_fixture('uuid_missing')
 ])
-def missing_uuid_entity(request):
+def entity_missing_uuid(request) -> Entity:
     return Entity(request.param)
 
 
-def test_missing_uuid(missing_uuid_entity):
-    assert_that(missing_uuid_entity.uuid).is_equal_to('')
+def test_entity_missing_uuid(entity_missing_uuid: Entity):
+    assert_that(entity_missing_uuid).has_uuid('')
 
 
 @pytest.fixture
@@ -254,9 +240,9 @@ def links_missing():
     pytest.lazy_fixture('links_none'),
     pytest.lazy_fixture('links_missing')
 ])
-def missing_link_entity(request):
+def entity_missing_link(request) -> Entity:
     return Entity(request.param)
 
 
-def test_missing_link(missing_link_entity):
-    assert_that(missing_link_entity.id).is_equal_to('')
+def test_entity_missing_link(entity_missing_link: Entity):
+    assert_that(entity_missing_link).has_id('')

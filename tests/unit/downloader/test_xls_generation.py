@@ -177,9 +177,9 @@ def assert_headers(worksheet: Worksheet, input_headers: dict):
             assert_that(user_friendly).ends_with(' (Required)')
         assert_that(description).is_equal_to(input_header['description'])
         if input_header['guidelines']:
-            assert_that(guide).contains(input_header['guidelines'])
+            assert_that(guide).starts_with(input_header['guidelines'])
         if input_header['example']:
-            assert_that(guide).contains(f'For example: {input_header["example"]}')
+            assert_that(guide).ends_with(f'For example: {input_header["example"]}')
 
 
 def assert_values(worksheet: Worksheet, input_values: list[dict]):

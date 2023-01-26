@@ -59,15 +59,15 @@ def expected(script_dir):
 
 def test_matches_expected(flattened_json, expected):
     assert_that(flattened_json).is_equal_to(expected, ignore='Schemas')
-    assert_that(set(flattened_json.get('Schemas', []))).is_equal_to(set(expected.get('Schemas', [])))
+    assert_that(set(flattened_json['Schemas'])).is_equal_to(set(expected['Schemas']))
 
 
 def test_headers_exist_for_all_values(flattened_json):
     for sheet_name, sheet in flattened_json.items():
         if sheet_name != 'Schemas':
             columns = set()
-            for row in sheet.get('values', []):
+            for row in sheet['values']:
                 if isinstance(row, dict):
                     columns.update(row.keys())
             for column in columns:
-                assert column in flattened_json.get(sheet_name, {}).get('headers', {})
+                assert_that(flattened_json[sheet_name]['headers']).contains(column)

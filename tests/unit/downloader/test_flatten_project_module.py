@@ -1,7 +1,7 @@
 import pytest
 from assertpy import assert_that
 
-from hca_ingest.downloader.entity import Entity
+from .conftest import get_entities_from_content_list
 
 
 @pytest.fixture
@@ -56,23 +56,8 @@ def expected_project(expected, blank_header):
 
 
 @pytest.fixture
-def project_metadata(project_content, metadata_uuid):
-    return {
-        'content': project_content,
-        'uuid': {
-            'uuid': metadata_uuid
-        }
-    }
-
-
-@pytest.fixture
-def project_entity(project_metadata):
-    return Entity(project_metadata)
-
-
-@pytest.fixture
-def entity_list(project_entity):
-    return [project_entity]
+def entity_list(project_content):
+    return get_entities_from_content_list([project_content])
 
 
 def test_flatten_project_modules(flattener, entity_list, expected_project):

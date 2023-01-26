@@ -55,7 +55,7 @@ def test_collector_gets_schema_from_internet(schema_collector, schema_urls, url,
             mock.get(mock_url, json=schema)
         schemas = schema_collector.get_schemas(schema_urls)
         assert_that(schemas[url]).is_equal_to(expected_schema)
-        assert_that(schema_collector.schema_cache).is_equal_to(schema_cache)
+        assert_that(schema_collector).has_schema_cache(schema_cache)
         assert_that(mock.call_count).is_equal_to(len(schema_calls.keys()))
 
 

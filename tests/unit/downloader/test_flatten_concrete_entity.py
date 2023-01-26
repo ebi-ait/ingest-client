@@ -31,4 +31,4 @@ def test_flatten_concrete_entity(flattener, entity_list, expected):
     actual = flattener.flatten(entity_list)
     # then
     assert_that(actual).is_equal_to(expected, ignore='Schemas')
-    assert_that(set(actual.get('Schemas', []))).is_equal_to(set(expected.get('Schemas', [])))
+    assert_that(set(actual['Schemas'])).is_equal_to(set(expected['Schemas']))
