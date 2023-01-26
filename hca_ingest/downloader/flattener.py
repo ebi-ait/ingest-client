@@ -5,7 +5,7 @@ from typing import Iterable
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 from .schema_collector import SchemaCollector
 from .entity import Entity
-
+from .schema_url import SchemaUrl
 
 MODULE_WORKSHEET_NAME_CONNECTOR = ' - '
 SCALAR_LIST_DELIMITER = '||'
@@ -18,7 +18,8 @@ class Flattener:
     def __init__(self):
         self.workbook = {}
         self.schemas = {}
-        self.current_schema_url = ''
+        self.concrete_schema = {}
+        self.current_schema = SchemaUrl('')
 
     def flatten(self, entity_list: list[Entity], schemas: dict = None):
         self.__flatten_init(schemas)
@@ -31,7 +32,8 @@ class Flattener:
             schemas = {}
         self.workbook = {}
         self.schemas = schemas
-        self.current_schema_url = ''
+        self.concrete_schema = {SchemaUrl(schema_url).concrete_type: schema for schema_url, schema in self.schemas.items()}
+        self.current_schema = SchemaUrl('')
 
     def __flatten_entities(self, entity_list: list[Entity]):
         for entity in entity_list:
@@ -48,7 +50,7 @@ class Flattener:
         worksheet_name = entity.schema.concrete_type
         if not worksheet_name:
             raise ValueError('There should be a worksheet name')
-        self.current_schema_url = entity.schema.url
+        self.current_schema = entity.schema
         row = {f'{worksheet_name}.uuid': entity.uuid}
         row.update(self.__flatten_any(entity.content, key=worksheet_name))
 
@@ -63,7 +65,7 @@ class Flattener:
         worksheet = self.workbook.setdefault(user_friendly_worksheet_name, {})
         worksheet.setdefault('values', []).append(row)
         headers = worksheet.setdefault('headers', {})
-        self.__update_headers(row, headers, self.schemas.get(self.current_schema_url, {}))
+        self.__update_headers(row, headers)
 
     def __flatten_any(self, content: any, key: str = '') -> dict:
         if isinstance(content, dict):
@@ -115,6 +117,20 @@ class Flattener:
         flat_module = self.__flatten_any(module, key=worksheet_name)
         self.__add_row_to_worksheet(flat_module, worksheet_name)
 
+    def __update_headers(self, row: dict, headers: dict):
+        for key in row.keys():
+            if key not in headers:
+                headers[key] = self.__get_header_for_key(key)
+        return headers
+
+    def __get_header_for_key(self, key):
+        concrete_type, _, _ = key.partition('.')
+        schema = self.concrete_schema.get(concrete_type, {})
+        header = self.__get_header_from_schema(key, schema)
+        if concrete_type != self.current_schema.concrete_type:
+            header['required'] = False
+        return header
+
     @staticmethod
     def __get_link_columns(entity: Entity) -> dict:
         link_columns = {}
@@ -150,13 +166,6 @@ class Flattener:
                 }
             })
         return concrete_ids
-
-    @staticmethod
-    def __update_headers(row: dict, headers: dict, schema: dict):
-        for key in row.keys():
-            if key not in headers:
-                headers[key] = Flattener.__get_header_from_schema(key, schema)
-        return headers
 
     @staticmethod
     def __get_header_from_schema(key: str, schema: dict) -> dict:

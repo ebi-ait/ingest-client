@@ -681,17 +681,17 @@
       },
       "process.process_core.process_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the process.",
         "example": "",
         "guidelines": "",
-        "user_friendly": ""
+        "user_friendly": "Process ID"
       },
       "collection_protocol.protocol_core.protocol_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the protocol.",
         "example": "",
-        "guidelines": "",
-        "user_friendly": ""
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
       },
       "collection_protocol.uuid": {
         "required": false,
@@ -701,7 +701,7 @@
         "user_friendly": ""
       },
       "donor_organism.biomaterial_core.biomaterial_id": {
-        "required": true,
+        "required": false,
         "description": "A unique ID for the biomaterial.",
         "example": "",
         "guidelines": "",
@@ -886,24 +886,24 @@
       },
       "process.insdc_experiment.insdc_experiment_accession": {
         "required": false,
-        "description": "",
-        "example": "",
-        "guidelines": "",
-        "user_friendly": ""
+        "description": "An International Nucleotide Sequence Database Collaboration (INSDC) experiment accession.",
+        "example": "SRX0000000",
+        "guidelines": "Enter accession if experiment has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with DRX, SRX, or ERX, respecitvely.",
+        "user_friendly": "INSDC experiment accession"
       },
       "process.process_core.process_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the process.",
         "example": "",
         "guidelines": "",
-        "user_friendly": ""
+        "user_friendly": "Process ID"
       },
       "enrichment_protocol.protocol_core.protocol_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the protocol.",
         "example": "",
-        "guidelines": "",
-        "user_friendly": ""
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
       },
       "enrichment_protocol.uuid": {
         "required": false,
@@ -913,7 +913,7 @@
         "user_friendly": ""
       },
       "specimen_from_organism.biomaterial_core.biomaterial_id": {
-        "required": true,
+        "required": false,
         "description": "A unique ID for the biomaterial.",
         "example": "",
         "guidelines": "",
@@ -1541,24 +1541,24 @@
       },
       "process.insdc_experiment.insdc_experiment_accession": {
         "required": false,
-        "description": "",
-        "example": "",
-        "guidelines": "",
-        "user_friendly": ""
+        "description": "An International Nucleotide Sequence Database Collaboration (INSDC) experiment accession.",
+        "example": "SRX0000000",
+        "guidelines": "Enter accession if experiment has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with DRX, SRX, or ERX, respecitvely.",
+        "user_friendly": "INSDC experiment accession"
       },
       "process.process_core.process_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the process.",
         "example": "",
         "guidelines": "",
-        "user_friendly": ""
+        "user_friendly": "Process ID"
       },
       "library_preparation_protocol.protocol_core.protocol_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the protocol.",
         "example": "",
-        "guidelines": "",
-        "user_friendly": ""
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
       },
       "library_preparation_protocol.uuid": {
         "required": false,
@@ -1569,10 +1569,10 @@
       },
       "sequencing_protocol.protocol_core.protocol_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the protocol.",
         "example": "",
-        "guidelines": "",
-        "user_friendly": ""
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
       },
       "sequencing_protocol.uuid": {
         "required": false,
@@ -1583,10 +1583,10 @@
       },
       "cell_suspension.biomaterial_core.biomaterial_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the biomaterial.",
         "example": "",
         "guidelines": "",
-        "user_friendly": ""
+        "user_friendly": "Biomaterial ID"
       },
       "cell_suspension.uuid": {
         "required": false,
@@ -1682,17 +1682,17 @@
       },
       "process.process_core.process_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the process.",
         "example": "",
         "guidelines": "",
-        "user_friendly": ""
+        "user_friendly": "Process ID"
       },
       "analysis_protocol.protocol_core.protocol_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the protocol.",
         "example": "",
-        "guidelines": "",
-        "user_friendly": ""
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
       },
       "analysis_protocol.uuid": {
         "required": false,
@@ -1703,10 +1703,10 @@
       },
       "cell_suspension.biomaterial_core.biomaterial_id": {
         "required": false,
-        "description": "",
+        "description": "A unique ID for the biomaterial.",
         "example": "",
         "guidelines": "",
-        "user_friendly": ""
+        "user_friendly": "Biomaterial ID"
       },
       "cell_suspension.uuid": {
         "required": false,
