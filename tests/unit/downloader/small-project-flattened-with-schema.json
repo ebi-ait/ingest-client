@@ -1,0 +1,1734 @@
+{
+  "Project - Contributors": {
+    "values": [
+      {
+        "project.contributors.name": "Ramon,,Massoni-Badosa",
+        "project.contributors.institution": "CNAG-CRG, Centre for Genomic Regulation (CRG)",
+        "project.contributors.laboratory": "Barcelona Institute of Science and Technology (BIST)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Giovanni,,Iacono",
+        "project.contributors.institution": "CNAG-CRG, Centre for Genomic Regulation (CRG)",
+        "project.contributors.laboratory": "Barcelona Institute of Science and Technology (BIST)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Catia,,Moutinho",
+        "project.contributors.institution": "CNAG-CRG, Centre for Genomic Regulation (CRG)",
+        "project.contributors.laboratory": "Barcelona Institute of Science and Technology (BIST)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Marta,,Kulis",
+        "project.contributors.institution": "Institute of Biomedical Research August Pi i Sunyer (IDIBAPS)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "N\u00faria,,Palau",
+        "project.contributors.institution": "Vall d'Hebron Research Institute",
+        "project.contributors.laboratory": "Rheumatology Research Group",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Domenica,,Marchese",
+        "project.contributors.institution": "CNAG-CRG, Centre for Genomic Regulation (CRG)",
+        "project.contributors.laboratory": "Barcelona Institute of Science and Technology (BIST)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Javier,,Rodr\u00edguez-Ubreva",
+        "project.contributors.institution": "Josep Carreras Research Institute (IJC)",
+        "project.contributors.laboratory": "Epigenetics and Immune Disease Group",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Esteban,,Ballestar",
+        "project.contributors.institution": "Hospital Clinic of Barcelona",
+        "project.contributors.laboratory": "Hematopathology Unit",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Gustavo,,Rodriguez-Esteban",
+        "project.contributors.email": "gustavo.rodriguez@cnag.crg.eu",
+        "project.contributors.institution": "CNAG-CRG, Centre for Genomic Regulation (CRG)",
+        "project.contributors.laboratory": "Barcelona Institute of Science and Technology (BIST)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "True"
+      },
+      {
+        "project.contributors.name": "Sara,,Marsal",
+        "project.contributors.institution": "Vall d'Hebron Research Institute",
+        "project.contributors.laboratory": "Rheumatology Research Group",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Marta,,Aymerich",
+        "project.contributors.institution": "Hospital Clinic of Barcelona",
+        "project.contributors.laboratory": "Hematopathology Unit",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Dolors,,Colomer",
+        "project.contributors.institution": "Institute of Biomedical Research August Pi i Sunyer (IDIBAPS)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Elias,,Campo",
+        "project.contributors.institution": "Institute of Biomedical Research August Pi i Sunyer (IDIBAPS)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Antonio,,Juli\u00e0",
+        "project.contributors.institution": "Vall d'Hebron Research Institute",
+        "project.contributors.laboratory": "Rheumatology Research Group",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Jos\u00e9 Ignacio,,Mart\u00edn-Subero",
+        "project.contributors.institution": "Institute of Biomedical Research August Pi i Sunyer (IDIBAPS)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "False"
+      },
+      {
+        "project.contributors.name": "Holger,,Heyn",
+        "project.contributors.email": "holger.heyn@cnag.crg.eu",
+        "project.contributors.institution": "CNAG-CRG, Centre for Genomic Regulation (CRG)",
+        "project.contributors.laboratory": "Barcelona Institute of Science and Technology (BIST)",
+        "project.contributors.address": "Barcelona",
+        "project.contributors.country": "Spain",
+        "project.contributors.corresponding_contributor": "True",
+        "project.contributors.orcid_id": "0000-0002-3276-1889"
+      },
+      {
+        "project.contributors.name": "Irene,,P\u00e9rez-D\u00edez",
+        "project.contributors.institution": "EMBL-EBI",
+        "project.contributors.address": "Wellcome Genome Campus, Hinxton",
+        "project.contributors.country": "UK",
+        "project.contributors.corresponding_contributor": "False",
+        "project.contributors.project_role.text": "data curator",
+        "project.contributors.project_role.ontology": "EFO:0009737",
+        "project.contributors.project_role.ontology_label": "data curator"
+      }
+    ],
+    "headers": {
+      "project.contributors.name": {
+        "required": true,
+        "description": "Name of individual who has contributed to the project.",
+        "example": "John,D,Doe; Jane,,Smith",
+        "guidelines": "Enter in the format: first name,middle name or initial,last name.",
+        "user_friendly": "Contact name"
+      },
+      "project.contributors.institution": {
+        "required": true,
+        "description": "Name of primary institute where the individual works.",
+        "example": "EMBL-EBI; University of Washington",
+        "guidelines": "",
+        "user_friendly": "Institute"
+      },
+      "project.contributors.laboratory": {
+        "required": false,
+        "description": "Name of lab or department within the institute where the individual works.",
+        "example": "Division of Vaccine Discovery; Department of Biology",
+        "guidelines": "",
+        "user_friendly": "Laboratory/Department"
+      },
+      "project.contributors.address": {
+        "required": false,
+        "description": "Street address where the individual works.",
+        "example": "0000 Main Street, Nowheretown, MA, 12091",
+        "guidelines": "Include street name and number, city, country division, and postal code.",
+        "user_friendly": "Street address"
+      },
+      "project.contributors.country": {
+        "required": false,
+        "description": "Country where the individual works.",
+        "example": "USA",
+        "guidelines": "",
+        "user_friendly": "Country"
+      },
+      "project.contributors.corresponding_contributor": {
+        "required": false,
+        "description": "Whether the individual is a primary point of contact for the project.",
+        "example": "Should be one of: yes, or no.",
+        "guidelines": "",
+        "user_friendly": "Corresponding contributor"
+      },
+      "project.contributors.email": {
+        "required": false,
+        "description": "Email address for the individual.",
+        "example": "dummy@email.com",
+        "guidelines": "",
+        "user_friendly": "Email address"
+      },
+      "project.contributors.orcid_id": {
+        "required": false,
+        "description": "The individual's ORCID ID linked to previous work.",
+        "example": "0000-1111-2222-3333",
+        "guidelines": "",
+        "user_friendly": "ORCID ID"
+      },
+      "project.contributors.project_role.text": {
+        "required": true,
+        "description": "The primary role of the contributor in the project.",
+        "example": "principal investigator; experimental scientist",
+        "guidelines": "",
+        "user_friendly": "Contributor role"
+      },
+      "project.contributors.project_role.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "EFO:0009736; EFO:0009741",
+        "guidelines": "",
+        "user_friendly": "Contributor role ontology ID"
+      },
+      "project.contributors.project_role.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "principal investigator; experimental scientist",
+        "guidelines": "",
+        "user_friendly": "Contributor role ontology label"
+      }
+    }
+  },
+  "Project - Publications": {
+    "values": [
+      {
+        "project.publications.authors": "Massoni-Badosa R||Iacono G||Moutinho C||Kulis M||Palau N||Marchese D||Rodr\u00edguez-Ubreva J||Ballestar E||Rodriguez-Esteban G||Marsal S||Aymerich M||Colomer D||Campo E||Juli\u00e0 A||Mart\u00edn-Subero JI||Heyn H",
+        "project.publications.title": "Sampling time-dependent artifacts in single-cell genomics studies.",
+        "project.publications.doi": "10.1186/s13059-020-02032-0",
+        "project.publications.pmid": "32393363",
+        "project.publications.url": "https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02032-0",
+        "project.publications.official_hca_publication": "True"
+      }
+    ],
+    "headers": {
+      "project.publications.authors": {
+        "required": true,
+        "description": "A list of authors associated with the publication.",
+        "example": "Doe JD",
+        "guidelines": "List each author in 'surname initials' format.",
+        "user_friendly": "Authors"
+      },
+      "project.publications.title": {
+        "required": true,
+        "description": "The title of the publication.",
+        "example": "Study of single cells in the human body.",
+        "guidelines": "",
+        "user_friendly": "Publication title"
+      },
+      "project.publications.doi": {
+        "required": false,
+        "description": "The publication digital object identifier (doi) of the publication.",
+        "example": "10.1016/j.cell.2016.07.054",
+        "guidelines": "",
+        "user_friendly": "Publication DOI"
+      },
+      "project.publications.pmid": {
+        "required": false,
+        "description": "The PubMed ID of the publication.",
+        "example": "27565351",
+        "guidelines": "",
+        "user_friendly": "Publication PMID"
+      },
+      "project.publications.url": {
+        "required": false,
+        "description": "A URL for the publication.",
+        "example": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5667944/",
+        "guidelines": "",
+        "user_friendly": "Publication URL"
+      },
+      "project.publications.official_hca_publication": {
+        "required": true,
+        "description": "Has the publication been accepted as an official HCA publication, according to the process described in https://www.humancellatlas.org/publications/ ?",
+        "example": "yes; no",
+        "guidelines": "Should be one of: yes, or no.",
+        "user_friendly": "Official HCA Publication"
+      }
+    }
+  },
+  "Project - Funders": {
+    "values": [
+      {
+        "project.funders.grant_title": "Miguel Servet",
+        "project.funders.grant_id": "CP14/00229",
+        "project.funders.organization": "Spanish Institute of Health Carlos III (ISCIII)"
+      },
+      {
+        "project.funders.grant_id": "SAF2017-89109-P",
+        "project.funders.organization": "Ministerio de Ciencia, Innovacion y Universidades"
+      },
+      {
+        "project.funders.grant_id": "IPT-010000-2010-36",
+        "project.funders.organization": "Spanish Ministry of Economy and Competitiviness"
+      },
+      {
+        "project.funders.grant_id": "2017-SGR-736",
+        "project.funders.organization": "Generalitat de Catalunya Suport Grups de Recerca AGAUR"
+      },
+      {
+        "project.funders.grant_id": "2017-SGR-1142",
+        "project.funders.organization": "Generalitat de Catalunya Suport Grups de Recerca AGAUR"
+      },
+      {
+        "project.funders.grant_id": "SEP-210574908",
+        "project.funders.organization": "European Commission"
+      },
+      {
+        "project.funders.grant_title": "H2020",
+        "project.funders.grant_id": "810287",
+        "project.funders.organization": "European Research Council (ERC)"
+      }
+    ],
+    "headers": {
+      "project.funders.grant_title": {
+        "required": false,
+        "description": "The name of the grant funding the project.",
+        "example": "Study of single cells in the human body.",
+        "guidelines": "Enter a title of approximately 30 words.",
+        "user_friendly": "Grant title"
+      },
+      "project.funders.grant_id": {
+        "required": true,
+        "description": "The unique grant identifier or reference.",
+        "example": "BB/P0000001/1",
+        "guidelines": "",
+        "user_friendly": "Grant ID"
+      },
+      "project.funders.organization": {
+        "required": true,
+        "description": "The name of the funding organization.",
+        "example": "Biotechnology and Biological Sciences Research Council (BBSRC); California Institute of Regenerative Medicine (CIRM)",
+        "guidelines": "",
+        "user_friendly": "Funding organization"
+      }
+    }
+  },
+  "Project": {
+    "values": [
+      {
+        "project.uuid": "c6967017-6acf-4fdc-8cb7-a9fdca47b10b",
+        "project.project_core.project_short_name": "Small_Realistic_Data_Project",
+        "project.project_core.project_title": "Small Realistic Data Project",
+        "project.project_core.project_description": "Robust protocols and automation now enable large-scale single-cell RNA and ATAC sequencing experiments and their application on biobank and clinical cohorts. However, technical biases introduced during sample acquisition can hinder solid, reproducible results and a systematic benchmarking is required before entering large-scale data production. Here, we report the existence and extent of gene expression and chromatin accessibility artifacts introduced during sampling and identify experimental and computational solutions for their prevention. Overall design: We designed benchmarking experiments to systematically test the effect of varying processing times on single-cell transcriptome and epigenome profiles from healthy and diseased donors, while controlling for technical variability (e.g. batch effects). We isolated peripheral blood mononuclear cells from healthy donors (PBMC) and from patients affected with chronic lymphocytic leukemia (CLL), the most common adult leukemia in the Western world. Samples were either preserved immediately (0 hours) or after 2, 4, 6, 8, 24 and 48 hours; simulating common scenarios in biobank and clinical routines. Single-cell 3`-transcript counting, full-length transcriptome and scATAC-seq were performed to monitor gene expression, RNA integrity and open chromatin variance across preservation time points.",
+        "project.supplementary_links": "https://github.com/massonix/sampling_artifacts",
+        "project.insdc_project_accessions": "SRP200105",
+        "project.geo_series_accessions": "GSE132065",
+        "project.insdc_study_accessions": "PRJNA545828",
+        "project.estimated_cell_count": "147210"
+      }
+    ],
+    "headers": {
+      "project.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "project.project_core.project_short_name": {
+        "required": true,
+        "description": "A short name for the project.",
+        "example": "CoolOrganProject.",
+        "guidelines": "Project label is a short label by which you refer to the project. It should have no spaces and should be fewer than 50 characters.",
+        "user_friendly": "Project label"
+      },
+      "project.project_core.project_title": {
+        "required": true,
+        "description": "An official title for the project.",
+        "example": "Study of single cells in the human body.",
+        "guidelines": "Project title should be fewer than 30 words, such as a title of a grant proposal or a publication.",
+        "user_friendly": "Project title"
+      },
+      "project.project_core.project_description": {
+        "required": true,
+        "description": "A longer description of the project which includes research goals and experimental approach.",
+        "example": "",
+        "guidelines": "Project description should be fewer than 300 words, such as an abstract from a grant application or publication.",
+        "user_friendly": "Project description"
+      },
+      "project.supplementary_links": {
+        "required": false,
+        "description": "External link(s) pointing to code, supplementary data files, or analysis files associated with the project which will not be uploaded.",
+        "example": "https://github.com/czbiohub/tabula-muris; http://celltag.org/",
+        "guidelines": "",
+        "user_friendly": "Supplementary link(s)"
+      },
+      "project.insdc_project_accessions": {
+        "required": false,
+        "description": "An International Nucleotide Sequence Database Collaboration (INSDC) project accession.",
+        "example": "SRP000000",
+        "guidelines": "Enter accession if project has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with DRP, SRP, or ERP, respectively.",
+        "user_friendly": "INSDC project accession"
+      },
+      "project.geo_series_accessions": {
+        "required": false,
+        "description": "A Gene Expression Omnibus (GEO) series accession.",
+        "example": "GSE00000",
+        "guidelines": "Enter accession if project has been archived. Accession must start with GSE.",
+        "user_friendly": "GEO series accession"
+      },
+      "project.insdc_study_accessions": {
+        "required": false,
+        "description": "An International Nucleotide Sequence Database Collaboration (INSDC) study accession.",
+        "example": "PRJNA000000",
+        "guidelines": "Enter accession if study has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with PRJD, PRJN, or PRJE, respectively.",
+        "user_friendly": "INSDC study accession"
+      },
+      "project.estimated_cell_count": {
+        "required": false,
+        "description": "An estimated number of cells in this project",
+        "example": "10000; 2100000",
+        "guidelines": "",
+        "user_friendly": "Estimated cell count"
+      }
+    }
+  },
+  "Donor organism": {
+    "values": [
+      {
+        "donor_organism.uuid": "8209fba6-45d3-45b2-95d4-338ea8b61e24",
+        "donor_organism.biomaterial_core.biomaterial_id": "donor_1",
+        "donor_organism.biomaterial_core.biomaterial_description": "female PBMC donor",
+        "donor_organism.biomaterial_core.ncbi_taxon_id": "9606",
+        "donor_organism.genus_species.text": "Homo sapiens",
+        "donor_organism.genus_species.ontology": "NCBITaxon:9606",
+        "donor_organism.genus_species.ontology_label": "Homo sapiens",
+        "donor_organism.sex": "female",
+        "donor_organism.is_living": "yes",
+        "donor_organism.development_stage.text": "human adult stage",
+        "donor_organism.development_stage.ontology": "HsapDv:0000087",
+        "donor_organism.development_stage.ontology_label": "human adult stage",
+        "donor_organism.diseases.text": "normal",
+        "donor_organism.diseases.ontology": "PATO:0000461",
+        "donor_organism.diseases.ontology_label": "normal"
+      }
+    ],
+    "headers": {
+      "donor_organism.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "donor_organism.biomaterial_core.biomaterial_id": {
+        "required": true,
+        "description": "A unique ID for the biomaterial.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial ID"
+      },
+      "donor_organism.biomaterial_core.biomaterial_description": {
+        "required": false,
+        "description": "A general description of the biomaterial.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial description"
+      },
+      "donor_organism.biomaterial_core.ncbi_taxon_id": {
+        "required": true,
+        "description": "A taxonomy ID (taxonID) from NCBI.",
+        "example": 9606,
+        "guidelines": "",
+        "user_friendly": "NCBI taxon ID"
+      },
+      "donor_organism.genus_species.text": {
+        "required": true,
+        "description": "The name of the species to which the organism belongs.",
+        "example": "Homo sapiens; Mus musculus",
+        "guidelines": "",
+        "user_friendly": "Species"
+      },
+      "donor_organism.genus_species.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "NCBITaxon:9606; NCBITaxon:10090",
+        "guidelines": "",
+        "user_friendly": "Species ontology ID"
+      },
+      "donor_organism.genus_species.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "Homo sapiens; Mus musculus",
+        "guidelines": "",
+        "user_friendly": "Species ontology label"
+      },
+      "donor_organism.sex": {
+        "required": true,
+        "description": "The biological sex of the organism.",
+        "example": "Should be one of: male, female, mixed, or unknown.",
+        "guidelines": "",
+        "user_friendly": "Biological sex"
+      },
+      "donor_organism.is_living": {
+        "required": true,
+        "description": "Whether organism was alive at time of biomaterial collection.",
+        "example": "Should be one of: yes, no, not applicable, or unknown.",
+        "guidelines": "Enter yes if organism was alive at time of biomaterial collection, no if organism was dead, unknown if not known, and not applicable for ex vivo embryo.",
+        "user_friendly": "Alive at collection"
+      },
+      "donor_organism.development_stage.text": {
+        "required": true,
+        "description": "The name of the development stage of the organism.",
+        "example": "human adult stage; Theiler stage 28",
+        "guidelines": "",
+        "user_friendly": "Development stage"
+      },
+      "donor_organism.development_stage.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "HsapDv:0000087; EFO:0002588",
+        "guidelines": "",
+        "user_friendly": "Development stage ontology ID"
+      },
+      "donor_organism.development_stage.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "human adult stage; Theiler stage 28",
+        "guidelines": "",
+        "user_friendly": "Development stage ontology label"
+      },
+      "donor_organism.diseases.text": {
+        "required": true,
+        "description": "The text for the term as the user provides it.",
+        "example": "type 2 diabetes mellitus; normal",
+        "guidelines": "",
+        "user_friendly": "Disease"
+      },
+      "donor_organism.diseases.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "MONDO:0005148; PATO:0000461; HP:0001397",
+        "guidelines": "",
+        "user_friendly": "Disease ontology ID"
+      },
+      "donor_organism.diseases.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "type 2 diabetes mellitus; normal",
+        "guidelines": "",
+        "user_friendly": "Disease ontology label"
+      }
+    }
+  },
+  "Specimen from organism": {
+    "values": [
+      {
+        "specimen_from_organism.uuid": "316666c1-1a10-46a2-a139-d905df581633",
+        "specimen_from_organism.biomaterial_core.biomaterial_id": "blood_1",
+        "specimen_from_organism.biomaterial_core.ncbi_taxon_id": "9606",
+        "specimen_from_organism.genus_species.text": "Homo sapiens",
+        "specimen_from_organism.genus_species.ontology": "NCBITaxon:9606",
+        "specimen_from_organism.genus_species.ontology_label": "Homo sapiens",
+        "specimen_from_organism.organ.text": "blood",
+        "specimen_from_organism.organ.ontology": "UBERON:0000178",
+        "specimen_from_organism.organ.ontology_label": "blood",
+        "specimen_from_organism.organ_parts.text": "venous blood",
+        "specimen_from_organism.organ_parts.ontology": "UBERON:0013756",
+        "specimen_from_organism.organ_parts.ontology_label": "venous blood",
+        "specimen_from_organism.diseases.text": "normal",
+        "specimen_from_organism.diseases.ontology": "PATO:0000461",
+        "specimen_from_organism.diseases.ontology_label": "normal",
+        "process.uuid": "30ca8912-6fcf-4bd6-a69d-989093b437de",
+        "process.process_core.process_id": "process_id_1",
+        "collection_protocol.protocol_core.protocol_id": "collection_protocol_PBMC_cryopreservation",
+        "collection_protocol.uuid": "fecc27e0-f0e7-431e-a657-8bbae9a3bf6b",
+        "donor_organism.biomaterial_core.biomaterial_id": "donor_1",
+        "donor_organism.uuid": "8209fba6-45d3-45b2-95d4-338ea8b61e24"
+      }
+    ],
+    "headers": {
+      "specimen_from_organism.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "specimen_from_organism.biomaterial_core.biomaterial_id": {
+        "required": true,
+        "description": "A unique ID for the biomaterial.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial ID"
+      },
+      "specimen_from_organism.biomaterial_core.ncbi_taxon_id": {
+        "required": true,
+        "description": "A taxonomy ID (taxonID) from NCBI.",
+        "example": 9606,
+        "guidelines": "",
+        "user_friendly": "NCBI taxon ID"
+      },
+      "specimen_from_organism.genus_species.text": {
+        "required": true,
+        "description": "The name of the species to which the organism belongs.",
+        "example": "Homo sapiens; Mus musculus",
+        "guidelines": "",
+        "user_friendly": "Species"
+      },
+      "specimen_from_organism.genus_species.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "NCBITaxon:9606; NCBITaxon:10090",
+        "guidelines": "",
+        "user_friendly": "Species ontology ID"
+      },
+      "specimen_from_organism.genus_species.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "Homo sapiens; Mus musculus",
+        "guidelines": "",
+        "user_friendly": "Species ontology label"
+      },
+      "specimen_from_organism.organ.text": {
+        "required": true,
+        "description": "The text for the term as the user provides it.",
+        "example": "heart; immune system",
+        "guidelines": "",
+        "user_friendly": "Organ"
+      },
+      "specimen_from_organism.organ.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "UBERON:0000948; UBERON:0002405",
+        "guidelines": "",
+        "user_friendly": "Organ ontology ID"
+      },
+      "specimen_from_organism.organ.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "heart; immune system",
+        "guidelines": "",
+        "user_friendly": "Organ ontology label"
+      },
+      "specimen_from_organism.organ_parts.text": {
+        "required": true,
+        "description": "The text for the term as the user provides it.",
+        "example": "bone marrow; islet of Langerhans",
+        "guidelines": "",
+        "user_friendly": "Organ part"
+      },
+      "specimen_from_organism.organ_parts.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "UBERON:0002371; UBERON:0000006",
+        "guidelines": "",
+        "user_friendly": "Organ part ontology ID"
+      },
+      "specimen_from_organism.organ_parts.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "bone marrow; islet of Langerhans",
+        "guidelines": "",
+        "user_friendly": "Organ part ontology label"
+      },
+      "specimen_from_organism.diseases.text": {
+        "required": true,
+        "description": "The text for the term as the user provides it.",
+        "example": "type 2 diabetes mellitus; normal",
+        "guidelines": "",
+        "user_friendly": "Disease"
+      },
+      "specimen_from_organism.diseases.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "MONDO:0005148; PATO:0000461; HP:0001397",
+        "guidelines": "",
+        "user_friendly": "Disease ontology ID"
+      },
+      "specimen_from_organism.diseases.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "type 2 diabetes mellitus; normal",
+        "guidelines": "",
+        "user_friendly": "Disease ontology label"
+      },
+      "process.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "process.process_core.process_id": {
+        "required": false,
+        "description": "A unique ID for the process.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Process ID"
+      },
+      "collection_protocol.protocol_core.protocol_id": {
+        "required": false,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "collection_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "donor_organism.biomaterial_core.biomaterial_id": {
+        "required": false,
+        "description": "A unique ID for the biomaterial.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial ID"
+      },
+      "donor_organism.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      }
+    }
+  },
+  "Cell suspension": {
+    "values": [
+      {
+        "cell_suspension.uuid": "3d988039-3745-46a8-bb04-4b4644d5b5c5",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841608",
+        "cell_suspension.biomaterial_core.biomaterial_name": "P2568_N701-S502",
+        "cell_suspension.biomaterial_core.biomaterial_description": "blood,PBMC,female,0h,RT,-,no,Smart-seq2",
+        "cell_suspension.biomaterial_core.ncbi_taxon_id": "9606",
+        "cell_suspension.biomaterial_core.biosamples_accession": "SAMN11935057",
+        "cell_suspension.genus_species.text": "Homo sapiens",
+        "cell_suspension.genus_species.ontology": "NCBITaxon:9606",
+        "cell_suspension.genus_species.ontology_label": "Homo sapiens",
+        "cell_suspension.selected_cell_types.text": "peripheral blood mononuclear cell",
+        "cell_suspension.estimated_cell_count": "1",
+        "process.uuid": "7f973c4b-f249-406b-8182-6c0ec248e266",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951255",
+        "process.process_core.process_id": "process_id_2",
+        "enrichment_protocol.protocol_core.protocol_id": "enrichment_protocol_PBMC",
+        "enrichment_protocol.uuid": "120d425a-fab9-402d-9c8d-03bfb4ddf547",
+        "specimen_from_organism.biomaterial_core.biomaterial_id": "blood_1",
+        "specimen_from_organism.uuid": "316666c1-1a10-46a2-a139-d905df581633"
+      },
+      {
+        "cell_suspension.uuid": "1ee4f9fb-46da-47da-8912-890553df5e65",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841609",
+        "cell_suspension.biomaterial_core.biomaterial_name": "P2568_N701-S503",
+        "cell_suspension.biomaterial_core.biomaterial_description": "blood,PBMC,female,2h,RT,-,no,Smart-seq2",
+        "cell_suspension.biomaterial_core.ncbi_taxon_id": "9606",
+        "cell_suspension.biomaterial_core.biosamples_accession": "SAMN11935056",
+        "cell_suspension.genus_species.text": "Homo sapiens",
+        "cell_suspension.genus_species.ontology": "NCBITaxon:9606",
+        "cell_suspension.genus_species.ontology_label": "Homo sapiens",
+        "cell_suspension.selected_cell_types.text": "peripheral blood mononuclear cell",
+        "cell_suspension.estimated_cell_count": "1",
+        "process.uuid": "7703d247-795d-46fd-9536-2760b2bf2725",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951256",
+        "process.process_core.process_id": "process_id_3",
+        "enrichment_protocol.protocol_core.protocol_id": "enrichment_protocol_PBMC",
+        "enrichment_protocol.uuid": "120d425a-fab9-402d-9c8d-03bfb4ddf547",
+        "specimen_from_organism.biomaterial_core.biomaterial_id": "blood_1",
+        "specimen_from_organism.uuid": "316666c1-1a10-46a2-a139-d905df581633"
+      },
+      {
+        "cell_suspension.uuid": "fa6e6579-6348-441a-8283-869d08b94667",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841610",
+        "cell_suspension.biomaterial_core.biomaterial_name": "P2568_N701-S505",
+        "cell_suspension.biomaterial_core.biomaterial_description": "blood,PBMC,female,8h,RT,-,no,Smart-seq2",
+        "cell_suspension.biomaterial_core.ncbi_taxon_id": "9606",
+        "cell_suspension.biomaterial_core.biosamples_accession": "SAMN11935055",
+        "cell_suspension.genus_species.text": "Homo sapiens",
+        "cell_suspension.genus_species.ontology": "NCBITaxon:9606",
+        "cell_suspension.genus_species.ontology_label": "Homo sapiens",
+        "cell_suspension.selected_cell_types.text": "peripheral blood mononuclear cell",
+        "cell_suspension.estimated_cell_count": "1",
+        "process.uuid": "fcc40e40-88da-494e-b981-32f6576d6571",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951257",
+        "process.process_core.process_id": "process_id_4",
+        "enrichment_protocol.protocol_core.protocol_id": "enrichment_protocol_PBMC",
+        "enrichment_protocol.uuid": "120d425a-fab9-402d-9c8d-03bfb4ddf547",
+        "specimen_from_organism.biomaterial_core.biomaterial_id": "blood_1",
+        "specimen_from_organism.uuid": "316666c1-1a10-46a2-a139-d905df581633"
+      },
+      {
+        "cell_suspension.uuid": "6dd1d9e9-c4c9-443b-9af2-f2b8e12a8924",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841611",
+        "cell_suspension.biomaterial_core.biomaterial_name": "P2568_N701-S506",
+        "cell_suspension.biomaterial_core.biomaterial_description": "blood,PBMC,female,24h,RT,-,no,Smart-seq2",
+        "cell_suspension.biomaterial_core.ncbi_taxon_id": "9606",
+        "cell_suspension.biomaterial_core.biosamples_accession": "SAMN11935054",
+        "cell_suspension.genus_species.text": "Homo sapiens",
+        "cell_suspension.genus_species.ontology": "NCBITaxon:9606",
+        "cell_suspension.genus_species.ontology_label": "Homo sapiens",
+        "cell_suspension.selected_cell_types.text": "peripheral blood mononuclear cell",
+        "cell_suspension.estimated_cell_count": "1",
+        "process.uuid": "d26ce588-a7e2-497f-b325-45d09933923b",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951258",
+        "process.process_core.process_id": "process_id_5",
+        "enrichment_protocol.protocol_core.protocol_id": "enrichment_protocol_PBMC",
+        "enrichment_protocol.uuid": "120d425a-fab9-402d-9c8d-03bfb4ddf547",
+        "specimen_from_organism.biomaterial_core.biomaterial_id": "blood_1",
+        "specimen_from_organism.uuid": "316666c1-1a10-46a2-a139-d905df581633"
+      }
+    ],
+    "headers": {
+      "cell_suspension.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "cell_suspension.biomaterial_core.biomaterial_id": {
+        "required": true,
+        "description": "A unique ID for the biomaterial.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial ID"
+      },
+      "cell_suspension.biomaterial_core.biomaterial_name": {
+        "required": false,
+        "description": "A short, descriptive name for the biomaterial that need not be unique.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial name"
+      },
+      "cell_suspension.biomaterial_core.biomaterial_description": {
+        "required": false,
+        "description": "A general description of the biomaterial.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial description"
+      },
+      "cell_suspension.biomaterial_core.ncbi_taxon_id": {
+        "required": true,
+        "description": "A taxonomy ID (taxonID) from NCBI.",
+        "example": 9606,
+        "guidelines": "",
+        "user_friendly": "NCBI taxon ID"
+      },
+      "cell_suspension.biomaterial_core.biosamples_accession": {
+        "required": false,
+        "description": "A BioSamples accession.",
+        "example": "SAMN00000000",
+        "guidelines": "Enter accession if sample has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with SAMD, SAMN, or SAME, respectively.",
+        "user_friendly": "BioSamples accession"
+      },
+      "cell_suspension.genus_species.text": {
+        "required": true,
+        "description": "The name of the species to which the organism belongs.",
+        "example": "Homo sapiens; Mus musculus",
+        "guidelines": "",
+        "user_friendly": "Species"
+      },
+      "cell_suspension.genus_species.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "NCBITaxon:9606; NCBITaxon:10090",
+        "guidelines": "",
+        "user_friendly": "Species ontology ID"
+      },
+      "cell_suspension.genus_species.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "Homo sapiens; Mus musculus",
+        "guidelines": "",
+        "user_friendly": "Species ontology label"
+      },
+      "cell_suspension.selected_cell_types.text": {
+        "required": true,
+        "description": "The name of a cell type supplied by a user.",
+        "example": "bone marrow hematopoietic cell; cardiac muscle cell",
+        "guidelines": "",
+        "user_friendly": "Cell type"
+      },
+      "cell_suspension.estimated_cell_count": {
+        "required": false,
+        "description": "Estimated number of cells in the suspension.",
+        "example": "1; 2100",
+        "guidelines": "Enter 1 for well-based assays.",
+        "user_friendly": "Estimated cell count"
+      },
+      "process.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "process.insdc_experiment.insdc_experiment_accession": {
+        "required": false,
+        "description": "An International Nucleotide Sequence Database Collaboration (INSDC) experiment accession.",
+        "example": "SRX0000000",
+        "guidelines": "Enter accession if experiment has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with DRX, SRX, or ERX, respecitvely.",
+        "user_friendly": "INSDC experiment accession"
+      },
+      "process.process_core.process_id": {
+        "required": false,
+        "description": "A unique ID for the process.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Process ID"
+      },
+      "enrichment_protocol.protocol_core.protocol_id": {
+        "required": false,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "enrichment_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "specimen_from_organism.biomaterial_core.biomaterial_id": {
+        "required": false,
+        "description": "A unique ID for the biomaterial.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial ID"
+      },
+      "specimen_from_organism.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      }
+    }
+  },
+  "Collection protocol": {
+    "values": [
+      {
+        "collection_protocol.uuid": "fecc27e0-f0e7-431e-a657-8bbae9a3bf6b",
+        "collection_protocol.protocol_core.protocol_id": "collection_protocol_PBMC_cryopreservation",
+        "collection_protocol.protocol_core.protocol_name": "collection_protocol_PBMC_cryopreservation",
+        "collection_protocol.protocol_core.protocol_description": "Peripheral venous blood samples were collected by venipuncture. Blood samples were collected in ACD-tubes and stored at room temperature (RT) or 4 \u00b0C.",
+        "collection_protocol.method.text": "blood draw",
+        "collection_protocol.method.ontology": "EFO:0009121",
+        "collection_protocol.method.ontology_label": "blood draw"
+      }
+    ],
+    "headers": {
+      "collection_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "collection_protocol.protocol_core.protocol_id": {
+        "required": true,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "collection_protocol.protocol_core.protocol_name": {
+        "required": false,
+        "description": "A short name for the protocol.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Protocol name"
+      },
+      "collection_protocol.protocol_core.protocol_description": {
+        "required": false,
+        "description": "A general description of the protocol.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Protocol description"
+      },
+      "collection_protocol.method.text": {
+        "required": true,
+        "description": "The name of a process type being used.",
+        "example": "enzymatic dissociation; blood draw",
+        "guidelines": "",
+        "user_friendly": "Process type"
+      },
+      "collection_protocol.method.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "EFO:0009128; EFO:0009121",
+        "guidelines": "",
+        "user_friendly": "Process type ontology ID"
+      },
+      "collection_protocol.method.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "enzymatic dissociation; blood draw",
+        "guidelines": "",
+        "user_friendly": "Process type ontology label"
+      }
+    }
+  },
+  "Enrichment protocol": {
+    "values": [
+      {
+        "enrichment_protocol.uuid": "120d425a-fab9-402d-9c8d-03bfb4ddf547",
+        "enrichment_protocol.protocol_core.protocol_id": "enrichment_protocol_PBMC",
+        "enrichment_protocol.protocol_core.protocol_name": "enrichment_protocol_PBMC",
+        "enrichment_protocol.protocol_core.protocol_description": "PBMC separation was performed using Ficoll density gradient centrifugation. For each condition, 12 ml of blood was diluted with an equal volume of pre-warmed RPMI 1640 culture medium (Lonza). The diluted blood was then carefully layered onto a Leucosep tube (Greiner Bio-One) prefilled with 15 ml\nof Ficoll-Plus (GE Healthcare Biosciences AB) and centrifuged for 15 min at 800\u00d7g and RT (without acceleration and brake).",
+        "enrichment_protocol.method.text": "Ficoll-Hypaque method",
+        "enrichment_protocol.method.ontology": "EFO:0009110",
+        "enrichment_protocol.method.ontology_label": "Ficoll-Hypaque method"
+      }
+    ],
+    "headers": {
+      "enrichment_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "enrichment_protocol.protocol_core.protocol_id": {
+        "required": true,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "enrichment_protocol.protocol_core.protocol_name": {
+        "required": false,
+        "description": "A short name for the protocol.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Protocol name"
+      },
+      "enrichment_protocol.protocol_core.protocol_description": {
+        "required": false,
+        "description": "A general description of the protocol.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Protocol description"
+      },
+      "enrichment_protocol.method.text": {
+        "required": true,
+        "description": "The name of a process type being used.",
+        "example": "enzymatic dissociation; blood draw",
+        "guidelines": "",
+        "user_friendly": "Process type"
+      },
+      "enrichment_protocol.method.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "EFO:0009128; EFO:0009121",
+        "guidelines": "",
+        "user_friendly": "Process type ontology ID"
+      },
+      "enrichment_protocol.method.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "enzymatic dissociation; blood draw",
+        "guidelines": "",
+        "user_friendly": "Process type ontology label"
+      }
+    }
+  },
+  "Library preparation protocol": {
+    "values": [
+      {
+        "library_preparation_protocol.uuid": "099bd38d-91bf-4493-97f6-f36ebbfb9bc1",
+        "library_preparation_protocol.protocol_core.protocol_id": "library_protocol_smartseq2",
+        "library_preparation_protocol.protocol_core.protocol_name": "library_protocol_smartseq2",
+        "library_preparation_protocol.input_nucleic_acid_molecule.text": "polyA RNA",
+        "library_preparation_protocol.input_nucleic_acid_molecule.ontology": "OBI:0000869",
+        "library_preparation_protocol.input_nucleic_acid_molecule.ontology_label": "polyA RNA extract",
+        "library_preparation_protocol.nucleic_acid_source": "single cell",
+        "library_preparation_protocol.library_construction_method.text": "Smart-Seq2",
+        "library_preparation_protocol.library_construction_method.ontology": "EFO:0008931",
+        "library_preparation_protocol.library_construction_method.ontology_label": "Smart-seq2",
+        "library_preparation_protocol.library_construction_kit.retail_name": "Smart-Seq2",
+        "library_preparation_protocol.library_construction_kit.manufacturer": "Illumina",
+        "library_preparation_protocol.end_bias": "full length",
+        "library_preparation_protocol.primer": "poly-dT",
+        "library_preparation_protocol.strand": "unstranded"
+      }
+    ],
+    "headers": {
+      "library_preparation_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "library_preparation_protocol.protocol_core.protocol_id": {
+        "required": true,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "library_preparation_protocol.protocol_core.protocol_name": {
+        "required": false,
+        "description": "A short name for the protocol.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Protocol name"
+      },
+      "library_preparation_protocol.input_nucleic_acid_molecule.text": {
+        "required": true,
+        "description": "The name of the biological macromolecule being used.",
+        "example": "polyA RNA; mRNA",
+        "guidelines": "",
+        "user_friendly": "Biological macromolecule"
+      },
+      "library_preparation_protocol.input_nucleic_acid_molecule.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "OBI:0000869; CHEBI:33699",
+        "guidelines": "",
+        "user_friendly": "Biological macromolecule ontology ID"
+      },
+      "library_preparation_protocol.input_nucleic_acid_molecule.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "polyA RNA; messenger RNA",
+        "guidelines": "",
+        "user_friendly": "Biological macromolecule ontology label"
+      },
+      "library_preparation_protocol.nucleic_acid_source": {
+        "required": true,
+        "description": "Source cells or organelles from which nucleic acid molecules were collected.",
+        "example": "Should be one of: single cell, bulk cell, single nucleus, bulk nuclei, or mitochondria.",
+        "guidelines": "",
+        "user_friendly": "Nucleic acid source"
+      },
+      "library_preparation_protocol.library_construction_method.text": {
+        "required": true,
+        "description": "The name of a library construction approach being used.",
+        "example": "10X v2 sequencing; Smart-seq2",
+        "guidelines": "",
+        "user_friendly": "Library construction"
+      },
+      "library_preparation_protocol.library_construction_method.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "EFO:0009310; EFO:0008931",
+        "guidelines": "",
+        "user_friendly": "Library construction ontology ID"
+      },
+      "library_preparation_protocol.library_construction_method.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "10X v2 sequencing; Smart-seq2",
+        "guidelines": "",
+        "user_friendly": "Library construction ontology label"
+      },
+      "library_preparation_protocol.library_construction_kit.retail_name": {
+        "required": false,
+        "description": "The retail name of the kit/reagent.",
+        "example": "SureCell WTA 3' Library Prep Kit; CytoTune iPS 2.0 Sendai Reprogramming Kit",
+        "guidelines": "",
+        "user_friendly": "Retail name"
+      },
+      "library_preparation_protocol.library_construction_kit.manufacturer": {
+        "required": false,
+        "description": "The manufacturer of the kit/reagent.",
+        "example": "Illumina; ThermoFisher Scientific",
+        "guidelines": "",
+        "user_friendly": "Manufacturer"
+      },
+      "library_preparation_protocol.end_bias": {
+        "required": true,
+        "description": "The type of tag or end bias the library has.",
+        "example": "Should be one of: 3 prime tag, 3 prime end bias, 5 prime tag, 5 prime end bias, or full length.",
+        "guidelines": "Enter 'full length' if there is no tag or end bias.",
+        "user_friendly": "End bias"
+      },
+      "library_preparation_protocol.primer": {
+        "required": false,
+        "description": "Primer used for cDNA synthesis from RNA.",
+        "example": "Should be one of: poly-dT, or random.",
+        "guidelines": "",
+        "user_friendly": "Primer"
+      },
+      "library_preparation_protocol.strand": {
+        "required": true,
+        "description": "Library strandedness.",
+        "example": "Should be one of: first, second, unstranded, or not provided.",
+        "guidelines": "Enter 'first' if sequenced molecule is only the strand generated during first strand synthesis. Enter 'second' if sequenced molecule is only the strand generated during second strand synthesis. Enter 'unstranded' if both strands were sequenced.",
+        "user_friendly": "Strand"
+      }
+    }
+  },
+  "Sequencing protocol": {
+    "values": [
+      {
+        "sequencing_protocol.uuid": "b1c4353f-fbe5-4968-a070-3be89cc12ac4",
+        "sequencing_protocol.protocol_core.protocol_id": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.protocol_core.protocol_name": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.instrument_manufacturer_model.text": "Illumina HiSeq2500",
+        "sequencing_protocol.instrument_manufacturer_model.ontology": "EFO:0008565",
+        "sequencing_protocol.instrument_manufacturer_model.ontology_label": "Illumina HiSeq 2500",
+        "sequencing_protocol.paired_end": "False",
+        "sequencing_protocol.method.text": "tag based single cell RNA sequencing",
+        "sequencing_protocol.method.ontology": "EFO:0008440",
+        "sequencing_protocol.method.ontology_label": "tag based single cell RNA sequencing"
+      }
+    ],
+    "headers": {
+      "sequencing_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "sequencing_protocol.protocol_core.protocol_id": {
+        "required": true,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "sequencing_protocol.protocol_core.protocol_name": {
+        "required": false,
+        "description": "A short name for the protocol.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Protocol name"
+      },
+      "sequencing_protocol.instrument_manufacturer_model.text": {
+        "required": true,
+        "description": "The full name of the instrument used.",
+        "example": "Illumina HiSeq 2500; ONT MinION",
+        "guidelines": "",
+        "user_friendly": "Instrument"
+      },
+      "sequencing_protocol.instrument_manufacturer_model.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "EFO:0008565; EFO:0008632",
+        "guidelines": "",
+        "user_friendly": "Instrument ontology ID"
+      },
+      "sequencing_protocol.instrument_manufacturer_model.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "Illumina HiSeq 2500; ONT MinION",
+        "guidelines": "",
+        "user_friendly": "Instrument ontology label"
+      },
+      "sequencing_protocol.paired_end": {
+        "required": true,
+        "description": "Whether the sequenced molecule was sequenced from both ends.",
+        "example": "Should be one of: yes, or no.",
+        "guidelines": "If 3' 10x v2 was used, enter no.",
+        "user_friendly": "Paired end"
+      },
+      "sequencing_protocol.method.text": {
+        "required": true,
+        "description": "The name of a sequencing approach being used.",
+        "example": "tag based single cell RNA sequencing; full length single cell RNA sequencing",
+        "guidelines": "",
+        "user_friendly": "Sequencing approach"
+      },
+      "sequencing_protocol.method.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "EFO:0008440; EFO:0008441",
+        "guidelines": "",
+        "user_friendly": "Sequencing approach ontology ID"
+      },
+      "sequencing_protocol.method.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "tag based single cell RNA sequencing; full length single cell RNA sequencing",
+        "guidelines": "",
+        "user_friendly": "Sequencing approach ontology label"
+      }
+    }
+  },
+  "Analysis protocol": {
+    "values": [
+      {
+        "analysis_protocol.uuid": "524b8524-3915-4602-b094-7f6ee4195618",
+        "analysis_protocol.protocol_core.protocol_id": "PBMC_count_matrix_smartseq",
+        "analysis_protocol.protocol_core.protocol_name": "PBMC_count_matrix_smartseq",
+        "analysis_protocol.type.text": "raw matrix generation",
+        "analysis_protocol.matrix.derivation_process": "alignment||quantification"
+      }
+    ],
+    "headers": {
+      "analysis_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "analysis_protocol.protocol_core.protocol_id": {
+        "required": true,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "analysis_protocol.protocol_core.protocol_name": {
+        "required": false,
+        "description": "A short name for the protocol.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Protocol name"
+      },
+      "analysis_protocol.type.text": {
+        "required": true,
+        "description": "The name of a process type being used.",
+        "example": "enzymatic dissociation; blood draw",
+        "guidelines": "",
+        "user_friendly": "Process type"
+      },
+      "analysis_protocol.matrix.derivation_process": {
+        "required": false,
+        "description": "Type of computational tool used in generating the matrix object.",
+        "example": "",
+        "guidelines": "Should be one of: alignment, quantification, peak calling, peak annotation, gene filtering, cell filtering, merging, cell calling, ambient RNA correction, doublet removal, batch correction, depth normalization, other.",
+        "user_friendly": "Derivation process"
+      }
+    }
+  },
+  "Sequence file": {
+    "values": [
+      {
+        "sequence_file.uuid": "c7c92da0-d9f5-482e-8dbe-c507ab678594",
+        "sequence_file.file_core.file_name": "P2568_N701-S502_1.fq.gz",
+        "sequence_file.file_core.format": "fq.gz",
+        "sequence_file.file_core.content_description.text": "DNA sequence (raw)",
+        "sequence_file.file_core.content_description.ontology": "data:3494",
+        "sequence_file.file_core.content_description.ontology_label": "DNA sequence",
+        "sequence_file.read_index": "read1",
+        "sequence_file.insdc_run_accessions": "SRR9178661",
+        "process.uuid": "e62db992-8ac7-45d7-82f8-7afa2543a3ab",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951255",
+        "process.process_core.process_id": "SRR9178661",
+        "library_preparation_protocol.protocol_core.protocol_id": "library_protocol_smartseq2",
+        "library_preparation_protocol.uuid": "099bd38d-91bf-4493-97f6-f36ebbfb9bc1",
+        "sequencing_protocol.protocol_core.protocol_id": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.uuid": "b1c4353f-fbe5-4968-a070-3be89cc12ac4",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841608",
+        "cell_suspension.uuid": "3d988039-3745-46a8-bb04-4b4644d5b5c5"
+      },
+      {
+        "sequence_file.uuid": "6d20cc80-3c89-4f76-a201-b157500b9d8b",
+        "sequence_file.file_core.file_name": "P2568_N701-S502_2.fq.gz",
+        "sequence_file.file_core.format": "fq.gz",
+        "sequence_file.file_core.content_description.text": "DNA sequence (raw)",
+        "sequence_file.file_core.content_description.ontology": "data:3494",
+        "sequence_file.file_core.content_description.ontology_label": "DNA sequence",
+        "sequence_file.read_index": "read2",
+        "sequence_file.insdc_run_accessions": "SRR9178661",
+        "process.uuid": "e62db992-8ac7-45d7-82f8-7afa2543a3ab",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951255",
+        "process.process_core.process_id": "SRR9178661",
+        "library_preparation_protocol.protocol_core.protocol_id": "library_protocol_smartseq2",
+        "library_preparation_protocol.uuid": "099bd38d-91bf-4493-97f6-f36ebbfb9bc1",
+        "sequencing_protocol.protocol_core.protocol_id": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.uuid": "b1c4353f-fbe5-4968-a070-3be89cc12ac4",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841608",
+        "cell_suspension.uuid": "3d988039-3745-46a8-bb04-4b4644d5b5c5"
+      },
+      {
+        "sequence_file.uuid": "88613eff-f143-47c4-a3c6-3f32a50ce7db",
+        "sequence_file.file_core.file_name": "P2568_N701-S503_1.fq.gz",
+        "sequence_file.file_core.format": "fq.gz",
+        "sequence_file.file_core.content_description.text": "DNA sequence (raw)",
+        "sequence_file.file_core.content_description.ontology": "data:3494",
+        "sequence_file.file_core.content_description.ontology_label": "DNA sequence",
+        "sequence_file.read_index": "read1",
+        "sequence_file.insdc_run_accessions": "SRR9178662",
+        "process.uuid": "3330b9e8-0e73-488d-951e-6bf66905e706",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951256",
+        "process.process_core.process_id": "SRR9178662",
+        "library_preparation_protocol.protocol_core.protocol_id": "library_protocol_smartseq2",
+        "library_preparation_protocol.uuid": "099bd38d-91bf-4493-97f6-f36ebbfb9bc1",
+        "sequencing_protocol.protocol_core.protocol_id": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.uuid": "b1c4353f-fbe5-4968-a070-3be89cc12ac4",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841609",
+        "cell_suspension.uuid": "1ee4f9fb-46da-47da-8912-890553df5e65"
+      },
+      {
+        "sequence_file.uuid": "7e5003c2-9bdf-413c-913d-df63d8ee784b",
+        "sequence_file.file_core.file_name": "P2568_N701-S503_2.fq.gz",
+        "sequence_file.file_core.format": "fq.gz",
+        "sequence_file.file_core.content_description.text": "DNA sequence (raw)",
+        "sequence_file.file_core.content_description.ontology": "data:3494",
+        "sequence_file.file_core.content_description.ontology_label": "DNA sequence",
+        "sequence_file.read_index": "read2",
+        "sequence_file.insdc_run_accessions": "SRR9178662",
+        "process.uuid": "3330b9e8-0e73-488d-951e-6bf66905e706",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951256",
+        "process.process_core.process_id": "SRR9178662",
+        "library_preparation_protocol.protocol_core.protocol_id": "library_protocol_smartseq2",
+        "library_preparation_protocol.uuid": "099bd38d-91bf-4493-97f6-f36ebbfb9bc1",
+        "sequencing_protocol.protocol_core.protocol_id": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.uuid": "b1c4353f-fbe5-4968-a070-3be89cc12ac4",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841609",
+        "cell_suspension.uuid": "1ee4f9fb-46da-47da-8912-890553df5e65"
+      },
+      {
+        "sequence_file.uuid": "d9beffbe-c7bf-4c56-ad96-6baea53831d7",
+        "sequence_file.file_core.file_name": "P2568_N701-S505_1.fq.gz",
+        "sequence_file.file_core.format": "fq.gz",
+        "sequence_file.file_core.content_description.text": "DNA sequence (raw)",
+        "sequence_file.file_core.content_description.ontology": "data:3494",
+        "sequence_file.file_core.content_description.ontology_label": "DNA sequence",
+        "sequence_file.read_index": "read1",
+        "sequence_file.insdc_run_accessions": "SRR9178663",
+        "process.uuid": "12fcf407-a5b9-402e-9dac-b61dea459f19",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951257",
+        "process.process_core.process_id": "SRR9178663",
+        "library_preparation_protocol.protocol_core.protocol_id": "library_protocol_smartseq2",
+        "library_preparation_protocol.uuid": "099bd38d-91bf-4493-97f6-f36ebbfb9bc1",
+        "sequencing_protocol.protocol_core.protocol_id": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.uuid": "b1c4353f-fbe5-4968-a070-3be89cc12ac4",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841610",
+        "cell_suspension.uuid": "fa6e6579-6348-441a-8283-869d08b94667"
+      },
+      {
+        "sequence_file.uuid": "e12a74a3-be76-4943-aa40-32378067efa9",
+        "sequence_file.file_core.file_name": "P2568_N701-S505_2.fq.gz",
+        "sequence_file.file_core.format": "fq.gz",
+        "sequence_file.file_core.content_description.text": "DNA sequence (raw)",
+        "sequence_file.file_core.content_description.ontology": "data:3494",
+        "sequence_file.file_core.content_description.ontology_label": "DNA sequence",
+        "sequence_file.read_index": "read2",
+        "sequence_file.insdc_run_accessions": "SRR9178663",
+        "process.uuid": "12fcf407-a5b9-402e-9dac-b61dea459f19",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951257",
+        "process.process_core.process_id": "SRR9178663",
+        "library_preparation_protocol.protocol_core.protocol_id": "library_protocol_smartseq2",
+        "library_preparation_protocol.uuid": "099bd38d-91bf-4493-97f6-f36ebbfb9bc1",
+        "sequencing_protocol.protocol_core.protocol_id": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.uuid": "b1c4353f-fbe5-4968-a070-3be89cc12ac4",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841610",
+        "cell_suspension.uuid": "fa6e6579-6348-441a-8283-869d08b94667"
+      },
+      {
+        "sequence_file.uuid": "76e60007-dde5-4278-869b-d4d4ce62529d",
+        "sequence_file.file_core.file_name": "P2568_N701-S506_1.fq.gz",
+        "sequence_file.file_core.format": "fq.gz",
+        "sequence_file.file_core.content_description.text": "DNA sequence (raw)",
+        "sequence_file.file_core.content_description.ontology": "data:3494",
+        "sequence_file.file_core.content_description.ontology_label": "DNA sequence",
+        "sequence_file.read_index": "read1",
+        "sequence_file.insdc_run_accessions": "SRR9178664",
+        "process.uuid": "4d334212-c8db-4502-9f16-33854411a6da",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951258",
+        "process.process_core.process_id": "SRR9178664",
+        "library_preparation_protocol.protocol_core.protocol_id": "library_protocol_smartseq2",
+        "library_preparation_protocol.uuid": "099bd38d-91bf-4493-97f6-f36ebbfb9bc1",
+        "sequencing_protocol.protocol_core.protocol_id": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.uuid": "b1c4353f-fbe5-4968-a070-3be89cc12ac4",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841611",
+        "cell_suspension.uuid": "6dd1d9e9-c4c9-443b-9af2-f2b8e12a8924"
+      },
+      {
+        "sequence_file.uuid": "39e0d7e2-69e2-4174-8416-6a90a3a640a1",
+        "sequence_file.file_core.file_name": "P2568_N701-S506_2.fq.gz",
+        "sequence_file.file_core.format": "fq.gz",
+        "sequence_file.file_core.content_description.text": "DNA sequence (raw)",
+        "sequence_file.file_core.content_description.ontology": "data:3494",
+        "sequence_file.file_core.content_description.ontology_label": "DNA sequence",
+        "sequence_file.read_index": "read2",
+        "sequence_file.insdc_run_accessions": "SRR9178664",
+        "process.uuid": "4d334212-c8db-4502-9f16-33854411a6da",
+        "process.insdc_experiment.insdc_experiment_accession": "SRX5951258",
+        "process.process_core.process_id": "SRR9178664",
+        "library_preparation_protocol.protocol_core.protocol_id": "library_protocol_smartseq2",
+        "library_preparation_protocol.uuid": "099bd38d-91bf-4493-97f6-f36ebbfb9bc1",
+        "sequencing_protocol.protocol_core.protocol_id": "sequencing_protocol_HiSeq2500",
+        "sequencing_protocol.uuid": "b1c4353f-fbe5-4968-a070-3be89cc12ac4",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841611",
+        "cell_suspension.uuid": "6dd1d9e9-c4c9-443b-9af2-f2b8e12a8924"
+      }
+    ],
+    "headers": {
+      "sequence_file.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "sequence_file.file_core.file_name": {
+        "required": true,
+        "description": "The name of the file.",
+        "example": "R1.fastq.gz; codebook.json",
+        "guidelines": "Include the file extension in the file name.",
+        "user_friendly": "File name"
+      },
+      "sequence_file.file_core.format": {
+        "required": true,
+        "description": "The format of the file.",
+        "example": "fastq.gz; tif",
+        "guidelines": "Indicate the full file extension including compression extensions.",
+        "user_friendly": "File format"
+      },
+      "sequence_file.file_core.content_description.text": {
+        "required": true,
+        "description": "General description of the contents of the file.",
+        "example": "DNA sequence (raw); Sequence alignment",
+        "guidelines": "",
+        "user_friendly": "Content description"
+      },
+      "sequence_file.file_core.content_description.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "data:3497; data:0863",
+        "guidelines": "",
+        "user_friendly": "Content description ontology ID"
+      },
+      "sequence_file.file_core.content_description.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "DNA sequence (raw); Sequence alignment",
+        "guidelines": "",
+        "user_friendly": "Content description ontology label"
+      },
+      "sequence_file.read_index": {
+        "required": true,
+        "description": "The sequencing read this file represents.",
+        "example": "Should be one of: read1, read2, index1, index2",
+        "guidelines": "If a sequencing experiment is single-end, enter 'read1'.",
+        "user_friendly": "Read index"
+      },
+      "sequence_file.insdc_run_accessions": {
+        "required": false,
+        "description": "An International Nucleotide Sequence Database Collaboration (INSDC) run accession.",
+        "example": "SRR0000000",
+        "guidelines": "Enter accession if run has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with DRR, SRR, or ERR, respectively.",
+        "user_friendly": "INSDC run accession"
+      },
+      "process.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "process.insdc_experiment.insdc_experiment_accession": {
+        "required": false,
+        "description": "An International Nucleotide Sequence Database Collaboration (INSDC) experiment accession.",
+        "example": "SRX0000000",
+        "guidelines": "Enter accession if experiment has been archived. Accession can be from the DDBJ, NCBI, or EMBL-EBI and must start with DRX, SRX, or ERX, respecitvely.",
+        "user_friendly": "INSDC experiment accession"
+      },
+      "process.process_core.process_id": {
+        "required": false,
+        "description": "A unique ID for the process.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Process ID"
+      },
+      "library_preparation_protocol.protocol_core.protocol_id": {
+        "required": false,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "library_preparation_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "sequencing_protocol.protocol_core.protocol_id": {
+        "required": false,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "sequencing_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "cell_suspension.biomaterial_core.biomaterial_id": {
+        "required": false,
+        "description": "A unique ID for the biomaterial.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial ID"
+      },
+      "cell_suspension.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      }
+    }
+  },
+  "Analysis file": {
+    "values": [
+      {
+        "analysis_file.uuid": "5f8f5b74-3fe7-463a-9ae4-d23e44a59935",
+        "analysis_file.file_core.file_name": "GSE132065_P2568.tsv.gz",
+        "analysis_file.file_core.format": "tsv.gz",
+        "analysis_file.file_core.content_description.text": "count matrix",
+        "analysis_file.file_core.content_description.ontology": "data:3917",
+        "analysis_file.file_core.content_description.ontology_label": "Count matrix",
+        "analysis_file.file_core.file_source": "GEO",
+        "analysis_file.matrix_cell_count": "95",
+        "process.uuid": "7a461569-bc03-47f7-ac13-9c2d583bdf3c",
+        "process.process_core.process_id": "process_id_6",
+        "analysis_protocol.protocol_core.protocol_id": "PBMC_count_matrix_smartseq",
+        "analysis_protocol.uuid": "524b8524-3915-4602-b094-7f6ee4195618",
+        "cell_suspension.biomaterial_core.biomaterial_id": "GSM3841611||GSM3841608||GSM3841610||GSM3841609",
+        "cell_suspension.uuid": "6dd1d9e9-c4c9-443b-9af2-f2b8e12a8924||3d988039-3745-46a8-bb04-4b4644d5b5c5||fa6e6579-6348-441a-8283-869d08b94667||1ee4f9fb-46da-47da-8912-890553df5e65"
+      }
+    ],
+    "headers": {
+      "analysis_file.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "analysis_file.file_core.file_name": {
+        "required": true,
+        "description": "The name of the file.",
+        "example": "R1.fastq.gz; codebook.json",
+        "guidelines": "Include the file extension in the file name.",
+        "user_friendly": "File name"
+      },
+      "analysis_file.file_core.format": {
+        "required": true,
+        "description": "The format of the file.",
+        "example": "fastq.gz; tif",
+        "guidelines": "Indicate the full file extension including compression extensions.",
+        "user_friendly": "File format"
+      },
+      "analysis_file.file_core.content_description.text": {
+        "required": true,
+        "description": "General description of the contents of the file.",
+        "example": "DNA sequence (raw); Sequence alignment",
+        "guidelines": "",
+        "user_friendly": "Content description"
+      },
+      "analysis_file.file_core.content_description.ontology": {
+        "required": false,
+        "description": "An ontology term identifier in the form prefix:accession.",
+        "example": "data:3497; data:0863",
+        "guidelines": "",
+        "user_friendly": "Content description ontology ID"
+      },
+      "analysis_file.file_core.content_description.ontology_label": {
+        "required": false,
+        "description": "The preferred label for the ontology term referred to in the ontology field. This may differ from the user-supplied value in the text field.",
+        "example": "DNA sequence (raw); Sequence alignment",
+        "guidelines": "",
+        "user_friendly": "Content description ontology label"
+      },
+      "analysis_file.file_core.file_source": {
+        "required": false,
+        "description": "The source of the file. This is typically an organisation, repository, person or dedicated process.",
+        "example": "GEO; Contributor",
+        "guidelines": "Should be one of: DCP/2 Analysis, Contributor, ArrayExpress, HCA Release, GEO, SCEA, SCP, DCP/1 Matrix Service, LungMAP, Zenodo, Publication, DCP/2 Ingest",
+        "user_friendly": "File source"
+      },
+      "analysis_file.matrix_cell_count": {
+        "required": false,
+        "description": "Number of cells analyzed in a matrix file.",
+        "example": "1; 2100",
+        "guidelines": "If the analysis file is a matrix containing cells, enter the exact number of cells in the matrix.",
+        "user_friendly": "Matrix cell count"
+      },
+      "process.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "process.process_core.process_id": {
+        "required": false,
+        "description": "A unique ID for the process.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Process ID"
+      },
+      "analysis_protocol.protocol_core.protocol_id": {
+        "required": false,
+        "description": "A unique ID for the protocol.",
+        "example": "",
+        "guidelines": "Protocol ID should have no spaces.",
+        "user_friendly": "Protocol ID"
+      },
+      "analysis_protocol.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      },
+      "cell_suspension.biomaterial_core.biomaterial_id": {
+        "required": false,
+        "description": "A unique ID for the biomaterial.",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": "Biomaterial ID"
+      },
+      "cell_suspension.uuid": {
+        "required": false,
+        "description": "",
+        "example": "",
+        "guidelines": "",
+        "user_friendly": ""
+      }
+    }
+  },
+  "Schemas": [
+    "https://schema.humancellatlas.org/type/biomaterial/13.3.0/cell_suspension",
+    "https://schema.staging.data.humancellatlas.org/type/file/9.5.0/sequence_file",
+    "https://schema.staging.data.humancellatlas.org/type/biomaterial/10.5.0/specimen_from_organism",
+    "https://schema.staging.data.humancellatlas.org/type/project/17.0.0/project",
+    "https://schema.staging.data.humancellatlas.org/type/biomaterial/15.6.1/donor_organism",
+    "https://schema.staging.data.humancellatlas.org/type/protocol/analysis/10.0.0/analysis_protocol",
+    "https://schema.humancellatlas.org/type/protocol/biomaterial_collection/9.2.0/collection_protocol",
+    "https://schema.humancellatlas.org/type/protocol/biomaterial_collection/3.1.0/enrichment_protocol",
+    "https://schema.humancellatlas.org/type/process/9.2.0/process",
+    "https://schema.staging.data.humancellatlas.org/type/file/6.5.0/analysis_file",
+    "https://schema.humancellatlas.org/type/protocol/sequencing/10.1.0/sequencing_protocol",
+    "https://schema.staging.data.humancellatlas.org/type/protocol/sequencing/6.3.1/library_preparation_protocol"
+  ]
+}

@@ -1,7 +1,10 @@
 -c requirements.txt
+assertpy
+coverage
 flake8==3.5.0
 mock
-coverage
+pytest
+pytest-lazy-fixture
+requests-mock
 sortedcontainers
 twine
-requests-mock

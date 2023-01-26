@@ -15,7 +15,12 @@ default:
 Unit Tests:
   stage: unittest
   script:
-    - python -m unittest
+    - python -m pytest tests --junitxml=report.xml
+  artifacts:
+    reports:
+      junit:
+        - report.xml
+
 
 Test PyPI Deployment:
   stage: testpypi

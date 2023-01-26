@@ -30,7 +30,7 @@
   },
   {
     "content": {
-      "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism",
+      "describedBy": "https://schema.humancellatlas.org/type/biomaterial/14.2.0/donor_organism",
       "schema_type": "biomaterial",
       "biomaterial_core": {
         "biomaterial_id": "label",
@@ -43,7 +43,7 @@
   },
   {
     "content": {
-      "describedBy": "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism",
+      "describedBy": "https://schema.humancellatlas.org/type/biomaterial/14.2.0/donor_organism",
       "schema_type": "biomaterial",
       "biomaterial_core": {
         "biomaterial_id": "label",

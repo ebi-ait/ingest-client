@@ -17,7 +17,7 @@ class DataCollector:
         data_by_submission = self.__get_submission_data(submission)
         entity_dict = {}
         for entity_json in data_by_submission:
-            entity = Entity.from_json(entity_json)
+            entity = Entity(entity_json)
             entity_dict[entity.id] = entity
         linking_map = self.__get_linking_map(submission)
         self.__set_inputs(entity_dict, linking_map)
@@ -55,15 +55,15 @@ class DataCollector:
 
         for entity_id in entities_with_inputs:
             entity = entity_dict[entity_id]
-            entity_link = linking_map[entity.domain_type + 's'][entity.id]
+            entity_link = linking_map[entity.schema.domain_type + 's'][entity.id]
             derived_by_processes = entity_link.get('derivedByProcesses')
 
             if derived_by_processes and len(derived_by_processes) > 0:
                 # Check if derivedByProcesses returns more than 1
                 # It shouldn't happen because it's not possible to do it via spreadsheet
                 if len(derived_by_processes) > 1:
-                    raise ValueError(
-                        f'The {entity.concrete_type} with {entity.uuid} has more than one processes which derived it')
+                    raise ValueError(f'The {entity.schema.concrete_type} with {entity.uuid} '
+                                     f'has more than one processes which derived it')
 
                 process_id = entity_link['derivedByProcesses'][0]
                 protocol_ids = linking_map['processes'][process_id]['protocols']

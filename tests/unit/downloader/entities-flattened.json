@@ -1,11 +1,11 @@
 {
   "Project": {
-    "headers": [
-      "project.uuid",
-      "project.project_core.project_short_name",
-      "project.project_core.project_title",
-      "project.project_core.project_description"
-    ],
+    "headers": {
+      "project.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_short_name": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_title": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_description": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "project.uuid": "uuid1",
@@ -16,17 +16,17 @@
     ]
   },
   "Project - Contributors": {
-    "headers": [
-      "project.contributors.name",
-      "project.contributors.email",
-      "project.contributors.institution",
-      "project.contributors.laboratory",
-      "project.contributors.country",
-      "project.contributors.corresponding_contributor",
-      "project.contributors.project_role.text",
-      "project.contributors.project_role.ontology",
-      "project.contributors.project_role.ontology_label"
-    ],
+    "headers": {
+      "project.contributors.name": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.email": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.institution": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.laboratory": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.country": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.corresponding_contributor": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.project_role.text": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.project_role.ontology": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.project_role.ontology_label": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "project.contributors.corresponding_contributor": "True",
@@ -42,11 +42,11 @@
     ]
   },
   "Donor organism": {
-    "headers": [
-      "donor_organism.uuid",
-      "donor_organism.biomaterial_core.biomaterial_id",
-      "donor_organism.biomaterial_core.biomaterial_description"
-    ],
+    "headers": {
+      "donor_organism.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "donor_organism.biomaterial_core.biomaterial_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "donor_organism.biomaterial_core.biomaterial_description": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "donor_organism.uuid": "uuid2",
@@ -62,6 +62,6 @@
   },
   "Schemas": [
     "https://schema.humancellatlas.org/type/project/14.2.0/project",
-    "https://schema.humancellatlas.org/type/project/14.2.0/donor_organism"
+    "https://schema.humancellatlas.org/type/biomaterial/14.2.0/donor_organism"
             ]
         }

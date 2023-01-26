@@ -1,11 +1,11 @@
 {
   "Project": {
-    "headers": [
-      "project.uuid",
-      "project.project_core.project_short_name",
-      "project.project_core.project_title",
-      "project.project_core.project_description"
-    ],
+    "headers": {
+      "project.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_short_name": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_title": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_description": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "project.uuid": "uuid1",

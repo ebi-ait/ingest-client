@@ -1,10 +1,10 @@
 {
   "Library preparation protocol": {
-    "headers": [
-      "library_preparation_protocol.uuid",
-      "library_preparation_protocol.field",
-      "library_preparation_protocol.protocol_core.protocol_id"
-    ],
+    "headers": {
+      "library_preparation_protocol.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "library_preparation_protocol.field": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "library_preparation_protocol.protocol_core.protocol_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "library_preparation_protocol.field": "value",
@@ -20,11 +20,11 @@
     "https://schema.humancellatlas.org/type/protocol/14.2.0/library_preparation_protocol"
   ],
   "Sequencing protocol": {
-    "headers": [
-      "sequencing_protocol.uuid",
-      "sequencing_protocol.field",
-      "sequencing_protocol.protocol_core.protocol_id"
-    ],
+    "headers": {
+      "sequencing_protocol.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "sequencing_protocol.field": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "sequencing_protocol.protocol_core.protocol_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "sequencing_protocol.field": "value",
@@ -34,20 +34,20 @@
     ]
   },
   "Specimen from organism": {
-    "headers": [
-      "specimen_from_organism.uuid",
-      "specimen_from_organism.field",
-      "specimen_from_organism.biomaterial_core.biomaterial_id",
-      "process.uuid",
-      "process.field",
-      "process.process_core.process_id",
-      "sequencing_protocol.protocol_core.protocol_id",
-      "sequencing_protocol.uuid",
-      "library_preparation_protocol.protocol_core.protocol_id",
-      "library_preparation_protocol.uuid",
-      "donor_organism.biomaterial_core.biomaterial_id",
-      "donor_organism.uuid"
-    ],
+    "headers": {
+      "specimen_from_organism.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "specimen_from_organism.field": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "specimen_from_organism.biomaterial_core.biomaterial_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "process.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "process.field": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "process.process_core.process_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "sequencing_protocol.protocol_core.protocol_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "sequencing_protocol.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "library_preparation_protocol.protocol_core.protocol_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "library_preparation_protocol.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "donor_organism.biomaterial_core.biomaterial_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "donor_organism.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "specimen_from_organism.biomaterial_core.biomaterial_id": "specimen_id",

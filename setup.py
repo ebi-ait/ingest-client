@@ -10,7 +10,7 @@ with open("README.md", "r", encoding="utf-8") as md:
 
 setup(
     name='hca-ingest',
-    version='2.7.3',
+    version='2.8.0',
     description='A library to communicate with the Human Cell Atlas ingest API hosted by the EBI for creation and management of HCA project submissions.',
     long_description=long_description,
     long_description_content_type="text/markdown",

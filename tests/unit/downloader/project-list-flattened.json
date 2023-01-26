@@ -1,14 +1,14 @@
 {
   "Project": {
-    "headers": [
-      "project.uuid",
-      "project.project_core.project_short_name",
-      "project.project_core.project_title",
-      "project.project_core.project_description",
-      "project.insdc_project_accessions",
-      "project.geo_series_accessions",
-      "project.insdc_study_accessions"
-    ],
+    "headers": {
+      "project.uuid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_short_name": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_title": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.project_core.project_description": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.insdc_project_accessions": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.geo_series_accessions": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.insdc_study_accessions": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "project.uuid": "3e329187-a9c4-48ec-90e3-cc45f7c2311c",
@@ -22,17 +22,17 @@
     ]
   },
   "Project - Contributors": {
-    "headers": [
-      "project.contributors.name",
-      "project.contributors.email",
-      "project.contributors.institution",
-      "project.contributors.laboratory",
-      "project.contributors.country",
-      "project.contributors.corresponding_contributor",
-      "project.contributors.project_role.text",
-      "project.contributors.project_role.ontology",
-      "project.contributors.project_role.ontology_label"
-    ],
+    "headers": {
+      "project.contributors.name": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.email": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.institution": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.laboratory": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.country": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.corresponding_contributor": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.project_role.text": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.project_role.ontology": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.contributors.project_role.ontology_label": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "project.contributors.name": "Alex A,,Pollen",
@@ -70,13 +70,13 @@
     ]
   },
   "Project - Publications": {
-    "headers": [
-      "project.publications.authors",
-      "project.publications.title",
-      "project.publications.doi",
-      "project.publications.pmid",
-      "project.publications.url"
-    ],
+    "headers": {
+      "project.publications.authors": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.publications.title": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.publications.doi": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.publications.pmid": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.publications.url": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "project.publications.authors": "Pollen AA||Bhaduri A||Andrews MG||Nowakowski TJ||Meyerson OS||Mostajo-Radji MA||Di Lullo E||Alvarado B||Bedolli M||Dougherty ML||Fiddes IT||Kronenberg ZN||Shuga J||Leyrat AA||West JA||Bershteyn M||Lowe CB||Pavlovic BJ||Salama SR||Haussler D||Eichler EE||Kriegstein AR",
@@ -88,10 +88,10 @@
     ]
   },
   "Project - Funders": {
-    "headers": [
-      "project.funders.grant_id",
-      "project.funders.organization"
-    ],
+    "headers": {
+      "project.funders.grant_id": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""},
+      "project.funders.organization": {"description": "", "example": "", "guidelines": "", "required": false, "user_friendly": ""}
+    },
     "values": [
       {
         "project.funders.grant_id": "U01 MH105989",
