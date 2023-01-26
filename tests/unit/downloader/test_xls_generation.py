@@ -5,7 +5,8 @@ from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
 
-from hca_ingest.downloader.downloader import XlsDownloader, HEADER_ROW_NO, BORDER_ROW_NO
+from hca_ingest.downloader.downloader import (XlsDownloader, HEADER_ROW_NO, BORDER_ROW_NO, TITLE_FONT, TITLE_ALIGNMENT,
+                                              TITLE_FILL, DESCRIPTION_FONT, DESCRIPTION_ALIGNMENT, BORDER_VALUE, HEADER_PROTECTION)
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 from .conftest import get_json_file
@@ -166,20 +167,23 @@ def assert_sheet(workbook: Workbook, sheet_title: str, input_json :dict):
 
 
 def assert_headers(worksheet: Worksheet, input_headers: dict):
-    border_cell = worksheet[f'A{BORDER_ROW_NO}'].value
-    assert_that(border_cell).is_equal_to('FILL OUT INFORMATION BELOW THIS ROW')
-    for user_friendly, description, guide, key in worksheet.iter_cols(max_row=HEADER_ROW_NO, values_only=True):
-        assert_that(input_headers).contains_key(key)
-        input_header = input_headers[key]
+    border_cell = worksheet[f'A{BORDER_ROW_NO}']
+    assert_that(border_cell).has_value(BORDER_VALUE).has_font(TITLE_FONT).has_fill(TITLE_FILL)
+    for user_friendly, description, guide, key in worksheet.iter_cols(max_row=HEADER_ROW_NO):
+        assert_that(input_headers).contains_key(key.value)
+        input_header = input_headers[key.value]
+        assert_that(key).has_protection(HEADER_PROTECTION)
+        assert_that(user_friendly).has_font(TITLE_FONT).has_fill(TITLE_FILL).has_alignment(TITLE_ALIGNMENT)
         if input_header['user_friendly']:
-            assert_that(user_friendly).starts_with(input_header['user_friendly'])
+            assert_that(user_friendly.value).starts_with(input_header['user_friendly'])
         if input_header['required']:
-            assert_that(user_friendly).ends_with(' (Required)')
-        assert_that(description).is_equal_to(input_header['description'])
+            assert_that(user_friendly.value).ends_with(' (Required)')
+        assert_that(description).has_font(DESCRIPTION_FONT).has_alignment(DESCRIPTION_ALIGNMENT).has_value(input_header['description'])
+        assert_that(guide).has_font(DESCRIPTION_FONT).has_alignment(DESCRIPTION_ALIGNMENT)
         if input_header['guidelines']:
-            assert_that(guide).starts_with(input_header['guidelines'])
+            assert_that(guide.value).starts_with(input_header['guidelines'])
         if input_header['example']:
-            assert_that(guide).ends_with(f'For example: {input_header["example"]}')
+            assert_that(guide.value).ends_with(f'For example: {input_header["example"]}')
 
 
 def assert_values(worksheet: Worksheet, input_values: list[dict]):
