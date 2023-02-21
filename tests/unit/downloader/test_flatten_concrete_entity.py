@@ -6,7 +6,7 @@ from hca_ingest.downloader.entity import Entity
 from .conftest import get_json_file
 
 
-@pytest.fixture(params=['entities', 'project-list', 'collection_protocol-list'])
+@pytest.fixture(params=['entities', 'entities-custom-correct-schema', 'project-list', 'collection_protocol-list'])
 def test_name(request):
     return request.param
 

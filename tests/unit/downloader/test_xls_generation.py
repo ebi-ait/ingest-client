@@ -111,7 +111,7 @@ def contributors_json(blank_header):
 
 @pytest.fixture
 def multi_line_project(script_dir):
-    return get_json_file(script_dir+ '/project-list-flattened.json')
+    return get_json_file(script_dir + '/project-list-flattened.json')
 
 
 @pytest.fixture(params=[
@@ -122,10 +122,25 @@ def multi_line_project(script_dir):
 def without_schema_headers(request):
     return request.param
 
+@pytest.fixture
+def hca_schemas(script_dir):
+    return get_json_file(script_dir + '/project-flattened-with-hca-schema.json')
 
 @pytest.fixture
-def with_schema_headers(script_dir):
-    return get_json_file(script_dir + '/small-project-flattened-with-schema.json')
+def custom_correct_schemas(script_dir):
+    return get_json_file(script_dir + '/project-flattened-with-custom-correct-schemas.json')
+
+@pytest.fixture
+def custom_incorrect_schemas(script_dir):
+    return get_json_file(script_dir + '/project-flattened-with-custom-incorrect-schemas.json')
+
+@pytest.fixture(params=[
+    pytest.lazy_fixture('hca_schemas'),
+    pytest.lazy_fixture('custom_correct_schemas'),
+    pytest.lazy_fixture('custom_incorrect_schemas')
+])
+def with_schema_headers(request):
+    return request.param
 
 
 @pytest.fixture(params=[
