@@ -116,3 +116,6 @@ _local
 gcp.json
 _local/
 venv*/
+
+# Requests-cache library sqlite file
+*http_cache.sqlite
