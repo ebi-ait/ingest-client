@@ -54,7 +54,7 @@ def flattened_json(flattener, submission_entities, schemas):
 
 @pytest.fixture
 def expected(script_dir):
-    return get_json_file(script_dir + '/small-project-flattened-with-schema.json')
+    return get_json_file(script_dir + '/project-flattened-with-hca-schema.json')
 
 
 def test_matches_expected(flattened_json, expected):

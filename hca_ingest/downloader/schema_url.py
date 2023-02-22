@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-
+ACCEPTED_DOMAINS = ['biomaterial', 'protocol', 'process', 'file', 'project']
 
 @dataclass(unsafe_hash=True)
 class SchemaUrl:
@@ -11,4 +11,8 @@ class SchemaUrl:
 
     @property
     def domain_type(self):
-        return self.url.split('/')[4] if self.url else ''
+        try:
+            domain = ACCEPTED_DOMAINS[[domain in self.url for domain in ACCEPTED_DOMAINS].index(True)]
+            return domain
+        except ValueError:
+            return ''
