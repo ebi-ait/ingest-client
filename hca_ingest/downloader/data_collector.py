@@ -1,3 +1,4 @@
+import os
 from typing import Dict
 
 from hca_ingest.api.ingestapi import IngestApi
@@ -11,9 +12,16 @@ class DataCollector:
     def collect_data_by_submission_uuid(self, submission_uuid) -> Dict[str, Entity]:
         submission = self.api.get_submission_by_uuid(submission_uuid)
         entity_dict = self.__build_entity_dict(submission)
+        if os.getenv('FEATURE_INCLUDE_ALL_SUBMISSIONS', 'on') == 'on':
+            projects_url = self.api.get_link_from_resource(submission, 'projects')
+            project = next(self.api.get_all(projects_url, entity_type='projects'))
+            submissions_url = self.api.get_link_from_resource(project, link_name='submissionEnvelopes')
+            project_submissions = self.api.get_all(submissions_url, entity_type='submissionEnvelopes')
+            for other_submission in project_submissions:
+                entity_dict.update(self.__build_entity_dict(other_submission))
         return entity_dict
 
-    def __build_entity_dict(self, submission):
+    def __build_entity_dict(self, submission) -> dict:
         data_by_submission = self.__get_submission_data(submission)
         entity_dict = {}
         for entity_json in data_by_submission:
