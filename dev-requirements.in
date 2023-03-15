@@ -4,6 +4,7 @@ coverage
 flake8==3.5.0
 mock
 pytest
+pytest-bdd
 pytest-lazy-fixture
 requests-mock
 sortedcontainers
