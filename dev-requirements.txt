@@ -42,12 +42,22 @@ iniconfig==1.1.1
     # via pytest
 keyring==23.8.2
     # via twine
+mako==1.2.4
+    # via pytest-bdd
+markupsafe==2.1.2
+    # via mako
 mccabe==0.6.1
     # via flake8
 mock==4.0.3
     # via -r dev-requirements.in
 packaging==22.0
     # via pytest
+parse==1.19.0
+    # via
+    #   parse-type
+    #   pytest-bdd
+parse-type==0.6.0
+    # via pytest-bdd
 pkginfo==1.8.3
     # via twine
 pluggy==1.0.0
@@ -63,7 +73,10 @@ pygments==2.12.0
 pytest==7.2.0
     # via
     #   -r dev-requirements.in
+    #   pytest-bdd
     #   pytest-lazy-fixture
+pytest-bdd==6.1.1
+    # via -r dev-requirements.in
 pytest-lazy-fixture==0.6.3
     # via -r dev-requirements.in
 readme-renderer==36.0
@@ -86,6 +99,7 @@ six==1.16.0
     # via
     #   -c requirements.txt
     #   bleach
+    #   parse-type
     #   requests-mock
 sortedcontainers==2.4.0
     # via -r dev-requirements.in
@@ -93,6 +107,8 @@ tomli==2.0.1
     # via pytest
 twine==4.0.1
     # via -r dev-requirements.in
+typing-extensions==4.5.0
+    # via pytest-bdd
 urllib3==1.26.11
     # via
     #   -c requirements.txt
