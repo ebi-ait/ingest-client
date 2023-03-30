@@ -25,9 +25,28 @@ def test_upload_and_update_including_deletion():
     pass
 
 
-def xtest_export_submission(ingest_api, downloader, caplog):
+def test_large_spreadsheet(ingest_api:IngestApi, data_path, importer):
+    submission = ingest_api.create_submission()
+    import_spreadsheet(filename='Ami_latest_fake_project.xlsx',
+                       submission=submission,
+                       ingest_api=ingest_api,
+                       data_path=data_path,
+                       importer=importer)
+
+
+def test_export_submission(ingest_api, downloader, caplog):
     caplog.set_level(logging.INFO)
-    submission_uuid = '86a0ebb7-3ab9-400b-a1c9-ba672721f91a'
+    # submission_uuid = 'c81f7d54-a27f-4212-a6df-88dde947f7cc'
+    submission_uuid = '0948a727-228f-4cfc-857e-6243c6aed08d'
+    submission = ingest_api.get_entity_by_uuid(entity_type='submissionEnvelopes',
+                                               uuid=submission_uuid)
+    export_to_spreadsheet(submission, downloader)
+
+
+def test_large_submission(ingest_api, downloader, caplog):
+    caplog.set_level(logging.INFO)
+    submission_uuid = '1e806c65-d578-40d1-868b-c8965ac29b8b' # Ida dev
+    # submission_uuid = '251bf9c5-a5e5-4da6-b2ad-93bac7d47eb4' # Ida prod
     submission = ingest_api.get_entity_by_uuid(entity_type='submissionEnvelopes',
                                                uuid=submission_uuid)
     export_to_spreadsheet(submission, downloader)
@@ -36,34 +55,6 @@ class TestContext:
     submission: dict = None
     project_uuid:str = ''
     new_submission: dict = None
-
-
-@pytest.fixture
-def ingest_api():
-    api = IngestApi()
-    api.set_token(f"Bearer {os.getenv('INGEST_TOKEN')}")
-    return api
-
-
-@pytest.fixture()
-def downloader(ingest_api):
-    return WorkbookDownloader(ingest_api)
-
-
-@pytest.fixture()
-def importer(ingest_api):
-    return XlsImporter(ingest_api)
-
-@pytest.fixture()
-def data_path():
-    return Path(__file__).parent / 'data'
-
-
-
-
-@pytest.fixture()
-def submitter(ingest_api) -> IngestSubmitter:
-    return IngestSubmitter(ingest_api)
 
 
 @given(parsers.parse('add a new file called {filename} with type {file_type}'))
@@ -87,6 +78,7 @@ def build_file_payload(schema_url, filename):
             "format": os.path.splitext(filename)[1][1:] or 'n/a',
         }
     }
+
 
 def get_project_uuid(ingest_api:IngestApi, submission):
     projects_url = ingest_api.get_link_from_resource(submission, 'projects')
@@ -124,9 +116,10 @@ def context():
 
 @given('I create a submission',
        target_fixture='submission')
-def create_submission(ingest_api:IngestApi, context):
+def create_submission(ingest_api:IngestApi, context=None):
     submission = ingest_api.create_submission()
-    context.submission = submission
+    if context:
+        context.submission = submission
     return submission
 
 
@@ -181,7 +174,7 @@ def step_impl(ingest_api, submission, submissionState):
 
 @given(parsers.parse("delete a file called {filename}"))
 def step_impl(context, filename, ingest_api:IngestApi):
-    submission_url=ingest_api.get_link_from_resource(context.submission, 'self')
+    submission_url= ingest_api.get_link_from_resource(context.submission, 'self')
     files_resource = ingest_api.get_file_by_submission_url_and_filename(submission_url, filename)
     if len(files_resource)==0:
         raise ValueError(f'file {filename} not found in submission {submission_url}')
