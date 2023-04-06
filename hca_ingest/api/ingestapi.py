@@ -40,7 +40,7 @@ class IngestApi:
         # refresh token
         if self.token and not self.headers.get('Authorization'):
             self.set_token(f'Bearer {self.token}')
-            print(f'Bearer {self.token}')
+            self.logger.debug(f'token set')
 
         if self.token_manager:
             self.set_token(f'Bearer {self.token_manager.get_token()}')

@@ -1,3 +1,4 @@
+import os
 from typing import Dict
 
 from hca_ingest.api.ingestapi import IngestApi
@@ -11,16 +12,29 @@ class DataCollector:
     def collect_data_by_submission_uuid(self, submission_uuid) -> Dict[str, Entity]:
         submission = self.api.get_submission_by_uuid(submission_uuid)
         entity_dict = self.__build_entity_dict(submission)
+        if os.getenv('FEATURE_INCLUDE_ALL_SUBMISSIONS', 'on') == 'on':
+            projects_url = self.api.get_link_from_resource(submission, 'projects')
+            project = next(self.api.get_all(projects_url, entity_type='projects'))
+            submissions_url = self.api.get_link_from_resource(project, link_name='submissionEnvelopes')
+            project_submissions = self.api.get_all(submissions_url, entity_type='submissionEnvelopes')
+            for other_submission in project_submissions:
+                if other_submission['uuid']['uuid'] != submission_uuid:
+                    entity_dict.update(self.__build_entity_dict(other_submission))
         return entity_dict
 
-    def __build_entity_dict(self, submission):
+    def __build_entity_dict(self, submission) -> dict:
         data_by_submission = self.__get_submission_data(submission)
         entity_dict = {}
-        for entity_json in data_by_submission:
-            entity = Entity(entity_json)
-            entity_dict[entity.id] = entity
-        linking_map = self.__get_linking_map(submission)
-        self.__set_inputs(entity_dict, linking_map)
+
+        try:
+            for entity_json in data_by_submission:
+                entity = Entity(entity_json)
+                entity_dict[entity.id] = entity
+            linking_map = self.__get_linking_map(submission)
+            self.__set_inputs(entity_dict, linking_map)
+        except RuntimeError as e:
+            raise RuntimeError(f"problem building entity dictionary for submission {submission['uuid']['uuid']}: {str(e)}") from e
+            pass
         return entity_dict
 
     def __get_submission_data(self, submission):
@@ -71,14 +85,25 @@ class DataCollector:
                 input_files_ids = linking_map['processes'][process_id]['inputFiles']
 
                 process = entity_dict[process_id]
-                protocols = [entity_dict[protocol_id] for protocol_id in protocol_ids]
-                input_biomaterials = [entity_dict[id] for id in input_biomaterial_ids]
-                input_files = [entity_dict[id] for id in input_files_ids]
+                try:
+                    protocols = [entity_dict[protocol_id] for protocol_id in protocol_ids]
+                except Exception as e:
+                    raise RuntimeError(f'problem with process {process_id} and protocol: {str(e)}, for  entity {entity}') from e
+                try:
+                    input_biomaterials = [entity_dict[id] for id in input_biomaterial_ids]
+                except Exception as e:
+                    raise RuntimeError(f'problem with process {process_id} and biomaterial: {str(e)}, for  entity {entity}') from e
+                try:
+                    input_files = [entity_dict[id] for id in input_files_ids]
+                except Exception as e:
+                    raise RuntimeError(f'problem with process {process_id} and file: {str(e)}, for  entity {entity}') from e
 
                 entity.set_input(input_biomaterials, input_files, process, protocols)
 
     def __get_entities_by_submission_and_type(self, data_by_submission, submission, entity_type):
+        self.api.page_size = 1000
         entity_json = \
             self.api.get_related_entities(entity_type, submission, entity_type)
+        self.api.page_size = 100
         if entity_json:
             data_by_submission.extend(list(entity_json))
