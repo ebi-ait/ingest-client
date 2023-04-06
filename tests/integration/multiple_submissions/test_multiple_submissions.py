@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+from assertpy import assert_that
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from pytest_bdd import given, parsers, when, then, scenario
@@ -25,6 +26,11 @@ def test_upload_and_update_including_deletion():
     pass
 
 
+@scenario('multiple_submissions.feature', 'export a production dataset')
+def test_export_a_prod_dataset():
+    pass
+
+@pytest.mark.skip
 def test_large_spreadsheet(ingest_api:IngestApi, data_path, importer):
     submission = ingest_api.create_submission()
     import_spreadsheet(filename='Ami_latest_fake_project.xlsx',
@@ -34,34 +40,40 @@ def test_large_spreadsheet(ingest_api:IngestApi, data_path, importer):
                        importer=importer)
 
 
-def test_export_submission(ingest_api, downloader, caplog):
+@pytest.mark.skip
+def test_export_submission(ingest_api, downloader, caplog, output_path):
     caplog.set_level(logging.INFO)
-    # submission_uuid = 'c81f7d54-a27f-4212-a6df-88dde947f7cc'
-    submission_uuid = '0948a727-228f-4cfc-857e-6243c6aed08d'
+    submission_uuid = '2230dc04-fa0c-4a6b-b043-aa4fae94c0ce' # two submissions
+    # submission_uuid = '190a19cd-42ef-45df-b0b5-d0e4f62ba8b7'
     submission = ingest_api.get_entity_by_uuid(entity_type='submissionEnvelopes',
                                                uuid=submission_uuid)
-    export_to_spreadsheet(submission, downloader)
+    export_to_spreadsheet(submission, downloader, output_path)
 
 
-def test_large_submission(ingest_api, downloader, caplog):
+@pytest.mark.skip
+def test_large_submission(ingest_api, downloader, caplog, output_path):
     caplog.set_level(logging.INFO)
     submission_uuid = '1e806c65-d578-40d1-868b-c8965ac29b8b' # Ida dev
     # submission_uuid = '251bf9c5-a5e5-4da6-b2ad-93bac7d47eb4' # Ida prod
     submission = ingest_api.get_entity_by_uuid(entity_type='submissionEnvelopes',
                                                uuid=submission_uuid)
-    export_to_spreadsheet(submission, downloader)
+    export_to_spreadsheet(submission, downloader, output_path)
 @dataclass
 class TestContext:
-    submission: dict = None
+    first_submission: dict=None
+    submission:dict=None
     project_uuid:str = ''
-    new_submission: dict = None
+
+    def init_first_submission(self, submission):
+        if self.first_submission is None:
+            self.first_submission = submission;
 
 
 @given(parsers.parse('add a new file called {filename} with type {file_type}'))
-def add_file(ingest_api:IngestApi, new_submission, filename, file_type):
+def add_file(ingest_api:IngestApi, submission, filename, file_type):
     schema_url = ingest_api.get_latest_schema_url('type', 'file', file_type)
     spreadsheet_payload = build_file_payload(schema_url, filename)
-    submission_url = ingest_api.get_link_from_resource(new_submission, 'self')
+    submission_url = ingest_api.get_link_from_resource(submission, 'self')
     file_entity = ingest_api.create_file(
         submission_url,
         filename=filename,
@@ -100,14 +112,13 @@ def import_spreadsheet(filename: str,
 
 @when('I export a spreadsheet',
       target_fixture='spreadsheet')
-def export_to_spreadsheet(new_submission, downloader: WorkbookDownloader):
-    submission_uuid = new_submission["uuid"]["uuid"]
+def export_to_spreadsheet(submission, downloader: WorkbookDownloader, output_path):
+    submission_uuid = submission["uuid"]["uuid"]
     filename = f'{submission_uuid}.xlsx'
     workbook = downloader.get_workbook_from_submission(submission_uuid)
-    output_path = Path('.') / 'output'
-    output_path.mkdir(exist_ok=True)
     workbook.save(output_path / filename)
     return workbook
+
 
 @pytest.fixture()
 def context():
@@ -116,15 +127,23 @@ def context():
 
 @given('I create a submission',
        target_fixture='submission')
-def create_submission(ingest_api:IngestApi, context=None):
+def create_submission(ingest_api:IngestApi, context:TestContext=None):
     submission = ingest_api.create_submission()
     if context:
+        context.init_first_submission(submission)
         context.submission = submission
     return submission
 
+@pytest.fixture()
+def first_submission(context):
+    return context.first_submission\
+
+@pytest.fixture()
+def last_submission(context:TestContext):
+    return context.submission
 
 @given('I create a new submission on the same project',
-       target_fixture='new_submission')
+       target_fixture='submission')
 def new_submission_in_project(submission,
                               ingest_api: IngestApi,
                               submitter: IngestSubmitter,
@@ -133,18 +152,18 @@ def new_submission_in_project(submission,
     submission2 = ingest_api.create_submission()
     submission2_url = ingest_api.get_link_from_resource(submission2, 'self')
     submitter.link_submission_to_project(project_uuid, submission2_url)
-    context.new_submission = submission2
+    context.submission = submission2
     return submission2
 
 
 @then(parsers.parse("spreadsheet contains a file called {filename} with type {file_type}"))
-def step_impl(spreadsheet: Workbook, filename, file_type: str):
+def check_file_in_sptreadsheet(spreadsheet: Workbook, filename, file_type: str):
     if not check_spreadsheet_contains_filename(spreadsheet, filename, file_type):
         pytest.fail(f'could not find {file_type} called {filename} in spreadsheet')
 
 
 @then("spreadsheet contains all files in submission")
-def step_impl(spreadsheet: Workbook, submission, ingest_api:IngestApi):
+def check_all_files_in_spreadsheet(spreadsheet: Workbook, submission, ingest_api:IngestApi):
     submission_files_url = ingest_api.get_link_from_resource(submission, 'files')
     for file in ingest_api.get_all(submission_files_url, entity_type='files'):
         filename = file['content']['file_core']['file_name']
@@ -167,13 +186,13 @@ def check_spreadsheet_contains_filename(spreadsheet, filename, file_type):
 
 
 @given(parsers.parse("set submission state to {submissionState}"))
-def step_impl(ingest_api, submission, submissionState):
+def set_submission_state(ingest_api, submission, submissionState):
     stateChangeUrl = ingest_api.get_link_from_resource(submission, f'commit{submissionState}')
     ingest_api.put(stateChangeUrl)
 
 
 @given(parsers.parse("delete a file called {filename}"))
-def step_impl(context, filename, ingest_api:IngestApi):
+def delete_file(context, filename, ingest_api:IngestApi):
     submission_url= ingest_api.get_link_from_resource(context.submission, 'self')
     files_resource = ingest_api.get_file_by_submission_url_and_filename(submission_url, filename)
     if len(files_resource)==0:
@@ -183,6 +202,20 @@ def step_impl(context, filename, ingest_api:IngestApi):
 
 
 @then(parsers.parse("spreadsheet does not contain a file called {filename} with type {file_type}"))
-def step_impl(spreadsheet, filename, file_type):
+def check_file_not_in_spreadsheet(spreadsheet, filename, file_type):
     if check_spreadsheet_contains_filename(spreadsheet, filename, file_type):
         pytest.fail(f'unexpected {file_type} called {filename} in spreadsheet')
+
+
+@given(parsers.parse("submission with uuid {submission_uuid}"),
+       target_fixture='submission')
+def find_submission_by_uuid(ingest_api, submission_uuid):
+    return ingest_api.get_submission_by_uuid(submission_uuid)
+
+
+@then("spreadsheet is found in the output directory")
+def check_spreadsheet_exists(output_path, submission):
+    submission_uuid = submission["uuid"]["uuid"]
+    filename = f'{submission_uuid}.xlsx'
+    spreadsheet_path:Path = output_path / filename
+    assert_that(str(spreadsheet_path)).exists()

@@ -34,3 +34,10 @@ def submitter(ingest_api) -> IngestSubmitter:
 @pytest.fixture()
 def data_path():
     return Path(__file__).parent / 'data'
+
+
+@pytest.fixture()
+def output_path():
+    output_path = Path('.') / 'output'
+    output_path.mkdir(exist_ok=True)
+    return output_path

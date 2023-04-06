@@ -25,4 +25,8 @@ Feature: Spreadsheet from a project with multiple submissions
     Then spreadsheet contains a file called new_file.txt with type sequence_file
     And spreadsheet contains a file called SRR3562314_2.fastq.gz with type sequence_file
     And spreadsheet does not contain a file called SRR3562314_1.fastq.gz with type sequence_file
-#    And spreadsheet contains all files in submission
+
+  Scenario: export a production dataset
+    Given submission with uuid 2230dc04-fa0c-4a6b-b043-aa4fae94c0ce
+    When I export a spreadsheet
+    Then spreadsheet is found in the output directory
