@@ -4,9 +4,11 @@ from assertpy import assert_that
 from openpyxl import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from openpyxl.cell.cell import Cell
+from pytest_lazyfixture import lazy_fixture
 
 from hca_ingest.downloader.downloader import (XlsDownloader, HEADER_ROW_NO, BORDER_ROW_NO, TITLE_FONT, TITLE_ALIGNMENT,
-                                              TITLE_FILL, DESCRIPTION_FONT, DESCRIPTION_ALIGNMENT, BORDER_VALUE, HEADER_PROTECTION)
+                                              TITLE_FILL, DESCRIPTION_FONT, DESCRIPTION_ALIGNMENT, BORDER_VALUE,
+                                              HEADER_PROTECTION)
 from hca_ingest.importer.spreadsheet.ingest_workbook import SCHEMAS_WORKSHEET
 
 from .conftest import get_json_file
@@ -20,7 +22,7 @@ def downloader():
 @pytest.fixture
 def project_json(blank_header):
     return {
-        'Project' : {
+        'Project': {
             "headers": {
                 "project.uuid": blank_header,
                 "project.project_core.project_short_name": blank_header,
@@ -111,13 +113,13 @@ def contributors_json(blank_header):
 
 @pytest.fixture
 def multi_line_project(script_dir):
-    return get_json_file(script_dir+ '/project-list-flattened.json')
+    return get_json_file(script_dir + '/project-list-flattened.json')
 
 
 @pytest.fixture(params=[
-    pytest.lazy_fixture('project_json'),
-    pytest.lazy_fixture('contributors_json'),
-    pytest.lazy_fixture('multi_line_project'),
+    lazy_fixture('project_json'),
+    lazy_fixture('contributors_json'),
+    lazy_fixture('multi_line_project'),
 ])
 def without_schema_headers(request):
     return request.param
@@ -129,8 +131,8 @@ def with_schema_headers(script_dir):
 
 
 @pytest.fixture(params=[
-    pytest.lazy_fixture('without_schema_headers'),
-    pytest.lazy_fixture('with_schema_headers'),
+    lazy_fixture('without_schema_headers'),
+    lazy_fixture('with_schema_headers'),
 ])
 def input_json(request):
     return request.param
@@ -156,7 +158,7 @@ def assert_workbook(workbook: Workbook, input_json: dict):
         assert_sheet(workbook, sheet_name, input_json)
 
 
-def assert_sheet(workbook: Workbook, sheet_title: str, input_json :dict):
+def assert_sheet(workbook: Workbook, sheet_title: str, input_json: dict):
     sheet = workbook[sheet_title]
     input_sheet = input_json[sheet_title]
     input_headers = input_sheet['headers']
@@ -178,7 +180,8 @@ def assert_headers(worksheet: Worksheet, input_headers: dict):
             assert_that(user_friendly.value).starts_with(input_header['user_friendly'])
         if input_header['required']:
             assert_that(user_friendly.value).ends_with(' (Required)')
-        assert_that(description).has_font(DESCRIPTION_FONT).has_alignment(DESCRIPTION_ALIGNMENT).has_value(input_header['description'])
+        assert_that(description).has_font(DESCRIPTION_FONT).has_alignment(DESCRIPTION_ALIGNMENT).has_value(
+            input_header['description'])
         assert_that(guide).has_font(DESCRIPTION_FONT).has_alignment(DESCRIPTION_ALIGNMENT)
         if input_header['guidelines']:
             assert_that(guide.value).starts_with(input_header['guidelines'])
