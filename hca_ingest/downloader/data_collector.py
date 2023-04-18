@@ -4,6 +4,13 @@ from typing import Dict
 from hca_ingest.api.ingestapi import IngestApi
 from .entity import Entity
 
+LINK_FIELDS_BY_ENTITY_TYPE = {
+    'biomaterials': ['derivedByProcesses', 'inputToProcesses'],
+    'files': ['derivedByProcesses', 'inputToProcesses'],
+    'processes': ['inputBiomaterials', 'inputFiles', 'protocols'],
+    'protocols': []
+}
+
 
 class DataCollector:
     def __init__(self, ingest_api: IngestApi):
@@ -113,14 +120,8 @@ class DataCollector:
         yield from self.api.get_related_entities(entity_type, submission, entity_type)
 
     def __merge_linking_map(self, src_linking_map, target_linking_map):
-        link_fields_by_entity_type = {
-            'biomaterials': ['derivedByProcesses', 'inputToProcesses'],
-            'files': ['derivedByProcesses', 'inputToProcesses'],
-            'processes': ['inputBiomaterials', 'inputFiles', 'protocols'],
-            'protocols': []
-        }
         target_linking_map = target_linking_map if target_linking_map else {}
-        for entity_type in list(link_fields_by_entity_type.keys()):
+        for entity_type in list(LINK_FIELDS_BY_ENTITY_TYPE.keys()):
             src_entity_type_map = src_linking_map.get(entity_type, {})
             if not target_linking_map.get(entity_type):
                 target_linking_map[entity_type] = src_entity_type_map
