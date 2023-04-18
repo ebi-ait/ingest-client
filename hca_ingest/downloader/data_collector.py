@@ -17,13 +17,15 @@ class DataCollector:
         project_submissions = self.api.get_all(submissions_url, entity_type='submissionEnvelopes')
 
         entity_dict = {}
+        project_linking_map = {}
         for sub in project_submissions:
             entity_dict = self.__build_entity_dict(sub, entity_dict)
+            # TODO Need to merge all linking maps or have a linking map per project not by submission
+            linking_map = self.__get_linking_map(sub)
+            project_linking_map = self.__merge_linking_map(linking_map, project_linking_map)
 
         try:
-            # TODO Need to merge all linking maps or have a linking map per project not by submission
-            linking_map = self.__get_linking_map(submission)
-            self.__set_inputs_using_linking_map(entity_dict, linking_map)
+            self.__set_inputs_using_linking_map(entity_dict, project_linking_map)
         except RuntimeError as e:
             raise RuntimeError(
                 f"problem setting inputs of entities for submission {submission['uuid']['uuid']}: {str(e)}") from e
@@ -133,3 +135,34 @@ class DataCollector:
     def __get_entities_by_submission_and_type(self, submission, entity_type):
         self.api.page_size = 10
         yield from self.api.get_related_entities(entity_type, submission, entity_type)
+
+    def __merge_linking_map(self, src_linking_map, target_linking_map):
+        link_fields_by_entity_type = {
+            'biomaterials': ['derivedByProcesses', 'inputToProcesses'],
+            'files': ['derivedByProcesses', 'inputToProcesses'],
+            'processes': ['inputBiomaterials', 'inputFiles', 'protocols'],
+            'protocols': []
+        }
+        target_linking_map = target_linking_map if target_linking_map else {}
+        for entity_type in list(link_fields_by_entity_type.keys()):
+            src_entity_type_map = src_linking_map.get(entity_type, {})
+            if not target_linking_map.get(entity_type):
+                target_linking_map[entity_type] = src_entity_type_map
+
+            for entity_id in list(src_entity_type_map.keys()):
+                src_entity_id_map = src_entity_type_map.get(entity_id, {})
+                if not target_linking_map[entity_type].get(entity_id):
+                    target_linking_map[entity_type][entity_id] = src_entity_id_map
+
+                for field in list(src_entity_id_map.keys()):
+                    src_field_list = src_entity_id_map.get(field, [])
+
+                    if not target_linking_map[entity_type][entity_id].get(field):
+                        target_linking_map[entity_type][entity_id][field] = src_field_list
+
+                    src_set = set(src_field_list)
+                    target_set = set(target_linking_map[entity_type][entity_id][field])
+                    target_set.update(src_set)
+                    target_linking_map[entity_type][entity_id][field] = list(target_set)
+
+        return target_linking_map
