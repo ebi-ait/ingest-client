@@ -12,7 +12,12 @@ from hca_ingest.importer.submission.ingest_submitter import IngestSubmitter
 @pytest.fixture
 def ingest_api():
     api = IngestApi()
-    api.set_token(f"Bearer {os.getenv('INGEST_TOKEN')}")
+    # TODO could also use a token generator here using the GCP service account,
+    #  see ingest-integration-tests repo for reference
+    token = os.getenv('INGEST_TOKEN')
+    if not token:
+        raise Exception("INGEST_TOKEN env variable must be set")
+    api.set_token(f"Bearer {token}")
     return api
 
 
