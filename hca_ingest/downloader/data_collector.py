@@ -20,7 +20,6 @@ class DataCollector:
         project_linking_map = {}
         for sub in project_submissions:
             entity_dict = self.__build_entity_dict(sub, entity_dict)
-            # TODO Need to merge all linking maps or have a linking map per project not by submission
             linking_map = self.__get_linking_map(sub)
             project_linking_map = self.__merge_linking_map(linking_map, project_linking_map)
 
