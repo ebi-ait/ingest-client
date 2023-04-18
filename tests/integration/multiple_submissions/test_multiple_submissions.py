@@ -65,7 +65,6 @@ def test_export_submission(ingest_api, downloader, caplog, output_path):
 def test_large_submission(ingest_api, downloader, caplog, output_path):
     caplog.set_level(logging.INFO)
     submission_uuid = '1e806c65-d578-40d1-868b-c8965ac29b8b'  # Ida dev
-    # something memory intensive in this data, just fetching 20 entities is too much for core
     # submission_uuid = '251bf9c5-a5e5-4da6-b2ad-93bac7d47eb4' # Ida prod
     submission = ingest_api.get_entity_by_uuid(entity_type='submissionEnvelopes',
                                                uuid=submission_uuid)
