@@ -21,7 +21,9 @@ class DataCollector:
             entity_dict = self.__build_entity_dict(sub, entity_dict)
 
         try:
-            self.__set_inputs(entity_dict)
+            # TODO Need to merge all linking maps or have a linking map per project not by submission
+            linking_map = self.__get_linking_map(submission)
+            self.__set_inputs_using_linking_map(entity_dict, linking_map)
         except RuntimeError as e:
             raise RuntimeError(
                 f"problem setting inputs of entities for submission {submission['uuid']['uuid']}: {str(e)}") from e
@@ -63,6 +65,47 @@ class DataCollector:
         r.raise_for_status()
         linking_map = r.json()
         return linking_map
+
+    @staticmethod
+    def __set_inputs_using_linking_map(entity_dict, linking_map):
+        entities_with_inputs = list(linking_map['biomaterials'].keys()) + list(
+            linking_map['files'].keys())
+
+        for entity_id in entities_with_inputs:
+            entity = entity_dict[entity_id]
+            entity_link = linking_map[entity.schema.domain_type + 's'][entity.id]
+            derived_by_processes = entity_link.get('derivedByProcesses')
+
+            if derived_by_processes and len(derived_by_processes) > 0:
+                # Check if derivedByProcesses returns more than 1
+                # It shouldn't happen because it's not possible to do it via spreadsheet
+                if len(derived_by_processes) > 1:
+                    raise ValueError(f'The {entity.schema.concrete_type} with {entity.uuid} '
+                                     f'has more than one processes which derived it')
+
+                process_id = entity_link['derivedByProcesses'][0]
+                protocol_ids = linking_map['processes'][process_id]['protocols']
+                input_biomaterial_ids = linking_map['processes'][process_id]['inputBiomaterials']
+                input_files_ids = linking_map['processes'][process_id]['inputFiles']
+
+                process = entity_dict[process_id]
+                try:
+                    protocols = [entity_dict[protocol_id] for protocol_id in protocol_ids]
+                except Exception as e:
+                    raise RuntimeError(
+                        f'problem with process {process_id} and protocol: {str(e)}, for  entity {entity}') from e
+                try:
+                    input_biomaterials = [entity_dict[id] for id in input_biomaterial_ids]
+                except Exception as e:
+                    raise RuntimeError(
+                        f'problem with process {process_id} and biomaterial: {str(e)}, for  entity {entity}') from e
+                try:
+                    input_files = [entity_dict[id] for id in input_files_ids]
+                except Exception as e:
+                    raise RuntimeError(
+                        f'problem with process {process_id} and file: {str(e)}, for  entity {entity}') from e
+
+                entity.set_input(input_biomaterials, input_files, process, protocols)
 
     def __set_inputs(self, entity_dict):
         for entity_id in entity_dict:
