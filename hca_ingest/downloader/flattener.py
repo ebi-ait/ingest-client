@@ -158,9 +158,8 @@ class Flattener:
         concrete_ids = {}
         for concrete_type, inputs_iter in groupby(sorted(input_entities, key=sort_by_concrete_type),
                                                   lambda entity: entity.schema.concrete_type):
-            inputs = list(inputs_iter)
-            input_ids = [i.content[core_name][id_name] for i in inputs]
-            input_uuids = [i.uuid for i in inputs]
+            input_ids = [i.content[core_name][id_name] for i in inputs_iter]
+            input_uuids = [i.uuid for i in inputs_iter]
             concrete_ids.update({
                 concrete_type: {
                     core_name: {
