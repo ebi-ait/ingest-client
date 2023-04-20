@@ -30,6 +30,11 @@
         "sequencing_protocol.field": "value",
         "sequencing_protocol.protocol_core.protocol_id": "protocol_id1",
         "sequencing_protocol.uuid": "protocol-uuid1"
+      },
+      {
+        "sequencing_protocol.field": "value",
+        "sequencing_protocol.protocol_core.protocol_id": "protocol_id3",
+        "sequencing_protocol.uuid": "protocol-uuid3"
       }
     ]
   },
@@ -59,8 +64,8 @@
         "process.uuid": "process-uuid",
         "process.field": "value",
         "process.process_core.process_id": "process_id",
-        "sequencing_protocol.protocol_core.protocol_id": "protocol_id1",
-        "sequencing_protocol.uuid": "protocol-uuid1",
+        "sequencing_protocol.protocol_core.protocol_id": "protocol_id1||protocol_id3",
+        "sequencing_protocol.uuid": "protocol-uuid1||protocol-uuid3",
         "specimen_from_organism.uuid": "specimen-uuid"
       }
     ]
