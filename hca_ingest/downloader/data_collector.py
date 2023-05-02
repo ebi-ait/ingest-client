@@ -1,4 +1,5 @@
 import os
+from itertools import chain
 from typing import Dict
 
 from hca_ingest.api.ingestapi import IngestApi
@@ -60,11 +61,11 @@ class DataCollector:
         else:
             raise Exception('There should be a project')
 
-        yield from submission_data
-        yield from self.__get_entities_by_submission_and_type(submission, 'biomaterials')
-        yield from self.__get_entities_by_submission_and_type(submission, 'processes')
-        yield from self.__get_entities_by_submission_and_type(submission, 'protocols')
-        yield from self.__get_entities_by_submission_and_type(submission, 'files')
+        biomaterials_iter = self.__get_entities_by_submission_and_type(submission, 'biomaterials')
+        processes_iter = self.__get_entities_by_submission_and_type(submission, 'processes')
+        protocols_iter = self.__get_entities_by_submission_and_type(submission, 'protocols')
+        files_iter = self.__get_entities_by_submission_and_type(submission, 'files')
+        return chain(submission_data, biomaterials_iter, processes_iter, protocols_iter, files_iter)
 
     def __get_linking_map(self, submission):
         linking_map_url = submission['_links']['linkingMap']['href']
