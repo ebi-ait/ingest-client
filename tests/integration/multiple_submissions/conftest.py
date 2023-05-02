@@ -7,17 +7,18 @@ from hca_ingest.api.ingestapi import IngestApi
 from hca_ingest.downloader.workbook import WorkbookDownloader
 from hca_ingest.importer.importer import XlsImporter
 from hca_ingest.importer.submission.ingest_submitter import IngestSubmitter
+from hca_ingest.utils.s2s_token_client import ServiceCredential, S2STokenClient
+from hca_ingest.utils.token_manager import TokenManager
 
 
 @pytest.fixture
 def ingest_api():
-    api = IngestApi()
-    # TODO could also use a token generator here using the GCP service account,
-    #  see ingest-integration-tests repo for reference
-    token = os.getenv('INGEST_TOKEN')
-    if not token:
-        raise Exception("INGEST_TOKEN env variable must be set")
-    api.set_token(f"Bearer {token}")
+    gcp_credentials_file = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+    credential = ServiceCredential.from_file(gcp_credentials_file)
+    audience = os.environ.get('INGEST_API_JWT_AUDIENCE')
+    s2s_token_client = S2STokenClient(credential, audience)
+    token_manager = TokenManager(s2s_token_client)
+    api = IngestApi(token_manager=token_manager)
     return api
 
 
