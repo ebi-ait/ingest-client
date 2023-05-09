@@ -1,8 +1,16 @@
 import os
+from itertools import chain
 from typing import Dict
 
 from hca_ingest.api.ingestapi import IngestApi
 from .entity import Entity
+
+LINK_FIELDS_BY_ENTITY_TYPE = {
+    'biomaterials': ['derivedByProcesses', 'inputToProcesses'],
+    'files': ['derivedByProcesses', 'inputToProcesses'],
+    'processes': ['inputBiomaterials', 'inputFiles', 'protocols'],
+    'protocols': []
+}
 
 
 class DataCollector:
@@ -11,30 +19,36 @@ class DataCollector:
 
     def collect_data_by_submission_uuid(self, submission_uuid) -> Dict[str, Entity]:
         submission = self.api.get_submission_by_uuid(submission_uuid)
-        entity_dict = self.__build_entity_dict(submission)
-        if os.getenv('FEATURE_INCLUDE_ALL_SUBMISSIONS', 'on') == 'on':
-            projects_url = self.api.get_link_from_resource(submission, 'projects')
-            project = next(self.api.get_all(projects_url, entity_type='projects'))
-            submissions_url = self.api.get_link_from_resource(project, link_name='submissionEnvelopes')
-            project_submissions = self.api.get_all(submissions_url, entity_type='submissionEnvelopes')
-            for other_submission in project_submissions:
-                if other_submission['uuid']['uuid'] != submission_uuid:
-                    entity_dict.update(self.__build_entity_dict(other_submission))
+        projects_url = self.api.get_link_from_resource(submission, 'projects')
+        project = next(self.api.get_all(projects_url, entity_type='projects'))
+        submissions_url = self.api.get_link_from_resource(project, link_name='submissionEnvelopes')
+        project_submissions = self.api.get_all(submissions_url, entity_type='submissionEnvelopes')
+
+        entity_dict = {}
+        project_linking_map = {}
+        for sub in project_submissions:
+            entity_dict = self.__build_entity_dict(sub, entity_dict)
+            linking_map = self.__get_linking_map(sub)
+            project_linking_map = self.__merge_linking_map(linking_map, project_linking_map)
+
+        try:
+            self.__set_inputs_using_linking_map(entity_dict, project_linking_map)
+        except RuntimeError as e:
+            raise RuntimeError(
+                f"problem setting inputs of entities for submission {submission['uuid']['uuid']}: {str(e)}") from e
+
         return entity_dict
 
-    def __build_entity_dict(self, submission) -> dict:
+    def __build_entity_dict(self, submission, entity_dict=None) -> dict:
         data_by_submission = self.__get_submission_data(submission)
-        entity_dict = {}
-
+        entity_dict = entity_dict if entity_dict else {}
         try:
             for entity_json in data_by_submission:
                 entity = Entity(entity_json)
                 entity_dict[entity.id] = entity
-            linking_map = self.__get_linking_map(submission)
-            self.__set_inputs(entity_dict, linking_map)
         except RuntimeError as e:
-            raise RuntimeError(f"problem building entity dictionary for submission {submission['uuid']['uuid']}: {str(e)}") from e
-            pass
+            raise RuntimeError(
+                f"problem building entity dictionary for submission {submission['uuid']['uuid']}: {str(e)}") from e
         return entity_dict
 
     def __get_submission_data(self, submission):
@@ -47,12 +61,11 @@ class DataCollector:
         else:
             raise Exception('There should be a project')
 
-        self.__get_entities_by_submission_and_type(submission_data, submission, 'biomaterials')
-        self.__get_entities_by_submission_and_type(submission_data, submission, 'processes')
-        self.__get_entities_by_submission_and_type(submission_data, submission, 'protocols')
-        self.__get_entities_by_submission_and_type(submission_data, submission, 'files')
-
-        return submission_data
+        biomaterials_iter = self.__get_entities_by_submission_and_type(submission, 'biomaterials')
+        processes_iter = self.__get_entities_by_submission_and_type(submission, 'processes')
+        protocols_iter = self.__get_entities_by_submission_and_type(submission, 'protocols')
+        files_iter = self.__get_entities_by_submission_and_type(submission, 'files')
+        return chain(submission_data, biomaterials_iter, processes_iter, protocols_iter, files_iter)
 
     def __get_linking_map(self, submission):
         linking_map_url = submission['_links']['linkingMap']['href']
@@ -63,7 +76,7 @@ class DataCollector:
         return linking_map
 
     @staticmethod
-    def __set_inputs(entity_dict, linking_map):
+    def __set_inputs_using_linking_map(entity_dict, linking_map):
         entities_with_inputs = list(linking_map['biomaterials'].keys()) + list(
             linking_map['files'].keys())
 
@@ -88,22 +101,46 @@ class DataCollector:
                 try:
                     protocols = [entity_dict[protocol_id] for protocol_id in protocol_ids]
                 except Exception as e:
-                    raise RuntimeError(f'problem with process {process_id} and protocol: {str(e)}, for  entity {entity}') from e
+                    raise RuntimeError(
+                        f'problem with process {process_id} and protocol: {str(e)}, for  entity {entity}') from e
                 try:
                     input_biomaterials = [entity_dict[id] for id in input_biomaterial_ids]
                 except Exception as e:
-                    raise RuntimeError(f'problem with process {process_id} and biomaterial: {str(e)}, for  entity {entity}') from e
+                    raise RuntimeError(
+                        f'problem with process {process_id} and biomaterial: {str(e)}, for  entity {entity}') from e
                 try:
                     input_files = [entity_dict[id] for id in input_files_ids]
                 except Exception as e:
-                    raise RuntimeError(f'problem with process {process_id} and file: {str(e)}, for  entity {entity}') from e
+                    raise RuntimeError(
+                        f'problem with process {process_id} and file: {str(e)}, for  entity {entity}') from e
 
                 entity.set_input(input_biomaterials, input_files, process, protocols)
 
-    def __get_entities_by_submission_and_type(self, data_by_submission, submission, entity_type):
-        self.api.page_size = 1000
-        entity_json = \
-            self.api.get_related_entities(entity_type, submission, entity_type)
-        self.api.page_size = 100
-        if entity_json:
-            data_by_submission.extend(list(entity_json))
+    def __get_entities_by_submission_and_type(self, submission, entity_type):
+        self.api.page_size = 10
+        yield from self.api.get_related_entities(entity_type, submission, entity_type)
+
+    def __merge_linking_map(self, src_linking_map, target_linking_map):
+        target_linking_map = target_linking_map if target_linking_map else {}
+        for entity_type in list(LINK_FIELDS_BY_ENTITY_TYPE.keys()):
+            src_entity_type_map = src_linking_map.get(entity_type, {})
+            if not target_linking_map.get(entity_type):
+                target_linking_map[entity_type] = src_entity_type_map
+
+            for entity_id in list(src_entity_type_map.keys()):
+                src_entity_id_map = src_entity_type_map.get(entity_id, {})
+                if not target_linking_map[entity_type].get(entity_id):
+                    target_linking_map[entity_type][entity_id] = src_entity_id_map
+
+                for field in list(src_entity_id_map.keys()):
+                    src_field_list = src_entity_id_map.get(field, [])
+
+                    if not target_linking_map[entity_type][entity_id].get(field):
+                        target_linking_map[entity_type][entity_id][field] = src_field_list
+
+                    src_set = set(src_field_list)
+                    target_set = set(target_linking_map[entity_type][entity_id][field])
+                    target_set.update(src_set)
+                    target_linking_map[entity_type][entity_id][field] = list(target_set)
+
+        return target_linking_map

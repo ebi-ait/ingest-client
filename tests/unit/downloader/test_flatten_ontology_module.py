@@ -1,5 +1,6 @@
 import pytest
 from assertpy import assert_that
+from pytest_lazyfixture import lazy_fixture
 
 from .conftest import get_entities_from_content_list
 
@@ -134,11 +135,11 @@ def with_single_element_but_only_with_text_attr(content, expected, blank_header)
 
 
 @pytest.fixture(params=[
-    pytest.lazy_fixture('with_multiple_elements'),
-    pytest.lazy_fixture('with_multiple_elements_but_inconsistent_columns'),
-    pytest.lazy_fixture('with_multiple_elements_but_with_empty_ontology_values'),
-    pytest.lazy_fixture('with_single_element'),
-    pytest.lazy_fixture('with_single_element_but_only_with_text_attr')
+    lazy_fixture('with_multiple_elements'),
+    lazy_fixture('with_multiple_elements_but_inconsistent_columns'),
+    lazy_fixture('with_multiple_elements_but_with_empty_ontology_values'),
+    lazy_fixture('with_single_element'),
+    lazy_fixture('with_single_element_but_only_with_text_attr')
 ])
 def entity_list(request):
     return get_entities_from_content_list([request.param])

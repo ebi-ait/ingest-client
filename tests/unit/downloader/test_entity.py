@@ -2,6 +2,7 @@ import uuid
 
 import pytest
 from assertpy import assert_that
+from pytest_lazyfixture import lazy_fixture
 
 from hca_ingest.downloader.entity import Entity
 
@@ -14,6 +15,7 @@ def domain_type():
 @pytest.fixture
 def concrete_type():
     return 'sequencing_protocol'
+
 
 @pytest.fixture
 def schema_url(domain_type, concrete_type):
@@ -37,8 +39,8 @@ def populated_entity(schema_url, metadata_uuid, metadata_id):
             'describedBy': schema_url
         },
         'uuid': {'uuid': metadata_uuid},
-        "_links" : {
-            "self" : {
+        "_links": {
+            "self": {
                 "href": f"https://api.ingest.archive.data.humancellatlas.org/projects/{metadata_id}"
             }
         }
@@ -47,7 +49,8 @@ def populated_entity(schema_url, metadata_uuid, metadata_id):
 
 def test_populated_entity(populated_entity, metadata_uuid, metadata_id, schema_url, domain_type, concrete_type):
     assert_that(populated_entity).has_uuid(metadata_uuid).has_id(metadata_id)
-    assert_that(populated_entity.schema).has_url(schema_url).has_domain_type(domain_type).has_concrete_type(concrete_type)
+    assert_that(populated_entity.schema).has_url(schema_url).has_domain_type(domain_type).has_concrete_type(
+        concrete_type)
 
 
 @pytest.fixture
@@ -58,6 +61,7 @@ def schema_empty_string():
         }
     }
 
+
 @pytest.fixture
 def schema_none():
     return {
@@ -65,6 +69,7 @@ def schema_none():
             'describedBy': None
         }
     }
+
 
 @pytest.fixture
 def schema_missing():
@@ -86,11 +91,11 @@ def content_missing():
 
 
 @pytest.fixture(params=[
-    pytest.lazy_fixture('schema_empty_string'),
-    pytest.lazy_fixture('schema_none'),
-    pytest.lazy_fixture('schema_missing'),
-    pytest.lazy_fixture('content_none'),
-    pytest.lazy_fixture('content_missing')
+    lazy_fixture('schema_empty_string'),
+    lazy_fixture('schema_none'),
+    lazy_fixture('schema_missing'),
+    lazy_fixture('content_none'),
+    lazy_fixture('content_missing')
 ])
 def entity_missing_schema(request) -> Entity:
     return Entity(request.param)
@@ -101,9 +106,9 @@ def test_entity_missing_schema(entity_missing_schema: Entity):
 
 
 @pytest.fixture(params=[
-    pytest.lazy_fixture('schema_missing'),
-    pytest.lazy_fixture('content_none'),
-    pytest.lazy_fixture('content_missing')
+    lazy_fixture('schema_missing'),
+    lazy_fixture('content_none'),
+    lazy_fixture('content_missing')
 ])
 def entity_missing_content(request) -> Entity:
     return Entity(request.param)
@@ -145,12 +150,13 @@ def uuid_none():
 def uuid_missing():
     return {}
 
+
 @pytest.fixture(params=[
-    pytest.lazy_fixture('uuid_uuid_empty_string'),
-    pytest.lazy_fixture('uuid_uuid_none'),
-    pytest.lazy_fixture('uuid_uuid_missing'),
-    pytest.lazy_fixture('uuid_none'),
-    pytest.lazy_fixture('uuid_missing')
+    lazy_fixture('uuid_uuid_empty_string'),
+    lazy_fixture('uuid_uuid_none'),
+    lazy_fixture('uuid_uuid_missing'),
+    lazy_fixture('uuid_none'),
+    lazy_fixture('uuid_missing')
 ])
 def entity_missing_uuid(request) -> Entity:
     return Entity(request.param)
@@ -163,8 +169,8 @@ def test_entity_missing_uuid(entity_missing_uuid: Entity):
 @pytest.fixture
 def href_no_slash():
     return {
-        "_links" : {
-            "self" : {
+        "_links": {
+            "self": {
                 "href": "linkwithoutslash"
             }
         }
@@ -174,8 +180,8 @@ def href_no_slash():
 @pytest.fixture
 def href_empty_string():
     return {
-        "_links" : {
-            "self" : {
+        "_links": {
+            "self": {
                 "href": ""
             }
         }
@@ -185,8 +191,8 @@ def href_empty_string():
 @pytest.fixture
 def href_none():
     return {
-        "_links" : {
-            "self" : {
+        "_links": {
+            "self": {
                 "href": None
             }
         }
@@ -196,8 +202,8 @@ def href_none():
 @pytest.fixture
 def href_missing():
     return {
-        "_links" : {
-            "self" : {}
+        "_links": {
+            "self": {}
         }
     }
 
@@ -231,14 +237,14 @@ def links_missing():
 
 
 @pytest.fixture(params=[
-    pytest.lazy_fixture('href_no_slash'),
-    pytest.lazy_fixture('href_empty_string'),
-    pytest.lazy_fixture('href_none'),
-    pytest.lazy_fixture('href_missing'),
-    pytest.lazy_fixture('self_none'),
-    pytest.lazy_fixture('self_missing'),
-    pytest.lazy_fixture('links_none'),
-    pytest.lazy_fixture('links_missing')
+    lazy_fixture('href_no_slash'),
+    lazy_fixture('href_empty_string'),
+    lazy_fixture('href_none'),
+    lazy_fixture('href_missing'),
+    lazy_fixture('self_none'),
+    lazy_fixture('self_missing'),
+    lazy_fixture('links_none'),
+    lazy_fixture('links_missing')
 ])
 def entity_missing_link(request) -> Entity:
     return Entity(request.param)

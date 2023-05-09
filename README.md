@@ -12,12 +12,12 @@ This repository contains the hca-ingest Python package library which can be shar
 
 ### API package
 
-To use the Ingest API interface in your python script 
+To use the Ingest API interface in your python script
 
     from hca_ingest.api.ingestapi import IngestApi
 
 Configure the ingest url to be used by setting the environment variable for INGEST_API
-    
+
     INGEST_API=http://localhost:8080
 
 ### Schema template package
@@ -25,10 +25,12 @@ Configure the ingest url to be used by setting the environment variable for INGE
 The schema template package provides convenient lookup of properties in the HCA JSON schema.
 Each property in the JSON schema is represented as a simple key that is prefixed with the schema name.
 
-The first element is the short name for the schema followed by the property. e.g the key for the biomaterial_id property in the
+The first element is the short name for the schema followed by the property. e.g the key for the biomaterial_id property
+in the
 donor_organism schema is `donor_organism.biomaterial_core.biomaterial_id`.
 
-The schema template provides access to attributes of each key that is useful for developing schema aware applications that need to query or generate JSON documents against the JSON schema.
+The schema template provides access to attributes of each key that is useful for developing schema aware applications
+that need to query or generate JSON documents against the JSON schema.
 
 | Key | Description | Examples |
 | --- |---| --- |
@@ -46,7 +48,6 @@ The schema template provides access to attributes of each key that is useful for
 | {key}.external_reference | Tells you if the property is globaly identifiable and therefore retrievable a retrievable object from ingest   | `donor_organism.uuid.external_reference` = True|
 | {key}.example  | An example of the expected value for this property  |  `project.contact.contact_name.example` = John,D,Doe |
 
-
 ## Developer Notes
 
 This package is currently only compatible with Python 3.
@@ -56,20 +57,36 @@ This package is currently only compatible with Python 3.
 Requirements for this project are listed in 2 files: `requirements.txt` and `dev-requirements.txt`.
 The `dev-requirements.txt` file contains dependencies specific for development
 
-The requirement files (`requirements.txt`, `dev-requirements.txt`) are generated using `pip-compile` from [pip-tools](https://github.com/jazzband/pip-tools) 
+The requirement files (`requirements.txt`, `dev-requirements.txt`) are generated using `pip-compile`
+from [pip-tools](https://github.com/jazzband/pip-tools).
+
+The `pip-tools` module should be pre-installed in your virtual env to use `pip-compile` for generating the requirement
+files and `pip-sync` for installing the dependencies:
+
+```shell
+ # this is the latest version at the time of writing
+ pip install pip-tools==6.13.0
+```
+
+To generate / regenerate the requirement files:
+
 ```shell
 pip-compile requirements.in
 pip-compile dev-requirements.in
 ```
+
 The direct dependencies are listed in `requirements.in`, `dev-requirements.in` input files.
 
 #### Install dependencies
 
 * by using `pip-sync` from `pip-tools`
+
 ```shell
 pip-sync requirements.txt dev-requirements.txt
 ```
-* or by just using `pip install` 
+
+* or by just using `pip install`
+
 ```
     pip install -r requirements.txt
     pip install -r dev-requirements.txt
@@ -87,16 +104,15 @@ pip-compile --upgrade-package requests
 
 See more options in the pip-compile [documentation](https://github.com/jazzband/pip-tools#updating-requirements) .
 
-
 ### Running the Tests
 
 To run all the tests, use `unittest` package:
 
     python -m unittest 
-    
+
 ### Developing Code in Editable Mode
 
-Using `pip`'s editable mode, client projects can refer to the latest code in this repository 
+Using `pip`'s editable mode, client projects can refer to the latest code in this repository
 directly without installing it through PyPI. This can be done either by manually cloning the code
 base:
 
@@ -107,33 +123,33 @@ or by having `pip` do it automatically by providing a reference to this reposito
     pip install -e \
     git+https://github.com/HumanCellAtlas/ingest-client.git\
     #egg=hca_ingest
-    
+
 For more information on version control support with `pip`, refer to the [VCS
 support documentation](https://pip.pypa.io/en/stable/reference/pip_install/#vcs-support).
 
 ### Publish to PyPI
 
 1. Create PyPI Account through the [registration page](https://pypi.org/account/register/).
-    
+
    Take note that PyPI requires email addresses to be verified before publishing.
 
 2. Package the project for distribution.
- 
+
         python setup.py sdist
-        
-    Take note that `setup.py` is configured to build a distribution with name `hca-ingest`.
-    
+
+   Take note that `setup.py` is configured to build a distribution with name `hca-ingest`.
+
 3. Install [Twine](https://pypi.org/project/twine/)
 
         pip install twine        
-    
-4. Upload the distribution package to PyPI. 
+
+4. Upload the distribution package to PyPI.
 
         twine upload dist/*
-        
-    Running `python setup.py sdist` will create a package in the `dist` directory of the project
-    base directory. Specific packages can be chosen if preferred instead of the wildcard `*`:
-    
+
+   Running `python setup.py sdist` will create a package in the `dist` directory of the project
+   base directory. Specific packages can be chosen if preferred instead of the wildcard `*`:
+
         twine upload dist/hca_ingest-0.1a0.tar.gz
 
 

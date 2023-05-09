@@ -1,5 +1,6 @@
 import pytest
 from assertpy import assert_that
+from pytest_lazyfixture import lazy_fixture
 
 from .conftest import get_json_file, get_entity_file, get_entities_file, get_entities_from_content_list
 
@@ -164,19 +165,19 @@ def with_different_columns(expected, metadata_uuid, blank_header):
 
 
 @pytest.fixture(params=[
-    pytest.lazy_fixture('with_no_modules'),
-    pytest.lazy_fixture('with_string_array'),
-    pytest.lazy_fixture('with_list_property'),
-    pytest.lazy_fixture('with_boolean'),
-    pytest.lazy_fixture('with_integer')
+    lazy_fixture('with_no_modules'),
+    lazy_fixture('with_string_array'),
+    lazy_fixture('with_list_property'),
+    lazy_fixture('with_boolean'),
+    lazy_fixture('with_integer')
 ])
 def from_content(request):
     return [request.param]
 
 
 @pytest.fixture(params=[
-    pytest.lazy_fixture('from_content'),
-    pytest.lazy_fixture('with_different_columns')
+    lazy_fixture('from_content'),
+    lazy_fixture('with_different_columns')
 ])
 def entities(request):
     return get_entities_from_content_list(request.param)
@@ -191,8 +192,8 @@ def entities_with_inputs(specimen_with_inputs, expected, expected_with_inputs):
 
 
 @pytest.fixture(params=[
-    pytest.lazy_fixture('entities'),
-    pytest.lazy_fixture('entities_with_inputs'),
+    lazy_fixture('entities'),
+    lazy_fixture('entities_with_inputs'),
 ])
 def entity_list(request):
     return request.param
