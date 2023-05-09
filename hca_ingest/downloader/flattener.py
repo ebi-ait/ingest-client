@@ -152,11 +152,17 @@ class Flattener:
 
     @staticmethod
     def __get_concrete_ids(input_entities: Iterable[Entity], core_name: str, id_name: str):
+
+        def sort_by_concrete_type(entity):
+            return entity.schema.concrete_type
         concrete_ids = {}
-        for concrete_type, inputs_iter in groupby(input_entities, lambda entity: entity.schema.concrete_type):
-            inputs = list(inputs_iter)
-            input_ids = [i.content[core_name][id_name] for i in inputs]
-            input_uuids = [i.uuid for i in inputs]
+        for concrete_type, inputs_iter in groupby(sorted(input_entities, key=sort_by_concrete_type),
+                                                  lambda entity: entity.schema.concrete_type):
+            input_ids = []
+            input_uuids = []
+            for i in inputs_iter:
+                input_ids.append(i.content[core_name][id_name])
+                input_uuids.append(i.uuid)
             concrete_ids.update({
                 concrete_type: {
                     core_name: {
