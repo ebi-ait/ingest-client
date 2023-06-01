@@ -61,12 +61,11 @@ class DataCollector:
         else:
             raise Exception('There should be a project')
 
-        self.__get_entities_by_submission_and_type(submission_data, submission, 'biomaterials')
-        self.__get_entities_by_submission_and_type(submission_data, submission, 'processes')
-        self.__get_entities_by_submission_and_type(submission_data, submission, 'protocols')
-        self.__get_entities_by_submission_and_type(submission_data, submission, 'files')
-
-        return submission_data
+        biomaterials_iter = self.__get_entities_by_submission_and_type(submission, 'biomaterials', projection='withLinks')
+        processes_iter = self.__get_entities_by_submission_and_type(submission, 'processes', projection='withLinks')
+        protocols_iter = self.__get_entities_by_submission_and_type(submission, 'protocols')
+        files_iter = self.__get_entities_by_submission_and_type(submission, 'files', projection='withLinks')
+        return chain(submission_data, biomaterials_iter, processes_iter, protocols_iter, files_iter)
 
     def __get_linking_map(self, submission):
         linking_map_url = submission['_links']['linkingMap']['href']
@@ -78,8 +77,7 @@ class DataCollector:
 
     @staticmethod
     def __set_inputs(entity_dict, linking_map):
-        entities_with_inputs = list(linking_map['biomaterials'].keys()) + list(
-            linking_map['files'].keys())
+        entities_with_inputs = chain(linking_map['biomaterials'].keys(), linking_map['files'].keys())
 
         for entity_id in entities_with_inputs:
             entity = entity_dict[entity_id]
