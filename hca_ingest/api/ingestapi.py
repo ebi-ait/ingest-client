@@ -67,6 +67,7 @@ class IngestApi:
             self.session.cache.delete_url(url)
         if 'headers' not in kwargs:
             kwargs['headers'] = self.get_headers()
+        self.logger.debug(f'GET {url}')
         response = self.session.get(url, **kwargs)
         response.raise_for_status()
         return response
@@ -277,8 +278,10 @@ class IngestApi:
             relation = entity_type
         return self.get_related_entities(relation, entity, entity_type)
 
-    def get_all(self, url, entity_type):
+    def get_all(self, url, entity_type, projection=None):
         params = {'size': self.page_size}
+        if projection:
+            params['projection']=projection
         result = self.get(url, params=params).json()
 
         entities = result["_embedded"][entity_type] if '_embedded' in result else []
@@ -289,13 +292,13 @@ class IngestApi:
             result = self.get(next_url).json()
             entities = result["_embedded"][entity_type]
             yield from entities
-            self.logger.info(f"GET {entity_type} {json.dumps(result['page'])}")
+            self.logger.debug(f"GET {entity_type} {json.dumps(result['page'])}")
 
-    def get_related_entities(self, relation, entity, entity_type):
+    def get_related_entities(self, relation, entity, entity_type, projection=None):
         # get the self link from entity
         if relation in entity["_links"]:
             entity_url = entity["_links"][relation]["href"]
-            yield from self.get_all(entity_url, entity_type)
+            yield from self.get_all(entity_url, entity_type, projection)
 
     def get_related_entities_count(self, relation, entity, entity_type):
         if relation in entity["_links"]:

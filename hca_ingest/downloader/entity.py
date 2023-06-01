@@ -26,7 +26,9 @@ class Entity:
         self_link = self.__get_item(links, 'self', {})
         self_href = self.__get_item(self_link, 'href', '')
         if self_href and '/' in self_href:
-            self.id = self_href.split('/')[-1]
+            # url can be http://localhost:8080/biomaterials/5cdd8b3dd96dad0007e5a0f2
+            # with  possible projectsion param {?projection}
+            self.id = self_href.split('/')[-1].split('{')[0]
         self.schema = SchemaUrl(self.__get_item(self.content, 'describedBy', ''))
 
     @classmethod

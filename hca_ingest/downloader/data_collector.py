@@ -1,3 +1,6 @@
+import logging
+from itertools import chain
+from operator import itemgetter
 from typing import Dict
 
 from hca_ingest.api.ingestapi import IngestApi
@@ -16,12 +19,37 @@ class DataCollector:
     def __build_entity_dict(self, submission):
         data_by_submission = self.__get_submission_data(submission)
         entity_dict = {}
-        for entity_json in data_by_submission:
+        linking_map = {
+            "processes": {},
+            "protocols": {},
+            "biomaterials": {},
+            "files": {},
+        }
+        for entity_number, entity_json in enumerate(data_by_submission):
+            if entity_number % 1000 == 0:
+                logging.info(f'read {entity_number} entities')
             entity = Entity(entity_json)
             entity_dict[entity.id] = entity
-        linking_map = self.__get_linking_map(submission)
+            self.add_to_linking_map(entity, entity_json, linking_map)
         self.__set_inputs(entity_dict, linking_map)
         return entity_dict
+
+    @staticmethod
+    def add_to_linking_map(entity, entity_json, linking_map):
+        if entity.schema.domain_type in ('project', 'protocol'):
+            return
+
+        if entity.schema.domain_type in ['file', 'biomaterial']:
+            entity_links = linking_map[entity.schema.domain_type + 's'].setdefault(entity.id, {})
+            entity_links.setdefault('derivedByProcesses', [])\
+                .extend(map(itemgetter('id'), entity_json['derivedByProcesses']))
+            for process_id in map(itemgetter('id'), entity_json['inputToProcesses']):
+                entity_links.setdefault('inputToProcesses', []).append(process_id)
+                process_links = linking_map['processes'].setdefault(process_id, {})
+                process_links.setdefault(f'input{entity.schema.domain_type.title()}s', []).append(entity.id)
+        elif entity.schema.domain_type == 'process':
+            entity_links = linking_map[entity.schema.domain_type + 'es'].setdefault(entity.id, {})
+            entity_links.setdefault('protocols', []).extend(map(itemgetter('id'), entity_json['protocols']))
 
     def __get_submission_data(self, submission):
         submission_id = submission['_links']['self']['href'].split('/')[-1]
@@ -66,9 +94,10 @@ class DataCollector:
                                      f'has more than one processes which derived it')
 
                 process_id = entity_link['derivedByProcesses'][0]
-                protocol_ids = linking_map['processes'][process_id]['protocols']
-                input_biomaterial_ids = linking_map['processes'][process_id]['inputBiomaterials']
-                input_files_ids = linking_map['processes'][process_id]['inputFiles']
+                process_links = linking_map['processes'][process_id]
+                protocol_ids = process_links.get('protocols',[])
+                input_biomaterial_ids = process_links.get('inputBiomaterials', [])
+                input_files_ids = process_links.get('inputFiles', [])
 
                 process = entity_dict[process_id]
                 protocols = [entity_dict[protocol_id] for protocol_id in protocol_ids]
@@ -77,8 +106,9 @@ class DataCollector:
 
                 entity.set_input(input_biomaterials, input_files, process, protocols)
 
-    def __get_entities_by_submission_and_type(self, data_by_submission, submission, entity_type):
-        entity_json = \
-            self.api.get_related_entities(entity_type, submission, entity_type)
-        if entity_json:
-            data_by_submission.extend(list(entity_json))
+    def __get_entities_by_submission_and_type(self, submission, entity_type, projection=None):
+        self.api.page_size = 10
+        yield from self.api.get_related_entities(relation=entity_type,
+                                                 entity=submission,
+                                                 entity_type=entity_type,
+                                                 projection=projection)
