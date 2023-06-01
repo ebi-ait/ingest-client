@@ -105,7 +105,6 @@ class DataCollector:
                 entity.set_input(input_biomaterials, input_files, process, protocols)
 
     def __get_entities_by_submission_and_type(self, submission, entity_type, projection=None):
-        self.api.page_size = 10
         yield from self.api.get_related_entities(relation=entity_type,
                                                  entity=submission,
                                                  entity_type=entity_type,
