@@ -371,3 +371,88 @@ class TestDescriptor(unittest.TestCase):
         }
         expected_dictionary_representation.update(expected_top_level_schema_properties)
         self.assertEqual(descriptor.get_dictionary_representation_of_descriptor(), expected_dictionary_representation)
+
+    def test__complex_property_description_with_content_property__succeeds(self):
+        top_level_metadata_schema_url = "https://d1wew2wvfg0okw.cloudfront.net/type/project/1.0.0/study"
+        sample_complex_metadata_schema_json = {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "$id": top_level_metadata_schema_url,
+            "description": "A study entity defines the fields needed for representing a study.",
+            "required": [
+                "content"
+            ],
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "A study entity defines the fields needed for representing a study.",
+                    "required": [
+                        "contact_first_name",
+                        "contact_surname"
+                    ],
+                    "type": "object",
+                    "user_friendly": "Content",
+                    "properties": {
+                        "contact_first_name": {
+                            "description": "First name of the main person to contact for queries about this study.",
+                            "user_friendly": "Contact first name",
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "Anu; Enrique; Galabina"
+                        },
+                        "contact_surname": {
+                            "description": "Surname of the main person to contact for queries about this study.",
+                            "user_friendly": "Contact surname",
+                            "type": "string",
+                            "minLength": 1,
+                            "example": "Koci; Zucchi"
+                        }
+                    }
+                }
+            }
+        }
+
+        descriptor = ComplexPropertyDescriptor(sample_complex_metadata_schema_json)
+
+        # Create the expected dictionary representation of the nested content property.
+        # expected_content_schema_descriptor = {
+        #     "high_level_entity": "type", "domain_entity": "project", "module": "study",
+        #     "version": "1.0.0", "url": top_level_metadata_schema_url
+        # }
+        expected_content_schema_properties = {
+            "description": "A study entity defines the fields needed for representing a study.", "value_type": "object",
+            "multivalue": False, "external_reference": False, "user_friendly": "Content", "required": True,
+            "identifiable": False
+        }
+        expected_child_property_contact_first_name = {
+            "description": "First name of the main person to contact for queries about this study.", "value_type":
+                "string", "example": "Anu; Enrique; Galabina", "multivalue": False, "external_reference": False,
+            "user_friendly": "Contact first name", "required": True, "identifiable": False
+        }
+        expected_child_property_contact_surname = {
+            "description": "Surname of the main person to contact for queries about this study.",
+            "value_type": "string", "example": "Koci; Zucchi", "multivalue": False, "external_reference": False,
+            "user_friendly": "Contact surname", "required": True, "identifiable": False
+        }
+        expected_child_property_content_descriptor = {
+            "contact_first_name": expected_child_property_contact_first_name,
+            "contact_surname": expected_child_property_contact_surname,
+            "required_properties": ["contact_first_name", "contact_surname"]
+        }
+        expected_child_property_content_descriptor.update(expected_content_schema_properties)
+
+        # Create the top level expected dictionary representation
+        expected_top_level_schema_descriptor = {
+            "high_level_entity": "type", "domain_entity": "project", "module": "study", "version": "1.0.0",
+            "url": top_level_metadata_schema_url
+        }
+        expected_top_level_schema_properties = {
+            "description": "A study entity defines the fields needed for representing a study.",
+            "value_type": "object", "multivalue": False, "external_reference": False, "required": False,
+            "identifiable": False
+        }
+        expected_dictionary_representation = {
+            "schema": expected_top_level_schema_descriptor, "content": expected_child_property_content_descriptor,
+            "required_properties": ["content"]
+        }
+        expected_dictionary_representation.update(expected_top_level_schema_properties)
+        self.assertEqual(descriptor.get_dictionary_representation_of_descriptor(), expected_dictionary_representation)
