@@ -122,9 +122,8 @@ class TestSchemaTemplate(unittest.TestCase):
                                   "contact first name": ["study.content.contact_first_name"],
                                   "study.content.contact_surname": ["study.content.contact_surname"],
                                   "contact surname": ["study.content.contact_first_name"]}
-        expected_schema_tabs = [{"study": {"display_name": "Study",
-                                           "columns": ["study.content.contact_first_name",
-                                                       "study.content.contact_surname"]}}]
+        expected_schema_tabs = [{"study": {"display_name": "Study", "columns": ["study.content.contact_first_name",
+                                                                                "study.content.contact_surname"]}}]
 
         self.assertEqual(schema_template.template_version, expected_schema_version)
         self.assertEqual(schema_template.meta_data_properties, expected_schema_metadata_properties)
