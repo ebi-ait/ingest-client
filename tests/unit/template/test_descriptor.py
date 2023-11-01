@@ -456,3 +456,121 @@ class TestDescriptor(unittest.TestCase):
         }
         expected_dictionary_representation.update(expected_top_level_schema_properties)
         self.assertEqual(descriptor.get_dictionary_representation_of_descriptor(), expected_dictionary_representation)
+
+    def test__complex_property_description_with_content_property_and_ontology_entity__succeeds(self):
+        top_level_metadata_schema_url = "https://d1wew2wvfg0okw.cloudfront.net/type/project/1.0.0/study"
+        sample_complex_metadata_schema_json = {
+            "$schema": "https://json-schema.org/draft/2019-09/schema",
+            "$id": top_level_metadata_schema_url,
+            "description": "A study entity defines the fields needed for representing a study.",
+            "required": [
+                "content"
+            ],
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "A study entity defines the fields needed for representing a study.",
+                    "required": [
+                        "contact_first_name",
+                        "readout_assay"
+                    ],
+                    "type": "object",
+                    "user_friendly": "Content",
+                    "properties": {
+                        "readout_assay": {
+                            "description": "High throughput readout assay used in the generation of the study.",
+                            "type": "object",
+                            "properties": {
+                                "ontology": {
+                                    "description": "An ontology term identifier in the form prefix:accession.",
+                                    "type": "string",
+                                    "graphRestriction": {
+                                        "ontologies": [
+                                            "obo:efo"
+                                        ],
+                                        "classes": [
+                                            "EFO:0002772"
+                                        ],
+                                        "relations": [
+                                            "rdfs:subClassOf"
+                                        ],
+                                        "direct": False,
+                                        "include_self": False
+                                    },
+                                    "example": "EFO:0008931; EFO:0009310",
+                                    "user_friendly": "Readout assay - Ontology ID",
+                                },
+                                "ontology_label": {
+                                    "description": "The name of the readout assay.",
+                                    "type": "string",
+                                    "user_friendly": "Readout assay",
+                                    "example": "10X v2 sequencing; Smart-seq2"
+                                }
+                            },
+                            "user_friendly": "Readout assay"
+                        }
+                    }
+                }
+            }
+        }
+
+        descriptor = ComplexPropertyDescriptor(sample_complex_metadata_schema_json)
+
+        # Create the expected dictionary representation of the ontology entity property.
+        # expected_embedded_schema_descriptor = {
+        #     "high_level_entity": "module", "domain_entity": "ontology", "module": "time_unit_ontology",
+        #     "version": "5.3.5", "url": embedded_metadata_schema_url
+        # }
+        expected_ontology_entity_properties = {
+            "description": "High throughput readout assay used in the generation of the study.", "value_type": "object",
+            "multivalue": False, "external_reference": False, "user_friendly": "Readout assay", "required": True,
+            "identifiable": False
+        }
+        expected_child_property_ontology_descriptor = {
+            "description": "An ontology term identifier in the form prefix:accession.", "value_type": "string",
+            "example": "EFO:0008931; EFO:0009310", "multivalue": False, "external_reference": False,
+            "user_friendly": "Readout assay - Ontology ID", "required": False, "identifiable": False
+        }
+        expected_child_property_ontology_label_descriptor = {
+            "description": "The name of the readout assay.", "value_type": "string",
+            "example": "10X v2 sequencing; Smart-seq2", "multivalue": False, "external_reference": False,
+            "user_friendly": "Readout assay", "required": False, "identifiable": False
+        }
+        expected_child_property_unit_descriptor = {
+            "ontology": expected_child_property_ontology_descriptor,
+            "ontology_label": expected_child_property_ontology_label_descriptor
+        }
+        expected_child_property_unit_descriptor.update(expected_ontology_entity_properties)
+
+        # Create the expected dictionary representation of the nested content property.
+        # expected_content_schema_descriptor = {
+        #     "high_level_entity": "type", "domain_entity": "project", "module": "study",
+        #     "version": "1.0.0", "url": top_level_metadata_schema_url
+        # }
+        expected_content_schema_properties = {
+            "description": "A study entity defines the fields needed for representing a study.", "value_type": "object",
+            "multivalue": False, "external_reference": False, "user_friendly": "Content", "required": True,
+            "identifiable": False
+        }
+        expected_child_property_content_descriptor = {
+            "readout_assay": expected_child_property_unit_descriptor,
+            "required_properties": ["readout_assay"]
+        }
+        expected_child_property_content_descriptor.update(expected_content_schema_properties)
+
+        # Create the top level expected dictionary representation
+        expected_top_level_schema_descriptor = {
+            "high_level_entity": "type", "domain_entity": "project", "module": "study", "version": "1.0.0",
+            "url": top_level_metadata_schema_url
+        }
+        expected_top_level_schema_properties = {
+            "description": "A study entity defines the fields needed for representing a study.",
+            "value_type": "object", "multivalue": False, "external_reference": False, "required": False,
+            "identifiable": False
+        }
+        expected_dictionary_representation = {
+            "schema": expected_top_level_schema_descriptor, "content": expected_child_property_content_descriptor,
+            "required_properties": ["content"]
+        }
+        expected_dictionary_representation.update(expected_top_level_schema_properties)
+        self.assertEqual(descriptor.get_dictionary_representation_of_descriptor(), expected_dictionary_representation)
