@@ -121,7 +121,7 @@ class TestSchemaTemplate(unittest.TestCase):
                                   "study.content.contact_first_name": ["study.content.contact_first_name"],
                                   "contact first name": ["study.content.contact_first_name"],
                                   "study.content.contact_surname": ["study.content.contact_surname"],
-                                  "contact surname": ["study.content.contact_first_name"]}
+                                  "contact surname": ["study.content.contact_surname"]}
         expected_schema_tabs = [{"study": {"display_name": "Study", "columns": ["study.content.contact_first_name",
                                                                                 "study.content.contact_surname"]}}]
 
