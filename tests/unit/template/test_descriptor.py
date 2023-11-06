@@ -1,5 +1,7 @@
 import unittest
 
+from assertpy import assert_that
+
 from hca_ingest.template.descriptor import ComplexPropertyDescriptor, SchemaTypeDescriptor, SimplePropertyDescriptor
 
 class TestDescriptor(unittest.TestCase):
@@ -456,6 +458,7 @@ class TestDescriptor(unittest.TestCase):
         }
         expected_dictionary_representation.update(expected_top_level_schema_properties)
         self.assertEqual(descriptor.get_dictionary_representation_of_descriptor(), expected_dictionary_representation)
+        # assert_that(descriptor.get_dictionary_representation_of_descriptor()).is_equal_to(expected_dictionary_representation)
 
     def test__complex_property_description_with_content_property_and_ontology_entity__succeeds(self):
         top_level_metadata_schema_url = "https://d1wew2wvfg0okw.cloudfront.net/type/project/1.0.0/study"
