@@ -122,7 +122,6 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
         super().__init__(json_data)
 
         if property_name != "None":
-            print(json_data)
             # Create an "ontology" domain type schema object
             self.schema = OntologySchemaTypeDescriptor(property_name)
 
@@ -147,14 +146,6 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
 
             # Add children properties
             self.add_children_properties(json_data)
-
-            # Populate metadata/information about the schema itself, derived from the URL
-            if "$id" in json_data.keys():
-                self.schema = SchemaTypeDescriptor(json_data["$id"])
-            elif "id" in json_data.keys():
-                self.schema = SchemaTypeDescriptor(json_data["id"])
-            else:
-                self.schema = None
 
     def add_children_properties(self, json_data):
         self.required_properties = json_data.get("required")
