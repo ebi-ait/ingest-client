@@ -49,6 +49,24 @@ class SchemaTypeDescriptor(Descriptor):
         return self.__dict__
 
 
+class OntologySchemaTypeDescriptor(Descriptor):
+    """ Descriptor encapsulating "metadata" information about a single metadata schema file. """
+
+    def __init__(self, schema_id):
+        self.high_level_entity = "type"
+        self.domain_entity = "ontology"
+        self.module = schema_id
+        self.version = ""
+        self.url = ""
+
+    def get_module(self):
+        return self.module
+
+    def get_dictionary_representation_of_descriptor(self):
+        """ Returns a dictionary representation of the current schema descriptor object. """
+        return self.__dict__
+
+
 class SimplePropertyDescriptor(Descriptor):
     """ A Descriptor encapsulating information about a simple property of a metadata schema. A simple property is
     designated as having no children properties which arises when the property is associated with its own metadata
@@ -84,9 +102,15 @@ class SimplePropertyDescriptor(Descriptor):
 
         return dict((key, value) for (key, value) in self.__dict__.items() if value or isinstance(value, bool))
 
+
 # TODO: add logic
-def is_ontology_field(property_name, property_values):
-    return False
+# def is_ontology_field(property_name, property_values):
+#     return False
+
+
+def check_if_property_identifiable(child_property_descriptor, property_name):
+    if property_name in IDENTIFIABLE_PROPERTIES:
+        child_property_descriptor.identifiable = True
 
 
 class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
@@ -94,67 +118,104 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
     means that there exists an entire metadata schema to describe the property itself and usually contains children
     properties."""
 
-    def __init__(self, json_data):
+    def __init__(self, json_data, property_name="None"):
         super().__init__(json_data)
 
-        # Populate metadata/information about the schema itself, derived from the URL
-        self.populate_schema_information(json_data)
+        if property_name != "None":
+            print(json_data)
+            # Create an "ontology" domain type schema object
+            self.schema = OntologySchemaTypeDescriptor(property_name)
 
-        # Add required fields
-        self.required_properties = json_data.get("required")
+            # Add required fields
+            self.required_properties = json_data.get("required")
 
-        # Add children properties
-        self.add_children_properties(json_data)
+            # Change the input json_data to match the needed input of the function
+            json_data_onto = {
+                "properties": {
+                    "ontology": json_data
+                }
+            }
 
-    # TODO: raname
-    def make_ontology_type(self, json_data):
-        super().__init__(json_data)
+            # Add children properties
+            self.add_children_properties(json_data_onto)
+        else:
+            # Populate metadata/information about the schema itself, derived from the URL
+            self.populate_schema_information(json_data)
 
-        # create an "ontology" domain type schema object
-        # self.schema =
+            # Add required fields
+            self.required_properties = json_data.get("required")
 
-        # Add required fields
-        self.required_properties = json_data.get("required")
+            # Add children properties
+            self.add_children_properties(json_data)
 
-        # Add children properties
-        # change the input json_data to match the needed input of the function
-        self.add_children_properties(json_data)
-        raise RuntimeError("not implemented yet")
+            # Populate metadata/information about the schema itself, derived from the URL
+            if "$id" in json_data.keys():
+                self.schema = SchemaTypeDescriptor(json_data["$id"])
+            elif "id" in json_data.keys():
+                self.schema = SchemaTypeDescriptor(json_data["id"])
+            else:
+                self.schema = None
 
     def add_children_properties(self, json_data):
+        self.required_properties = json_data.get("required")
         self.children_properties = {}
         if "properties" in json_data.keys():
             for property_name, property_values in json_data["properties"].items():
                 if self.is_schema_field(property_values):
                     child_property_descriptor = ComplexPropertyDescriptor(property_values)
-                elif self.is_array_field(property_values) \
-                        and (self.is_schema_field(property_values["items"])):
+                elif self.is_content_field(property_name, property_values):
+                    self.add_children_properties(property_values)
+                    continue
+                elif self.is_array_field(property_values) and (
+                        self.is_schema_field(property_values["items"])):
                     child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
+
                     child_property_descriptor.multivalue = True
                     if child_property_descriptor.user_friendly is None \
                             and "user_friendly" in property_values.keys():
                         child_property_descriptor.user_friendly = property_values["user_friendly"]
-                elif is_ontology_field(property_name, property_values):
-                    raise RuntimeError("not implemented: generate a ComplexPropertyDescriptor")
+                elif self.is_array_field(property_values) and self.is_array_ontology_field(property_values):
+                    child_property_descriptor = ComplexPropertyDescriptor(property_values["items"], property_name)
+
+                    child_property_descriptor.multivalue = True
+                    if child_property_descriptor.user_friendly is None \
+                            and "user_friendly" in property_values.keys():
+                        child_property_descriptor.user_friendly = property_values["user_friendly"]
+                elif self.is_simple_ontology_field(property_values) and property_name != "ontology":
+                    child_property_descriptor = ComplexPropertyDescriptor(property_values, property_name)
                 else:
                     child_property_descriptor = SimplePropertyDescriptor(property_values)
 
                 # Make it required if the child property name is in the list of required properties
-                if self.required_properties and property_name in self.required_properties:
-                    child_property_descriptor.required = True
+                self.check_if_property_required(child_property_descriptor, property_name)
 
                 # Make the property identifiable if the child property name is one of the listed hardcoded
                 # identifiable properties
-                if property_name in IDENTIFIABLE_PROPERTIES:
-                    child_property_descriptor.identifiable = True
+                check_if_property_identifiable(child_property_descriptor, property_name)
 
                 self.children_properties[property_name] = child_property_descriptor
+
+    def is_array_ontology_field(self, property_values):
+        return "graphRestriction" in property_values["items"]
+
+    def is_simple_ontology_field(self, property_values):
+        return "graphRestriction" in property_values
+
+    def check_if_property_required(self, child_property_descriptor, property_name):
+        if self.required_properties and property_name in self.required_properties:
+            child_property_descriptor.required = True
+
+    def get_schema_module_name(self):
+        return self.schema.get_module()
 
     def is_array_field(self, property_values):
         return "items" in property_values
 
     def is_schema_field(self, property_values):
         return "$schema" in property_values or "schema" in property_values
+
+    def is_content_field(self, property_name, property_values):
+        return "content" == property_name and "properties" in property_values
 
     def populate_schema_information(self, json_data):
         if "$id" in json_data.keys():
@@ -163,9 +224,6 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
             self.schema = SchemaTypeDescriptor(json_data["id"])
         else:
             self.schema = None
-
-    def get_schema_module_name(self):
-        return self.schema.get_module()
 
     def get_dictionary_representation_of_descriptor(self):
         """ Returns a representation of the class as a dictionary with the following caveats:
