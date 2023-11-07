@@ -117,13 +117,13 @@ class TestSchemaTemplate(unittest.TestCase):
         expected_schema_version = "1.0.0"
         expected_schema_metadata_properties = {
             "study": SchemaParser(sample_metadata_schema_json).schema_dictionary}
-        expected_schema_labels = {"study.content": ["study.content"], "content": ["study.content"],
-                                  "study.content.contact_first_name": ["study.content.contact_first_name"],
-                                  "contact first name": ["study.content.contact_first_name"],
-                                  "study.content.contact_surname": ["study.content.contact_surname"],
-                                  "contact surname": ["study.content.contact_surname"]}
-        expected_schema_tabs = [{"study": {"display_name": "Study", "columns": ["study.content.contact_first_name",
-                                                                                "study.content.contact_surname"]}}]
+        expected_schema_labels = {"study.contact_first_name": ["study.contact_first_name"],
+                                  "contact first name": ["study.contact_first_name"],
+                                  "study.contact_surname": ["study.contact_surname"],
+                                  "contact surname": ["study.contact_surname"]}
+        expected_schema_tabs = [{"study": {"display_name": "Study",
+                                           "columns": ["study.contact_first_name",
+                                                       "study.contact_surname"]}}]
 
         self.assertEqual(schema_template.template_version, expected_schema_version)
         self.assertEqual(schema_template.meta_data_properties, expected_schema_metadata_properties)
