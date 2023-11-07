@@ -415,14 +415,13 @@ class TestDescriptor(unittest.TestCase):
 
         descriptor = ComplexPropertyDescriptor(sample_complex_metadata_schema_json)
 
-        # Create the expected dictionary representation of the nested content property.
-        # expected_content_schema_descriptor = {
-        #     "high_level_entity": "type", "domain_entity": "project", "module": "study",
-        #     "version": "1.0.0", "url": top_level_metadata_schema_url
-        # }
-        expected_content_schema_properties = {
-            "description": "A study entity defines the fields needed for representing a study.", "value_type": "object",
-            "multivalue": False, "external_reference": False, "user_friendly": "Content", "required": True,
+        expected_top_level_schema_descriptor = {
+            "high_level_entity": "type", "domain_entity": "project", "module": "study", "version": "1.0.0",
+            "url": top_level_metadata_schema_url
+        }
+        expected_top_level_schema_properties = {
+            "description": "A study entity defines the fields needed for representing a study.",
+            "value_type": "object", "multivalue": False, "external_reference": False, "required": False,
             "identifiable": False
         }
         expected_child_property_contact_first_name = {
@@ -435,26 +434,12 @@ class TestDescriptor(unittest.TestCase):
             "value_type": "string", "example": "Koci; Zucchi", "multivalue": False, "external_reference": False,
             "user_friendly": "Contact surname", "required": True, "identifiable": False
         }
-        expected_child_property_content_descriptor = {
+
+        expected_dictionary_representation = {
+            "schema": expected_top_level_schema_descriptor,
             "contact_first_name": expected_child_property_contact_first_name,
             "contact_surname": expected_child_property_contact_surname,
             "required_properties": ["contact_first_name", "contact_surname"]
-        }
-        expected_child_property_content_descriptor.update(expected_content_schema_properties)
-
-        # Create the top level expected dictionary representation
-        expected_top_level_schema_descriptor = {
-            "high_level_entity": "type", "domain_entity": "project", "module": "study", "version": "1.0.0",
-            "url": top_level_metadata_schema_url
-        }
-        expected_top_level_schema_properties = {
-            "description": "A study entity defines the fields needed for representing a study.",
-            "value_type": "object", "multivalue": False, "external_reference": False, "required": False,
-            "identifiable": False
-        }
-        expected_dictionary_representation = {
-            "schema": expected_top_level_schema_descriptor, "content": expected_child_property_content_descriptor,
-            "required_properties": ["content"]
         }
         expected_dictionary_representation.update(expected_top_level_schema_properties)
         self.assertEqual(descriptor.get_dictionary_representation_of_descriptor(), expected_dictionary_representation)
