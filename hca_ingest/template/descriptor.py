@@ -84,9 +84,9 @@ class SimplePropertyDescriptor(Descriptor):
             self.value_type = json_data["items"]["type"]
 
         self.format = json_data.get("format")
-        self.user_friendly = json_data.get("user_friendly")
+        self.user_friendly = json_data.get("user_friendly") or json_data.get("title")
         self.description = json_data.get("description")
-        self.example = json_data.get("example")
+        self.example = json_data.get("example") or json_data.get("examples")
         self.guidelines = json_data.get("guidelines")
 
         # For now, required, external_reference and identifiable are set to false because the value of these properties
