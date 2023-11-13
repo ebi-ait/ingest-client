@@ -6,7 +6,7 @@ from hca_ingest.template.descriptor import SchemaTypeDescriptor
 
 @pytest.fixture
 def metadata_schema_url():
-    return "https://d1wew2wvfg0okw.cloudfront.net"
+    return "https://dev.schema.morphic.bio"
 
 
 class TestSchemaTypeDescriptor:
