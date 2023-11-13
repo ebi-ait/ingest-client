@@ -22,19 +22,7 @@ class Descriptor():
 class SchemaTypeDescriptor(Descriptor):
     """ Descriptor encapsulating "metadata" information about a single metadata schema file. """
 
-    def __init__(self, metadata_schema_url, ontology_property_name=None):
-        self.url = None
-        self.version = None
-        self.module = None
-        self.domain_entity = None
-        self.high_level_entity = None
-
-        if ontology_property_name:
-            self.init_ontology_schema_type(ontology_property_name)
-        else:
-            self.init_schema_type(metadata_schema_url)
-
-    def init_schema_type(self, metadata_schema_url):
+    def __init__(self, metadata_schema_url):
         url_validation_regex = re.compile(
             r'^http[s]?://(?P<location>([^/]+/)*[^/]+)/' +
             r'(?P<high_level_entity>(type)|(module)|(core)|(examplemodule)|(system))/' +
@@ -54,13 +42,6 @@ class SchemaTypeDescriptor(Descriptor):
         self.version = url_validation_regex.match(metadata_schema_url).group("version")
         self.url = metadata_schema_url
 
-    def init_ontology_schema_type(self, ontology_property_name):
-        self.high_level_entity = "type"
-        self.domain_entity = "ontology"
-        self.module = ontology_property_name
-        self.version = ""
-        self.url = ""
-
     def get_module(self):
         return self.module
 
@@ -77,6 +58,8 @@ class SimplePropertyDescriptor(Descriptor):
 
     def __init__(self, json_data):
         """ Initialize the simply property descriptor using the top level fields in given json data. """
+        self.user_friendly = None
+        self.example = None
         self.value_type = json_data.get("type")
         self.multivalue = False
 
@@ -86,9 +69,9 @@ class SimplePropertyDescriptor(Descriptor):
             self.value_type = json_data["items"]["type"]
 
         self.format = json_data.get("format")
-        self.user_friendly = json_data.get("user_friendly") or json_data.get("title")
+        self.get_user_friendly(json_data)
         self.description = json_data.get("description")
-        self.example = json_data.get("example") or json_data.get("examples")
+        self.get_example(json_data)
         self.guidelines = json_data.get("guidelines")
 
         # For now, required, external_reference and identifiable are set to false because the value of these properties
@@ -98,16 +81,33 @@ class SimplePropertyDescriptor(Descriptor):
         self.identifiable = False
         self.external_reference = False
 
+    def get_user_friendly(self, json_data):
+        if json_data.get("user_friendly"):
+            self.user_friendly = json_data.get("user_friendly")
+        elif not self.is_schema_object(json_data) and json_data.get("title"):
+            self.user_friendly = json_data.get("title")
+        else:
+            self.user_friendly = None
+
+    def get_example(self, json_data):
+        if json_data.get("example"):
+            self.example = json_data.get("example")
+        elif json_data.get("examples"):
+            if isinstance(json_data.get("examples"), list):
+                self.example = '; '.join(map(str, json_data.get("examples")))
+            elif isinstance(json_data.get("examples"), str):
+                self.example = json_data.get("examples")
+        else:
+            self.example = None
+
+    def is_schema_object(self, json_data):
+        return json_data.get("$schema") or json_data.get("schema")
+
     def get_dictionary_representation_of_descriptor(self):
         """ Only include information in the class where the value is not None or empty OR if the value is a boolean
         since in that case, both True and False are valid values."""
 
         return dict((key, value) for (key, value) in self.__dict__.items() if value or isinstance(value, bool))
-
-
-# TODO: add logic
-# def is_ontology_field(property_name, property_values):
-#     return False
 
 
 def check_if_property_identifiable(child_property_descriptor, property_name):
@@ -120,40 +120,27 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
     means that there exists an entire metadata schema to describe the property itself and usually contains children
     properties."""
 
-    def __init__(self, json_data, ontology_property_name=None):
+    def __init__(self, json_data):
         super().__init__(json_data)
 
         # Initialize schema object
         self.schema = None
 
-        # Add required fields
+        # Initialize required fields
         self.required_properties = None
 
-        # Add children properties
+        # Initialize children properties
         self.children_properties = {}
 
-        if ontology_property_name:
-            # Create an "ontology" domain type schema object
-            self.populate_schema_information(None, ontology_property_name)
+        # Populate metadata/information about the schema itself, derived from the URL
+        self.populate_schema_information(json_data)
 
-            # Change the input json_data to match the needed input of the function
-            json_data_onto = {
-                "properties": {
-                    "ontology": json_data
-                }
-            }
-
-            # Add children properties
-            self.add_children_properties(json_data_onto)
-        else:
-            # Populate metadata/information about the schema itself, derived from the URL
-            self.populate_schema_information(json_data)
-
-            # Add children properties
-            self.add_children_properties(json_data)
+        # Add children properties
+        self.add_children_properties(json_data)
 
     def add_children_properties(self, json_data):
 
+        # Add required fields
         self.required_properties = json_data.get("required")
 
         if "properties" in json_data.keys():
@@ -162,19 +149,17 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
                     child_property_descriptor = ComplexPropertyDescriptor(property_values)
                 elif self.is_content_field(property_name, property_values):
                     self.add_children_properties(property_values)
-                    # 'content' should not be included in the children properties so continue
+                    # 'content' property name should not be included in the children properties so continue
                     continue
                 elif self.is_array_field(property_values) and (
                         self.is_schema_field(property_values["items"])):
                     child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
 
-                    self.assign_multivalue_properties(child_property_descriptor, property_values)
+                    child_property_descriptor.multivalue = True
+                    self.assign_items_user_friendly(child_property_descriptor, property_values)
                 elif self.is_array_ontology_field(property_values):
-                    child_property_descriptor = ComplexPropertyDescriptor(property_values["items"], property_name)
-
-                    self.assign_multivalue_properties(child_property_descriptor, property_values)
-                elif self.is_simple_ontology_field(property_values) and property_name != "ontology":
-                    child_property_descriptor = ComplexPropertyDescriptor(property_values, property_name)
+                    child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
+                    child_property_descriptor.multivalue = True
                 else:
                     child_property_descriptor = SimplePropertyDescriptor(property_values)
 
@@ -187,8 +172,7 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
 
                 self.children_properties[property_name] = child_property_descriptor
 
-    def assign_multivalue_properties(self, child_property_descriptor, property_values):
-        child_property_descriptor.multivalue = True
+    def assign_items_user_friendly(self, child_property_descriptor, property_values):
         if child_property_descriptor.user_friendly is None \
                 and "user_friendly" in property_values.keys():
             child_property_descriptor.user_friendly = property_values["user_friendly"]
@@ -196,15 +180,9 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
     def is_array_ontology_field(self, property_values):
         return self.is_array_field(property_values) and "graphRestriction" in property_values["items"]
 
-    def is_simple_ontology_field(self, property_values):
-        return "graphRestriction" in property_values
-
     def check_if_property_required(self, child_property_descriptor, property_name):
         if self.required_properties and property_name in self.required_properties:
             child_property_descriptor.required = True
-
-    def get_schema_module_name(self):
-        return self.schema.get_module()
 
     def is_array_field(self, property_values):
         return "items" in property_values
@@ -215,15 +193,16 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
     def is_content_field(self, property_name, property_values):
         return "content" == property_name and "properties" in property_values
 
-    def populate_schema_information(self, json_data, ontology_property_name=None):
-        if ontology_property_name:
-            self.schema = SchemaTypeDescriptor(None, ontology_property_name)
-        elif "$id" in json_data.keys():
+    def populate_schema_information(self, json_data):
+        if "$id" in json_data.keys():
             self.schema = SchemaTypeDescriptor(json_data["$id"])
         elif "id" in json_data.keys():
             self.schema = SchemaTypeDescriptor(json_data["id"])
         else:
             self.schema = None
+
+    def get_schema_module_name(self):
+        return self.schema.get_module()
 
     def get_dictionary_representation_of_descriptor(self):
         """ Returns a representation of the class as a dictionary with the following caveats:
