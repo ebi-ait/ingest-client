@@ -23,24 +23,41 @@ class SchemaTypeDescriptor(Descriptor):
     """ Descriptor encapsulating "metadata" information about a single metadata schema file. """
 
     def __init__(self, metadata_schema_url):
-        url_validation_regex = re.compile(
-            r'^http[s]?://(?P<location>([^/]+/)*[^/]+)/' +
-            r'(?P<high_level_entity>(type)|(module)|(core)|(examplemodule)|(system))/' +
-            r'((?P<domain_entity>([^/]+/)*[^/]+)/)?' +
-            r'(?P<version>(?P<version_number>(?P<major>\d+)(\.(?P<minor>\d+))?(\.(?P<rev>\d+))?)|(?P<latest>latest))/' +
-            r'(?P<module>.*)$'
-        )
+        url_parts = metadata_schema_url.split('/')
 
-        if not url_validation_regex.match(metadata_schema_url):
-            raise Exception(
-                f"ERROR: The metadata schema URL passed in for parsing {metadata_schema_url} does not conform to "
-                f"expected format.")
-
-        self.high_level_entity = url_validation_regex.match(metadata_schema_url).group("high_level_entity")
-        self.domain_entity = url_validation_regex.match(metadata_schema_url).group("domain_entity")
-        self.module = url_validation_regex.match(metadata_schema_url).group("module")
-        self.version = url_validation_regex.match(metadata_schema_url).group("version")
+        self.high_level_entity = None
+        self.version = None
+        self.domain_entity = None
+        self.module = None
         self.url = metadata_schema_url
+
+        high_level_entity_found = False
+        version_found = False
+
+        for i, part in enumerate(url_parts):
+            if part in ['type', 'module', 'core', 'system']:
+                self.high_level_entity = part
+                high_level_entity_found = True
+            elif (part.replace('.', '').isdigit() or part == 'latest') and high_level_entity_found:
+                self.version = part
+                version_found = True
+                # If the version comes right after the high_level_entity
+                if i == url_parts.index(self.high_level_entity) + 1:
+                    # Domain entity is everything between version and the last part (module)
+                    if i < len(url_parts) - 2:
+                        self.domain_entity = '/'.join(url_parts[i + 1:-1])
+                    self.module = url_parts[-1]
+                else:
+                    # If the version comes after domain_entity
+                    self.domain_entity = '/'.join(url_parts[url_parts.index(self.high_level_entity) + 1:i])
+                    self.module = url_parts[-1]
+                break
+            elif high_level_entity_found and not version_found:
+                # Handle case where the version comes after the domain_entity
+                self.domain_entity = part
+
+        if not self.high_level_entity or not self.version or not self.module:
+            raise Exception(f"ERROR: The metadata schema URL {metadata_schema_url} does not conform to expected format.")
 
     def get_module(self):
         return self.module
@@ -160,6 +177,10 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
                 elif self.is_array_ontology_field(property_values):
                     child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
                     child_property_descriptor.multivalue = True
+                elif self.is_object_field(property_values):
+                    child_property_descriptor = ComplexPropertyDescriptor(property_values)
+                elif self.is_array_field(property_values) and self.is_object_field(property_values["items"]):
+                    child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
                 else:
                     child_property_descriptor = SimplePropertyDescriptor(property_values)
 
@@ -192,6 +213,9 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
 
     def is_content_field(self, property_name, property_values):
         return "content" == property_name and "properties" in property_values
+
+    def is_object_field(self, property_values):
+        return "type" in property_values and property_values["type"] == "object"
 
     def populate_schema_information(self, json_data):
         if "$id" in json_data.keys():

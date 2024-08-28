@@ -13,11 +13,11 @@ class TestSchemaTypeDescriptor:
     """ Testing class for the SchemaTypeDescriptor of the Descriptor class. """
 
     def test__schema_type_descriptor__succeeds(self, metadata_schema_url):
-        sample_metadata_schema_url = metadata_schema_url + "/type/biomaterial/10.0.2/organoid"
+        sample_metadata_schema_url = metadata_schema_url + "/type/1.0.0/biomaterial/library_preparation"
 
         descriptor = SchemaTypeDescriptor(sample_metadata_schema_url)
 
         expected_dictionary_representation = {"high_level_entity": "type", "domain_entity": "biomaterial",
-                                              "module": "organoid", "version": "10.0.2",
+                                              "module": "library_preparation", "version": "1.0.0",
                                               "url": sample_metadata_schema_url}
         assert descriptor.get_dictionary_representation_of_descriptor() == expected_dictionary_representation
