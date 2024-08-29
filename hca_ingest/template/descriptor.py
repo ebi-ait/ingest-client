@@ -174,13 +174,18 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
 
                     child_property_descriptor.multivalue = True
                     self.assign_items_user_friendly(child_property_descriptor, property_values)
+                elif self.is_array_field(property_values) and self.is_object_field(property_values["items"]):
+                    # Handle inline embedded schema (like "gene_edition")
+                    child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
+                    child_property_descriptor.multivalue = True
+
+                    self.assign_items_user_friendly(child_property_descriptor, property_values)
                 elif self.is_array_ontology_field(property_values):
                     child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
                     child_property_descriptor.multivalue = True
                 elif self.is_object_field(property_values):
+                    # Handles standalone objects with nested properties (e.g., "distribution")
                     child_property_descriptor = ComplexPropertyDescriptor(property_values)
-                elif self.is_array_field(property_values) and self.is_object_field(property_values["items"]):
-                    child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
                 else:
                     child_property_descriptor = SimplePropertyDescriptor(property_values)
 
@@ -194,9 +199,11 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
                 self.children_properties[property_name] = child_property_descriptor
 
     def assign_items_user_friendly(self, child_property_descriptor, property_values):
-        if child_property_descriptor.user_friendly is None \
-                and "user_friendly" in property_values.keys():
-            child_property_descriptor.user_friendly = property_values["user_friendly"]
+        if child_property_descriptor.user_friendly is None:
+            if "user_friendly" in property_values:
+                child_property_descriptor.user_friendly = property_values["user_friendly"]
+            elif "title" in property_values:
+                child_property_descriptor.user_friendly = property_values["title"]
 
     def is_array_ontology_field(self, property_values):
         return self.is_array_field(property_values) and "graphRestriction" in property_values["items"]
