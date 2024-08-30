@@ -3,7 +3,7 @@
 Class encapsulating implementation details on the Descriptor classes. Descriptors represent a portion of a metadata
 schema.
 """
-
+import os
 import re
 
 IDENTIFIABLE_PROPERTIES = ["biomaterial_id", "process_id", "protocol_id", "file_name"]
@@ -34,30 +34,57 @@ class SchemaTypeDescriptor(Descriptor):
         high_level_entity_found = False
         version_found = False
 
-        for i, part in enumerate(url_parts):
-            if part in ['type', 'module', 'core', 'system']:
-                self.high_level_entity = part
-                high_level_entity_found = True
-            elif (part.replace('.', '').isdigit() or part == 'latest') and high_level_entity_found:
-                self.version = part
-                version_found = True
-                # If the version comes right after the high_level_entity
-                if i == url_parts.index(self.high_level_entity) + 1:
-                    # Domain entity is everything between version and the last part (module)
-                    if i < len(url_parts) - 2:
-                        self.domain_entity = '/'.join(url_parts[i + 1:-1])
-                    self.module = url_parts[-1]
-                else:
-                    # If the version comes after domain_entity
-                    self.domain_entity = '/'.join(url_parts[url_parts.index(self.high_level_entity) + 1:i])
-                    self.module = url_parts[-1]
-                break
-            elif high_level_entity_found and not version_found:
-                # Handle case where the version comes after the domain_entity
-                self.domain_entity = part
+        project_env = os.getenv('PROJECT_ENV', 'default').upper()
+
+        if project_env == 'ENA':
+            self.parse_ena_url(metadata_schema_url)
+        else:
+            for i, part in enumerate(url_parts):
+                if part in ['type', 'module', 'core', 'system']:
+                    self.high_level_entity = part
+                    high_level_entity_found = True
+                elif (part.replace('.', '').isdigit() or part == 'latest') and high_level_entity_found:
+                    self.version = part
+                    version_found = True
+                    # If the version comes right after the high_level_entity
+                    if i == url_parts.index(self.high_level_entity) + 1:
+                        # Domain entity is everything between version and the last part (module)
+                        if i < len(url_parts) - 2:
+                            self.domain_entity = '/'.join(url_parts[i + 1:-1])
+                        self.module = url_parts[-1]
+                    else:
+                        # If the version comes after domain_entity
+                        self.domain_entity = '/'.join(url_parts[url_parts.index(self.high_level_entity) + 1:i])
+                        self.module = url_parts[-1]
+                    break
+                elif high_level_entity_found and not version_found:
+                    # Handle case where the version comes after the domain_entity
+                    self.domain_entity = part
 
         if not self.high_level_entity or not self.version or not self.module:
             raise Exception(f"ERROR: The metadata schema URL {metadata_schema_url} does not conform to expected format.")
+
+    def parse_ena_url(self, metadata_schema_url):
+        """Parsing logic specific for ENA URLs using regex."""
+
+        pattern = re.compile(
+            r'^http[s]?://(?P<location>[^/]+)/' +
+            r'(?P<high_level_entity>[^/]+)/' +
+            r'(?P<domain_entity>schemas)/' +
+            r'(?P<module>[^/]+)/' +
+            r'(?P<version>[^/]+)$'
+        )
+
+        match = pattern.match(metadata_schema_url)
+
+        if match:
+            self.high_level_entity = match.group('high_level_entity')
+            self.domain_entity = match.group('domain_entity')
+            self.module = match.group('module')
+            self.version = match.group('version')
+        else:
+            raise Exception(f"ERROR: The ENA metadata schema URL {metadata_schema_url} does not conform to expected "
+                            f"format.")
 
     def get_module(self):
         return self.module
@@ -160,8 +187,12 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
         # Add required fields
         self.required_properties = json_data.get("required")
 
-        if "properties" in json_data.keys():
-            for property_name, property_values in json_data["properties"].items():
+        properties = json_data.get("properties")
+        if not properties and "schema" in json_data:
+            properties = json_data["schema"].get("properties")
+
+        if properties:
+            for property_name, property_values in properties.items():
                 if self.is_schema_field(property_values):
                     child_property_descriptor = ComplexPropertyDescriptor(property_values)
                 elif self.is_content_field(property_name, property_values):
@@ -180,6 +211,12 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
                     child_property_descriptor.multivalue = True
 
                     self.assign_items_user_friendly(child_property_descriptor, property_values)
+
+                    # ENA: Get "description" for nested array object. If it has a "text" field, set the type to "string"
+                    child_property_descriptor.description = property_values.get("description", "")
+
+                    if "text" in property_values["items"].get("properties", {}):
+                        child_property_descriptor.value_type = "string"
                 elif self.is_array_ontology_field(property_values):
                     child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
                     child_property_descriptor.multivalue = True
