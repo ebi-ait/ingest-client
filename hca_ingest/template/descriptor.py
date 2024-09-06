@@ -22,7 +22,7 @@ class Descriptor():
 class SchemaTypeDescriptor(Descriptor):
     """ Descriptor encapsulating "metadata" information about a single metadata schema file. """
 
-    def __init__(self, metadata_schema_url):
+    def __init__(self, metadata_schema_url, json_data=None):
         url_parts = metadata_schema_url.split('/')
 
         self.high_level_entity = None
@@ -30,6 +30,8 @@ class SchemaTypeDescriptor(Descriptor):
         self.domain_entity = None
         self.module = None
         self.url = metadata_schema_url
+        self.accession = None  # New attribute for ENA
+        self.title = None  # New attribute for ENA
 
         high_level_entity_found = False
         version_found = False
@@ -37,7 +39,7 @@ class SchemaTypeDescriptor(Descriptor):
         project_env = os.getenv('PROJECT_ENV', 'default').upper()
 
         if project_env == 'ENA':
-            self.parse_ena_url(metadata_schema_url)
+            self.parse_ena_url(metadata_schema_url, json_data)
         else:
             for i, part in enumerate(url_parts):
                 if part in ['type', 'module', 'core', 'system']:
@@ -64,7 +66,7 @@ class SchemaTypeDescriptor(Descriptor):
         if not self.high_level_entity or not self.version or not self.module:
             raise Exception(f"ERROR: The metadata schema URL {metadata_schema_url} does not conform to expected format.")
 
-    def parse_ena_url(self, metadata_schema_url):
+    def parse_ena_url(self, metadata_schema_url, json_data):
         """Parsing logic specific for ENA URLs using regex."""
 
         pattern = re.compile(
@@ -82,9 +84,19 @@ class SchemaTypeDescriptor(Descriptor):
             self.domain_entity = match.group('domain_entity')
             self.module = match.group('module')
             self.version = match.group('version')
+
+            if json_data:
+                self.accession = json_data.get("accession", None)
+                self.title = json_data.get("title", None)
         else:
             raise Exception(f"ERROR: The ENA metadata schema URL {metadata_schema_url} does not conform to expected "
                             f"format.")
+
+    def get_accession(self):
+        return self.accession
+
+    def get_title(self):
+        return self.title
 
     def get_module(self):
         return self.module
@@ -110,7 +122,8 @@ class SimplePropertyDescriptor(Descriptor):
         if self.value_type == "array":
             self.multivalue = True
             # Get the type of elements in the array which is nested inside the "items" key.
-            self.value_type = json_data["items"]["type"]
+            # self.value_type = json_data["items"]["type"]
+            self.value_type = self.get_nested_type(json_data.get("items", {}))
 
         self.format = json_data.get("format")
         self.get_user_friendly(json_data)
@@ -124,6 +137,25 @@ class SimplePropertyDescriptor(Descriptor):
         self.required = False
         self.identifiable = False
         self.external_reference = False
+
+    def get_nested_type(self, items):
+        """ Recursively retrieve the most nested type within the items structure.
+            Default to 'string' if 'text' is present and no type is specified.
+        """
+        if "type" in items:
+            if items["type"] == "object" and "properties" in items:
+                # If it's an object, continue digging into the properties to find the most specific type
+                for key, value in items["properties"].items():
+                    # Recursively search the nested structure
+                    nested_type = self.get_nested_type(value)
+                    if nested_type:
+                        return nested_type
+            else:
+                return items["type"]
+        elif "enum" in items and "text" in items:
+            # If 'text' is a key and no type is explicitly defined, default to 'string'
+            return "string"
+        return None
 
     def get_user_friendly(self, json_data):
         if json_data.get("user_friendly"):
