@@ -158,6 +158,14 @@ class SpreadsheetBuilder():
                         schema_uf = schema[schema_name]['display_name']
                 uf = uf.replace("Protocol", schema_uf)
 
+            # MorPhiC-specific use case
+            if any(x in uf for x in ("Cell line ID", "Differentiated cell line", "Library preparation label")):
+                # print("morphic input uf: ", uf)
+                schema_name = column_name.split(".")[0]
+
+                if primary_schema != schema_name:
+                    uf = "Input " + uf
+
             return uf
         except Exception as e:
             print(e)

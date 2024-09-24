@@ -64,7 +64,7 @@ class VanillaSpreadsheetBuilder(SpreadsheetBuilder):
 
                     # write example
                     worksheet.write(2, column_index,
-                                    guidelines + ' For example: ' + example_text if example_text else guidelines,
+                                    (guidelines + ' For example: ' if guidelines else 'For example: ') + example_text if example_text else guidelines,
                                     self.desc_format)
 
                     # set the key

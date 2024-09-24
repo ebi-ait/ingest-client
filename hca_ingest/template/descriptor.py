@@ -63,8 +63,13 @@ class SchemaTypeDescriptor(Descriptor):
         return self.module
 
     def get_dictionary_representation_of_descriptor(self):
-        """ Returns a dictionary representation of the current schema descriptor object. """
-        return self.__dict__
+        """ Returns a dictionary representation of the current schema descriptor object, stripping whitespace from
+        string values."""
+
+        return {
+            key: (value.strip() if isinstance(value, str) else value)
+            for key, value in self.__dict__.items()
+        }
 
 
 class SimplePropertyDescriptor(Descriptor):
@@ -121,10 +126,14 @@ class SimplePropertyDescriptor(Descriptor):
         return json_data.get("$schema") or json_data.get("schema")
 
     def get_dictionary_representation_of_descriptor(self):
-        """ Only include information in the class where the value is not None or empty OR if the value is a boolean
-        since in that case, both True and False are valid values."""
+        """ Only include information in the class where the value is not None or empty OR if the value is a boolean,
+        since in that case, both True and False are valid values. Also, strip leading and trailing whitespace from strings."""
 
-        return dict((key, value) for (key, value) in self.__dict__.items() if value or isinstance(value, bool))
+        return dict(
+            (key, value.strip() if isinstance(value, str) else value)
+            for (key, value) in self.__dict__.items()
+            if value or isinstance(value, bool)
+        )
 
 
 def check_if_property_identifiable(child_property_descriptor, property_name):
@@ -177,8 +186,6 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
                 elif self.is_array_field(property_values) and self.is_object_field(property_values["items"]):
                     # Handle inline embedded schema (like "gene_edition")
                     child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
-                    child_property_descriptor.multivalue = True
-
                     self.assign_items_user_friendly(child_property_descriptor, property_values)
                 elif self.is_array_ontology_field(property_values):
                     child_property_descriptor = ComplexPropertyDescriptor(property_values["items"])
@@ -246,12 +253,26 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
 
         dictionary_representation = {}
 
-        for (key, value) in self.__dict__.items():
+        # MorPhiC: Add the remaining fields, excluding 'label' and 'description'
+        for key, value in self.__dict__.items():
             if key == "children_properties":
                 for child_key, child_value in value.items():
                     self.add_key_value_to_dictionary_if_valid(child_key, child_value, dictionary_representation)
             else:
                 self.add_key_value_to_dictionary_if_valid(key, value, dictionary_representation)
+
+        # MorPhiC: Reorder 'label' to come first, if it exists
+        if 'label' in dictionary_representation:
+            label_value = dictionary_representation.pop('label')
+            dictionary_representation = {'label': label_value, **dictionary_representation}
+
+        # MorPhiC: Reorder 'description' to come second, if it exists
+        if 'description' in dictionary_representation:
+            description_value = dictionary_representation.pop('description')
+            if 'label' in dictionary_representation:
+                dictionary_representation = {'label': dictionary_representation['label'], 'description': description_value, **dictionary_representation}
+            else:
+                dictionary_representation = {'description': description_value, **dictionary_representation}
 
         return dictionary_representation
 
@@ -262,4 +283,4 @@ class ComplexPropertyDescriptor(SimplePropertyDescriptor, Descriptor):
         if issubclass(type(value), Descriptor):
             dictionary[key] = value.get_dictionary_representation_of_descriptor()
         else:
-            dictionary[key] = value
+            dictionary[key] = value.strip() if isinstance(value, str) else value
