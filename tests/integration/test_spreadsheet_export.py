@@ -1,20 +1,32 @@
+import os
 from collections import namedtuple
 from typing import List
 from unittest import TestCase
 
+from dotenv import load_dotenv
+
 from hca_ingest.downloader.workbook import WorkbookDownloader
 from hca_ingest.api.ingestapi import IngestApi
+from hca_ingest.utils.s2s_token_client import S2STokenClient, ServiceCredential
+from hca_ingest.utils.token_manager import TokenManager
 
 Case = namedtuple("Case", 'project_uuid submission_uuid')
+load_dotenv()  # take environment variables from .env.
 
 
 class TestSpreadsheetExport(TestCase):
     def setUp(self) -> None:
+        gcp_credentials_file = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+        credential = ServiceCredential.from_file(gcp_credentials_file)
+        audience = os.environ.get('INGEST_API_JWT_AUDIENCE')
+        self.s2s_token_client = S2STokenClient(credential, audience)
+        self.token_manager = TokenManager(self.s2s_token_client)
+
         self.url = 'https://api.ingest.dev.archive.data.humancellatlas.org'
-        self.api = IngestApi(self.url)
+        self.api = IngestApi(self.url, token_manager=self.token_manager)
 
     def test_one_spreadsheet_export(self):
-        test_case = self.get_test_cases()[0]
+        test_case = next(self.get_test_cases())
 
         # When
         downloader = WorkbookDownloader(self.api)
@@ -41,24 +53,25 @@ class TestSpreadsheetExport(TestCase):
 
     def get_test_cases(self, number=1) -> List[Case]:
         entity_type = 'projects'
-        url = f'{self.url}/{entity_type}/search/catalogue'
-        last_url = self.api.get_link_from_resource_url(url, 'last', self.api.page_size)
+        url = f'{self.url}/{entity_type}/filter?wranglingState=SUBMITTED'
+        last_url = self.api.get_link_from_resource_url(url, 'last', size=10)
 
         params = {'size': self.api.page_size}
         result = self.api.get(last_url, params=params).json()
 
-        all_test_cases = []
         projects = result["_embedded"][entity_type] if '_embedded' in result else []
-        test_cases = self.get_uuids_from_projects(projects)
-        all_test_cases.extend(test_cases)
+        test_cases_count = 0
+        for case in self.get_uuids_from_projects(projects):
+            test_cases_count = test_cases_count + 1
+            yield case
 
-        while "previous" in result["_links"] and len(all_test_cases) < number:
+        while "previous" in result["_links"] and test_cases_count < number:
             next_url = result["_links"]["previous"]["href"]
             result = self.api.get(next_url).json()
             projects = result["_embedded"][entity_type]
-            test_cases = self.get_uuids_from_projects(projects)
-            all_test_cases.extend(test_cases)
-        return all_test_cases
+            for case in self.get_uuids_from_projects(projects):
+                test_cases_count = test_cases_count + 1
+                yield case
 
     def get_uuids_from_projects(self, projects) -> List[Case]:
         test_cases = []
