@@ -3,6 +3,7 @@ assertpy
 coverage
 flake8==3.5.0
 mock
+python-dotenv
 pytest
 pytest-lazy-fixture
 requests-mock
