@@ -13,8 +13,10 @@ class TestSpreadsheetBuilder(TestCase):
 
     def setUp(self):
         self.longMessage = True
-        self.projectUri = "https://schema.humancellatlas.org/type/project/5.1.0/project"
-        self.donorUri = "https://schema.humancellatlas.org/type/biomaterial/5.1.0/donor_organism"
+        self.schema_host_url = "https://schema.humancellatlas.org"
+        self.projectUri = f"{self.schema_host_url}/type/project/5.1.0/project"
+        self.donorUri = f"{self.schema_host_url}/type/biomaterial/5.1.0/donor_organism"
+        self.ingest_api_url = "http://api.ingest.archive.data.humancellatlas.org"
 
     def test_no_schemas(self):
         data = {
@@ -60,11 +62,11 @@ class TestSpreadsheetBuilder(TestCase):
             "donor_organism.genus_species.ontology_label": "Genus species ontology label",
             "cell_suspension.cell_morphology.cell_size_unit.text": "Cell size unit",
             "specimen_from_organism.preservation_storage.storage_time_unit.text": "Storage time unit",
-            "cell_suspension.timecourse.unit.text": "Timecourse unit"
+            "cell_suspension.biomaterial_core.timecourse.unit.text": "Time unit"
         }
 
         file = "uf_test.xlsx"
-        template = SchemaTemplate(ingest_api_url="http://api.ingest.archive.data.humancellatlas.org")
+        template = SchemaTemplate(ingest_api_url=self.ingest_api_url)
         builder = VanillaSpreadsheetBuilder(file)
         for key in user_friendly_dict.keys():
             uf = builder.get_user_friendly_column_name(template, key)
@@ -80,11 +82,11 @@ class TestSpreadsheetBuilder(TestCase):
     def test_vanilla_spreadsheet(self):
         file = "vanilla_test.xlsx"
         template = SchemaTemplate(
-            metadata_schema_urls=["https://schema.humancellatlas.org/type/biomaterial/15.5.0/donor_organism",
-                                 "https://schema.humancellatlas.org/type/biomaterial/10.4.0/specimen_from_organism",
-                                 "https://schema.humancellatlas.org/type/biomaterial/13.3.0/cell_suspension",
-                                 "https://schema.humancellatlas.org/type/protocol/sequencing/6.2.0/library_preparation_protocol",
-                                 "https://schema.humancellatlas.org/type/file/9.2.0/sequence_file"]
+            metadata_schema_urls=[f"{self.schema_host_url}/type/biomaterial/15.5.0/donor_organism",
+                                 f"{self.schema_host_url}/type/biomaterial/10.4.0/specimen_from_organism",
+                                 f"{self.schema_host_url}/type/biomaterial/13.3.0/cell_suspension",
+                                 f"{self.schema_host_url}/type/protocol/sequencing/6.2.0/library_preparation_protocol",
+                                 f"{self.schema_host_url}/type/file/9.2.0/sequence_file"]
         )
         builder = VanillaSpreadsheetBuilder(file)
         builder.generate_spreadsheet(schema_template=template)
@@ -96,7 +98,7 @@ class TestSpreadsheetBuilder(TestCase):
 
     def test_correct_description_used(self):
         file = "uf_test.xlsx"
-        template = SchemaTemplate(ingest_api_url="http://api.ingest.archive.data.humancellatlas.org")
+        template = SchemaTemplate(ingest_api_url=self.ingest_api_url)
         builder = VanillaSpreadsheetBuilder(file)
         test_field = "enrichment_protocol.method.text"
         returned_description = builder.get_value_for_column(template=template, column_name=test_field,
