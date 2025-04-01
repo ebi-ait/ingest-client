@@ -48,5 +48,5 @@ PyPI Deployment:
     - TWINE_PASSWORD=$PYPI_API_TOKEN TWINE_USERNAME=__token__ python3 -m twine upload dist/*
   environment:
     name: pypi
-    url: https://pypi.org/project/hca-ingest
+    url: https://pypi.org/project/hca-ingest/${PACKAGE_VERSION}
 
