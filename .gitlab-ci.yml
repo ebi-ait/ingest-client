@@ -27,16 +27,26 @@ Test PyPI Deployment:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
+    - echo "PACKAGE_VERSION=$(grep version= setup.py | cut -d= -f2 | sed "s/[\',]//g")" >> $GITLAB_ENV
     - python setup.py sdist
     - TWINE_PASSWORD=$PYPI_TEST_API_TOKEN TWINE_USERNAME=__token__ python3 -m twine upload --repository testpypi dist/*
   artifacts:
     paths:
       - dist/
+  environment:
+    name: pypi
+    url: https://test.pypi.org/project/hca-ingest/${PACKAGE_VERSION}
+
 
 PyPI Deployment:
-  stage: pypi  
+  stage: pypi
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
   script:
+    - echo "PACKAGE_VERSION=$(grep version= setup.py | cut -d= -f2 | sed "s/[\',]//g")" >> $GITLAB_ENV
     - TWINE_PASSWORD=$PYPI_API_TOKEN TWINE_USERNAME=__token__ python3 -m twine upload dist/*
+  environment:
+    name: pypi
+    url: https://pypi.org/project/hca-ingest
+
