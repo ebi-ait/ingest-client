@@ -24,7 +24,9 @@ default:
 Unit Tests:
   stage: unittest
   script:
+    - echo "before setting shell var - ${INGEST_API_JWT_AUDIENCE}"
     - export INGEST_API_JWT_AUDIENCE=${INGEST_API_JWT_AUDIENCE}
+    - echo "after setting shell var - ${INGEST_API_JWT_AUDIENCE}"
     - python -m pytest tests --junitxml=report.xml
   artifacts:
     reports:
