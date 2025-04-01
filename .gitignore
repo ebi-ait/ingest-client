@@ -116,3 +116,5 @@ _local
 gcp.json
 _local/
 venv*/
+output/
+*_cache.sqlite

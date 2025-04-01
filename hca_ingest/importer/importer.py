@@ -17,7 +17,7 @@ from hca_ingest.importer.submission.submission import Submission
 from hca_ingest.template.exceptions import UnknownKeySchemaException
 from hca_ingest.utils.IngestError import ImporterError, ParserError
 
-format = '[%(filename)s:%(lineno)s - %(funcName)20s() ] %(asctime)s - %(name)s - %(levelname)s - %(message)s'
+format = '%(asctime)s - %(name)s %(levelname)s [%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s'
 logging.basicConfig(format=format)
 
 

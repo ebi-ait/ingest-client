@@ -5,7 +5,7 @@ from hca_ingest.api.ingestapi import IngestApi
 from hca_ingest.importer.submission.entity import Entity
 from hca_ingest.importer.submission.entity_map import EntityMap
 
-format = '[%(filename)s:%(lineno)s - %(funcName)20s() ] %(asctime)s - %(name)s - %(levelname)s - %(message)s'
+format = '%(asctime)s - %(name)s %(levelname)s [%(filename)s:%(lineno)s - %(funcName)20s() ] %(message)s'
 logging.basicConfig(format=format)
 
 
