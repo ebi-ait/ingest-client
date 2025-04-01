@@ -24,6 +24,7 @@ default:
 Unit Tests:
   stage: unittest
   script:
+    - export INGEST_API_JWT_AUDIENCE=${INGEST_API_JWT_AUDIENCE}
     - python -m pytest tests --junitxml=report.xml
   artifacts:
     reports:
