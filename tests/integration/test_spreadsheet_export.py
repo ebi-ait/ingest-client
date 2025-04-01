@@ -16,14 +16,13 @@ load_dotenv()  # take environment variables from .env.
 
 class TestSpreadsheetExport(TestCase):
     def setUp(self) -> None:
-        gcp_credentials_file = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-        credential = ServiceCredential.from_file(gcp_credentials_file)
+        credential = ServiceCredential.from_env_var('GOOGLE_APPLICATION_CREDENTIALS')
         audience = os.environ.get('INGEST_API_JWT_AUDIENCE')
-        self.s2s_token_client = S2STokenClient(credential, audience)
-        self.token_manager = TokenManager(self.s2s_token_client)
+        s2s_token_client = S2STokenClient(credential, audience)
+        token_manager = TokenManager(s2s_token_client)
 
         self.url = 'https://api.ingest.dev.archive.data.humancellatlas.org'
-        self.api = IngestApi(self.url, token_manager=self.token_manager)
+        self.api = IngestApi(self.url, token_manager=token_manager)
 
     def test_one_spreadsheet_export(self):
         test_case = next(self.get_test_cases())
