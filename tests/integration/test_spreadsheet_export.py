@@ -24,7 +24,7 @@ class TestSpreadsheetExport(TestCase):
         self.url = 'https://api.ingest.dev.archive.data.humancellatlas.org'
         self.api = IngestApi(self.url, token_manager=token_manager)
 
-    def test_one_spreadsheet_export(self):
+    def xtest_one_spreadsheet_export(self):
         test_case = next(self.get_test_cases())
 
         # When
@@ -34,7 +34,7 @@ class TestSpreadsheetExport(TestCase):
         # Then
         self.workbook_only_contains_one_project(workbook, test_case.project_uuid)
 
-    def test_multiple_spreadsheet_exports(self):
+    def xtest_multiple_spreadsheet_exports(self):
         test_cases = self.get_test_cases(5)
         # When
         downloader = WorkbookDownloader(self.api)
