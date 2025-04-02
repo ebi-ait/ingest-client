@@ -1,3 +1,5 @@
+import logging
+
 import xlsxwriter
 
 from hca_ingest.template.tab_config import TabConfig
@@ -160,7 +162,7 @@ class SpreadsheetBuilder():
 
             return uf
         except Exception as e:
-            print(e)
+            logging.warning(f'problem getting friendly column name for column {column_name}: {type(e)}: {str(e)}')
             try:
                 return uf
             except:
