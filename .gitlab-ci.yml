@@ -15,12 +15,17 @@ cache:
 default:
   image: quay.io/ebi-ait/ingest-base-images:python_3.10-slim
   before_script:
-    - echo "before_script - ${INGEST_API_JWT_AUDIENCE}"
+    - if [ "$CI_COMMIT_REF_NAME" = "prod" ]; then
+        export INGEST_API_JWT_AUDIENCE="https://data.humancellatlas.org/";
+      else
+        export INGEST_API_JWT_AUDIENCE="https://dev.data.humancellatlas.org/";
+      fi
     - python -m venv ./venv
     - source venv/bin/activate
     - pip install --upgrade pip
     - pip install pip-tools
     - pip-sync requirements.txt dev-requirements.txt
+    - echo "before_script - ${INGEST_API_JWT_AUDIENCE}"
 
 Unit Tests:
   stage: unittest
