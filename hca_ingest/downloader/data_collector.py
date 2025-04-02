@@ -31,7 +31,7 @@ class DataCollector:
                 project_json
             ]
         else:
-            raise Exception('There should be a project')
+            raise Exception(f'There should be a project related to submission {submission_id} with uuid: f{submission["uuid"]["uuid"]}')
 
         self.__get_entities_by_submission_and_type(submission_data, submission, 'biomaterials')
         self.__get_entities_by_submission_and_type(submission_data, submission, 'processes')
@@ -42,7 +42,8 @@ class DataCollector:
 
     def __get_linking_map(self, submission):
         linking_map_url = submission['_links']['linkingMap']['href']
-        headers = {'Content-type': 'application/json', 'Accept': 'application/hal+json'}
+        headers = self.api.get_headers()
+        headers.update({'Content-type': 'application/json', 'Accept': 'application/hal+json'})
         r = self.api.get(linking_map_url, headers=headers)
         r.raise_for_status()
         linking_map = r.json()
