@@ -73,14 +73,14 @@ class TemplateManager:
         return default_values
 
     def get_latest_schema_url(self, high_level_entity, domain_entity, concrete_entity):
-        latest_schema = self.ingest_api.get_schemas(
+        latest_schemas = self.ingest_api.get_schemas(
             latest_only=True,
             high_level_entity=high_level_entity,
             domain_entity=domain_entity.split('/')[0],
             concrete_entity=concrete_entity
         )
-
-        return latest_schema[0]['_links']['json-schema']['href'] if latest_schema else None
+        latest_schema = next(latest_schemas, None)
+        return latest_schema['_links']['json-schema']['href'] if latest_schema else None
 
     def get_schema_url(self, concrete_entity):
         schema = self._get_schema(concrete_entity)

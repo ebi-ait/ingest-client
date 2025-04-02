@@ -263,7 +263,8 @@ class SchemaTemplate():
 
         ingest_api = IngestApi(url=ingest_api_url)
         raw_schemas_from_ingest_api = ingest_api.get_schemas(high_level_entity="type", latest_only=True)
-        return [schema["_links"]["json-schema"]["href"] for schema in raw_schemas_from_ingest_api]
+        return [schema["_links"]["json-schema"]["href"]
+                for schema in raw_schemas_from_ingest_api]
 
     def _get_property_migrations_json_obj(self, migrations_url):
         """

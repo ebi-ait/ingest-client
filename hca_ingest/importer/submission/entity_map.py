@@ -38,14 +38,12 @@ class EntityMap(object):
 
     def get_entities_of_type(self, type) -> List[Entity]:
         entities_dict = self.entities_dict_by_type.get(type, {})
-        for entity_id, entity in entities_dict.items():
-            yield entity
+        yield from entities_dict.values()
 
     def get_new_entities_of_type(self, type) -> List[Entity]:
         entities_dict = self.entities_dict_by_type.get(type, {})
-        for entity_id, entity in entities_dict.items():
-            if not (entity.is_reference and entity.is_linking_reference):
-                yield entity
+        yield from filter(lambda entity: not (entity.is_reference and entity.is_linking_reference),
+                          entities_dict.values())
 
     def get_entity(self, type, id) -> Entity:
         if self.entities_dict_by_type.get(type) and self.entities_dict_by_type[type].get(id):
@@ -69,12 +67,12 @@ class EntityMap(object):
             entities_of_type[entity.id] = entity
 
     def get_entities(self) -> List[Entity]:
-        for entity_type, entities_dict in self.entities_dict_by_type.items():
+        for entities_dict in self.entities_dict_by_type.values():
             yield from entities_dict.values()
 
     def get_new_entities(self) -> List[Entity]:
-        for entity_type, entities_dict in self.entities_dict_by_type.items():
-            for entity_id, entity in entities_dict.items():
+        for entities_dict in self.entities_dict_by_type.values():
+            for entity in entities_dict.values():
                 if entity.is_new:
                     yield entity
 
@@ -89,7 +87,4 @@ class EntityMap(object):
         return len(list(self.get_new_entities_of_type(type)))
 
     def count_links(self) -> int:
-        count = 0
-        for entity in self.get_entities():
-            count = count + len(entity.direct_links)
-        return count
+        return sum(len(entity.direct_links) for entity in self.get_entities())

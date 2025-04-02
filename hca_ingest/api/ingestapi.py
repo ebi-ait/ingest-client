@@ -125,31 +125,32 @@ class IngestApi:
         return links.get(link_name, {}).get('href')
 
     def get_latest_schema_url(self, high_level_entity, domain_entity, concrete_entity):
-        latest_schema = self.get_schemas(
+        latest_schemas = self.get_schemas(
             latest_only=True,
             high_level_entity=high_level_entity,
             domain_entity=domain_entity.split('/')[0],
             concrete_entity=concrete_entity
         )
-        return latest_schema[0]['_links']['json-schema']['href'] if latest_schema else None
+        latest_schema = next(latest_schemas, None)
+        return latest_schema['_links']['json-schema']['href'] if latest_schema else None
 
     def get_schemas(self, latest_only=True, high_level_entity=None, domain_entity=None, concrete_entity=None):
         schema_url = self.get_schemas_url()
         if latest_only:
             search_url = self.get_link_from_resource_url(schema_url, "search")
             response_json = self.get(search_url).json()
-            all_schemas = list(self.get_related_entities("latestSchemas", response_json, "schemas"))
+            all_schemas = self.get_related_entities("latestSchemas", response_json, "schemas")
         else:
-            all_schemas = list(self.get_entities(schema_url, "schemas"))
+            all_schemas = self.get_entities(schema_url, "schemas")
 
         if high_level_entity:
-            all_schemas = list(filter(lambda schema: schema.get('highLevelEntity') == high_level_entity, all_schemas))
+            all_schemas = filter(lambda schema: schema.get('highLevelEntity') == high_level_entity, all_schemas)
 
         if domain_entity:
-            all_schemas = list(filter(lambda schema: schema.get('domainEntity') == domain_entity, all_schemas))
+            all_schemas = filter(lambda schema: schema.get('domainEntity') == domain_entity, all_schemas)
 
         if concrete_entity:
-            all_schemas = list(filter(lambda schema: schema.get('concreteEntity') == concrete_entity, all_schemas))
+            all_schemas = filter(lambda schema: schema.get('concreteEntity') == concrete_entity, all_schemas)
 
         return all_schemas
 
