@@ -52,6 +52,7 @@ class IngestSubmitter(object):
         submission.define_manifest(entity_map)
         for e in entity_map.get_new_entities():
             self.add_entity(e, submission_url)
+            # NOTE: this inflates the submission.metadata_dict
             submission.add_entity(e)
 
         return submission

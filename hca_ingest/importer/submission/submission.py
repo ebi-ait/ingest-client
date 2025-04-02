@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Iterable
 
 from hca_ingest.api.ingestapi import IngestApi
 from hca_ingest.importer.submission.entity import Entity
@@ -48,5 +48,5 @@ class Submission(object):
         self.manifest = self.ingest_api.create_submission_manifest(self.submission_url, manifest_json)
         return self.manifest
 
-    def get_entities(self) -> List[Entity]:
+    def get_entities(self) -> Iterable[Entity]:
         return self.metadata_dict.values()

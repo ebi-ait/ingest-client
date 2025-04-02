@@ -1,5 +1,4 @@
-from typing import List
-
+from typing import List, Iterable
 
 from hca_ingest.importer.submission.entity import Entity
 
