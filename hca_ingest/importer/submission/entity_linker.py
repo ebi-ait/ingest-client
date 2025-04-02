@@ -18,7 +18,7 @@ class EntityLinker(object):
         self.entity_map = entity_map
 
     def convert_spreadsheet_links_to_ingest_links(self):
-        for entity in self.entity_map.get_entities():
+        for entity in list(self.entity_map.get_entities()):
             self._load_external_links_to_entity_map(entity)
             self._validate_entity_links(entity)
             self._generate_direct_links(entity)

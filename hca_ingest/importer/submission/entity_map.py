@@ -37,23 +37,15 @@ class EntityMap(object):
         return list(self.entities_dict_by_type.keys())
 
     def get_entities_of_type(self, type) -> List[Entity]:
-        entities = []
-
         entities_dict = self.entities_dict_by_type.get(type, {})
-
         for entity_id, entity in entities_dict.items():
-            entities.append(entity)
-
-        return entities
+            yield entity
 
     def get_new_entities_of_type(self, type) -> List[Entity]:
-        entities = []
         entities_dict = self.entities_dict_by_type.get(type, {})
         for entity_id, entity in entities_dict.items():
             if not (entity.is_reference and entity.is_linking_reference):
-                entities.append(entity)
-
-        return entities
+                yield entity
 
     def get_entity(self, type, id) -> Entity:
         if self.entities_dict_by_type.get(type) and self.entities_dict_by_type[type].get(id):
@@ -77,28 +69,24 @@ class EntityMap(object):
             entities_of_type[entity.id] = entity
 
     def get_entities(self) -> List[Entity]:
-        all_entities = []
         for entity_type, entities_dict in self.entities_dict_by_type.items():
-            all_entities.extend(entities_dict.values())
-        return all_entities
+            yield from entities_dict.values()
 
     def get_new_entities(self) -> List[Entity]:
-        all_entities = []
         for entity_type, entities_dict in self.entities_dict_by_type.items():
             for entity_id, entity in entities_dict.items():
                 if entity.is_new:
-                    all_entities.append(entity)
-        return all_entities
+                    yield entity
 
     def get_project(self) -> Entity:
         project_ids = list(self.entities_dict_by_type.get('project', {}).keys())
         return self.get_entity('project', project_ids[0]) if project_ids else None
 
     def count_total(self) -> int:
-        return len(self.get_entities())
+        return len(list(self.get_entities()))
 
     def count_entities_of_type(self, type) -> int:
-        return len(self.get_new_entities_of_type(type))
+        return len(list(self.get_new_entities_of_type(type)))
 
     def count_links(self) -> int:
         count = 0
